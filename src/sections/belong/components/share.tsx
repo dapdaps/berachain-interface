@@ -69,7 +69,15 @@ const ShareModal = (props: any) => {
           </Capsule>
           <Capsule
             onClick={() => {
-              // TODO
+              const tweetText = `I Be-Long to @berachain 🐻\n@0xberatown is for berachain, for everyone.\nHuge shoutout to @SmileeFinance, @InfraredFinance, @KodiakFi, @beraborrow, and @steadyteddys for making this happen :p\nTry it yourself: bera.town/belong`;
+
+              // Encode the tweet text for the URL
+              const encodedTweet = encodeURIComponent(tweetText);
+
+              // Construct the Twitter Intent URL
+              const tweetUrl = `https://twitter.com/intent/tweet?text=${encodedTweet}`;
+
+              window.open(tweetUrl, "_blank");
             }}
           >
             <div className="">Share</div>

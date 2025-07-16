@@ -826,11 +826,14 @@ const BelongForm = (props: any) => {
           chainId: DEFAULT_CHAIN_ID
         });
         setResultModalOpen(true);
+        const resultDebtAmount = automaticLoopingData?.route?.currentAmountOutValue || 0;
+        const resultDebtAmountFee = calculateDebtAmountData?.borrowingFee || 0;
+        const resultDebtAmountLiquidationReserve = calculateDebtAmountData?.liquidationReserveFee || 0;
         const _resultModalData: any = {
           liquidationPrice: automaticLoopingData?.liquidationPrice?.value,
           txHash: transactionHash,
           inputAmount: currentInputAmount,
-          debtAmount: automaticLoopingData?.route?.currentAmountOutValue,
+          debtAmount: Big(resultDebtAmount).minus(resultDebtAmountFee).minus(resultDebtAmountLiquidationReserve),
         };
         setResultModalData(_resultModalData);
       } else {
