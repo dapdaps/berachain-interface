@@ -43,7 +43,7 @@ const ResultModal = (props: any) => {
                 ))
               }
             </div>
-            <div className="text-[32px] text-white leading-[80%] font-[400]">
+            <div className="text-[32px] text-white leading-[80%] font-[400] font-SpecialGothicExpandedOne">
               {numberFormatter(debtAmount, 2, true)}
             </div>
           </div>
@@ -60,7 +60,7 @@ const ResultModal = (props: any) => {
           <div className="py-[8px] flex justify-between items-center gap-[10px]">
             <div className="">Received</div>
             <div className="">
-              {numberFormatter(debtAmount, 2, true)} {market?.symbol}
+              {numberFormatter(debtAmount, 2, true)} {market?.underlyingTokens?.map((_token: any) => _token.symbol)?.join("-")}
             </div>
           </div>
           <div className="w-full h-[1px] bg-[#434041]" />
@@ -97,9 +97,10 @@ const ResultModal = (props: any) => {
           </Capsule>
           <Capsule
             onClick={() => {
-              window.open("https://app.beraborrow.com/vault/withdraw/Kodiak-iBERA-wgBERA");
+              window.open("https://app.beraborrow.com/den/manage/iBERA-wgBERA");
               // onClose?.();
             }}
+            className="col-span-2"
           >
             <div className="">Position on Beraborrow</div>
             <div className="">&gt;</div>

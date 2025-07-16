@@ -39,7 +39,7 @@ const ShareModal = (props: any) => {
             {numberFormatter(apy, 2, true, { prefix: "+ " })}%
           </div>
           <div className="mt-[5px]">
-            Leverage: {leverage}x
+            Leverage: {5}x
           </div>
           <div className="text-[14px] text opacity-60 mt-[15px]">
             We Be-Long to Berachain.
