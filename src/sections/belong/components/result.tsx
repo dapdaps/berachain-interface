@@ -88,7 +88,7 @@ const ResultModal = (props: any) => {
           </Capsule>
           <Capsule
             onClick={() => {
-              window.open("https://app.beraborrow.com/vault/deposit/Kodiak-iBERA-wgBERA");
+              window.open("https://app.kodiak.finance/#/liquidity/pools/0x88c983bf3d4a9adcee14e1b4f1c446c4c5853ea3?farm=0x25acec3a1766a0d02d7c8e22f48533d32d7b311b&chain=berachain_mainnet");
               // onClose?.();
             }}
           >
