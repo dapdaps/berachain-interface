@@ -97,7 +97,7 @@ export const Form = (props: any) => {
         <CurrencyInput
           className=""
           token={{
-            ...(type === ActionText.Repay ? { ...market.collToken, price: market.price } : market),
+            ...(type === ActionText.Repay ? { ...market.collToken, price: market.price, underlyingTokens: market.underlyingTokens } : market),
             balance: collateralBalance,
           }}
           amount={amount}

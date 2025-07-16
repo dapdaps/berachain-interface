@@ -394,7 +394,7 @@ const BelongForm = (props: any) => {
     isLeverage
   ]);
 
-  const { runAsync: automaticLooping, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
+  const { runAsync: getAutomaticLoopingData, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
     if (!marginInSharesData || !calculateDebtAmountData || calculateDebtAmountData.big === BigInt(0) || !currentMarketData || !currentMarketData.borrowToken) {
       return;
     }
@@ -837,7 +837,13 @@ const BelongForm = (props: any) => {
         };
         setResultModalData(_resultModalData);
       } else {
-        toast.fail({ title: "Leverage failed!" });
+        toast.fail({
+          title: "Leverage failed!",
+          text: "Please try again later.",
+          chainId: DEFAULT_CHAIN_ID,
+          tx: transactionHash
+        });
+        getAutomaticLoopingData();
         setDataLoading(true);
       }
       addAction({
@@ -1049,7 +1055,7 @@ const BelongForm = (props: any) => {
       return leverageMarkets;
     }
     const ensoBalanceData = ensoBalanceResp.data.data || [];
-    const _userBalanceTokenList =  ensoBalanceData.map((_token: any) => ({
+    const _userBalanceTokenList = ensoBalanceData.map((_token: any) => ({
       ..._token,
       address: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? "native" : _token.token,
       isNative: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? true : false,
@@ -1102,7 +1108,10 @@ const BelongForm = (props: any) => {
             type="in"
             currency={currentInputMarket}
             amount={currentInputAmount}
-            prices={prices}
+            prices={{
+              ...prices,
+              [currentMarket.symbol]: currentMarketData?.collPrice,
+            }}
             isPrice={true}
             account
             onCurrencySelectOpen={() => {

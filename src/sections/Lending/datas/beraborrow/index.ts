@@ -752,12 +752,12 @@ const BeraborrowData = (props: any) => {
           provider: provider
         });
         markets.forEach((token: any, index: number) => {
-          let EntireDebtAndColl = denDetailsRes?.[index * 5] ?? [];
-          let DenStatus = denDetailsRes?.[index * 5 + 1]?.[0] ?? "";
-          let EntireSystemBalances = denDetailsRes?.[index * 5 + 2] ?? [];
+          let EntireDebtAndColl = denDetailsRes?.[index * 5 + index] ?? [];
+          let DenStatus = denDetailsRes?.[index * 5 + 1 + index]?.[0] ?? "";
+          let EntireSystemBalances = denDetailsRes?.[index * 5 + 2 + index] ?? [];
           DenStatus = DenStatus ? Number(DenStatus.toString()) : 0;
-          let MCR = denDetailsRes?.[index * 5 + 3]?.[0] ?? "0";
-          let CCR = denDetailsRes?.[index * 5 + 4]?.[0] ?? "0";
+          let MCR = denDetailsRes?.[index * 5 + 3 + index]?.[0] ?? "0";
+          let CCR = denDetailsRes?.[index * 5 + 4 + index]?.[0] ?? "0";
           MCR = utils.formatUnits(MCR, 18);
           CCR = utils.formatUnits(CCR, 18);
 
@@ -768,7 +768,7 @@ const BeraborrowData = (props: any) => {
             ? new UserDen(account, UserDenStatus[DenStatus], BigInt(coll.toString()), BigInt(debt.toString()))
             : new UserDen(account, UserDenStatus[DenStatus]);
 
-          let BorrowingRate = denDetailsRes?.[index * 5 + 5]?.[0] ?? "0";
+          let BorrowingRate = denDetailsRes?.[index * 5 + 5 + index]?.[0] ?? "0";
           BorrowingRate = utils.formatUnits(BorrowingRate, 18);
 
           result.push({
