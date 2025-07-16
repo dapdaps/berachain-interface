@@ -5,6 +5,7 @@ import clsx from "clsx";
 import Capsule from "./capsule";
 import useToast from "@/hooks/use-toast";
 import { useRef } from "react";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const ShareModal = (props: any) => {
   const {
@@ -17,6 +18,7 @@ const ShareModal = (props: any) => {
   } = props;
 
   const toast: any = useToast();
+  const isMobile = useIsMobile();
 
   const postcardRef = useRef<any>(null);
 
@@ -24,10 +26,10 @@ const ShareModal = (props: any) => {
     <Modal
       open={open}
       onClose={onClose}
-      isMaskClose={false}
+      isMaskClose={isMobile}
       isShowCloseIcon={false}
     >
-      <Card className={clsx("!rounded-[20px] !w-[440px] p-[20px] text-[12px] text-[#D7D7D7] font-[500] leading-normal font-Syne", className)}>
+      <Card className={clsx("!rounded-[20px] md:!rounded-b-[0px] !w-[440px] md:!w-full p-[20px] text-[12px] text-[#D7D7D7] font-[500] leading-normal font-Syne", className)}>
         <div
           ref={postcardRef}
           className="pt-[121px] pl-[29px] text-[16px] text-[#F8F8F8] font-[500] font-Montserrat w-full relative h-[265px] bg-[url('/images/belong/v2/bg-share.png')] bg-no-repeat bg-contain bg-center"

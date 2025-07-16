@@ -26,7 +26,7 @@ const ResultModal = (props: any) => {
       isMaskClose={false}
       isShowCloseIcon={false}
     >
-      <Card className={clsx("!rounded-[20px] !w-[300px] p-[20px] text-[12px] text-[#D7D7D7] font-[500] leading-normal font-Syne", className)}>
+      <Card className={clsx("!rounded-[20px] !w-[300px] md:!w-full p-[20px] text-[12px] text-[#D7D7D7] font-[500] leading-normal font-Syne", className)}>
         <div className="w-full p-[16px] rounded-t-[6px] bg-[#0f0f0f] pb-[60px] bg-[url('/images/belong/v2/bg-bar-green.png')] bg-no-repeat bg-center bg-cover">
           <div className="text-center">You received</div>
           <div className="flex items-center justify-center gap-[8px] mt-[32px]">

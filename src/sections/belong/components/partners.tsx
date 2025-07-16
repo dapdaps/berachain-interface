@@ -42,7 +42,7 @@ const Partners = (props: any) => {
       <BelongTitle>
         Partners
       </BelongTitle>
-      <div className="grid grid-cols-3 gap-[10px] mt-[54px]">
+      <div className="grid grid-cols-3 md:grid-cols-2 gap-[10px] mt-[54px]">
         {
           PARTNERS.map((item) => {
             return (
