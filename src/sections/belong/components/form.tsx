@@ -1036,6 +1036,37 @@ const BelongForm = (props: any) => {
     return getStatus(currentMarketData, automaticLoopingData?.leverageRatio?.value || "0");
   }, [currentMarketData, automaticLoopingData]);
 
+  const { data: userBalanceTokenList, loading: userBalanceTokenListLoading } = useRequest(async () => {
+    if (!account || !tokenSelectorVisible) {
+      return leverageMarkets;
+    }
+    const ensoBalanceUrl = new URL(`https://api.beraborrow.com/v1/enso/balances/${account}`);
+    const ensoBalanceResp = await axios.get(ensoBalanceUrl.toString());
+    if (ensoBalanceResp.status !== 200 || !ensoBalanceResp.data.data?.length) {
+      return leverageMarkets;
+    }
+    const ensoBalanceData = ensoBalanceResp.data.data || [];
+    const _userBalanceTokenList =  ensoBalanceData.map((_token: any) => ({
+      ..._token,
+      address: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? "native" : _token.token,
+      isNative: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? true : false,
+      icon: _token.logoUri,
+      balance: numberRemoveEndZero(Big(_token.amount || 0).div(10 ** _token.decimals).toFixed(_token.decimals, Big.roundDown)),
+      price: _token.price,
+    }));
+
+    if (!_userBalanceTokenList.some((_token: any) => _token.token.toLowerCase() === TARGET_MARKET.address.toLowerCase())) {
+      const targetTokenContract = new Contract(TARGET_MARKET.address, ERC20_ABI, provider);
+      const targetTokenBalance = await targetTokenContract.balanceOf(account);
+      _userBalanceTokenList.push({
+        ...TARGET_MARKET,
+        balance: numberRemoveEndZero(Big(targetTokenBalance).div(10 ** TARGET_MARKET.decimals).toFixed(TARGET_MARKET.decimals, Big.roundDown)),
+      });
+    }
+
+    return _userBalanceTokenList;
+  }, { refreshDeps: [account, leverageMarkets, tokenSelectorVisible] });
+
   useEffect(() => {
     setDataLoading(isChainSupported);
   }, [isChainSupported, account, currentMarket]);
@@ -1452,7 +1483,7 @@ const BelongForm = (props: any) => {
 
         <TokenSelector
           display={tokenSelectorVisible}
-          tokens={leverageMarkets ?? []}
+          tokens={userBalanceTokenList ?? []}
           selectedTokenAddress={currentInputMarket?.address}
           chainId={DEFAULT_CHAIN_ID}
           account={account}

@@ -231,7 +231,7 @@ export default function CurrencySelect({
                   handleClose();
                 }}
                 loading={balancesLoading}
-                balance={balances[currency.address]}
+                balance={balances[currency.address] || currency.balance}
                 showBalance={showBalance}
                 customBalanceFormatter={customBalanceFormatter}
               />
