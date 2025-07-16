@@ -275,14 +275,14 @@ const BelongForm = (props: any) => {
     }
 
     // Get the accumulated PreviewDeposit
-    let addedPreviewDeposit: any = await getPreviewDeposit({
+    let inputAmountPreviewDeposit: any = await getPreviewDeposit({
       amount: amount || "0",
       market: currentMarketData,
       provider,
     });
-    addedPreviewDeposit = BigInt(Big(addedPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+    inputAmountPreviewDeposit = BigInt(Big(inputAmountPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
     // Convert CollateralShares
-    const collateralSharesDen = addedCollateralDen.convertCollateralToCollateralShares(addedPreviewDeposit);
+    const collateralSharesDen = addedCollateralDen.convertCollateralToCollateralShares(inputAmountPreviewDeposit);
     // Get the accumulated CollateralShares
     const addedCollateralShares = collateralSharesDen.getCollateralShares();
 
@@ -321,7 +321,7 @@ const BelongForm = (props: any) => {
       leverageBP,
       addedCollateral,
       addedDebt,
-      addedPreviewDeposit,
+      inputAmountPreviewDeposit,
       addedCollateralDen,
       currentCollateralDen,
       marginInShares: addedCollateralShares,
@@ -351,7 +351,7 @@ const BelongForm = (props: any) => {
       leverageBP,
       addedCollateral,
       addedDebt,
-      addedPreviewDeposit,
+      inputAmountPreviewDeposit,
       addedCollateralDen,
       marginInShares,
       liquidationReserveBig,
@@ -360,7 +360,7 @@ const BelongForm = (props: any) => {
 
     // Calculate leveraged debt
     const leveragedDebt = addedCollateralDen.calculateLeveragedDebt(
-      addedCollateral,
+      inputAmountPreviewDeposit + currentMarketData.den?.collateral,
       leverageBP,
       priceBig,
       debtPriceBig,
@@ -407,7 +407,7 @@ const BelongForm = (props: any) => {
       addedCollateral,
       currentCollateralDen,
       addedDebt,
-      addedPreviewDeposit,
+      inputAmountPreviewDeposit,
       addedCollateralDen,
       marginInShares,
       amountBig,
@@ -426,9 +426,9 @@ const BelongForm = (props: any) => {
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/leverage-swap");
     DexCallURL.searchParams.set("user", account);
     DexCallURL.searchParams.set("dmAddr", currentMarketData.denManager);
-    DexCallURL.searchParams.set("marginInShares", addedPreviewDeposit.toString());
+    DexCallURL.searchParams.set("marginInShares", inputAmountPreviewDeposit.toString());
     DexCallURL.searchParams.set("leverage", Big(leverage || 0).times(SCALING_FACTOR_BP.toString()).toFixed(0));
-    DexCallURL.searchParams.set("debtAmount", (debtBig - borrowingFeeBig).toString());
+    DexCallURL.searchParams.set("debtAmount", debtBig.toString());
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
     try {
       dexCalldataResp = await axios.get(DexCallURL.toString());
@@ -452,9 +452,15 @@ const BelongForm = (props: any) => {
       currentAmountOutValueUsd: Big(_currentAmountOutValue).times(currentMarketData?.collPrice || 0).toFixed(2),
     };
 
+    let finalPreviewDeposit: any = await getPreviewDeposit({
+      amount: _currentAmountOutValue.toFixed(currentMarketData.decimals),
+      market: currentMarketData,
+      provider,
+    });
+    finalPreviewDeposit = BigInt(Big(finalPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+
     // Get liquidation price
-    const dexCollOutput = BigInt(amountOut);
-    const dexCollOutputInShares = dexCollOutput + addedCollateral;
+    const dexCollOutputInShares = finalPreviewDeposit + currentMarketData.den?.collateral;
     const params: any = { borrowNECT: debtBig, depositCollateral: dexCollOutputInShares };
     const newDen = new Den(dexCollOutputInShares, totalDebtBig);
     const _liquidationPrice = newDen.calculateLiquidationPrice(MCRBig);
@@ -475,16 +481,8 @@ const BelongForm = (props: any) => {
       multiCollateralHintHelpers,
     });
 
-    let finalPreviewDeposit: any = await getPreviewDeposit({
-      amount: _currentAmountOutValue.toFixed(currentMarketData.decimals),
-      market: currentMarketData,
-      provider,
-    });
-    finalPreviewDeposit = BigInt(Big(finalPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
-
     // Get ratio
-    const newRatioDen = new Den(finalPreviewDeposit + currentMarketData.den?.collateral, totalDebtBig);
-    const leverageRatio = newRatioDen.collateralRatio(priceBig);
+    const leverageRatio = newDen.collateralRatio(priceBig);
 
     return {
       route,
@@ -495,7 +493,7 @@ const BelongForm = (props: any) => {
         value: Big(leverageRatio.toString()).div(SCALING_FACTOR.toString()).times(100).toString(),
       },
       params,
-      den: newRatioDen,
+      den: newDen,
     };
   }, {
     refreshDeps: [
@@ -752,7 +750,7 @@ const BelongForm = (props: any) => {
       leverageBP,
       addedCollateral,
       addedDebt,
-      addedPreviewDeposit,
+      inputAmountPreviewDeposit,
       addedCollateralDen,
       marginInShares,
       borrowingRateBig,
