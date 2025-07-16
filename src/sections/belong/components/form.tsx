@@ -33,6 +33,7 @@ import ResultModal from "./result";
 import useTokenBalance from "@/hooks/use-token-balance";
 import Position from "./position";
 import ShareModal from "./share";
+import Skeleton from "react-loading-skeleton";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -617,6 +618,7 @@ const BelongForm = (props: any) => {
     } else {
       setCurrentInputSwaped(true);
       setCurrentInputSwapedData({ value: _depositAmountValue, big: depositAmountValue });
+      setInputCurrencyUpdater((prev: any) => prev + 1);
     }
     return { value: _depositAmountValue, big: depositAmountValue };
   }, { manual: true });
@@ -629,6 +631,7 @@ const BelongForm = (props: any) => {
     updateCurrentInputMarketWalletBalance();
     vaultRef.current?.getPositionBalance?.();
     setResultModalData(void 0);
+    setInputCurrencyUpdater((prev: any) => prev + 1);
   };
 
   const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
@@ -1102,13 +1105,23 @@ const BelongForm = (props: any) => {
             </div>
             <div className="flex justify-end items-center gap-[2px]">
               <div className="">Liquidation risk:</div>
-              <div
-                className={clsx((!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "" : "font-[600]")}
-                style={{
-                  color: (!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "#A1A0A1" : `rgb(${riskData?.color})`
-                }}>
-                {(!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "None" : riskData?.name}
-              </div>
+              {
+                automaticLoopingLoading ? (
+                  <Skeleton
+                    width={55}
+                    height={12}
+                    borderRadius={2}
+                  />
+                ) : (
+                  <div
+                    className={clsx((!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "" : "font-[600]")}
+                    style={{
+                      color: (!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "#A1A0A1" : `rgb(${riskData?.color})`
+                    }}>
+                    {(!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "None" : riskData?.name}
+                  </div>
+                )
+              }
             </div>
           </div>
           <div className="mt-[13px]">
@@ -1140,9 +1153,19 @@ const BelongForm = (props: any) => {
                   </div>
                   <div className="flex justify-end items-center gap-[2px]">
                     <div>Ratio:</div>
-                    <div style={{ color: `rgb(${riskData?.color})` }}>
-                      {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
-                    </div>
+                    {
+                      automaticLoopingLoading ? (
+                        <Skeleton
+                          width={47}
+                          height={12}
+                          borderRadius={2}
+                        />
+                      ) : (
+                        <div style={{ color: `rgb(${riskData?.color})` }}>
+                          {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
+                        </div>
+                      )
+                    }
                     <BelongTips>
                       The ratio of your {currentMarket?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {currentMarketData?.MCR ?? 150}% to avoid liquidations.
                     </BelongTips>
@@ -1151,7 +1174,21 @@ const BelongForm = (props: any) => {
                 <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
                   <div className="w-full flex justify-between items-center gap-[20px]">
                     <div className="text-[20px]">
-                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: false, isShortUppercase: true, round: Big.roundUp, prefix: "$" })}
+                      {
+                        automaticLoopingLoading ? (
+                          <Loading size={18} />
+                        ) : numberFormatter(
+                          automaticLoopingData?.liquidationPrice?.value,
+                          2,
+                          true,
+                          {
+                            isShort: false,
+                            isShortUppercase: true,
+                            round: Big.roundUp,
+                            prefix: "$"
+                          }
+                        )
+                      }
                     </div>
                   </div>
                   <div className="w-full flex justify-between items-center gap-[20px] mt-[13px]">
@@ -1160,7 +1197,11 @@ const BelongForm = (props: any) => {
                         Current:
                       </div>
                       <div className="font-[600]">
-                        {currentMarketData?.priceShown}
+                        {
+                          dataLoading ? (
+                            <Loading size={11} />
+                          ) : currentMarketData?.priceShown
+                        }
                       </div>
                     </div>
                   </div>
@@ -1182,8 +1223,29 @@ const BelongForm = (props: any) => {
                     <div className="flex items-center gap-[2px]">
                       <div>Exposure:</div>
                     </div>
-                    <div className="text-black">
-                      {numberFormatter(automaticLoopingData?.route?.currentAmountOutValue, 6, true, { isShort: true, isShortUppercase: true })} {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
+                    <div className="text-black flex items-center gap-[2px]">
+                      <div className="">
+                        {
+                          automaticLoopingLoading ? (
+                            <Skeleton
+                              width={55}
+                              height={12}
+                              borderRadius={2}
+                            />
+                          ) : numberFormatter(
+                            automaticLoopingData?.route?.currentAmountOutValue,
+                            6,
+                            true,
+                            {
+                              isShort: true,
+                              isShortUppercase: true
+                            }
+                          )
+                        }
+                      </div>
+                      <div className="">
+                        {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
+                      </div>
                     </div>
                     <BelongTips className="">
                       The Amount of {currentMarket?.symbol} you will have after the leveraging swap
@@ -1192,7 +1254,20 @@ const BelongForm = (props: any) => {
                 </div>
                 <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[12px_12px] rounded-[12px]">
                   <div className="text-black font-[500] text-[20px]">
-                    {numberFormatter(automaticLoopingData?.route?.currentAmountOutValueUsd, 2, true, { isShort: false, isShortUppercase: true, prefix: "$" })}
+                    {
+                      automaticLoopingLoading ? (
+                        <Loading size={18} />
+                      ) : numberFormatter(
+                        automaticLoopingData?.route?.currentAmountOutValueUsd,
+                        2,
+                        true,
+                        {
+                          isShort: false,
+                          isShortUppercase: true,
+                          prefix: "$"
+                        }
+                      )
+                    }
                   </div>
                   <div className="shrink-0 flex justify-end items-center gap-[3px] border border-[#373A53] rounded-[8px] p-[8px_12px]">
                     <div className="flex items-center shrink-0">
@@ -1225,27 +1300,114 @@ const BelongForm = (props: any) => {
               <div className="flex items-center gap-[2px]">
                 <div className="text-[#808290]">Fee:</div>
                 <div className="">
-                  {numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}
+                  {
+                    marginInSharesLoading ? (
+                      <Skeleton
+                        width={20}
+                        height={12}
+                        borderRadius={2}
+                      />
+                    ) : numberFormatter(
+                      calculateDebtAmountData?.fee,
+                      2,
+                      true,
+                      {
+                        isShort: true,
+                        isShortUppercase: true
+                      }
+                    )}
                 </div>
                 <BelongTips className="">
                   <div className="font-[500] text-black">Fee Breakdown</div>
                   <div className="mt-[5px]">
                     <div className="flex justify-between items-center gap-[10px]">
                       <div className="">Net debt:</div>
-                      <div className="">{numberFormatter(calculateDebtAmountData?.value, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                      <div className="">
+                        {
+                          marginInSharesLoading ? (
+                            <Skeleton
+                              width={50}
+                              height={12}
+                              borderRadius={2}
+                            />
+                          ) : numberFormatter(
+                            calculateDebtAmountData?.value,
+                            8,
+                            true,
+                            {
+                              isShort: true,
+                              isShortUppercase: true
+                            }
+                          )
+                        }
+                      </div>
                     </div>
                     <div className="flex justify-between items-center gap-[10px] mt-[5px]">
                       <div className="">Borrowing fee({numberFormatter(Big(currentMarketData?.borrowingRate ?? 0).times(100), 2, true)}%):</div>
-                      <div className="">{numberFormatter(calculateDebtAmountData?.borrowingFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                      <div className="">
+                        {
+                          marginInSharesLoading ? (
+                            <Skeleton
+                              width={50}
+                              height={12}
+                              borderRadius={2}
+                            />
+                          ) : numberFormatter(
+                            calculateDebtAmountData?.borrowingFee,
+                            8,
+                            true,
+                            {
+                              isShort: true,
+                              isShortUppercase: true
+                            }
+                          )
+                        }
+                      </div>
                     </div>
                     <div className="flex justify-between items-center gap-[10px] mt-[5px]">
                       <div className="">Liquidation reserve:</div>
-                      <div className="">{numberFormatter(calculateDebtAmountData?.liquidationReserveFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                      <div className="">
+                        {
+                          marginInSharesLoading ? (
+                            <Skeleton
+                              width={50}
+                              height={12}
+                              borderRadius={2}
+                            />
+                          ) : numberFormatter(
+                            calculateDebtAmountData?.liquidationReserveFee,
+                            8,
+                            true,
+                            {
+                              isShort: true,
+                              isShortUppercase: true
+                            }
+                          )
+                        }
+                      </div>
                     </div>
                     <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
                     <div className="flex justify-between items-center gap-[10px] mt-[5px]">
                       <div className="">Total debt:</div>
-                      <div className="">{numberFormatter(calculateDebtAmountData?.currentTotalValue, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                      <div className="">
+                        {
+                          marginInSharesLoading ? (
+                            <Skeleton
+                              width={50}
+                              height={12}
+                              borderRadius={2}
+                            />
+                          ) : numberFormatter(
+                            calculateDebtAmountData?.currentTotalValue,
+                            8,
+                            true,
+                            {
+                              isShort: true,
+                              isShortUppercase: true
+                            }
+                          )
+                        }
+                      </div>
                     </div>
                   </div>
                 </BelongTips>

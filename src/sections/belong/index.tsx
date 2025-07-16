@@ -20,7 +20,7 @@ const BelongView = () => {
         berachain
       </BelongTitle>
       <div className="text-[#A1A0A1] text-center font-Syne text-[16px] font-[500] leading-normal mt-[22px] md:mt-[10px] md:px-[10px]">
-        Zap, deposit and LP into the best BERA stable{!isMobile && <br />} pool in the whole ecosystem!
+        Zap, deposit and LP into the best BERA stable{!isMobile && <br />} pool - iBERA-wgBERA in the whole ecosystem!
       </div>
       <div className="relative  z-[1]mt-[56px] mx-auto w-[452px] shrink-0">
         <BelongForm className="w-full" />

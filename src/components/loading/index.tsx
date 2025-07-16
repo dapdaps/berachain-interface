@@ -1,10 +1,11 @@
+import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export default function Loading({ size = 18, mr }: { size?: number; mr?: string }) {
+export default function Loading({ size = 18, mr, className }: { size?: number; mr?: string; className?: string; }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        className="inline-block text-center"
+        className={clsx("inline-block text-center", className)}
         transition={{
           times: [0, 1],
           duration: 1,
