@@ -763,7 +763,7 @@ const BelongForm = (props: any) => {
     ];
     const leverageOptions: any = {};
 
-    if (!isActive) {
+    if (isActive) {
       leverageMethod = "automaticLoopingAddCollateral";
     }
 
@@ -1297,7 +1297,7 @@ const BelongForm = (props: any) => {
           target="_blank"
           rel="noreferrer nofollow"
         >
-          Berscan
+          Berascan
         </Link>
         <div className="">&gt;</div>
         <div className="">or</div>
