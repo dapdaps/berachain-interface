@@ -256,12 +256,12 @@ const BelongForm = (props: any) => {
     const { den } = params;
     const apys = den.getEffectiveApys({
       leverage: BigInt(Big(leverage || 1).times(SCALING_FACTOR_BP.toString()).toFixed(0)),
-      collApy: BigInt(Big(currentMarketData.vaultApy || 0).div(100).times(SCALING_FACTOR_BP.toString()).toFixed(0)),
-      debtInterest: BigInt(Big(currentMarketData.interestRate || 0).div(100).times(SCALING_FACTOR.toString()).div(SCALING_FACTOR_BP.toString()).toFixed(0)),
-      collVaultPrice: BigInt(Big(currentMarketData.collPrice || 0).times(SCALING_FACTOR_BP.toString()).toFixed(0)),
+      collApy: BigInt(Big(currentMarketData.vaultApy || 0).div(100).times(SCALING_FACTOR.toString()).toFixed(0)),
+      debtInterest: BigInt(Big(currentMarketData.interestRate || 0).div(100).times(SCALING_FACTOR.toString()).toFixed(0)),
+      collVaultPrice: BigInt(Big(currentMarketData.collPrice || 0).times(SCALING_FACTOR.toString()).toFixed(0)),
     });
-    const _leverageCollApy = Big(apys.leverageCollApy.toString()).div(SCALING_FACTOR_BP.toString()).times(100).toFixed(2);
-    setLeverageCollApy(_leverageCollApy);
+    const _leverageCollApy = Big(apys.apy.toString()).div(SCALING_FACTOR.toString()).times(100).toFixed(2);
+    setLeverageCollApy(() => _leverageCollApy);
   };
 
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
@@ -1622,8 +1622,8 @@ const BelongForm = (props: any) => {
         ref={vaultRef}
         className="!absolute left-0 bottom-[-100px]"
         leverage={1}
-        // apy={leverageCollApy}
-        apy={currentMarketData?.vaultApy}
+        apy={leverageCollApy}
+        // apy={currentMarketData?.vaultApy}
         market={currentMarketData}
         setShareModalOpen={setShareModalOpen}
       />
@@ -1634,7 +1634,7 @@ const BelongForm = (props: any) => {
         }}
         market={currentMarketData}
         leverage={1}
-        apy={currentMarketData?.vaultApy}
+        apy={leverageCollApy}
       />
     </div>
   );
