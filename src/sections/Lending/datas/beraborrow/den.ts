@@ -25,6 +25,7 @@
 //#region The above value is found in Beraborrow official dApp Sources
 // the file such as https://app.beraborrow.com/assets/sdk-B5H5XQf9.js
 export const MINIMUM_BORROWING_MINT_RATE = BigInt("5000000000000000");
+// I think this is the token's decimals
 export const SCALING_FACTOR = BigInt("1000000000000000000"); //1e18
 export const SCALING_FACTOR_BP = BigInt("10000");
 export enum UserDenStatus {
@@ -486,6 +487,18 @@ export class Den {
     const change = this.whatChanged(that, liquidationReserve, borrowingRate);
     // assertCheck(change?.type === "adjustment", "change must be of type Adjustment");
     return change?.type === "adjustment" ? change.params : undefined;
+  }
+
+  getEffectiveApys(params: { leverage?: bigint; collApy: bigint; debtInterest: bigint; collVaultPrice: bigint; collShareAmount?: bigint; debtAmount?: bigint }) {
+    const { collApy, collShareAmount, collVaultPrice, debtAmount, debtInterest, leverage = SCALING_FACTOR_BP } = params;
+    const collateral = collShareAmount ?? this.collateral;
+    const debt = debtAmount ?? this.debt;
+    // const _effectiveDebtInterestRate = (debtInterest * this.exposureRatio(collateral, collVaultPrice, debt, SCALING_FACTOR)) / SCALING_FACTOR;
+    // const effectiveDebtInterestRate = ((_effectiveDebtInterestRate > debtInterest ? debtInterest : _effectiveDebtInterestRate) * leverage) / SCALING_FACTOR_BP;
+    const effectiveDebtInterestRate = (debtInterest * leverage) / SCALING_FACTOR_BP;
+    const leverageCollApy = (collApy * leverage) / SCALING_FACTOR_BP;
+    const apy = leverageCollApy - effectiveDebtInterestRate;
+    return { apy, leverageCollApy, effectiveDebtInterestRate };
   }
 }
 

@@ -64,7 +64,7 @@ const Position = (props: any, ref: any) => {
             Leverage
           </div>
           <div className="mt-[0px]">
-            5x
+            {leverage}x
           </div>
         </div>
         <div className="">

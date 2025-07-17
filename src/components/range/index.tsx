@@ -40,6 +40,7 @@ export default function Range({ value, onChange, style, className, debounceWait 
       <div
         className={clsx(
           "absolute top-0 left-0 h-[8px] rounded-[16px] bg-[#ffdc50]",
+          disabled && "opacity-50",
           activeBarClassName
         )}
         style={{ width: inputValue + "%", background: color }}

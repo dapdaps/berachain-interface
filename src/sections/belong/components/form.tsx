@@ -39,6 +39,7 @@ const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow
 
 const DEFAULT_SLIPPAGE_TOLERANCE = BigInt(10000000000000000);
 const MAXIMUM_BORROWING_MINT_RATE = BigInt(50000000000000000);
+const DEFAULT_MAX_LEVERAGE = "6";
 
 const BelongForm = (props: any) => {
   const { className } = props;
@@ -78,12 +79,13 @@ const BelongForm = (props: any) => {
   const [currentMarket] = useState<any>(TARGET_MARKET);
   const [data, setData] = useState<any>();
   const [marginInSharesData, setMarginInSharesData] = useState<any>();
-  const [maxLeverage, setMaxLeverage] = useState<any>("6");
+  const [maxLeverage, setMaxLeverage] = useState<any>(DEFAULT_MAX_LEVERAGE);
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
   const [resultModalOpen, setResultModalOpen] = useState<any>(false);
   const [resultModalData, setResultModalData] = useState<any>();
   const [shareModalOpen, setShareModalOpen] = useState<any>(false);
+  const [leverageCollApy, setLeverageCollApy] = useState<any>();
 
   const [isLeverage] = useMemo(() => {
     return [!!leverage && Big(leverage).gt(1)];
@@ -250,6 +252,18 @@ const BelongForm = (props: any) => {
     update: updateCurrentInputMarketWalletBalance
   } = useTokenBalance(currentInputMarket.address, currentInputMarket.decimals);
 
+  const calculateLeverageCollApy = (params: any) => {
+    const { den } = params;
+    const apys = den.getEffectiveApys({
+      leverage: BigInt(Big(leverage || 1).times(SCALING_FACTOR_BP.toString()).toFixed(0)),
+      collApy: BigInt(Big(currentMarketData.vaultApy || 0).div(100).times(SCALING_FACTOR_BP.toString()).toFixed(0)),
+      debtInterest: BigInt(Big(currentMarketData.interestRate || 0).div(100).times(SCALING_FACTOR.toString()).div(SCALING_FACTOR_BP.toString()).toFixed(0)),
+      collVaultPrice: BigInt(Big(currentMarketData.collPrice || 0).times(SCALING_FACTOR_BP.toString()).toFixed(0)),
+    });
+    const _leverageCollApy = Big(apys.leverageCollApy.toString()).div(SCALING_FACTOR_BP.toString()).times(100).toFixed(2);
+    setLeverageCollApy(_leverageCollApy);
+  };
+
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
     if (!currentMarketData) {
       return;
@@ -263,17 +277,7 @@ const BelongForm = (props: any) => {
     const liquidationReserveBig = BigInt(Big(liquidationReserve).times(SCALING_FACTOR.toString()).toFixed(0));
     const amountBig = BigInt(Big(amount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
 
-    // First get the latest den
-    const addedCollateralDen = currentMarketData.den?.addCollateral(amountBig);
     const currentCollateralDen = currentMarketData.den?.setCollateral(amountBig);
-    // Get the accumulated collateral
-    const addedCollateral = addedCollateralDen.collateral;
-    // Get the accumulated debt
-    const addedDebt = addedCollateralDen.debt;
-
-    if (addedCollateral === BigInt(0)) {
-      return;
-    }
 
     // Get the accumulated PreviewDeposit
     let inputAmountPreviewDeposit: any = await getPreviewDeposit({
@@ -282,13 +286,18 @@ const BelongForm = (props: any) => {
       provider,
     });
     inputAmountPreviewDeposit = BigInt(Big(inputAmountPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+
+    const addedCollateralDen = currentMarketData.den?.addCollateral(inputAmountPreviewDeposit);
+    const addedCollateral = addedCollateralDen.collateral;
+    const addedDebt = addedCollateralDen.debt;
+
     // Convert CollateralShares
     const collateralSharesDen = addedCollateralDen.convertCollateralToCollateralShares(inputAmountPreviewDeposit);
     // Get the accumulated CollateralShares
     const addedCollateralShares = collateralSharesDen.getCollateralShares();
 
     // Calculate maximum _leverage
-    let maxLeverageRes: any = "1";
+    let maxLeverageRes: any = DEFAULT_MAX_LEVERAGE;
     try {
       const calculateMaxLeverageParams = [
         addedCollateral,
@@ -299,6 +308,7 @@ const BelongForm = (props: any) => {
       ];
       const res = await new Contract(leverageRouter, LEVERAGE_ROUTER_ABI, provider).calculateMaxLeverage(...calculateMaxLeverageParams);
       maxLeverageRes = res ? Big(Big(res.toString()).div(SCALING_FACTOR_BP.toString()).toFixed(1, 0)) : "1";
+      maxLeverageRes = Big(maxLeverageRes).lte(1) ? DEFAULT_MAX_LEVERAGE : maxLeverageRes;
       setMaxLeverage((_maxLeverage: any) => {
         if (maxLeverageRes !== _maxLeverage && Big(maxLeverageRes).gt(1)) {
           const _leverageProgress = Big(Big(leverage).minus(1)).div(Big(maxLeverageRes).minus(1)).times(100).toNumber();
@@ -308,10 +318,14 @@ const BelongForm = (props: any) => {
       });
       if (Big(maxLeverageRes).lt(leverage)) {
         setLeverage(Big(maxLeverageRes).lt(1) ? "1" : maxLeverageRes);
+        setLeverageProgress(0);
       }
     } catch (err: any) {
       console.log('Failed to calculate maximum _leverage: %o', err);
     }
+
+    // Calculate leverage coll apy
+    calculateLeverageCollApy({ den: addedCollateralDen });
 
     return {
       priceBig,
@@ -350,7 +364,6 @@ const BelongForm = (props: any) => {
       debtPriceBig,
       MCRBig,
       leverageBP,
-      addedCollateral,
       addedDebt,
       inputAmountPreviewDeposit,
       addedCollateralDen,
@@ -358,6 +371,10 @@ const BelongForm = (props: any) => {
       liquidationReserveBig,
     } = marginInSharesData;
     const isActive = currentMarketData.denStatus === UserDenStatus.active;
+
+    if (addedCollateralDen.collateral === BigInt(0)) {
+      return;
+    }
 
     // Calculate leveraged debt
     const leveragedDebt = addedCollateralDen.calculateLeveragedDebt(
@@ -485,6 +502,9 @@ const BelongForm = (props: any) => {
     // Get ratio
     const leverageRatio = newDen.collateralRatio(priceBig);
 
+    // Calculate leverage coll apy
+    calculateLeverageCollApy({ den: newDen });
+
     return {
       route,
       hints,
@@ -595,6 +615,26 @@ const BelongForm = (props: any) => {
         tx: transactionHash,
         chainId: DEFAULT_CHAIN_ID
       });
+
+      if (params?.isDeposit) {
+        addAction({
+          type: 'Staking',
+          template: "Beraborrow",
+          action: 'Stake',
+          token: currentInputMarket,
+          amount: currentInputAmount,
+          add: false,
+          status,
+          transactionHash,
+          tokens: [currentInputMarket],
+          amounts: [currentInputAmount],
+          extra_data: {
+            token0Symbol: currentInputMarket.symbol,
+            amount0: currentInputAmount,
+            price0: currentInputMarket.price
+          }
+        });
+      }
     } catch (swapError: any) {
       toast.dismiss(toastId);
       toast.fail({
@@ -669,6 +709,23 @@ const BelongForm = (props: any) => {
       } else {
         toast.fail({ title: "Deposit Failed!" });
       }
+      addAction({
+        type: 'Staking',
+        template: "Beraborrow",
+        action: 'Stake',
+        token: currentMarket,
+        amount: params.value,
+        add: false,
+        status,
+        transactionHash,
+        tokens: [currentMarket],
+        amounts: [params.value],
+        extra_data: {
+          token0Symbol: currentMarket.symbol,
+          amount0: params.value,
+          price0: currentMarket.price
+        }
+      });
     } catch (err: any) {
       console.log("deposit error: %o", err);
       toast.dismiss(toastId);
@@ -727,10 +784,8 @@ const BelongForm = (props: any) => {
         return;
       }
       // after swap, we should reload the marginInSharesData
-      if (Big(_swappedData.value || 0).gt(amount || 0)) {
-        handleAmount(_swappedData.value);
-        return;
-      }
+      handleAmount(_swappedData.value);
+      return;
     }
 
     if (!approved) {
@@ -751,7 +806,6 @@ const BelongForm = (props: any) => {
       debtPriceBig,
       MCRBig,
       leverageBP,
-      addedCollateral,
       addedDebt,
       inputAmountPreviewDeposit,
       addedCollateralDen,
@@ -843,18 +897,24 @@ const BelongForm = (props: any) => {
           chainId: DEFAULT_CHAIN_ID,
           tx: transactionHash
         });
-        getAutomaticLoopingData();
         setDataLoading(true);
       }
       addAction({
-        type: 'Lending',
-        action: 'Leverage',
+        type: 'Staking',
+        template: "Beraborrow",
+        action: 'Stake',
         token: currentMarket,
         amount: automaticLoopingData?.route?.currentAmountOutValue,
-        template: "Beraborrow",
         add: false,
         status,
         transactionHash,
+        tokens: [currentMarket],
+        amounts: [automaticLoopingData?.route?.currentAmountOutValue],
+        extra_data: {
+          token0Symbol: currentMarket.symbol,
+          amount0: automaticLoopingData?.route?.currentAmountOutValue,
+          price0: currentMarketData.collPrice
+        }
       });
     } catch (err: any) {
       console.log(`${leverageMethod} error: %o`, err);
@@ -865,6 +925,7 @@ const BelongForm = (props: any) => {
           ? "User rejected transaction"
           : ""
       });
+      setDataLoading(true);
     }
   }, { manual: true });
 
@@ -945,12 +1006,6 @@ const BelongForm = (props: any) => {
     // Leverage
     if (!marginInSharesData || !automaticLoopingData || !calculateDebtAmountData) {
       result.valid = false;
-      return result;
-    }
-
-    if (marginInSharesData.addedCollateral <= BigInt(0)) {
-      result.valid = false;
-      result.text = `Insufficient Collateral`;
       return result;
     }
 
@@ -1566,7 +1621,7 @@ const BelongForm = (props: any) => {
         ref={vaultRef}
         className="!absolute left-0 bottom-[-100px]"
         leverage={leverage}
-        apy={currentMarketData?.vaultApy}
+        apy={leverageCollApy}
         market={currentMarketData}
         setShareModalOpen={setShareModalOpen}
       />
