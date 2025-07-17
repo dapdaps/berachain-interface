@@ -739,7 +739,6 @@ const BelongForm = (props: any) => {
 
   const { runAsync: handleSubmit, loading: submitting } = useRequest(async () => {
     let toastId: any;
-    const signer = provider.getSigner(account);
 
     if (!account) {
       modal.openConnectModal?.();
@@ -752,6 +751,8 @@ const BelongForm = (props: any) => {
       });
       return;
     }
+
+    const signer = provider.getSigner(account);
 
     // Without leverage
     if (!isLeverage) {
