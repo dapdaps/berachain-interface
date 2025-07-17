@@ -26,8 +26,10 @@ const BelongView = () => {
         <BelongForm className="w-full" />
       </div>
       <Benefits className="mt-[230px] md:mt-[200px] relative z-[1] md:w-full md:overflow-hidden" />
-      <HowWork className="mt-[168px] md:mt-[100px] w-[928px] mx-auto md:w-full md:overflow-hidden" />
-      <Partners className="mt-[133px] md:mt-[100px] w-[846px] mx-auto md:w-full md:px-[10px]" />
+      <div className="mt-[168px] md:mt-[100px] w-full bg-[url('/images/belong/v2/bg-bar-primary-short.png')] bg-no-repeat bg-[length:100%_auto] bg-[position:bottom_150px_center]">
+        <HowWork className="w-[928px] mx-auto md:w-full md:overflow-hidden" />
+        <Partners className="mt-[133px] md:mt-[100px] w-[846px] mx-auto md:w-full md:px-[10px]" />
+      </div>
       <img
         src="/images/belong/v2/mc-belong.gif"
         className="absolute z-0 right-0 top-[550px] w-[380px] h-[380px] pointer-events-none"
