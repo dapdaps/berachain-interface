@@ -15,7 +15,6 @@ const config: Config = {
       CherryBomb: ["Cherry Bomb"],
       Fuzzy: ["Fuzzy"],
       YouYuan: ["YouYuan"],
-      Syne: ["Syne"],
       SpecialGothicExpandedOne: ["SpecialGothicExpandedOne"]
     },
     backgroundImage: {
