@@ -34,6 +34,7 @@ import useTokenBalance from "@/hooks/use-token-balance";
 import Position from "./position";
 import ShareModal from "./share";
 import Skeleton from "react-loading-skeleton";
+import { getTokenLogo } from "@/sections/dashboard/utils";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -1115,7 +1116,7 @@ const BelongForm = (props: any) => {
       ..._token,
       address: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? "native" : _token.token,
       isNative: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? true : false,
-      icon: _token.logoUri,
+      icon: _token.logoUri || getTokenLogo(_token.symbol),
       balance: numberRemoveEndZero(Big(_token.amount || 0).div(10 ** _token.decimals).toFixed(_token.decimals, Big.roundDown)),
       price: _token.price,
     }));
@@ -1551,6 +1552,9 @@ const BelongForm = (props: any) => {
         </div>
 
         <TokenSelector
+          className="md:p-[10px]"
+          titleClassName="md:text-[16px]"
+          tabClassName="md:px-[15px] md:py-[5px]"
           display={tokenSelectorVisible}
           tokens={userBalanceTokenList ?? []}
           selectedTokenAddress={currentInputMarket?.address}
@@ -1569,6 +1573,23 @@ const BelongForm = (props: any) => {
           }}
           showSearch={false}
           isSortByBalance={true}
+          sortCustom={(a: any, b: any) => {
+            const _tokenAValue = Big(a.balance || 0).times(a.price || 0);
+            const _tokenBValue = Big(b.balance || 0).times(b.price || 0);
+            return _tokenAValue.gt(_tokenBValue) ? -1 : 1;
+          }}
+          customBalanceFormatter={(currency: any, balance: any) => {
+            return (
+              <div className="flex flex-col items-end">
+                <div className="">
+                  {numberFormatter(Big(balance || 0).times(currency.price || 0), 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
+                </div>
+                <div className="text-[#A1A0A1] text-[12px]">
+                  {numberFormatter(balance, 4, true, { isShort: true, isShortUppercase: true })}
+                </div>
+              </div>
+            );
+          }}
         />
 
         <BeraborrowData
