@@ -34,6 +34,14 @@ const assets = {
     decimals: 18,
     icon: "",
   },
+  ["KODI iBERA-wgBERA"]: {
+    address: "0x88c983bf3d4A9Adcee14e1b4f1C446c4C5853EA3",
+    chainId: DEFAULT_CHAIN_ID,
+    symbol: "KODI iBERA-wgBERA",
+    decimals: 18,
+    name: "Kodiak Island iBERA-wgBERA-0.05%",
+    icon: "",
+  },
 };
 
 const networks = {
@@ -41,6 +49,7 @@ const networks = {
     beraWrapper: '0x5f1619FfAEfdE17F7e54f850fe90AD5EE44dbf47',
     borrowerOperations: '0xDB32cA8f3bB099A76D4Ec713a2c2AACB3d8e84B9',
     collVaultRouter: '0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B',
+    denManagerGetters: '0xFA7908287c1f1B256831c812c7194cb95BB440e6',
     wrappedToken: bera['wbera'],
     borrowToken: {
       ...bera['nect'],
@@ -48,14 +57,17 @@ const networks = {
       earnToken: bera['snect'],
     },
     // lt 160 = Risky, otherwise is Good
-    riskyRatio: 220,
+    riskyRatio: 160,
     liquidationReserve: 1,
     // 1-0.5%=0.995
     borrowingFee: 0.005,
     // Minimum Debt of 2 required
     minimumDebt: 69,
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
-    graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.9/gn',
+    beraborrowCore: '0x12347cAF4300B1c4a9bF0Ae7DE2531A2BCFB93E9',
+    leverageRouter: '0xd4b8dd2c8371E3A4c75ce96860351840638AbB50',
+    KodiIBERAWgBERADenManageAddress: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
+    graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.12/gn',
     denManagersParams: (market: any) => ({
       "operationName": "GetDenManager",
       "variables": { "id": market?.denManager?.toLocaleLowerCase() },
@@ -118,6 +130,7 @@ const networks = {
         `,
       };
     },
+    // ⚠️ DO NOT CHANGE THE ids
     markets: [
       {
         id: 1,
@@ -127,10 +140,10 @@ const networks = {
         vault: 'beraWrapper',
         collVault: "0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B",
         denManager: '0xf1356Cb726C2988C65c5313350C9115D9Af0f954',
-        MCR: 200,
+        MCR: 150,
         CCR: 150,
-        TCR: 459,
-        collIndex: 12
+        TCR: 197,
+        collIndex: 12,
       },
       {
         id: 2,
@@ -143,7 +156,7 @@ const networks = {
         MCR: 140,
         CCR: 150,
         TCR: 241,
-        collIndex: 19
+        collIndex: 19,
       },
       {
         id: 3,
@@ -156,7 +169,7 @@ const networks = {
         MCR: 110,
         CCR: 150,
         TCR: 186,
-        collIndex: 13
+        collIndex: 13,
       },
       {
         id: 4,
@@ -169,7 +182,7 @@ const networks = {
         MCR: 140,
         CCR: 150,
         TCR: 340,
-        collIndex: 18
+        collIndex: 18,
       },
       {
         id: 5,
@@ -182,7 +195,7 @@ const networks = {
         MCR: 130,
         CCR: 150,
         TCR: 301,
-        collIndex: 26
+        collIndex: 26,
       },
       {
         id: 6,
@@ -195,9 +208,114 @@ const networks = {
         MCR: 150,
         CCR: 150,
         TCR: 438,
-        collIndex: 25
+        collIndex: 25,
+      },
+      {
+        id: 7,
+        ...bera['wbera'],
+        underlyingTokens: [bera['wbera']],
+        collToken: bera['wbera'],
+        vault: 'beraWrapper',
+        collVault: "0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B",
+        denManager: '0xf1356Cb726C2988C65c5313350C9115D9Af0f954',
+        MCR: 150,
+        CCR: 150,
+        TCR: 197,
+        collIndex: 12,
+      },
+      {
+        id: 8,
+        ...assets["KODI iBERA-wgBERA"],
+        underlyingTokens: [bera["ibera"], bera["wgbera"]],
+        collToken: assets["KODI iBERA-wgBERA"],
+        vault: 'beraWrapper',
+        collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
+        // BB.kIBERA-WGBERA(Beraborrow iBERA-wgBERA Kodiak Island)
+        beraborrowToken: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        MCR: 120,
+        CCR: 150,
+        TCR: 378,
+        collIndex: 40,
       },
     ],
+    leverageMarkets: [
+      {
+        id: 1,
+        ...bera['bera'],
+        underlyingTokens: [bera['bera']],
+        collToken: bera['bera'],
+      },
+      {
+        id: 7,
+        ...bera['wbera'],
+        underlyingTokens: [bera['wbera']],
+        collToken: bera['wbera'],
+      },
+      {
+        id: 8,
+        ...assets["KODI iBERA-wgBERA"],
+        underlyingTokens: [bera["ibera"], bera["wgbera"]],
+        collToken: assets["KODI iBERA-wgBERA"],
+        vault: 'beraWrapper',
+        collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
+        // BB.kIBERA-WGBERA(Beraborrow iBERA-wgBERA Kodiak Island)
+        beraborrowToken: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        MCR: 120,
+        CCR: 150,
+        TCR: 378,
+        collIndex: 40,
+      },
+      {
+        id: 2,
+        ...bera['ibgt'],
+        underlyingTokens: [bera['ibgt']],
+        collToken: bera['ibgt'],
+      },
+      {
+        id: 3,
+        ...bera['wbtc'],
+        underlyingTokens: [bera['wbtc']],
+        collToken: bera['wbtc'],
+      },
+      {
+        id: 9,
+        ...bera["snect"],
+        underlyingTokens: [bera["snect"]],
+        collToken: bera["snect"],
+      },
+      {
+        id: 10,
+        ...bera["wgbera"],
+        underlyingTokens: [bera["wgbera"]],
+        collToken: bera["wgbera"],
+      },
+      {
+        id: 11,
+        ...bera["weth"],
+        underlyingTokens: [bera["weth"]],
+        collToken: bera["weth"],
+      },
+      {
+        id: 12,
+        ...bera["usdc.e"],
+        underlyingTokens: [bera["usdc.e"]],
+        collToken: bera["usdc.e"],
+      },
+      {
+        id: 13,
+        ...bera["honey"],
+        underlyingTokens: [bera["honey"]],
+        collToken: bera["honey"],
+      },
+      {
+        id: 13,
+        ...bera["usdt0"],
+        underlyingTokens: [bera["usdt0"]],
+        collToken: bera["usdt0"],
+      },
+    ]
   }
 };
 

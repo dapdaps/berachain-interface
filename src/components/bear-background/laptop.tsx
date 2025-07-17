@@ -986,11 +986,12 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign' | 'belong';
   children: React.ReactNode;
+  style?: React.CSSProperties;
 };
 
-export default memo(function BearBackground({ type, children }: PropsType) {
+export default memo(function BearBackground({ type, children, style }: PropsType) {
   const { isRainyDay } = useRainyDay();
   const { isDefaultTheme } = useActivityStore()
 
@@ -1000,7 +1001,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       style={{
         height: 'calc(100dvh - 68px)',
         minHeight: 899,
-        overflow: type === "cave" ? "visible" : 'hidden'
+        overflow: type === "cave" ? "visible" : 'hidden',
+        ...style,
       }}
     >
       {type === 'home' ? (
@@ -1092,6 +1094,20 @@ export default memo(function BearBackground({ type, children }: PropsType) {
         </>
       ) : type === 'campaign' ? (
         <BeraBgcampaign />
+      ) : type === 'belong' ? (
+        <>
+          <DappClouds
+            isRainyDay={isRainyDay}
+            cloud1ClassName="!bottom-[unset] top-[111px]"
+            cloud2ClassName="!bottom-[unset] top-[412px]"
+            cloud3ClassName="!bottom-[unset] top-[788px]"
+          />
+          <img
+            src="/images/belong/bg-mascot.png"
+            className="absolute right-0 bottom-0 w-[380px] h-[380px] object-center object-contain"
+            alt=""
+          />
+        </>
       ) : (
         <></>
       )}

@@ -26,6 +26,7 @@ import { usePriceStore } from '@/stores/usePriceStore';
 import { addItem2Group, generateGroup, vaultsDataFormatter } from '@/sections/vaults/v2/utils';
 import { multicall, multicallAddresses } from '@/utils/multicall';
 import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useSearchParams } from 'next/navigation';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
@@ -48,6 +49,8 @@ export function useList(notNeedingFetchData?: boolean): List {
   const { account, provider } = useCustomAccount();
   const isMobile = useIsMobile();
   const prices = usePriceStore(store => store.beraTownPrice);
+  const searchParams = useSearchParams();
+  const defaultSelectedProtocol = searchParams.get("protocol");
 
   const filterRef = useRef<any>();
   const boycoAssetsRef = useRef<any>();
@@ -717,6 +720,15 @@ export function useList(notNeedingFetchData?: boolean): List {
       clearTimeout(timer);
     };
   }, [searchValue]);
+
+  useEffect(() => {
+    if (!poolProjects || !poolProjects.length || !defaultSelectedProtocol) return;
+    const _poolProject = poolProjects.find((it: any) => it.reg.test(defaultSelectedProtocol));
+    if (!_poolProject) {
+      return;
+    }
+    toggleFilterSelected(FILTER_KEYS.PROTOCOLS, _poolProject);
+  }, [defaultSelectedProtocol, poolProjects]);
 
   return {
     listData: data,

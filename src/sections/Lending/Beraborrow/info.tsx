@@ -4,7 +4,7 @@ import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover'
 import Card from '@/components/card';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Big from 'big.js';
-import { ActionText } from '@/sections/Lending/Beraborrow/form';
+import { ActionText } from '@/sections/Lending/hooks/use-beraborrow';
 
 const Info = (props: any) => {
   const { market = {}, riskyRatio, newValue, type, onClose, loading, style } = props;

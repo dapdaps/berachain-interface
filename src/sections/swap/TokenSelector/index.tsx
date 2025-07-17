@@ -9,6 +9,7 @@ import ImportWarning from "../ImportWarning";
 import CurrencyImportRow from "./CurrencyImportRow";
 import CurrencyRow from "./CurrencyRow";
 import Big from "big.js";
+import clsx from "clsx";
 
 const TABS = ["All", "Imported"];
 
@@ -26,7 +27,11 @@ export default function CurrencySelect({
   showSearch = true,
   showBalance = true,
   isSortByBalance = true,
+  sortCustom,
   customBalanceFormatter,
+  className,
+  titleClassName,
+  tabClassName,
 }: any) {
   const [tab, setTab] = useState("All");
   const [searchVal, setSearchVal] = useState("");
@@ -38,7 +43,7 @@ export default function CurrencySelect({
     loading: balancesLoading,
     balances = {},
     queryBalance
-  } = useTokensBalance(showBalance ? tokens : []);
+  } = useTokensBalance((showBalance && display) ? tokens : []);
 
   const handleSearch = () => {
     let tokenIsAvailable = false;
@@ -107,8 +112,8 @@ export default function CurrencySelect({
 
   return (
     <Modal open={display} onClose={handleClose}>
-      <div className="w-[520px] p-[20px] bg-[#FFFDEB] md:w-full md:rounded-t-[20px]">
-        <div className="flex items-center gap-[10px] cursor-pointer text-[20px]">
+      <div className={clsx("w-[520px] p-[20px] bg-[#FFFDEB] md:w-full md:rounded-t-[20px]", className)}>
+        <div className={clsx("flex items-center gap-[10px] cursor-pointer text-[20px]", titleClassName)}>
           <button
             type="button"
             className="w-[16px] h-[16px] rotate-90 bg-[url('/images/icon-arrow.svg')] bg-no-repeat bg-center"
@@ -177,7 +182,7 @@ export default function CurrencySelect({
             )}
           </div>
         )}
-        <div className="flex items-center gap-[44px] text-[14px] px-[30px] py-[12px] border-b border-[##373A53]">
+        <div className={clsx("flex items-center gap-[44px] text-[14px] px-[30px] py-[12px] border-b border-[##373A53]", tabClassName)}>
           {!!onImport &&
             TABS.map((_tab) => (
               <div
@@ -211,6 +216,10 @@ export default function CurrencySelect({
             ?.slice()
             ?.sort((a: any, b: any) => {
               if (isSortByBalance) {
+                if (typeof sortCustom === "function") {
+                  return sortCustom(a, b, balances);
+                }
+
                 const balanceA = balances[a.address] || "0";
                 const balanceB = balances[b.address] || "0";
 
@@ -231,7 +240,7 @@ export default function CurrencySelect({
                   handleClose();
                 }}
                 loading={balancesLoading}
-                balance={balances[currency.address]}
+                balance={balances[currency.address] || currency.balance}
                 showBalance={showBalance}
                 customBalanceFormatter={customBalanceFormatter}
               />

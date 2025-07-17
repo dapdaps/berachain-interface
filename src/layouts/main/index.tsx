@@ -128,7 +128,7 @@ const MainLayout = (props: Props) => {
     themeConfig.primaryColor
   ]);
 
-  const routes = ["/", "/earn", "/activity/christmas", "/home"];
+  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong"];
 
   return (
     <div

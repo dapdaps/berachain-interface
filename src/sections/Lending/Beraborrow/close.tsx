@@ -2,7 +2,6 @@ import Modal from '@/components/modal';
 import { Item } from '@/sections/Lending/Beraborrow/info';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
-import { ActionText } from '@/sections/Lending/Beraborrow/form';
 import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
 import useAddAction from '@/hooks/use-add-action';
@@ -10,6 +9,7 @@ import LendingButton from '@/sections/Lending/components/button';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import Big from 'big.js';
 import { numberFormatter } from '@/utils/number-formatter';
+import { ActionText } from '../hooks/use-beraborrow';
 
 const BeraborrowHandler = dynamic(() => import('@/sections/Lending/handlers/beraborrow'));
 
