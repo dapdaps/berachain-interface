@@ -86,7 +86,7 @@ const BelongForm = (props: any) => {
   const [resultModalOpen, setResultModalOpen] = useState<any>(false);
   const [resultModalData, setResultModalData] = useState<any>();
   const [shareModalOpen, setShareModalOpen] = useState<any>(false);
-  const [leverageCollApy, setLeverageCollApy] = useState<any>();
+  const [leverageApy, setLeverageApy] = useState<any>();
 
   const [isLeverage] = useMemo(() => {
     return [!!leverage && Big(leverage).gt(1)];
@@ -261,8 +261,14 @@ const BelongForm = (props: any) => {
       debtInterest: BigInt(Big(currentMarketData.interestRate || 0).div(100).times(SCALING_FACTOR.toString()).toFixed(0)),
       collVaultPrice: BigInt(Big(currentMarketData.collPrice || 0).times(SCALING_FACTOR.toString()).toFixed(0)),
     });
-    const _leverageCollApy = Big(apys.apy.toString()).div(SCALING_FACTOR.toString()).times(100).toFixed(2);
-    setLeverageCollApy(() => _leverageCollApy);
+    const _apy = Big(apys.apy.toString()).div(SCALING_FACTOR.toString()).times(100).toFixed(2);
+    const _effectiveDebtInterestRate = Big(apys.effectiveDebtInterestRate.toString()).div(SCALING_FACTOR.toString()).times(100).toFixed(2);
+    const _leverageCollApy = Big(apys.leverageCollApy.toString()).div(SCALING_FACTOR.toString()).times(100).toFixed(2);
+    setLeverageApy(() => ({
+      value: _apy,
+      effectiveDebtInterestRate: _effectiveDebtInterestRate,
+      leverageCollApy: _leverageCollApy,
+    }));
   };
 
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
@@ -1527,7 +1533,7 @@ const BelongForm = (props: any) => {
           }
           <Link
             prefetch
-            href="/lending/beraborrow"
+            href={`/lending/beraborrow?token=${currentMarket?.address}`}
             className="block cursor-pointer"
           >
             Transaction details &gt;
@@ -1644,7 +1650,7 @@ const BelongForm = (props: any) => {
         ref={vaultRef}
         className="!absolute left-0 bottom-[-100px]"
         leverage={1}
-        apy={leverageCollApy}
+        apy={leverageApy}
         // apy={currentMarketData?.vaultApy}
         market={currentMarketData}
         setShareModalOpen={setShareModalOpen}
@@ -1656,7 +1662,7 @@ const BelongForm = (props: any) => {
         }}
         market={currentMarketData}
         leverage={1}
-        apy={leverageCollApy}
+        apy={leverageApy?.value}
       />
     </div>
   );

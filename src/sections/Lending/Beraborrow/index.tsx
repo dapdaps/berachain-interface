@@ -9,6 +9,7 @@ import BorrowModal from '@/sections/Lending/Beraborrow/form';
 import { usePriceStore } from '@/stores/usePriceStore';
 import Big from 'big.js';
 import { ActionText } from '../hooks/use-beraborrow';
+import { useSearchParams } from 'next/navigation';
 
 const BeraborrowData = dynamic(() => import('../datas/beraborrow'));
 
@@ -27,6 +28,8 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
   const { address, chainId } = useAccount();
   const { provider } = useProvider();
   const prices = usePriceStore(store => store.price);
+  const searchParams = useSearchParams();
+  const autoOpenToken = searchParams.get('token');
 
   const [currentTab, setCurrentTab] = useState<string>('borrow');
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,6 +38,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
   const [data, setData] = useState<any>();
   const [currentMarket, setCurrentMarket] = useState<any>();
   const [currentType, setCurrentType] = useState<ActionText>();
+  const [isAutoOpened, setIsAutoOpened] = useState(false);
 
   const actionDisabled = (record: any) => {
     return {
@@ -178,6 +182,23 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
           console.log('Beraborrow data res: %o', res);
           setData(res);
           setLoading(false);
+          if (autoOpenToken && !isAutoOpened) {
+            const _currMarket = res.markets.find((_market: any) => _market.address === autoOpenToken);
+            if (!_currMarket) return;
+            setIsAutoOpened(true);
+            const _isBorrowed = Big(_currMarket.balance || 0).gt(0);
+            // borrowed - open withdraw modal
+            if (_isBorrowed) {
+              setCurrentType(ActionText.Repay);
+              setCurrentMarket(_currMarket);
+              setVisible(true);
+              return;
+            }
+            // unborrowed - open deposit modal
+            setCurrentType(ActionText.Borrow);
+            setCurrentMarket(_currMarket);
+            setVisible(true);
+          }
         }}
       />
       <BorrowModal
