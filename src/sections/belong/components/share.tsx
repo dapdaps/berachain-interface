@@ -29,7 +29,7 @@ const ShareModal = (props: any) => {
       isMaskClose={isMobile}
       isShowCloseIcon={false}
     >
-      <Card className={clsx("!rounded-[20px] md:!rounded-b-[0px] !w-[440px] md:!w-full p-[20px] text-[12px] text-[#D7D7D7] font-[500] leading-normal font-Syne", className)}>
+      <Card className={clsx("!rounded-[20px] md:!rounded-b-[0px] !w-[440px] md:!w-full p-[20px] text-[12px] text-[#D7D7D7] font-[500] leading-normal font-Montserrat", className)}>
         <div
           ref={postcardRef}
           className="pt-[121px] pl-[29px] text-[16px] text-[#F8F8F8] font-[500] font-Montserrat w-full relative h-[265px] bg-[url('/images/belong/v2/bg-share.png')] bg-no-repeat bg-contain bg-center"
