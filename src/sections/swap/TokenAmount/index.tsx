@@ -27,7 +27,8 @@ export default function TokenAmout({
   balancePercentClassName,
   balanceContainerClassName,
   inputDisabled,
-  isRange = true
+  isRange = true,
+  currencyClassName,
 }: any) {
   const tokenPrice = useMemo(
     () => (currency ? prices[currency.priceKey || currency.symbol] : 0),
@@ -78,13 +79,13 @@ export default function TokenAmout({
       <div className="flex items-center justify-between gap-[10px]">
         <div
           className={`${outputCurrencyReadonly ? "" : "border bg-[#FFFDEB]"
-            } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px] cursor-pointer`}
+            } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px] cursor-pointer ${currencyClassName ?? ""}`}
           onClick={() => {
             onCurrencySelectOpen();
           }}
         >
           {currency ? (
-            <div className="flex items-center gap-[10px]">
+            <div className="flex items-center gap-[10px] md:gap-[5px] flex-1">
               <div className="relative shrink-0">
                 {
                   (!currency.icon && currency.underlyingTokens) ? (
@@ -109,7 +110,7 @@ export default function TokenAmout({
                   )
                 }
               </div>
-              <div className="text-[16px] font-[600] max-w-[100px] truncate">
+              <div className="text-[16px] font-[600] flex-1 w-0 truncate">
                 {currency?.symbol}
               </div>
             </div>
@@ -123,6 +124,7 @@ export default function TokenAmout({
               viewBox="0 0 12 7"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="shrink-0"
             >
               <path
                 d="M1 1L6 5L11 1"

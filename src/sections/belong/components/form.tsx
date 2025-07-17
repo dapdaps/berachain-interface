@@ -1101,7 +1101,7 @@ const BelongForm = (props: any) => {
   }, [currentMarketData, automaticLoopingData]);
 
   const { data: userBalanceTokenList, loading: userBalanceTokenListLoading } = useRequest(async () => {
-    if (!account || !tokenSelectorVisible) {
+    if (!account) {
       return leverageMarkets;
     }
     const ensoBalanceUrl = new URL(`https://api.beraborrow.com/v1/enso/balances/${account}`);
@@ -1160,6 +1160,7 @@ const BelongForm = (props: any) => {
           </div>
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"
+            currencyClassName="md:w-[120px]"
             type="in"
             currency={currentInputMarket}
             amount={currentInputAmount}
@@ -1182,7 +1183,7 @@ const BelongForm = (props: any) => {
               if (selected) {
                 return "!border-[#000] text-[#000]";
               }
-              return "!border-[#D9D9D9] text-[#808290]";
+              return "!border-[#D9D9D9] !text-[#808290]";
             }}
             isRange={false}
             balanceContainerClassName="!text-[#A1A0A1]"
@@ -1620,8 +1621,9 @@ const BelongForm = (props: any) => {
       <Position
         ref={vaultRef}
         className="!absolute left-0 bottom-[-100px]"
-        leverage={leverage}
-        apy={leverageCollApy}
+        leverage={1}
+        // apy={leverageCollApy}
+        apy={currentMarketData?.vaultApy}
         market={currentMarketData}
         setShareModalOpen={setShareModalOpen}
       />
@@ -1631,7 +1633,7 @@ const BelongForm = (props: any) => {
           setShareModalOpen(false);
         }}
         market={currentMarketData}
-        leverage={leverage}
+        leverage={1}
         apy={currentMarketData?.vaultApy}
       />
     </div>

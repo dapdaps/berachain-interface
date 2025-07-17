@@ -49,7 +49,7 @@ const Position = (props: any, ref: any) => {
   useImperativeHandle(ref, () => refs);
 
   return (
-    <div className={clsx("overflow-hidden bg-[#FFFDEB] rounded-[10px] border border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)] relative p-[15px_20px] w-full text-[14px] text-black font-[700] font-Montserrat leading-normal flex justify-between items-center gap-[10px]", className)}>
+    <div className={clsx("overflow-hidden bg-[#FFFDEB] rounded-[10px] border border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)] relative p-[15px_20px] md:p-[10px_15px] w-full text-[14px] md:text-[12px] text-black font-[700] font-Montserrat leading-normal flex justify-between items-center gap-[10px] md:gap-[5px]", className)}>
       <div className="flex items-center gap-[15px]">
         <div className="">
           <div className="text-[12px] text-[#A1A0A1] font-[500]">
