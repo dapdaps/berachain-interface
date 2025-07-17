@@ -13,6 +13,7 @@ const BENEFITS = [
       src: "/images/belong/v2/banner-points.png",
       width: 220,
       height: 107,
+      mobileScale: 1.5,
     },
     type: "dog-eared",
     content: "Infrared, Kodiak, and Smilee are offering an exclusive and competitive points multiplier to those who provide liquidity.",
@@ -36,6 +37,7 @@ const BENEFITS = [
       src: "/images/belong/v2/banner-chart.png",
       width: 208,
       height: 96,
+      mobileScale: 1.4,
     },
     content: "Leverage your exposure to BERA using Beraborrow’s looping to lend your LP token and long more BERA.",
     style: {
@@ -57,6 +59,7 @@ const BENEFITS = [
       src: "/images/belong/v2/banner-farm.png",
       width: 130,
       height: 88,
+      mobileScale: 1,
     },
     content: "Earn some of the most consistent BGT APR thanks to a long-term deal between Infrared and Smilee validators.",
     style: {
@@ -79,6 +82,7 @@ const BENEFITS = [
       src: "/images/belong/v2/banner-arbitrage.png",
       width: 203,
       height: 113,
+      mobileScale: 1.1,
     },
     type: "dog-eared",
     content: "Both wgBERA and iBERA are considered two main BERA derivatives, featuring them in BeLong offers unprecedented arbitrage opportunities.",
@@ -145,7 +149,7 @@ const Card = (props: any) => {
   return (
     <motion.div
       className={clsx(
-        "w-[352px] h-[324px] md:w-[55vw] md:h-[50.59vw] bg-no-repeat bg-[length:100%_100%] bg-center shrink-0 flex flex-col justify-between items-stretch gap-[0px] px-[50px] pt-[40px] pb-[40px] md:pl-[6vw] md:pr-[5vw] md:pt-[5vw] md:pb-[10vw]",
+        "w-[352px] h-[324px] md:w-[55vw] md:h-[50.59vw] bg-no-repeat bg-[length:100%_100%] bg-center shrink-0 flex flex-col justify-between items-stretch gap-[0px] px-[50px] pt-[40px] pb-[40px] md:pl-[6vw] md:pr-[5vw] md:pt-[5vw] md:pb-[5vw]",
         type === "default" ? "bg-[url('/images/belong/v2/bg-sticky-note.png')]" : "bg-[url('/images/belong/v2/bg-sticky-note-dog-eared.png')]",
         className
       )}
@@ -169,10 +173,14 @@ const Card = (props: any) => {
       <img
         src={banner.src}
         alt=""
-        className="object-contain object-center shrink-0 mx-auto md:scale-[1.15]"
-        style={{ width: isMobile ? "50%" : banner.width, height: isMobile ? "auto" : banner.height }}
+        className="object-contain object-center shrink-0 mx-auto md:scale-[1.3]"
+        style={{
+          width: isMobile ? "50%" : banner.width,
+          height: isMobile ? "auto" : banner.height,
+          scale: isMobile ? (banner.mobileScale || 1.2) : 1,
+        }}
       />
-      <div className="text-black font-Montserrat text-[16px] md:text-[12px] font-[400] leading-[120%]">
+      <div className="text-black font-Montserrat text-[16px] md:text-[12px] font-[400] leading-[120%] md:leading-[110%]">
         {children}
       </div>
     </motion.div>
