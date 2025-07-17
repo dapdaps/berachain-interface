@@ -1628,7 +1628,7 @@ const BelongForm = (props: any) => {
         <div className="">or</div>
         <Link
           className="block underline underline-offset-2"
-          href="/vaults?protocol=Beraborrow"
+          href={`/lending/beraborrow?token=${currentMarket?.address}`}
           prefetch
         >
           Beraborrow
