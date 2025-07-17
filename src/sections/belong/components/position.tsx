@@ -96,7 +96,7 @@ const Position = (props: any, ref: any) => {
                 </div>
                 <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
                 <div className="flex justify-between items-center gap-[10px] mt-[5px]">
-                  <div className="">Net APY:</div>
+                  <div className="">Net APR:</div>
                   <div className="text-black">
                     {numberFormatter(apy?.value, 2, true)}%
                   </div>
