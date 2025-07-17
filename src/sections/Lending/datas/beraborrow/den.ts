@@ -493,12 +493,30 @@ export class Den {
     const { collApy, collShareAmount, collVaultPrice, debtAmount, debtInterest, leverage = SCALING_FACTOR_BP } = params;
     const collateral = collShareAmount ?? this.collateral;
     const debt = debtAmount ?? this.debt;
-    // const _effectiveDebtInterestRate = (debtInterest * this.exposureRatio(collateral, collVaultPrice, debt, SCALING_FACTOR)) / SCALING_FACTOR;
-    // const effectiveDebtInterestRate = ((_effectiveDebtInterestRate > debtInterest ? debtInterest : _effectiveDebtInterestRate) * leverage) / SCALING_FACTOR_BP;
-    const effectiveDebtInterestRate = (debtInterest * leverage) / SCALING_FACTOR_BP;
+    const _effectiveDebtInterestRate = (debtInterest * this.exposureRatio(collateral, collVaultPrice, debt, SCALING_FACTOR)) / SCALING_FACTOR;
+    const effectiveDebtInterestRate = ((_effectiveDebtInterestRate > debtInterest ? debtInterest : _effectiveDebtInterestRate) * leverage) / SCALING_FACTOR_BP;
     const leverageCollApy = (collApy * leverage) / SCALING_FACTOR_BP;
     const apy = leverageCollApy - effectiveDebtInterestRate;
     return { apy, leverageCollApy, effectiveDebtInterestRate };
+  }
+
+  /**
+   *
+   * @param collAmount collateral Amount of deposit
+   * @param collPrice price of collateral
+   * @param exposureAmount exposureToken amount
+   * @param exposurePrice price of Exposure token
+   * @returns ratio of exposure to collateral value
+   */
+  private exposureRatio(collAmount: bigint, collPrice: bigint, exposureAmount: bigint, exposurePrice: bigint): bigint {
+    if (collAmount === BigInt(0)) return BigInt(0);
+    if (collPrice === BigInt(0)) return BigInt(0);
+    if (exposureAmount === BigInt(0)) return BigInt(0);
+    if (exposurePrice === BigInt(0)) return BigInt(0);
+    const collateralValue = (collAmount * collPrice) / SCALING_FACTOR;
+    const exposureValue = (exposureAmount * exposurePrice) / SCALING_FACTOR;
+    if (collateralValue === BigInt(0)) return BigInt(0);
+    return (exposureValue * SCALING_FACTOR) / collateralValue;
   }
 }
 
