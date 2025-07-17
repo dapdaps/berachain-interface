@@ -42,7 +42,7 @@ const Partners = (props: any) => {
       <BelongTitle>
         Partners
       </BelongTitle>
-      <div className="grid grid-cols-3 md:grid-cols-2 gap-[10px] mt-[54px]">
+      <div className="grid grid-cols-3 md:grid-cols-2 gap-[10px] mt-[54px] md:mt-[15px]">
         {
           PARTNERS.map((item) => {
             return (
@@ -50,7 +50,7 @@ const Partners = (props: any) => {
                 key={item.key}
                 src={item.logo}
                 alt={item.name}
-                className="w-full h-[94px] object-contain object-center shrink-0 pointer-events-none"
+                className="w-full h-[94px] md:h-[69px] object-contain object-center shrink-0 pointer-events-none"
               />
             );
           })
