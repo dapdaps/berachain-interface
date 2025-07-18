@@ -268,6 +268,7 @@ const networks = {
           decimals: 18,
           name: "Beraborrow iBERA-wgBERA Kodiak Island",
           icon: "",
+          underlyingTokens: [bera["ibera"], bera["wgbera"]],
         },
         MCR: 120,
         CCR: 150,

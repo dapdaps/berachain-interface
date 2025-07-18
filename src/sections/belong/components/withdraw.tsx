@@ -29,7 +29,7 @@ const Withdraw = (props: any) => {
             currencyClassName="md:w-[120px] border bg-[#FFFDEB]"
             type="in"
             outputCurrencyReadonly
-            currency={currentMarket}
+            currency={currentMarket?.beraborrowToken}
             amount={inputAmount}
             prices={{
               ...prices,
@@ -41,7 +41,7 @@ const Withdraw = (props: any) => {
               setInputAmount(_amount);
             }}
             updater={inputCurrencyUpdater}
-            balanceLabel="Balance"
+            balanceLabel="Deposited"
             onUpdateCurrencyBalance={(_balance: string) => { }}
             balancePercentClassName={({ selected }: any) => {
               if (selected) {

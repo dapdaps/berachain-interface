@@ -19,7 +19,7 @@ export function useBelong() {
   const positionRef = useRef<any>(null);
 
   const [leverage, setLeverage] = useState("1");
-  const [currentTab, setCurrentTab] = useState("deposit");
+  const [currentTab, setCurrentTab] = useState("withdraw");
   const [currentMarket] = useState<any>(TARGET_MARKET);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>();
