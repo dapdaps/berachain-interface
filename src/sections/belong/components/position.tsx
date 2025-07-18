@@ -68,46 +68,6 @@ const Position = (props: any, ref: any) => {
             {leverage}x
           </div>
         </div>
-        <div className="">
-          <div className="text-[12px] text-[#A1A0A1] font-[500] flex items-center gap-[4px]">
-            <div className="">APR</div>
-            <BelongTips className="" cardClassName="!w-[190px]">
-              <div className="">
-                <div className="flex justify-between items-center gap-[10px]">
-                  <div className="">Collateral APR:</div>
-                  <div className="text-black">
-                    {numberFormatter(apy?.leverageCollApy, 2, true)}%
-                  </div>
-                </div>
-                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
-                  <div className="">Interest on Debt:</div>
-                  <div className="text-black">
-                    {
-                      numberFormatter(
-                        apy?.effectiveDebtInterestRate,
-                        2,
-                        true,
-                        {
-                          prefix: Big(apy?.effectiveDebtInterestRate || 0).gt(0) ? "- " : ""
-                        }
-                      )
-                    }%
-                  </div>
-                </div>
-                <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
-                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
-                  <div className="">Net APR:</div>
-                  <div className="text-black">
-                    {numberFormatter(apy?.value, 2, true)}%
-                  </div>
-                </div>
-              </div>
-            </BelongTips>
-          </div>
-          <div className="mt-[0px] text-[#7EA82B]">
-            {numberFormatter(apy?.value, 2, true, { prefix: "+ " })}%
-          </div>
-        </div>
       </div>
       <button
         type="button"
@@ -125,3 +85,50 @@ const Position = (props: any, ref: any) => {
 };
 
 export default forwardRef(Position);
+
+export const APR = (props: any) => {
+  const { apy, className, titleClassName } = props;
+
+  return (
+    <div className={clsx("", className)}>
+      <div className={clsx("text-[12px] text-[#A1A0A1] font-[500] flex items-center gap-[4px]", titleClassName)}>
+        <div className="">APR</div>
+        <BelongTips className="" cardClassName="!w-[190px]">
+          <div className="">
+            <div className="flex justify-between items-center gap-[10px]">
+              <div className="">Collateral APR:</div>
+              <div className="text-black">
+                {numberFormatter(apy?.leverageCollApy, 2, true)}%
+              </div>
+            </div>
+            <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+              <div className="">Interest on Debt:</div>
+              <div className="text-black">
+                {
+                  numberFormatter(
+                    apy?.effectiveDebtInterestRate,
+                    2,
+                    true,
+                    {
+                      prefix: Big(apy?.effectiveDebtInterestRate || 0).gt(0) ? "- " : ""
+                    }
+                  )
+                }%
+              </div>
+            </div>
+            <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
+            <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+              <div className="">Net APR:</div>
+              <div className="text-black">
+                {numberFormatter(apy?.value, 2, true)}%
+              </div>
+            </div>
+          </div>
+        </BelongTips>
+      </div>
+      <div className="mt-[0px] text-[#7EA82B]">
+        {numberFormatter(apy?.value, 2, true, { prefix: "+" })}%
+      </div>
+    </div>
+  );
+};

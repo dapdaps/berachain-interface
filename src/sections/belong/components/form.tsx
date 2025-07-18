@@ -31,7 +31,7 @@ import Link from "next/link";
 import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 import ResultModal from "./result";
 import useTokenBalance from "@/hooks/use-token-balance";
-import Position from "./position";
+import Position, { APR } from "./position";
 import ShareModal from "./share";
 import Skeleton from "react-loading-skeleton";
 import { getTokenLogo } from "@/sections/dashboard/utils";
@@ -1163,8 +1163,13 @@ const BelongForm = (props: any) => {
 
         {/*#region Deposit collateral*/}
         <div className="w-full">
-          <div className="text-[12px] text-[#A1A0A1]">
-            Deposit
+          <div className="w-ful flex justify-between items-center gap-[10px] text-[12px] text-[#A1A0A1]">
+            <div className="">Deposit</div>
+            <APR
+              apy={leverageApy}
+              className="flex items-center gap-[4px]"
+              titleClassName="flex-row-reverse"
+            />
           </div>
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"

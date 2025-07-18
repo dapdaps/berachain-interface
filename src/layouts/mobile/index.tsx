@@ -40,7 +40,7 @@ const menuItems = [
     dataBp: "1015-002-006",
     disabled: false
   },
-  { id: 7, title: "Maps", href: "/", dataBp: "1015-002-007" }
+  { id: 7, title: "Map", href: "/", dataBp: "1015-002-007" }
 ];
 
 interface DApp {
