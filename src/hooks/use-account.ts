@@ -2,6 +2,7 @@ import { providers } from "ethers";
 import { useMemo } from "react";
 import { useAccount, Config, useConnectorClient } from "wagmi";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import useUser from "./use-user";
 
 function clientToProvider(client: any) {
   if (!client) return null;
@@ -41,6 +42,7 @@ function clientToProvider(client: any) {
 
 export default function useCustomAccount() {
   const account = useAccount();
+  const { accessToken } = useUser();
   const { data: client } = useConnectorClient<Config>({
     chainId: account ? account.chainId : DEFAULT_CHAIN_ID
   });
@@ -55,13 +57,15 @@ export default function useCustomAccount() {
     account: string;  
     provider?: any;
     chain: any;
+    accountWithAk?: any;
   }>(
     () => ({
       account: account?.address || '',
-      chainId: account?.chainId || DEFAULT_CHAIN_ID, // 使用默认 chainId
+      chainId: account?.chainId || DEFAULT_CHAIN_ID,
       provider,
-      chain: account?.chain || null
+      chain: account?.chain || null,
+      accountWithAk: (account && accessToken) ? `${account}-${accessToken}` : void 0,
     }),
-    [account, provider]
+    [account, provider, accessToken]
   );
 }

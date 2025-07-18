@@ -22,10 +22,10 @@ const BelongView = () => {
       <div className="text-[#A1A0A1] md:text-[#A1A0A1] text-center font-Montserrat text-[16px] font-[500] leading-normal md:leading-[120%] mt-[22px] md:mt-[23px] md:px-[18px] md:text-left md:relative md:z-[1]">
         Zap, deposit and LP into the best BERA stable{!isMobile && <br />} pool - iBERA-wgBERA in the whole ecosystem!
       </div>
-      <div className="relative z-[1] mt-[56px] md:mt-[18px] mx-auto w-[452px] md:w-full md:px-[12px] shrink-0">
+      <div className="relative z-[1] mt-[100px] md:mt-[80px] mx-auto w-[452px] md:w-full md:px-[12px] shrink-0">
         <BelongForm className="w-full" />
       </div>
-      <Benefits className="mt-[230px] md:mt-[170px] relative z-[1] md:w-full md:overflow-hidden" />
+      <Benefits className="mt-[130px] md:mt-[70px] relative z-[1] md:w-full md:overflow-hidden" />
       <div className="mt-[168px] md:mt-[50px] w-full bg-[url('/images/belong/v2/bg-bar-primary-short.png')] bg-no-repeat bg-[length:100%_auto] bg-[position:bottom_150px_center] md:bg-[position:bottom_310px_center]">
         <HowWork className="w-[928px] mx-auto md:w-full md:overflow-hidden" />
         <Partners className="mt-[133px] md:mt-[77px] w-[846px] mx-auto md:w-full md:px-[10px]" />

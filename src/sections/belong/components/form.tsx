@@ -1163,8 +1163,8 @@ const BelongForm = (props: any) => {
 
         {/*#region Deposit collateral*/}
         <div className="w-full">
-          <div className="text-[12px] text-[#A1A0A1]">
-            Deposit
+          <div className="w-ful flex justify-between items-center gap-[10px] text-[12px] text-[#A1A0A1]">
+            <div className="">Deposit</div>
           </div>
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"
@@ -1648,7 +1648,7 @@ const BelongForm = (props: any) => {
       />
       <Position
         ref={vaultRef}
-        className="!absolute left-0 bottom-[-100px]"
+        className="!absolute left-0 top-[-80px] md:top-[-70px]"
         leverage={1}
         apy={leverageApy}
         // apy={currentMarketData?.vaultApy}
