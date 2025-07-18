@@ -68,6 +68,7 @@ const Position = (props: any, ref: any) => {
             {leverage}x
           </div>
         </div>
+        <APR apy={apy} />
       </div>
       <button
         type="button"
