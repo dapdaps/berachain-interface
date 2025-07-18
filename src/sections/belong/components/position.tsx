@@ -7,20 +7,24 @@ import clsx from "clsx";
 import { Contract } from "ethers";
 import { forwardRef, useImperativeHandle, useMemo } from "react";
 import BelongTips from "./tips";
+import { useBelongContext } from "../context";
 
 const Position = (props: any, ref: any) => {
   const { className, leverage, market, apy, setShareModalOpen } = props;
 
   const { account, provider } = useCustomAccount();
+  const { setCollVaultBalance } = useBelongContext();
 
   const { data: positionBalance, runAsync: getPositionBalance } = useRequest(async () => {
     if (!account || !provider || !market) {
-      return;
+      setCollVaultBalance("0");
+      return { balance: Big(0), balanceUsd: Big(0) };
     }
 
     const contract = new Contract(market.collVault, TOKEN_ABI, provider);
     const balance = await contract.balanceOf(account);
     const balanceValue = balance ? Big(balance.toString()).div(10 ** market.decimals) : Big(0);
+    setCollVaultBalance(balanceValue);
     return {
       balance: balanceValue,
       balanceUsd: balanceValue.mul(market.collPrice),

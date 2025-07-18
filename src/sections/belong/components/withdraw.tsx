@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { useBelongContext } from "../context";
 import TokenAmount from "@/sections/swap/TokenAmount";
 import { useMemo, useState } from "react";
-import BelongTips from "./tips";
 import LazyImage from "@/components/layz-image";
 import { numberFormatter } from "@/utils/number-formatter";
 import { bera } from "@/configs/tokens/bera";
@@ -25,6 +24,7 @@ const Withdraw = (props: any) => {
     prices,
     currentMarketData,
     dataLoading,
+    config,
   } = useBelongContext();
   const { addAction } = useAddAction("belong");
   const { account, provider, chainId } = useCustomAccount();
@@ -35,10 +35,11 @@ const Withdraw = (props: any) => {
   const [inputCurrencyBalance, setInputCurrencyBalance] = useState("0");
 
   const { data: redeemData, loading: redeemDataLoading } = useRequest(async () => {
-    if (!provider || !inputAmount || Big(inputAmount).lte(0)) {
+    if (!provider) { //  || !inputAmount || Big(inputAmount).lte(0)
       return {
         redeemAmount: "0",
-        withdrawFee: "0"
+        withdrawFee: "0",
+        redeemUnderlying: [],
       };
     }
     const _inputAmount = utils.parseUnits(inputAmount, currentMarket.collVaultToken.decimals);
@@ -52,6 +53,14 @@ const Withdraw = (props: any) => {
         address: currentMarket.collVault,
         name: "getWithdrawFee",
         params: []
+      },
+      {
+        address: config.collVaultRouterLeverage,
+        name: "previewRedeemUnderlying",
+        params: [
+          currentMarket.collVault,
+          _inputAmount
+        ]
       }
     ];
     const multicallAddress = multicallAddresses[chainId];
@@ -63,19 +72,31 @@ const Withdraw = (props: any) => {
         multicallAddress,
         provider
       });
-      const [_redeemAmount, _withdrawFee] = res || [];
+      const [_redeemAmount, _withdrawFee, _redeemUnderlying] = res || [];
       const [_redeemAmountValue] = _redeemAmount || [];
       const [_withdrawFeeValue] = _withdrawFee || [];
+      const [_redeemUnderlyingTokens, _redeemUnderlyingAmounts] = _redeemUnderlying || [];
       return {
         redeemAmount: _redeemAmountValue ? utils.formatUnits(_redeemAmountValue, currentMarket.collVaultToken.decimals) : "0",
         withdrawFee: _withdrawFeeValue ? utils.formatUnits(_withdrawFeeValue, currentMarket.collVaultToken.decimals) : "0",
+        redeemUnderlying: _redeemUnderlyingTokens ? _redeemUnderlyingTokens.map((token: any, index: number) => {
+          const currentToken = Object.values(bera).find((t: any) => t.address.toLowerCase() === token.toLowerCase());
+          if (!currentToken) {
+            return null;
+          }
+          return {
+            token: currentToken,
+            amount: _redeemUnderlyingAmounts[index] ? Big(utils.formatUnits(_redeemUnderlyingAmounts[index], currentToken.decimals)).toFixed(8, Big.roundDown) : "0",
+          };
+        }).filter((t: any) => !!t).sort((a: any, b: any) => Big(a.amount).gt(b.amount) ? -1 : 1) : [],
       };
     } catch (err: any) {
       console.log("get redeem data error: %o", err);
     }
     return {
       redeemAmount: "0",
-      withdrawFee: "0"
+      withdrawFee: "0",
+      redeemUnderlying: [],
     };
   }, {
     refreshDeps: [inputAmount, provider],
@@ -243,6 +264,7 @@ const Withdraw = (props: any) => {
                       width={26}
                       height={26}
                       containerClassName={clsx("!w-[26px] !h-[26px] rounded-full overflow-hidden shrink-0", index > 0 && "ml-[-10px]")}
+                      fallbackSrc="/assets/tokens/default_icon.png"
                     />
                   ))
                 }
@@ -275,34 +297,25 @@ const Withdraw = (props: any) => {
             </div>
           </div>
           <div className="flex flex-col gap-[5px] mt-[10px]">
-            <div className="flex items-center gap-[4px]">
-              <LazyImage
-                src={bera["ibgt"].icon}
-                width={26}
-                height={26}
-                containerClassName={clsx("!w-[26px] !h-[26px] rounded-full overflow-hidden shrink-0")}
-              />
-              <div className="text-black text-[14px] font-[600]">
-                0
-              </div>
-              <div className="text-black text-[14px]">
-                {bera["ibgt"].symbol}
-              </div>
-            </div>
-            <div className="flex items-center gap-[4px]">
-              <LazyImage
-                src={bera["wbera"].icon}
-                width={26}
-                height={26}
-                containerClassName={clsx("!w-[26px] !h-[26px] rounded-full overflow-hidden shrink-0")}
-              />
-              <div className="text-black text-[14px] font-[600]">
-                0
-              </div>
-              <div className="text-black text-[14px]">
-                {bera["wbera"].symbol}
-              </div>
-            </div>
+            {
+              redeemData?.redeemUnderlying?.map((item: any, index: number) => (
+                <div className="flex items-center gap-[4px]" key={index}>
+                  <LazyImage
+                    src={item.token.icon}
+                    width={26}
+                    height={26}
+                    containerClassName={clsx("!w-[26px] !h-[26px] rounded-full overflow-hidden shrink-0")}
+                    fallbackSrc="/assets/tokens/default_icon.png"
+                  />
+                  <div className="text-black text-[14px] font-[600]">
+                    {numberFormatter(item.amount, 8, true)}
+                  </div>
+                  <div className="text-black text-[14px]">
+                    {item.token.symbol}
+                  </div>
+                </div>
+              ))
+            }
           </div>
         </div>
         {/*#endregion*/}

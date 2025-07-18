@@ -667,6 +667,19 @@ export const COLL_VAULAT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract IInfraredCollateralVault", "name": "collVault", "type": "address" },
+      { "internalType": "uint256", "name": "sharesToRedeem", "type": "uint256" }
+    ],
+    "name": "previewRedeemUnderlying",
+    "outputs": [
+      { "internalType": "address[]", "name": "tokens", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ];
 

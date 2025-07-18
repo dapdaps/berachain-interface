@@ -4,6 +4,7 @@ import beraborrowConfig from "@/configs/lending/beraborrow";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import useCustomAccount from "@/hooks/use-account";
 import { usePriceStore } from "@/stores/usePriceStore";
+import { UserDenStatus } from "@/sections/Lending/datas/beraborrow/den";
 
 export function useBelong() {
   const { basic, networks }: any = beraborrowConfig;
@@ -19,12 +20,22 @@ export function useBelong() {
   const positionRef = useRef<any>(null);
 
   const [leverage, setLeverage] = useState("1");
-  const [currentTab, setCurrentTab] = useState("withdraw");
+  const [currentTab, setCurrentTab] = useState("deposit");
   const [currentMarket] = useState<any>(TARGET_MARKET);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>();
   const [shareModalOpen, setShareModalOpen] = useState<any>(false);
   const [leverageApy, setLeverageApy] = useState<any>();
+  const [collVaultBalance, setCollVaultBalance] = useState<any>();
+
+  const [currentMarketData] = useMemo(() => {
+    if (!data || !data.markets || !data.markets.length) {
+      return [];
+    }
+    return [
+      { ...data, ...data.markets[0] },
+    ];
+  }, [data]);
 
   const tabs = useMemo(() => {
     // 0 - deposit, 1 - withdraw, 2 - manage
@@ -37,28 +48,25 @@ export function useBelong() {
       {
         value: "withdraw",
         label: "Withdraw",
-        disabled: false,
+        disabled: true,
       },
       {
         value: "manage",
         label: "Manage",
-        disabled: false,
+        disabled: true,
       },
     ];
-    if (Big(leverage || 1).lte(1)) {
-      return [allTabs[0], allTabs[1]];
+    if (Big(collVaultBalance || 0).gt(0)) {
+      allTabs[1].disabled = false;
     }
-    return [allTabs[0], allTabs[2]];
-  }, [leverage]);
-
-  const [currentMarketData] = useMemo(() => {
-    if (!data || !data.markets || !data.markets.length) {
-      return [];
+    if (currentMarketData?.denStatus === UserDenStatus.active) {
+      allTabs[2].disabled = false;
     }
-    return [
-      { ...data, ...data.markets[0] },
-    ];
-  }, [data]);
+    if (allTabs.find((t: any) => t.value === currentTab)?.disabled) {
+      setCurrentTab("deposit");
+    }
+    return allTabs;
+  }, [leverage, currentMarketData, collVaultBalance, currentTab]);
 
   const isChainSupported = useMemo(() => {
     if (!chainId) {
@@ -95,6 +103,8 @@ export function useBelong() {
     setShareModalOpen,
     leverageApy,
     setLeverageApy,
+    collVaultBalance,
+    setCollVaultBalance,
     config: {
       basic,
       networks,
