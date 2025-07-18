@@ -6,6 +6,7 @@ import type { Chain, Token } from '@/types';
 import Big from 'big.js';
 import { useEffect, useState } from 'react';
 import useToast from '@/hooks/use-toast';
+import clsx from 'clsx';
 
 const LendingButton = ({
   chain,
@@ -32,6 +33,7 @@ const LendingButton = ({
   addActionText,
   addActionToken,
   isSkipAmountEmptyCheck,
+  className,
 }: Props) => {
   console.log('addActionText: %o', addActionText);
   console.log('addActionToken: %o', addActionToken);
@@ -69,7 +71,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
-        className="whitespace-nowrap"
+        className={clsx("whitespace-nowrap", className)}
       >
         {invalidText}
       </Button>
@@ -83,7 +85,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
-        className="whitespace-nowrap"
+        className={clsx("whitespace-nowrap", className)}
       >
         Enter An Amount
       </Button>
@@ -100,7 +102,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
-        className="whitespace-nowrap"
+        className={clsx("whitespace-nowrap", className)}
       >
         Connect wallet
       </Button>
@@ -119,7 +121,7 @@ const LendingButton = ({
         loading={isPending || loading}
         disabled={loading || disabled}
         style={style}
-        className="whitespace-nowrap"
+        className={clsx("whitespace-nowrap", className)}
       >
         Switch Network
       </Button>
@@ -133,7 +135,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
-        className="whitespace-nowrap"
+        className={clsx("whitespace-nowrap", className)}
       >
         Not enough gas
       </Button>
@@ -148,7 +150,7 @@ const LendingButton = ({
         onClick={approve}
         disabled={checking || approving || loading || disabled}
         style={style}
-        className="whitespace-nowrap"
+        className={clsx("whitespace-nowrap", className)}
       >
         Approve {token?.symbol}
       </Button>
@@ -259,7 +261,7 @@ const LendingButton = ({
       loading={checking || approving || loading || pending}
       disabled={checking || approving || loading || disabled || pending}
       style={style}
-      className="whitespace-nowrap"
+      className={clsx("whitespace-nowrap", className)}
     >
       {children}
     </Button>
@@ -293,4 +295,5 @@ interface Props {
   addActionText?: string;
   addActionToken?: Token;
   isSkipAmountEmptyCheck?: boolean;
+  className?: string;
 }

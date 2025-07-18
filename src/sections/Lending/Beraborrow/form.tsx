@@ -13,11 +13,15 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 import ClosePositionModal from '@/sections/Lending/Beraborrow/close';
 import useIsMobile from '@/hooks/use-isMobile';
 import { ActionText, CollateralAction, useBeraborrow } from '../hooks/use-beraborrow';
+import clsx from 'clsx';
+import BelongTips from '@/sections/belong/components/tips';
+import BelongButton from '@/sections/belong/components/button';
 
 const BeraborrowHandler = dynamic(() => import('@/sections/Lending/handlers/beraborrow'));
 
 export const Form = (props: any) => {
   const {
+    isBelong,
     type,
     market,
     riskyRatio,
@@ -29,6 +33,7 @@ export const Form = (props: any) => {
     onSuccess,
     isMobile,
     onClose,
+    loading: outerLoading,
   } = props;
 
   const {
@@ -71,27 +76,31 @@ export const Form = (props: any) => {
 
   return (
     <div
-      className="px-[12px] py-[20px] flex justify-between items-stretch gap-4"
+      className={clsx("", isBelong ? "" : "px-[12px] py-[20px] flex justify-between items-stretch gap-4")}
       style={isMobile ? { flexDirection: 'column', maxHeight: '80dvh', overflow: 'auto' } : {}}
     >
-      <Info
-        {...props}
-        onClose={handleClosePosition}
-        loading={loading}
-        style={isMobile ? { width: '100%', order: 2 } : {}}
-        newValue={((amount && Big(amount).gt(0)) || (borrowAmount && Big(borrowAmount).gt(0))) ? {
-          balanceUsdShown: numberFormatter(Big(totalAmount).times(market.price || 1), 2, true, { prefix: '$' }),
-          balanceShown: numberFormatter(totalAmount, 2, true),
-          borrowedShown: numberFormatter(totalBorrowAmount, 2, true),
-          liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$', round: Big.roundDown }),
-          liquidationPrice: liquidationPriceNew,
-        } : {}}
-      />
+      {
+        !isBelong && (
+          <Info
+            {...props}
+            onClose={handleClosePosition}
+            loading={loading}
+            style={isMobile ? { width: '100%', order: 2 } : {}}
+            newValue={((amount && Big(amount).gt(0)) || (borrowAmount && Big(borrowAmount).gt(0))) ? {
+              balanceUsdShown: numberFormatter(Big(totalAmount).times(market.price || 1), 2, true, { prefix: '$' }),
+              balanceShown: numberFormatter(totalAmount, 2, true),
+              borrowedShown: numberFormatter(totalBorrowAmount, 2, true),
+              liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$', round: Big.roundDown }),
+              liquidationPrice: liquidationPriceNew,
+            } : {}}
+          />
+        )
+      }
       <div
-        className="w-[450px] shrink-0 flex flex-col items-stretch gap-[10px]"
+        className={clsx("shrink-0 flex flex-col items-stretch gap-[10px]", isBelong ? "w-full" : "w-[450px]")}
         style={isMobile ? { width: '100%', order: 1 } : {}}
       >
-        <div className="text-black text-[16px] font-[600]">
+        <div className={clsx("", isBelong ? "text-[12px] text-[#A1A0A1]" : "text-black text-[16px] font-[600]")}>
           {CollateralAction[type]} Collateral
         </div>
         <CurrencyInput
@@ -106,14 +115,16 @@ export const Form = (props: any) => {
             handleAmount(collateralBalance);
           }}
           tokens={[]}
-          tokenSelectorStyle={{
-            width: isMobile ? "auto" : 176,
-          }}
           renderValue={(_amount: string) => {
             return numberFormatter(Big(previewAmount || 0).times(market.price || 1).toFixed(2, Big.roundDown), 2, true, { prefix: '$' });
           }}
+          contentClassName={isBelong ? "!p-[10px]" : ""}
+          inputContainerClassName={isBelong ? "flex-row-reverse !h-[unset]" : ""}
+          inputClassName={isBelong ? "text-right" : ""}
+          footerClassName={isBelong ? "!pt-[10px] !pb-0 !text-[12px] !text-[#A1A0A1] flex-row-reverse" : ""}
+          isInsideFooter={isBelong}
         />
-        <div className="text-black text-[16px] font-[600]">
+        <div className={clsx("", isBelong ? "text-[12px] text-[#A1A0A1]" : "text-black text-[16px] font-[600]")}>
           {borrowTokenLabel}
         </div>
         <CurrencyInput
@@ -134,22 +145,35 @@ export const Form = (props: any) => {
             handleBorrowAmount(borrowLimit);
           }}
           tokens={[]}
+          contentClassName={isBelong ? "!p-[10px]" : ""}
+          inputContainerClassName={isBelong ? "flex-row-reverse !h-[unset]" : ""}
+          inputClassName={isBelong ? "text-right" : ""}
+          footerClassName={isBelong ? "!pt-[10px] !pb-0 !text-[12px] !text-[#A1A0A1] flex-row-reverse" : ""}
+          isInsideFooter={isBelong}
         />
-        <div className="text-black text-[16px] font-[600] flex justify-between items-center">
+        <div className={clsx("flex justify-between items-center", isBelong ? "text-[12px] text-[#A1A0A1]" : "text-black text-[16px] font-[600]")}>
           <div className="flex items-center gap-[5px]">
             <div>Updated Ratio</div>
-            <Popover
-              trigger={PopoverTrigger.Hover}
-              placement={PopoverPlacement.Top}
-              contentStyle={{ zIndex: 200 }}
-              content={(
-                <Card className="w-[300px] text-[14px]">
+            {
+              isBelong ? (
+                <BelongTips className="">
                   The ratio of your bHONEY's value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {market.MCR}% to avoid liquidations
-                </Card>
-              )}
-            >
-              <img src="/images/icon-tips.svg" alt="" className="w-[18px] h-[18px] cursor-pointer" />
-            </Popover>
+                </BelongTips>
+              ) : (
+                <Popover
+                  trigger={PopoverTrigger.Hover}
+                  placement={PopoverPlacement.Top}
+                  contentStyle={{ zIndex: 200 }}
+                  content={(
+                    <Card className="w-[300px] text-[14px]">
+                      The ratio of your bHONEY's value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {market.MCR}% to avoid liquidations
+                    </Card>
+                  )}
+                >
+                  <img src="/images/icon-tips.svg" alt="" className="w-[18px] h-[18px] cursor-pointer" />
+                </Popover>
+              )
+            }
           </div>
           <Health risk={ratioRisk} />
         </div>
@@ -162,12 +186,24 @@ export const Form = (props: any) => {
           />
           <div className="absolute right-[20px] top-0 h-full flex items-center text-[26px] font-[700] text-black">%</div>
         </div>
-        <div className="w-full mt-[10px]">
+        <div className="w-full mt-[10px] flex justify-between items-center gap-[8px] md:flex-col-reverse">
+          {
+            isBelong && (
+              <BelongButton
+                className="!bg-[white] !w-[150px] shrink-0 md:!w-full"
+                loading={loading || outerLoading}
+                disabled={loading || outerLoading}
+                onClick={handleClosePosition}
+              >
+                Close Position
+              </BelongButton>
+            )
+          }
           <LendingButton
             type="primary"
-            disabled={!buttonValid.valid || loading}
+            disabled={!buttonValid.valid || loading || outerLoading}
             invalidText={buttonValid.valid ? void 0 : buttonValid.text}
-            loading={loading || inputLoading}
+            loading={loading || inputLoading || outerLoading}
             style={{ height: 60, width: '100%' }}
             amount={buttonValid.actionAmounts[0] || ''}
             token={market}
@@ -189,6 +225,7 @@ export const Form = (props: any) => {
             addAction={addAction}
             addActionText={buttonValid.actions[0]}
             addActionToken={buttonValid.actionTokens[0]}
+            className={clsx(isBelong ? "!h-[40px] md:!h-[40px] !text-[16px]" : "")}
             addActionParamsFormatter={(addActionParams) => {
               const _addActionParams: any = {
                 ...addActionParams,
