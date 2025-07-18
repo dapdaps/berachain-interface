@@ -6,6 +6,9 @@ import Capsule from "./capsule";
 import useToast from "@/hooks/use-toast";
 import { useRef } from "react";
 import useIsMobile from "@/hooks/use-isMobile";
+import html2canvas from "html2canvas";
+import { useRequest } from "ahooks";
+import Loading from "@/components/loading";
 
 const ShareModal = (props: any) => {
   const {
@@ -22,6 +25,43 @@ const ShareModal = (props: any) => {
 
   const postcardRef = useRef<any>(null);
 
+  const { runAsync: handleCopyImage, loading: copyImageLoading } = useRequest(async () => {
+    try {
+      if (postcardRef.current) {
+        const canvas = await html2canvas(postcardRef.current, {
+          backgroundColor: null,
+          scale: 2,
+          useCORS: true,
+          allowTaint: true
+        });
+
+        canvas.toBlob((blob: Blob | null) => {
+          if (blob) {
+            const clipboardItem = new ClipboardItem({
+              'image/png': blob
+            });
+
+            navigator.clipboard.write([clipboardItem]).then(() => {
+              toast.success({
+                title: "Image copied to clipboard"
+              });
+            }).catch((error) => {
+              console.error('Copy failed:', error);
+              toast.fail({
+                title: "Copy failed"
+              });
+            });
+          }
+        }, 'image/png');
+      }
+    } catch (error) {
+      console.error('Failed to generate image:', error);
+      toast.fail({
+        title: "Failed to generate image"
+      });
+    }
+  }, { manual: true });
+
   return (
     <Modal
       open={open}
@@ -34,6 +74,20 @@ const ShareModal = (props: any) => {
           ref={postcardRef}
           className="pt-[121px] pl-[29px] text-[16px] text-[#F8F8F8] font-[500] font-Montserrat w-full relative h-[265px] bg-[url('/images/belong/v2/bg-share.png')] bg-no-repeat bg-contain bg-center"
         >
+          <div className="flex items-center gap-[16px] absolute top-[22px] left-[29px] pointer-events-none">
+            <img
+              src="/images/belong/v2/share-beratown-logo.png"
+              className="w-[35px] h-[22px] object-center object-contain shrink-0"
+            />
+            <img
+              src="/images/belong/v2/belong-title.svg"
+              className="w-[76px] h-[10px] object-center object-contain shrink-0"
+            />
+          </div>
+          <img
+            src="/images/belong/v2/share-parachute.svg"
+            className="w-[149px] h-[139px] object-center object-contain shrink-0 absolute top-[0px] right-[18px] pointer-events-none"
+          />
           <div className="">
             APR
           </div>
@@ -50,17 +104,17 @@ const ShareModal = (props: any) => {
         <div className="w-full grid grid-cols-2 gap-[4px] mt-[12px] opacity-60">
           <Capsule
             onClick={() => {
-              navigator.clipboard.writeText(window.location.href).then(() => {
-                toast.success({
-                  title: "Copied successfully"
-                });
-              }).catch(() => {
-                toast.fail({
-                  title: "Copy failed"
-                });
-              });
+              if (copyImageLoading) {
+                return;
+              }
+              handleCopyImage();
             }}
           >
+            {
+              copyImageLoading && (
+                <Loading size={12} />
+              )
+            }
             <div className="">Copy</div>
             <img
               src="/images/belong/v2/icon-copy.png"
