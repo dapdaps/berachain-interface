@@ -15,6 +15,7 @@ import BeraborrowData from "../Lending/datas/beraborrow";
 import Position from "./components/position";
 import ShareModal from "./components/share";
 import FootLink from "./components/foot-link";
+import Card from "@/components/card";
 
 const BelongView = () => {
 
@@ -53,45 +54,48 @@ const BelongView = () => {
         <div className="text-[#A1A0A1] md:text-[#A1A0A1] text-center font-Montserrat text-[16px] font-[500] leading-normal md:leading-[120%] mt-[22px] md:mt-[23px] md:px-[18px] md:text-left md:relative md:z-[1]">
           Zap, deposit and LP into the best BERA stable{!isMobile && <br />} pool - iBERA-wgBERA in the whole ecosystem!
         </div>
-        <div className="relative z-[1] mt-[56px] md:mt-[18px] mx-auto w-[452px] md:w-full md:px-[12px] shrink-0">
-          <SwitchTabs
-            tabs={tabs}
-            current={currentTab}
-            onChange={(tab) => setCurrentTab(tab)}
-          />
-          <div className="w-full mt-[10px]">
-            {
-              currentTab === "deposit" && (
-                <BelongForm
-                  className=""
-                />
-              )
-            }
-            {
-              currentTab === "withdraw" && (
-                <Withdraw
-                  className=""
-                />
-              )
-            }
-            {
-              currentTab === "manage" && (
-                <Manage
-                  className=""
-                />
-              )
-            }
-          </div>
-          <FootLink />
+        <div className="w-[452px] md:w-full md:px-[10px] mt-[20px] relative z-[1] mx-auto">
           <Position
             ref={positionRef}
-            className="!absolute left-0 bottom-[-100px]"
+            className="w-full"
             leverage={1}
+            apy={leverageApy}
             market={currentMarketData}
             setShareModalOpen={setShareModalOpen}
           />
+          <Card className="mt-[10px] md:mt-[10px] w-full shrink-0 !p-[20px] !rounded-[20px] text-[#000] text-[12px] font-Montserrat font-[500]">
+            <SwitchTabs
+              tabs={tabs}
+              current={currentTab}
+              onChange={(tab) => setCurrentTab(tab)}
+            />
+            <div className="w-full mt-[10px]">
+              {
+                currentTab === "deposit" && (
+                  <BelongForm
+                    className=""
+                  />
+                )
+              }
+              {
+                currentTab === "withdraw" && (
+                  <Withdraw
+                    className=""
+                  />
+                )
+              }
+              {
+                currentTab === "manage" && (
+                  <Manage
+                    className=""
+                  />
+                )
+              }
+            </div>
+          </Card>
+          <FootLink className="mt-[10px] w-full" />
         </div>
-        <Benefits className="mt-[230px] md:mt-[170px] relative z-[1] md:w-full md:overflow-hidden" />
+        <Benefits className="mt-[130px] md:mt-[70px] relative z-[1] md:w-full md:overflow-hidden" />
         <div className="mt-[168px] md:mt-[50px] w-full bg-[url('/images/belong/v2/bg-bar-primary-short.png')] bg-no-repeat bg-[length:100%_auto] bg-[position:bottom_150px_center] md:bg-[position:bottom_310px_center]">
           <HowWork className="w-[928px] mx-auto md:w-full md:overflow-hidden" />
           <Partners className="mt-[133px] md:mt-[77px] w-[846px] mx-auto md:w-full md:px-[10px]" />

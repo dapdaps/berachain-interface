@@ -28,10 +28,10 @@ import Link from "next/link";
 import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 import ResultModal from "./result";
 import useTokenBalance from "@/hooks/use-token-balance";
-import { APR } from "./position";
 import Skeleton from "react-loading-skeleton";
 import { getTokenLogo } from "@/sections/dashboard/utils";
 import { useBelongContext } from "../context";
+import BelongButton from "./button";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -171,7 +171,7 @@ const BelongForm = (props: any) => {
     }
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/swap");
     DexCallURL.searchParams.set("tokenIn", currentInputMarket.isNative ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : currentInputMarket.address);
-    DexCallURL.searchParams.set("tokenOut", isLeverage ? currentMarket.address : currentMarket.beraborrowToken?.address);
+    DexCallURL.searchParams.set("tokenOut", isLeverage ? currentMarket.address : currentMarket.collVault);
     DexCallURL.searchParams.set("to", account);
     DexCallURL.searchParams.set("amount", Big(currentInputAmount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
@@ -1141,17 +1141,12 @@ const BelongForm = (props: any) => {
 
   return (
     <div className={clsx("relative", className)}>
-      <Card className="w-full !p-[20px] !rounded-[20px] text-[#000] text-[12px] font-Montserrat font-[500]">
+      <div className="w-full text-[#000] text-[12px] font-Montserrat font-[500]">
 
         {/*#region Deposit collateral*/}
         <div className="w-full">
           <div className="w-ful flex justify-between items-center gap-[10px] text-[12px] text-[#A1A0A1]">
             <div className="">Deposit</div>
-            <APR
-              apy={leverageApy}
-              className="flex items-center gap-[4px]"
-              titleClassName="flex-row-reverse"
-            />
           </div>
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"
@@ -1529,19 +1524,14 @@ const BelongForm = (props: any) => {
         {/*#endregion*/}
 
         <div className="w-full mt-[13px]">
-          <button
-            type="button"
-            className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black text-[16px] flex justify-center items-center h-[40px] rounded-[10px] border border-[#000]"
+          <BelongButton
+            className=""
             disabled={!buttonValid.valid || buttonValid.loading}
+            loading={buttonValid.loading}
             onClick={handleSubmit}
           >
-            {
-              buttonValid.loading && (
-                <Loading size={16} />
-              )
-            }
-            <div>{buttonValid.text}</div>
-          </button>
+            {buttonValid.text}
+          </BelongButton>
         </div>
 
         <TokenSelector
@@ -1584,7 +1574,7 @@ const BelongForm = (props: any) => {
             );
           }}
         />
-      </Card>
+      </div>
       <ResultModal
         open={resultModalOpen}
         onClose={() => {

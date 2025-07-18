@@ -9,7 +9,7 @@ import { forwardRef, useImperativeHandle, useMemo } from "react";
 import BelongTips from "./tips";
 
 const Position = (props: any, ref: any) => {
-  const { className, leverage, market, setShareModalOpen } = props;
+  const { className, leverage, market, apy, setShareModalOpen } = props;
 
   const { account, provider } = useCustomAccount();
 
@@ -18,7 +18,7 @@ const Position = (props: any, ref: any) => {
       return;
     }
 
-    const contract = new Contract(market.beraborrowToken?.address, TOKEN_ABI, provider);
+    const contract = new Contract(market.collVault, TOKEN_ABI, provider);
     const balance = await contract.balanceOf(account);
     const balanceValue = balance ? Big(balance.toString()).div(10 ** market.decimals) : Big(0);
     return {
