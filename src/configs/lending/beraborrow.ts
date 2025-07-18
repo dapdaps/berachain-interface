@@ -261,7 +261,14 @@ const networks = {
         collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
         denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
         // BB.kIBERA-WGBERA(Beraborrow iBERA-wgBERA Kodiak Island)
-        beraborrowToken: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        beraborrowToken: {
+          address: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+          chainId: DEFAULT_CHAIN_ID,
+          symbol: "BB KODI iBERA-wgBERA",
+          decimals: 18,
+          name: "Beraborrow iBERA-wgBERA Kodiak Island",
+          icon: "",
+        },
         MCR: 120,
         CCR: 150,
         TCR: 378,
