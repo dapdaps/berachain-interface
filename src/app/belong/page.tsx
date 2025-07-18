@@ -3,9 +3,18 @@
 import BelongView from "@/sections/belong";
 import useIsMobile from "@/hooks/use-isMobile";
 import PageBack from "@/components/back";
+import useClickTracking from "@/hooks/use-click-tracking";
+import { useEffect } from "react";
+import useCustomAccount from "@/hooks/use-account";
 
 const BelongPage = () => {
   const isMobile = useIsMobile();
+  const { handleReport } = useClickTracking();
+  const { accountWithAk } = useCustomAccount();
+
+  useEffect(() => {
+    handleReport("1010-023");
+  }, [accountWithAk]);
 
   return (
     <div className="w-full min-h-screen md:min-h-[unset] md:h-screen md:overflow-y-auto">

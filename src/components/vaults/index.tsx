@@ -14,7 +14,6 @@ const Vaults = (props: any) => {
         className
       )}
       // data-bp="1022-001-001"
-      data-bp="1010-021"
       onClick={() => {
         // router.push("/vaults");
         router.push("/belong");
