@@ -66,6 +66,7 @@ const networks = {
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     beraborrowCore: '0x12347cAF4300B1c4a9bF0Ae7DE2531A2BCFB93E9',
     leverageRouter: '0xd4b8dd2c8371E3A4c75ce96860351840638AbB50',
+    collVaultRouterLeverage: '0x3a87c5Fa1316b0ea170B732Aa0C8FD2c0F0a63A1',
     KodiIBERAWgBERADenManageAddress: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
     graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.12/gn',
     denManagersParams: (market: any) => ({
@@ -231,8 +232,6 @@ const networks = {
         vault: 'beraWrapper',
         collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
         denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
-        // BB.kIBERA-WGBERA(Beraborrow iBERA-wgBERA Kodiak Island)
-        beraborrowToken: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
         MCR: 120,
         CCR: 150,
         TCR: 378,
@@ -261,7 +260,15 @@ const networks = {
         collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
         denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
         // BB.kIBERA-WGBERA(Beraborrow iBERA-wgBERA Kodiak Island)
-        beraborrowToken: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        collVaultToken: {
+          address: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+          chainId: DEFAULT_CHAIN_ID,
+          symbol: "BB KODI iBERA-wgBERA",
+          decimals: 18,
+          name: "Beraborrow iBERA-wgBERA Kodiak Island",
+          icon: "",
+          underlyingTokens: [bera["ibera"], bera["wgbera"]],
+        },
         MCR: 120,
         CCR: 150,
         TCR: 378,

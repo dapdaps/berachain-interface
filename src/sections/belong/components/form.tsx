@@ -1,11 +1,8 @@
 import LazyImage from "@/components/layz-image";
 import Range from "@/components/range";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
-import beraborrowConfig from "@/configs/lending/beraborrow";
+import { useEffect, useMemo, useState } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import { usePriceStore } from "@/stores/usePriceStore";
-import useCustomAccount from "@/hooks/use-account";
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
 import { ActionText, BORROWER_OPERATIONS_ABI, COLL_VAULAT_ABI, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
 import Big from "big.js";
@@ -14,7 +11,7 @@ import { useRequest } from "ahooks";
 import { getHint } from "@/sections/Lending/handlers/beraborrow";
 import axios from "axios";
 import { _normalizeDenCreation, Den, SCALING_FACTOR, SCALING_FACTOR_BP, UserDenStatus } from "@/sections/Lending/datas/beraborrow/den";
-import { Contract, utils } from "ethers";
+import { Contract } from "ethers";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
@@ -31,10 +28,10 @@ import Link from "next/link";
 import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 import ResultModal from "./result";
 import useTokenBalance from "@/hooks/use-token-balance";
-import Position from "./position";
-import ShareModal from "./share";
 import Skeleton from "react-loading-skeleton";
 import { getTokenLogo } from "@/sections/dashboard/utils";
+import { useBelongContext } from "../context";
+import BelongButton from "./button";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -45,8 +42,27 @@ const DEFAULT_MAX_LEVERAGE = "6";
 const BelongForm = (props: any) => {
   const { className } = props;
 
-  const { basic, networks }: any = beraborrowConfig;
-  let {
+  const {
+    currentMarket,
+    leverage,
+    setLeverage,
+    TARGET_MARKET,
+    config,
+    account,
+    provider,
+    chainId,
+    prices,
+    dataLoading,
+    setDataLoading,
+    currentMarketData,
+    positionRef,
+    leverageApy,
+    setLeverageApy,
+  } = useBelongContext();
+
+  const {
+    basic,
+    networks,
     leverageMarkets = [],
     riskyRatio,
     liquidationReserve,
@@ -55,59 +71,29 @@ const BelongForm = (props: any) => {
     multiCollateralHintHelpers,
     leverageRouter,
     borrowerOperations,
-  } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
+  } = config;
 
-  // KODI iBERA-wgBERA
-  const TARGET_MARKET = leverageMarkets.find((m: any) => m.id === 8);
-
-  const { account, provider, chainId } = useCustomAccount();
-  const prices = usePriceStore((store) => store.price);
   const toast = useToast();
   const { addAction } = useAddAction("belong");
   const modal = useConnectModal();
   const { switchChain } = useSwitchChain();
-
-  const vaultRef = useRef<any>();
 
   const [currentInputMarket, setCurrentInputMarket] = useState<any>(leverageMarkets[0]);
   const [currentInputAmount, setCurrentInputAmount] = useState<any>();
   const [currentInputSwaped, setCurrentInputSwaped] = useState<any>(false);
   const [currentInputSwapedData, setCurrentInputSwapedData] = useState<any>();
 
-  const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const [leverage, setLeverage] = useState("1");
   const [leverageProgress, setLeverageProgress] = useState(0);
-  const [currentMarket] = useState<any>(TARGET_MARKET);
-  const [data, setData] = useState<any>();
   const [marginInSharesData, setMarginInSharesData] = useState<any>();
   const [maxLeverage, setMaxLeverage] = useState<any>(DEFAULT_MAX_LEVERAGE);
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
   const [resultModalOpen, setResultModalOpen] = useState<any>(false);
   const [resultModalData, setResultModalData] = useState<any>();
-  const [shareModalOpen, setShareModalOpen] = useState<any>(false);
-  const [leverageApy, setLeverageApy] = useState<any>();
 
   const [isLeverage] = useMemo(() => {
     return [!!leverage && Big(leverage).gt(1)];
   }, [leverage]);
-
-  const [currentMarketData] = useMemo(() => {
-    if (!data || !data.markets || !data.markets.length) {
-      return [];
-    }
-    return [
-      { ...data, ...data.markets[0] },
-    ];
-  }, [data]);
-
-  const isChainSupported = useMemo(() => {
-    if (!chainId) {
-      return false;
-    }
-    const currChain = networks[chainId];
-    return !!currChain;
-  }, [chainId]);
 
   const beraborrowData = useBeraborrow({
     type: ActionText.Borrow,
@@ -185,7 +171,7 @@ const BelongForm = (props: any) => {
     }
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/swap");
     DexCallURL.searchParams.set("tokenIn", currentInputMarket.isNative ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : currentInputMarket.address);
-    DexCallURL.searchParams.set("tokenOut", isLeverage ? currentMarket.address : currentMarket.beraborrowToken);
+    DexCallURL.searchParams.set("tokenOut", isLeverage ? currentMarket.address : currentMarket.collVault);
     DexCallURL.searchParams.set("to", account);
     DexCallURL.searchParams.set("amount", Big(currentInputAmount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
@@ -676,7 +662,7 @@ const BelongForm = (props: any) => {
     setCurrentInputAmount("");
     setCurrentInputSwapedData(void 0);
     updateCurrentInputMarketWalletBalance();
-    vaultRef.current?.getPositionBalance?.();
+    positionRef.current?.getPositionBalance?.();
     setResultModalData(void 0);
     setInputCurrencyUpdater((prev: any) => prev + 1);
   };
@@ -1108,6 +1094,10 @@ const BelongForm = (props: any) => {
     return getStatus(currentMarketData, automaticLoopingData?.leverageRatio?.value || "0");
   }, [currentMarketData, automaticLoopingData]);
 
+  const [currentCollVaultPrice] = useMemo(() => {
+    return [currentMarketData?.collPrice || "0"];
+  }, [currentMarketData]);
+
   const { data: userBalanceTokenList, loading: userBalanceTokenListLoading } = useRequest(async () => {
     if (!account) {
       return leverageMarkets;
@@ -1133,15 +1123,12 @@ const BelongForm = (props: any) => {
       _userBalanceTokenList.push({
         ...TARGET_MARKET,
         balance: numberRemoveEndZero(Big(targetTokenBalance).div(10 ** TARGET_MARKET.decimals).toFixed(TARGET_MARKET.decimals, Big.roundDown)),
+        price: currentCollVaultPrice,
       });
     }
 
     return _userBalanceTokenList;
-  }, { refreshDeps: [account, leverageMarkets, tokenSelectorVisible] });
-
-  useEffect(() => {
-    setDataLoading(isChainSupported);
-  }, [isChainSupported, account, currentMarket]);
+  }, { refreshDeps: [account, leverageMarkets, tokenSelectorVisible, currentCollVaultPrice] });
 
   useEffect(() => {
     setMarginInSharesData(void 0);
@@ -1159,7 +1146,7 @@ const BelongForm = (props: any) => {
 
   return (
     <div className={clsx("relative", className)}>
-      <Card className="w-full !p-[20px] !rounded-[20px] text-[#000] text-[12px] font-Montserrat font-[500]">
+      <div className="w-full text-[#000] text-[12px] font-Montserrat font-[500]">
 
         {/*#region Deposit collateral*/}
         <div className="w-full">
@@ -1542,19 +1529,14 @@ const BelongForm = (props: any) => {
         {/*#endregion*/}
 
         <div className="w-full mt-[13px]">
-          <button
-            type="button"
-            className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black text-[16px] flex justify-center items-center h-[40px] rounded-[10px] border border-[#000]"
+          <BelongButton
+            className=""
             disabled={!buttonValid.valid || buttonValid.loading}
+            loading={buttonValid.loading}
             onClick={handleSubmit}
           >
-            {
-              buttonValid.loading && (
-                <Loading size={16} />
-              )
-            }
-            <div>{buttonValid.text}</div>
-          </button>
+            {buttonValid.text}
+          </BelongButton>
         </div>
 
         <TokenSelector
@@ -1597,43 +1579,6 @@ const BelongForm = (props: any) => {
             );
           }}
         />
-
-        <BeraborrowData
-          {...networks[DEFAULT_CHAIN_ID + '']}
-          {...basic}
-          markets={[currentMarket]}
-          chainId={chainId}
-          prices={prices}
-          update={dataLoading}
-          account={account}
-          provider={provider}
-          onLoad={(res: any) => {
-            console.log('Beraborrow data res: %o', res);
-            setData(res);
-            setDataLoading(false);
-          }}
-        />
-      </Card>
-      <div className="w-full mt-[16px] flex items-center gap-[2px] pl-[21px] text-[12px] text-[#F8F8F8] font-[500] font-Montserrat leading-[100%]">
-        <div className="">View on</div>
-        <Link
-          className="block underline underline-offset-2"
-          href="https://berascan.com/address/0x88c983bf3d4a9adcee14e1b4f1c446c4c5853ea3"
-          target="_blank"
-          rel="noreferrer nofollow"
-        >
-          Berascan
-        </Link>
-        <div className="">&gt;</div>
-        <div className="">or</div>
-        <Link
-          className="block underline underline-offset-2"
-          href={`/lending/beraborrow?token=${currentMarket?.address}`}
-          prefetch
-        >
-          Beraborrow
-        </Link>
-        <div className="">&gt;</div>
       </div>
       <ResultModal
         open={resultModalOpen}
@@ -1645,24 +1590,6 @@ const BelongForm = (props: any) => {
         inputMarket={currentInputMarket}
         leverage={leverage}
         {...resultModalData}
-      />
-      <Position
-        ref={vaultRef}
-        className="!absolute left-0 top-[-80px] md:top-[-70px]"
-        leverage={1}
-        apy={leverageApy}
-        // apy={currentMarketData?.vaultApy}
-        market={currentMarketData}
-        setShareModalOpen={setShareModalOpen}
-      />
-      <ShareModal
-        open={shareModalOpen}
-        onClose={() => {
-          setShareModalOpen(false);
-        }}
-        market={currentMarketData}
-        leverage={1}
-        apy={leverageApy?.value}
       />
     </div>
   );

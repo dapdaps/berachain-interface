@@ -265,6 +265,18 @@ export function useBeraborrow(props: any) {
       setBorrowAmount('');
       return;
     }
+    if (type === ActionText.Repay) {
+      // if Withdraw Collateral is 0, set BorrowAmount to 0
+      if (Big(amount || 0).lte(0)) {
+        setBorrowAmount('');
+        return;
+      }
+      // calc BorrowAmount by ratio and amount
+      const _lastBorrowed = calcNECTBorrowed(totalAmount, val);
+      const _repayBorrowedAmount = Big(market.borrowed || 0).minus(_lastBorrowed).toFixed(market.borrowToken.decimals, Big.roundDown);
+      setBorrowAmount(_repayBorrowedAmount);
+      return;
+    }
     const _borrowed = calcNECTBorrowed(totalAmount, val);
     setBorrowAmount(_borrowed);
   };
@@ -637,5 +649,49 @@ export const COLL_VAULAT_ABI = [
     "stateMutability": "nonpayable",
     "type": "function"
   },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "shares", "type": "uint256" },
+      { "internalType": "address", "name": "receiver", "type": "address" },
+      { "internalType": "address", "name": "_owner", "type": "address" }
+    ],
+    "name": "redeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "shares", "type": "uint256" }
+    ],
+    "name": "previewRedeem",
+    "outputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getWithdrawFee",
+    "outputs": [
+      { "internalType": "uint16", "name": "", "type": "uint16" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract IInfraredCollateralVault", "name": "collVault", "type": "address" },
+      { "internalType": "uint256", "name": "sharesToRedeem", "type": "uint256" }
+    ],
+    "name": "previewRedeemUnderlying",
+    "outputs": [
+      { "internalType": "address[]", "name": "tokens", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ];
 
