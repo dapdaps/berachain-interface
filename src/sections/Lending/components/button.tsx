@@ -35,10 +35,6 @@ const LendingButton = ({
   isSkipAmountEmptyCheck,
   className,
 }: Props) => {
-  console.log('addActionText: %o', addActionText);
-  console.log('addActionToken: %o', addActionToken);
-  console.log('amount: %o', amount);
-
   const toast = useToast();
   const { approve, approved, approving, checking } = useApprove({
     amount,
