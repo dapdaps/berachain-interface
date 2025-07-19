@@ -265,6 +265,18 @@ export function useBeraborrow(props: any) {
       setBorrowAmount('');
       return;
     }
+    if (type === ActionText.Repay) {
+      // if Withdraw Collateral is 0, set BorrowAmount to 0
+      if (Big(amount || 0).lte(0)) {
+        setBorrowAmount('');
+        return;
+      }
+      // calc BorrowAmount by ratio and amount
+      const _lastBorrowed = calcNECTBorrowed(totalAmount, val);
+      const _repayBorrowedAmount = Big(market.borrowed || 0).minus(_lastBorrowed).toFixed(market.borrowToken.decimals, Big.roundDown);
+      setBorrowAmount(_repayBorrowedAmount);
+      return;
+    }
     const _borrowed = calcNECTBorrowed(totalAmount, val);
     setBorrowAmount(_borrowed);
   };

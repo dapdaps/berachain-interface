@@ -1094,6 +1094,10 @@ const BelongForm = (props: any) => {
     return getStatus(currentMarketData, automaticLoopingData?.leverageRatio?.value || "0");
   }, [currentMarketData, automaticLoopingData]);
 
+  const [currentCollVaultPrice] = useMemo(() => {
+    return [currentMarketData?.collPrice || "0"];
+  }, [currentMarketData]);
+
   const { data: userBalanceTokenList, loading: userBalanceTokenListLoading } = useRequest(async () => {
     if (!account) {
       return leverageMarkets;
@@ -1119,11 +1123,12 @@ const BelongForm = (props: any) => {
       _userBalanceTokenList.push({
         ...TARGET_MARKET,
         balance: numberRemoveEndZero(Big(targetTokenBalance).div(10 ** TARGET_MARKET.decimals).toFixed(TARGET_MARKET.decimals, Big.roundDown)),
+        price: currentCollVaultPrice,
       });
     }
 
     return _userBalanceTokenList;
-  }, { refreshDeps: [account, leverageMarkets, tokenSelectorVisible] });
+  }, { refreshDeps: [account, leverageMarkets, tokenSelectorVisible, currentCollVaultPrice] });
 
   useEffect(() => {
     setMarginInSharesData(void 0);
