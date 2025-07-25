@@ -15,24 +15,23 @@ export default function useUserList() {
 
   const queryPools = async () => {
     try {
-      const calls = [
-        axios.get(
-          `https://backend.kodiak.finance/vaults?orderBy=balance&orderDirection=desc&limit=100&offset=0&chainId=80094&user=${account}`
-        )
-      ];
-      if (Object.values(kodiakTokensStore.tokens).length === 0) {
-        calls.push(
-          axios.get("https://api.panda.kodiak.finance/80094/tokenList.json")
-        );
-        calls.push(
-          axios.get(
-            "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
-          )
-        );
-      }
-      const [topPoolsResult, pandaResponse, normalResponse] = await Promise.all(
-        calls
+      const topPoolsResult = await axios.get(
+        `https://backend.kodiak.finance/vaults?orderBy=balance&orderDirection=desc&limit=100&offset=0&chainId=80094&user=${account}`
       );
+      let pandaResponse: any;
+      let normalResponse: any;
+      if (Object.values(kodiakTokensStore.tokens).length === 0) {
+        try {
+          pandaResponse = await axios.get("https://api.panda.kodiak.finance/80094/tokenList.json");
+        } catch(err) {
+          pandaResponse = { data: { tokens: [] } };
+        }
+        try {
+          normalResponse = await axios.get("https://static.kodiak.finance/tokenLists/berachain_mainnet.json");
+        } catch(err) {
+          normalResponse = { data: { tokens: [] } };
+        }
+      }
 
       let tokens: any = kodiakTokensStore.tokens;
       if (pandaResponse && normalResponse) {

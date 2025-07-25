@@ -63,7 +63,7 @@ const networks = {
     interestRatesApi: "/api.dolomite.io/tokens/80094/interest-rates",
     pricesApi: "/api.dolomite.io/tokens/80094/prices",
     graphApi:
-      "https://api.goldsky.com/api/public/project_clyuw4gvq4d5801tegx0aafpu/subgraphs/dolomite-berachain-mainnet/v0.1.4-fix/gn",
+      "https://api.goldsky.com/api/public/project_clyuw4gvq4d5801tegx0aafpu/subgraphs/dolomite-berachain-mainnet/latest/gn",
     ...graphConfig,
     approveMax: true,
     wrappedToken: bera["wbera"],
