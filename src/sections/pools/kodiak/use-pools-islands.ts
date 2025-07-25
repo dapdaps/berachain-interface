@@ -28,22 +28,21 @@ export default function usePoolsIslands(props?: { withBaults?: boolean; setPageL
       vaultsUrl.searchParams.set("minimumTvl", "10000");
       vaultsUrl.searchParams.set("user", account);
       vaultsUrl.searchParams.set("withBaults", !!withBaults + "");
-      const calls = [
-        axios.get(vaultsUrl.toString())
-      ];
+      const topPoolsResult = await axios.get(vaultsUrl.toString());
+      let pandaResponse: any;
+      let normalResponse: any;
       if (Object.values(kodiakTokensStore.tokens).length === 0) {
-        calls.push(
-          axios.get("https://api.panda.kodiak.finance/80094/tokenList.json")
-        );
-        calls.push(
-          axios.get(
-            "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
-          )
-        );
+        try {
+          pandaResponse = await axios.get("https://api.panda.kodiak.finance/80094/tokenList.json");
+        } catch(err) {
+          pandaResponse = { data: { tokens: [] } };
+        }
+        try {
+          normalResponse = await axios.get("https://static.kodiak.finance/tokenLists/berachain_mainnet.json");
+        } catch(err) {
+          normalResponse = { data: { tokens: [] } };
+        }
       }
-      const [topPoolsResult, pandaResponse, normalResponse] = await Promise.all(
-        calls
-      );
 
       let tokens: any = kodiakTokensStore.tokens;
       if (pandaResponse && normalResponse) {

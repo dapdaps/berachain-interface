@@ -73,12 +73,22 @@ export default function useDexTokens(dapp: any) {
       return;
     }
     try {
-      const pandaResponse = await asyncFetch(
-        "https://api.panda.kodiak.finance/80094/tokenList.json"
-      );
-      const normalResponse = await asyncFetch(
-        "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
-      );
+      let pandaResponse: any;
+      let normalResponse: any;
+      try {
+        pandaResponse = await asyncFetch(
+          "https://api.panda.kodiak.finance/80094/tokenList.json"
+        );
+      } catch(err) {
+        pandaResponse = { tokens: [] };
+      }
+      try {
+        normalResponse = await asyncFetch(
+          "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
+        );
+      } catch(err) {
+        normalResponse = { tokens: [] };
+      }
       const list = [
         bera.bera,
         bera.henlo,
