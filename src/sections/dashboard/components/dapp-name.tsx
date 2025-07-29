@@ -3,13 +3,15 @@ import Category from './category';
 const Laptop = ({ icon, name, category, categories, onClick }: any) => {
   return (
     <div className='justify-between items-center gap-[10px] hidden lg:flex'>
-      <div className='flex items-center gap-[7px]'>
+      <div className='flex items-center gap-[7px] shrink-0'>
         <img src={icon} alt='' width={31} height={31} onClick={onClick} className="cursor-pointer" />
         <span className='text-black text-[16px] font-[600] leading-[90%] cursor-pointer' onClick={onClick}>
           {name}
         </span>
       </div>
-      <Category>{categories?.join("/") ?? category}</Category>
+      <Category className='whitespace-nowrap overflow-hidden text-ellipsis'>
+        {categories?.join("/") ?? category}
+      </Category>
     </div>
   );
 };

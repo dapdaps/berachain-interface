@@ -61,6 +61,8 @@ export function usePortfolio(props: Props) {
           if (!_dapp.assets) continue;
           for (const typeAsset of _dapp.assets) {
             typeAsset.version = trim(_dapp.version || '');
+            typeAsset.dappType = trim(_dapp.type || '');
+            typeAsset.dappName = trim(_dapp.name || '');
           }
           const uniqIdx = uniqData.findIndex((_it: any) => {
             return _it.name === _dapp.name;
