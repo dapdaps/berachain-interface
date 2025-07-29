@@ -55,7 +55,10 @@ export default function Laptop({ isLending, tableList }: any) {
                 </div>
               ))}
             </div>
-            <div>{record.assets.map((token: any) => token.symbol).join(' / ')}</div>
+            <div>
+              {record.assets.map((token: any) => token.symbol).join(' / ')}
+              {(record.dappType === "Yield" && record.dappName?.toLowerCase() === "kodiak") ? "(Bault)" : ""}
+            </div>
             <div>{record.version}</div>
           </div>
         );
@@ -120,6 +123,7 @@ export default function Laptop({ isLending, tableList }: any) {
               </div>
             </div>
             {record.symbol}
+            {(record.dappType === "Yield" && record.dappName?.toLowerCase() === "kodiak") ? "(Bault)" : ""}
           </div>
         );
       }

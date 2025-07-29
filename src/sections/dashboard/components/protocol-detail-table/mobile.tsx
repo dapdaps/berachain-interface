@@ -11,9 +11,8 @@ const Dex = ({ record }: any) => {
         <div className='flex items-center gap-[6px]'>
           {record.assets.map((token: any, idx: number) => (
             <div
-              className={`w-[26px] h-[26px] rounded-[50%] shrink-0 ${
-                idx && 'ml-[-10px]'
-              }`}
+              className={`w-[26px] h-[26px] rounded-[50%] shrink-0 ${idx && 'ml-[-10px]'
+                }`}
               key={idx}
             >
               <LazyImage
@@ -29,7 +28,7 @@ const Dex = ({ record }: any) => {
             </div>
           ))}
           <div className='text-[16px] font-semibold'>
-            {record.assets.map((token: any) => token.symbol).join(' / ')} {record.version}
+            {record.assets.map((token: any) => token.symbol).join(' / ')} {(record.dappType === "Yield" && record.dappName?.toLowerCase() === "kodiak") ? "(Bault)" : ""} {record.version}
           </div>
         </div>
         <div className='text-[18px] font-semibold'>
@@ -65,7 +64,9 @@ const Lending = ({ record }: any) => {
               fallbackSrc={DefaultIcon}
             />
           </div>
-          <div className='text-[16px] font-semibold'>{record.symbol}</div>
+          <div className='text-[16px] font-semibold'>
+            {record.symbol} {(record.dappType === "Yield" && record.dappName?.toLowerCase() === "kodiak") ? "(Bault)" : ""}
+          </div>
         </div>
         <div className='text-[18px] font-semibold'>
           {numberFormatter(record.totalUsd, 2, true, { prefix: '$' })}
@@ -76,9 +77,8 @@ const Lending = ({ record }: any) => {
           <div className='text-[#3D405A]'>Supply</div>
           <div className='font-semibold'>
             {Big(record.supplyAmount).gt(0)
-              ? `${numberFormatter(record.supplyAmount, 4, true)} ${
-                  record.symbol
-                }`
+              ? `${numberFormatter(record.supplyAmount, 4, true)} ${record.symbol
+              }`
               : '/'}
           </div>
         </div>
@@ -86,9 +86,8 @@ const Lending = ({ record }: any) => {
           <div className='text-[#3D405A] text-center'>Borrow</div>
           <div className='font-semibold text-center'>
             {Big(record.borrowAmount).gt(0)
-              ? `${numberFormatter(record.borrowAmount, 4, true)} ${
-                  record.symbol
-                }`
+              ? `${numberFormatter(record.borrowAmount, 4, true)} ${record.symbol
+              }`
               : '/'}
           </div>
         </div>
