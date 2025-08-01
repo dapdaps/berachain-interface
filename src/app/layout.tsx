@@ -8,20 +8,18 @@ import useIsMobile from "@/hooks/use-isMobile";
 import AppLayout from "@/layouts";
 import { useTapSoundStore } from "@/stores/tap-sound";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
-import Script from 'next/script';
-import React, { Suspense, useEffect, useMemo, useRef } from 'react';
+// import Script from "next/script";
+import React, { Suspense, useEffect, useMemo, useRef } from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
-import "@radix-ui/themes/styles.css"
-import "@near-wallet-selector/modal-ui/styles.css"
-import "@near-wallet-selector/account-export/styles.css"
-import { usePathname } from 'next/navigation';
-import clsx from 'clsx';
-
-
+import "@radix-ui/themes/styles.css";
+import "@near-wallet-selector/modal-ui/styles.css";
+import "@near-wallet-selector/account-export/styles.css";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
 export default function RootLayout({
   children
@@ -47,10 +45,7 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html
-      lang="en"
-      className="md:overflow-hidden"
-    >
+    <html lang="en" className="md:overflow-hidden">
       <head>
         <title>Beratown</title>
         <meta
@@ -64,16 +59,14 @@ export default function RootLayout({
         className={clsx("md:overflow-hidden", isChatHome && "overflow-hidden")}
       >
         <WagmiProvider>
-            <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-              <SceneContextProvider>
-                <Suspense>
-                  <AppLayout>
-                    {children}
-                  </AppLayout>
-                  <Rpc />
-                </Suspense>
-              </SceneContextProvider>
-            </SkeletonTheme>
+          <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
+            <SceneContextProvider>
+              <Suspense>
+                <AppLayout>{children}</AppLayout>
+                <Rpc />
+              </Suspense>
+            </SceneContextProvider>
+          </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
           position="top-right"
@@ -94,14 +87,17 @@ export default function RootLayout({
         />
         <TapSound ref={tapRef} />
       </body>
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-SZ82B6ZN43"></Script>
+      {/* <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-SZ82B6ZN43"
+      ></Script>
       <Script id="ga-config">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-SZ82B6ZN43');`}
-      </Script>
+      </Script> */}
     </html>
   );
 }
