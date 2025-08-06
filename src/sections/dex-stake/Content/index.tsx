@@ -18,6 +18,7 @@ import chains from "@/configs/chains";
 import SwitchTabs from "@/components/switch-tabs";
 import { balanceFormated } from "@/utils/balance";
 import WithdrawList from "./Withdraw";
+import useIsMobile from "@/hooks/use-isMobile";
 
 export default function Stake({
   dapp,
@@ -43,6 +44,7 @@ export default function Stake({
   const [showDetail, setShowDetail] = useState(true);
   const prices = usePriceStore((store: any) => store.price);
   const [tab, setTab] = useState("stake");
+  const isMobile = useIsMobile();
 
   const [selectType, setSelectType] = useState<"in" | "out">("in");
   const { loading, trade, onQuoter, onSwap, apr, quoteNumber, withdrawalRequests, onWithdraw } = useTrade({
@@ -271,7 +273,11 @@ export default function Stake({
         />
       </Card>
 
-      <WithdrawList data={withdrawalRequests} onWithdraw={onWithdraw} />
+      {
+        tab === "unstake" && (
+          <WithdrawList data={withdrawalRequests} onWithdraw={onWithdraw} />
+        )
+      }
     </div>
   );
 }

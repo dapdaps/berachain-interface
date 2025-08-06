@@ -6,6 +6,8 @@ import { balanceFormated } from "@/utils/balance";
 import useAccount from "@/hooks/use-account";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useSwitchChain } from 'wagmi';
+import useIsMobile from "@/hooks/use-isMobile";
+import clsx from "clsx";
 
 dayjs.extend(duration);
 
@@ -24,9 +26,10 @@ interface WithdrawListProps {
 }
 
 const WithdrawList: React.FC<WithdrawListProps> = ({ data, onWithdraw }) => {
+    const isMobile = useIsMobile();
     return (
-        <div className=" w-[400px] absolute top-0 right-[-410px]">
-            <Card>
+        <div className={clsx(isMobile ? "w-full mt-4" : "w-[400px] absolute top-0 right-[-410px]")}>
+            <Card className={isMobile ? "rounded-none" : ""}>
                 <div className="text-[#222] text-[20px] font-semibold mb-4">Position</div>
                 {data.map((item) => (
                     <div

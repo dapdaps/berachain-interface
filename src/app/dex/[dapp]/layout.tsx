@@ -22,6 +22,20 @@ const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
     });
   }, [dapp, isPool]);
 
+  const tabs = useMemo(() => {  
+    if (dapp.name === "Bex") {
+      return [
+        { label: "Swap", value: "swap" },
+        { label: "Liquidity", value: "pools" },
+        { label: "Stake", value: "stake" },
+      ]
+    }
+    return [
+      { label: "Swap", value: "swap" },
+      { label: "Liquidity", value: "pools" },
+    ]
+  }, [dapp]);
+
 
   return (
     <div className="pt-[30px] flex flex-col items-center">
@@ -33,11 +47,7 @@ const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
         <div className="h-[56px]" />
       ) : (
         <SwitchTabs
-          tabs={[
-            { label: "Swap", value: "swap" },
-            { label: "Liquidity", value: "pools" },
-            { label: "Stake", value: "stake" },
-          ]}
+          tabs={tabs}
           onChange={(val) => {
             console.log("val", params, val);
             router.replace(`/dex/${params.dapp}/${val}`);
@@ -93,7 +103,22 @@ const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
   );
 };
 
-const Mobile = ({ params, router, children, isPool }: any) => {
+const Mobile = ({ params, router, children, isPool, dapp, isStake }: any) => {
+
+  const tabs = useMemo(() => {  
+    if (dapp.name === "Bex") {
+      return [
+        { label: "Swap", value: "swap" },
+        { label: "Liquidity", value: "pools" },
+        { label: "Stake", value: "stake" },
+      ]
+    }
+    return [
+      { label: "Swap", value: "swap" },
+      { label: "Liquidity", value: "pools" },
+    ]
+  }, [dapp]);
+
   return (
     <div className="relative pt-[50px] h-full">
       <PageBack
@@ -103,14 +128,11 @@ const Mobile = ({ params, router, children, isPool }: any) => {
       <div className="absolute top-[20px] right-[10px] w-[200px]">
         {params.dapp !== "ooga-booga" && (
           <SwitchTabs
-            tabs={[
-              { label: "Swap", value: "swap" },
-              { label: "Liquidity", value: "pools" }
-            ]}
+            tabs={tabs}
             onChange={(val) => {
               router.replace(`/dex/${params.dapp}/${val}`);
             }}
-            current={isPool ? "pools" : "swap"}
+            current={isPool ? "pools" : isStake ? "stake" : "swap"}
           />
         )}
       </div>
