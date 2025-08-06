@@ -10,9 +10,9 @@ import dapps from "@/configs/swap";
 import { DEFAULT_SWAP_DAPP } from "@/configs";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
-const Laptop = ({ params, router, dapp, children, isPool }: any) => {
+const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
   const dappList = useMemo(() => {
     return Object.values(dapps).filter((_dapp) => {
       if (isPool) {
@@ -21,6 +21,7 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
       return _dapp.name !== dapp.name;
     });
   }, [dapp, isPool]);
+
 
   return (
     <div className="pt-[30px] flex flex-col items-center">
@@ -34,12 +35,14 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
         <SwitchTabs
           tabs={[
             { label: "Swap", value: "swap" },
-            { label: "Liquidity", value: "pools" }
+            { label: "Liquidity", value: "pools" },
+            { label: "Stake", value: "stake" },
           ]}
           onChange={(val) => {
+            console.log("val", params, val);
             router.replace(`/dex/${params.dapp}/${val}`);
           }}
-          current={isPool ? "pools" : "swap"}
+          current={isPool ? "pools" : isStake ? "stake" : "swap"}
           className="w-[400px]"
         />
       )}
@@ -128,13 +131,14 @@ export default function DexLayout({
   const urlParams = useParams();
   const dapp = dapps[urlParams.dapp as string] || dapps[DEFAULT_SWAP_DAPP];
   const isPool = pathname.includes("pools");
+  const isStake = pathname.includes("stake");
 
   return (
     <BearBackground type="dapp">
       {isMobile ? (
-        <Mobile {...{ params, router, children, dapp, isPool }} />
+        <Mobile {...{ params, router, children, dapp, isPool, isStake }} />
       ) : (
-        <Laptop {...{ params, router, children, dapp, isPool }} />
+        <Laptop {...{ params, router, children, dapp, isPool, isStake }} />
       )}
     </BearBackground>
   );
