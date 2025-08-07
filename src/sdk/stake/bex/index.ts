@@ -38,7 +38,6 @@ export async function quote(params: any) {
     const { signer, inputCurrencyAmount, inputCurrency, outputCurrency, needTxn = true } = params;
     const depositValue = utils.parseUnits(inputCurrencyAmount);
     const vaultContract = new ethers.Contract(VAULT_ADDRESS, VAULT_ABI, signer);
-    console.log("inputCurrency", inputCurrency);
     if (inputCurrency.address.toLowerCase() === VAULT_ADDRESS.toLowerCase()) {
         const currentShareValue = await vaultContract.previewRedeem(depositValue);
 

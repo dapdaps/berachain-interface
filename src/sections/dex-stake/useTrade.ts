@@ -4,6 +4,10 @@ import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import { stake, unstake, quote, getApr, getWithdrawalRequests, withdraw } from "@/sdk/stake";
+import chains from "@/configs/chains";
+import { providers } from "ethers";
+
+
 
 export default function useTrade({ chainId, template, from, onSuccess, dapp }: any) {
   const [loading, setLoading] = useState(false);
@@ -17,6 +21,8 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
   const [quoteNumber, setQuoteNumber] = useState("0");
   const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
   const prices = {};
+
+  const rpcProvider = useRef(new providers.JsonRpcProvider(chains[80094].rpcUrls.default.http[0]));
 
   const onQuoter = useCallback(
     async ({
@@ -157,9 +163,9 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
 
   useEffect(() => {
     const fetchApr = async () => {
-      if (!provider || !dapp.name) return;
+      if (!dapp.name) return;
       const apr = await getApr(dapp.name, {
-        provider
+        provider: rpcProvider.current
       });
 
       const quoteResult = await quote(dapp.name, {
@@ -170,7 +176,7 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
           isNative: true
         },
         inputCurrencyAmount: '1',
-        signer: provider,
+        signer: rpcProvider.current,
         needTxn: false
       });
 

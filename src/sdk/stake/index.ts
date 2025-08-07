@@ -30,7 +30,6 @@ export async function stake(dexType: string, params: any) {
   }
 
   export async function getApr(dexType: string, params: any) {
-    console.log("getApr", dexType, params);
 
     switch (dexType.toLowerCase()) {
         case "bex":
