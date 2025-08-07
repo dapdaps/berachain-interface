@@ -50,7 +50,9 @@ const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
           tabs={tabs}
           onChange={(val) => {
             console.log("val", params, val);
-            router.replace(`/dex/${params.dapp}/${val}`);
+            const { dapp } = params;
+
+            router.replace(`/dex/${dapp || 'bex'}/${val}`);
           }}
           current={isPool ? "pools" : isStake ? "stake" : "swap"}
           className="w-[400px]"

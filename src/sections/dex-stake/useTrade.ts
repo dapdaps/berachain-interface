@@ -91,7 +91,7 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
 
       if (status === 1) {
         toast.success({
-          title: `Swap Successful!`,
+          title: `Stake Successful!`,
           tx: transactionHash,
           chainId
         });
@@ -107,17 +107,14 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
         toast.fail({ title: `Stake failed!` });
       }
       addAction({
-        type: "Stake",
-        inputCurrencyAmount: trade.inputCurrencyAmount,
-        inputCurrency: trade.inputCurrency,
-        outputCurrencyAmount: trade.outputCurrencyAmount,
-        outputCurrency: trade.outputCurrency,
+        type: "Staking",
+        action: 'Stake',
+        amount: trade.inputCurrencyAmount,
+        tokens: [trade.inputCurrency, trade.outputCurrency],
         template: dapp.name,
         status,
         transactionHash,
         add: 0,
-        token_in_currency: trade.inputCurrency,
-        token_out_currency: trade.outputCurrency
       });
     } catch (err: any) {
       toast.dismiss(toastId);
@@ -178,20 +175,22 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
       });
 
       if (account) {
-        const withdrawalRequests = await getWithdrawalRequests(dapp.name, {
-          address: account,
-          provider
-        });
-
-        setWithdrawalRequests(withdrawalRequests || []);
-
-        console.log("withdrawalRequests", withdrawalRequests);
+        getWithdrawList()
       }
 
       setQuoteNumber(quoteResult?.outputCurrencyAmount || "0");
       setApr(apr || 0);
     };
     fetchApr();
+  }, [provider, dapp, account]);
+
+  const getWithdrawList = useCallback(async () => {
+    if (!provider || !dapp.name || !account) return;
+    const withdrawalRequests = await getWithdrawalRequests(dapp.name, {
+      address: account,
+      provider
+    });
+    setWithdrawalRequests(withdrawalRequests || []);
   }, [provider, dapp, account]);
 
   return { loading, trade, onQuoter, onSwap, apr, quoteNumber, withdrawalRequests, onWithdraw };
