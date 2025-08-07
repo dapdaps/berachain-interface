@@ -13,46 +13,52 @@ const MENU_LIST = [
     sort: 1
   },
   {
-    label: "Swap",
-    bg: "#D8FF8D",
-    href: "/swap",
-    sort: 3
-  },
-  {
     label: "Bridge",
     bg: "#FFF5A9",
     href: "/bridge",
     sort: 2
   },
   {
+    label: "Swap",
+    bg: "#D8FF8D",
+    href: "/swap",
+    sort: 3
+  },
+  {
+    label: "Stake",
+    bg: "#FDA975",
+    href: "/stake",
+    sort: 4
+  },
+  {
     label: "Lend",
     bg: "#98F6CD",
     href: "/lend",
-    sort: 4
+    sort: 5
   },
   {
     label: "Vaults",
     bg: "#F3BBAB",
     href: "/vaults",
-    sort: 5
+    sort: 6
   },
   {
     label: "Tokens",
     bg: "#C0FF96",
     href: "/tokens",
-    sort: 6
+    sort: 7
   },
   {
     label: "Portfolio",
     bg: "#FFF5A9",
     href: "/portfolio",
-    sort: 7
+    sort: 8
   },
   {
     label: "Boost",
     bg: "#DAA56B",
     href: "/validators",
-    sort: 8
+    sort: 9
   }
 ];
 
