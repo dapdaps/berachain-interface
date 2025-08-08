@@ -10,9 +10,9 @@ import dapps from "@/configs/swap";
 import { DEFAULT_SWAP_DAPP } from "@/configs";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
-const Laptop = ({ params, router, dapp, children, isPool }: any) => {
+const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
   const dappList = useMemo(() => {
     return Object.values(dapps).filter((_dapp) => {
       if (isPool) {
@@ -21,6 +21,21 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
       return _dapp.name !== dapp.name;
     });
   }, [dapp, isPool]);
+
+  const tabs = useMemo(() => {  
+    if (dapp.name === "Bex") {
+      return [
+        { label: "Swap", value: "swap" },
+        { label: "Liquidity", value: "pools" },
+        { label: "Stake", value: "stake" },
+      ]
+    }
+    return [
+      { label: "Swap", value: "swap" },
+      { label: "Liquidity", value: "pools" },
+    ]
+  }, [dapp]);
+
 
   return (
     <div className="pt-[30px] flex flex-col items-center">
@@ -32,14 +47,14 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
         <div className="h-[56px]" />
       ) : (
         <SwitchTabs
-          tabs={[
-            { label: "Swap", value: "swap" },
-            { label: "Liquidity", value: "pools" }
-          ]}
+          tabs={tabs}
           onChange={(val) => {
-            router.replace(`/dex/${params.dapp}/${val}`);
+            console.log("val", params, val);
+            const { dapp } = params;
+
+            router.replace(`/dex/${dapp || 'bex'}/${val}`);
           }}
-          current={isPool ? "pools" : "swap"}
+          current={isPool ? "pools" : isStake ? "stake" : "swap"}
           className="w-[400px]"
         />
       )}
@@ -90,7 +105,22 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
   );
 };
 
-const Mobile = ({ params, router, children, isPool }: any) => {
+const Mobile = ({ params, router, children, isPool, dapp, isStake }: any) => {
+
+  const tabs = useMemo(() => {  
+    if (dapp.name === "Bex") {
+      return [
+        { label: "Swap", value: "swap" },
+        { label: "Liquidity", value: "pools" },
+        { label: "Stake", value: "stake" },
+      ]
+    }
+    return [
+      { label: "Swap", value: "swap" },
+      { label: "Liquidity", value: "pools" },
+    ]
+  }, [dapp]);
+
   return (
     <div className="relative pt-[50px] h-full">
       <PageBack
@@ -100,14 +130,11 @@ const Mobile = ({ params, router, children, isPool }: any) => {
       <div className="absolute top-[20px] right-[10px] w-[200px]">
         {params.dapp !== "ooga-booga" && (
           <SwitchTabs
-            tabs={[
-              { label: "Swap", value: "swap" },
-              { label: "Liquidity", value: "pools" }
-            ]}
+            tabs={tabs}
             onChange={(val) => {
               router.replace(`/dex/${params.dapp}/${val}`);
             }}
-            current={isPool ? "pools" : "swap"}
+            current={isPool ? "pools" : isStake ? "stake" : "swap"}
           />
         )}
       </div>
@@ -128,13 +155,14 @@ export default function DexLayout({
   const urlParams = useParams();
   const dapp = dapps[urlParams.dapp as string] || dapps[DEFAULT_SWAP_DAPP];
   const isPool = pathname.includes("pools");
+  const isStake = pathname.includes("stake");
 
   return (
     <BearBackground type="dapp">
       {isMobile ? (
-        <Mobile {...{ params, router, children, dapp, isPool }} />
+        <Mobile {...{ params, router, children, dapp, isPool, isStake }} />
       ) : (
-        <Laptop {...{ params, router, children, dapp, isPool }} />
+        <Laptop {...{ params, router, children, dapp, isPool, isStake }} />
       )}
     </BearBackground>
   );
