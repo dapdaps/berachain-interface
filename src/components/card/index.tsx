@@ -1,3 +1,5 @@
+import useIsMobile from "@/hooks/use-isMobile";
+
 export default function Card({
   children,
   className,
@@ -7,10 +9,12 @@ export default function Card({
   className?: string;
   style?: React.CSSProperties;
 }) {
+  const isMobile = useIsMobile();
+  
   return (
     <div
       style={style}
-      className={`border border-[#000000] rounded-[30px] md:rounded-b-none px-[20px] py-[25px] bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040] md:shadow-none md:px-[10px] md:py-[16px] ${className}`}
+      className={`border border-[#000000] rounded-[30px] md:rounded-b-none px-[20px] py-[25px] bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040] md:shadow-none md:px-[10px] md:py-[16px] ${isMobile ? "mt-[20px]": ""} ${className}`}
     >
       {children}
     </div>
