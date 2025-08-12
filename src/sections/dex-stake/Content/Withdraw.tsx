@@ -71,6 +71,10 @@ const WithdrawList: React.FC<WithdrawListProps> = ({ data, onWithdraw }) => {
                         </div>
                     </div>
                 ))}
+
+                {
+                    (!data || data.length === 0) && <div className="text-center text-[#3D405A] text-[16px] font-semibold py-[20px]">No data</div>
+                }
             </Card>
         </div>
     );

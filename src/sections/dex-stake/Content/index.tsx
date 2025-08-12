@@ -171,7 +171,7 @@ export default function Stake({
             <div className="text-[18px] text-[#7AC231] leading-none">{balanceFormated(apr, 2)}%</div>
           </div>
           <div className="text-right">
-            <div className="text-xs text-[#B3B3B3] font-medium mb-1">Available to stake</div>
+            <div className="text-xs text-[#B3B3B3] font-medium mb-1">Available to {tab}</div>
             <div className="text-[18px] font-bold text-[#3D405A] leading-none">{balanceFormated(maxInputBalance)} {inputCurrency.symbol}</div>
           </div>
         </div>

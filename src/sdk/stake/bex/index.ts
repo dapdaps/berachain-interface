@@ -148,6 +148,7 @@ export async function getWithdrawalRequests(params: any) {
     const withdrawal = await vaultContract.withdrawalRequests(address);
     const WITHDRAWAL_COOLDOWN = await vaultContract.WITHDRAWAL_COOLDOWN();
 
+
     if (Number(withdrawal.assets._hex) > 0) {
         return [{
             amount: utils.formatEther(withdrawal.assets._hex),

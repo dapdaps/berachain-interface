@@ -6,6 +6,7 @@ import useToast from "@/hooks/use-toast";
 import { stake, unstake, quote, getApr, getWithdrawalRequests, withdraw } from "@/sdk/stake";
 import chains from "@/configs/chains";
 import { providers } from "ethers";
+import { useInterval } from "ahooks";
 
 
 
@@ -180,9 +181,9 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
         needTxn: false
       });
 
-      if (account) {
-        getWithdrawList()
-      }
+      // if (account) {
+      //   getWithdrawList()
+      // }
 
       setQuoteNumber(quoteResult?.outputCurrencyAmount || "0");
       setApr(apr || 0);
@@ -198,6 +199,13 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
     });
     setWithdrawalRequests(withdrawalRequests || []);
   }, [provider, dapp, account]);
+
+  useInterval(() => {
+    if (account) {
+      console.log("getWithdrawList")
+      getWithdrawList()
+    }
+  }, 10000, { immediate: true })
 
   return { loading, trade, onQuoter, onSwap, apr, quoteNumber, withdrawalRequests, onWithdraw };
 }

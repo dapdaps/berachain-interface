@@ -33,6 +33,7 @@ const menuItems = [
     dataBp: "1022-002-003"
   },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
+  { id: 7, title: "Stake Bera", href: "/dex/bex/stake" },
   {
     id: 6,
     title: "Portfolio",
