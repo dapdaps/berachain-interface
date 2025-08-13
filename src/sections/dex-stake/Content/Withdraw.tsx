@@ -29,7 +29,7 @@ interface WithdrawListProps {
 const WithdrawList: React.FC<WithdrawListProps> = ({ data, onWithdraw }) => {
     const isMobile = useIsMobile();
     return (
-        <div className={clsx(isMobile ? "w-full mt-4 pb-[50px]" : "w-[400px] absolute top-0 right-[-410px]")}>
+        <div className={clsx(isMobile ? "w-full mt-4" : "w-[400px] absolute top-0 right-[-410px]")}>
             <Card className={isMobile ? "rounded-none" : ""}>
                 <div className="text-[#222] text-[20px] font-semibold mb-4">Position</div>
                 {data.map((item) => (

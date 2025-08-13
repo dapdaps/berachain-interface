@@ -122,7 +122,7 @@ const Mobile = ({ params, router, children, isPool, dapp, isStake }: any) => {
   }, [dapp]);
 
   return (
-    <div className="relative pt-[50px] h-full">
+    <div className="relative pt-[50px] pb-[50px] overflow-auto">
       <PageBack
         className="absolute left-[12px] top-[22px]"
         showBackText={false}
