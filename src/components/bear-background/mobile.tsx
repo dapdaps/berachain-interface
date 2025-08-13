@@ -55,7 +55,7 @@ export default function Mobile({ children, showGrassland = false, type }: any) {
       {showGrassland && (
         <div className='bg-[#B6DF5D] h-[75.384vw] w-full absolute bottom-0 border-t border-[#4B371F]' />
       )}
-      <div className={clsx('relative z-[10] h-full', routes.includes(pathname) ? 'scrollbar-hide h-dvh overflow-y-scroll overflow-x-hidden' : '')}>{children}</div>
+      <div className={clsx('relative z-[10] h-full', routes.includes(pathname) ? 'scrollbar-hide h-dvh overflow-y-scroll overflow-x-hidden' : 'overflow-auto')}>{children}</div>
     </div>
   );
 }
