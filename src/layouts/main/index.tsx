@@ -90,6 +90,7 @@ const MainLayout = (props: Props) => {
         "/ibgt",
         "/lend",
         "/swap",
+        "/stake",
         "/tokens",
         "/validators",
         "/hall"

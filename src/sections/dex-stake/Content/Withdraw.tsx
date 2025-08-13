@@ -8,6 +8,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useSwitchChain } from 'wagmi';
 import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
+import Empty from "@/components/empty";
 
 dayjs.extend(duration);
 
@@ -71,6 +72,12 @@ const WithdrawList: React.FC<WithdrawListProps> = ({ data, onWithdraw }) => {
                         </div>
                     </div>
                 ))}
+
+                {
+                    (!data || data.length === 0) && <div className="text-center text-[#3D405A] text-[16px] font-semibold py-[20px]">
+                        <Empty desc="No withdrawals" />
+                    </div>
+                }
             </Card>
         </div>
     );
