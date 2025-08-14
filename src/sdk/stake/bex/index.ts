@@ -49,7 +49,8 @@ export async function quote(params: any) {
                     routerAddress: VAULT_ADDRESS,
                     txn: {
                         ...tx
-                    }
+                    },
+                    sub_type: "Unstake"
                 }
             }
     
@@ -68,7 +69,8 @@ export async function quote(params: any) {
                     routerAddress: VAULT_ADDRESS,
                     txn: {
                         ...tx
-                    }
+                    },
+                    sub_type: "Stake"
                 }
             }
     
