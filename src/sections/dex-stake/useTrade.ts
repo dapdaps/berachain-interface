@@ -140,6 +140,7 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
     const signer = provider.getSigner(account);
     setLoading(true);
     let toastId = toast.loading({ title: "Confirming..." });
+
     try {
       const tx = await withdraw(dapp.name, {
         signer,
@@ -202,7 +203,6 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
 
   useInterval(() => {
     if (account) {
-      console.log("getWithdrawList")
       getWithdrawList()
     }
   }, 10000, { immediate: true })
