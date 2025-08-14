@@ -44,6 +44,9 @@ const WithdrawList: React.FC<WithdrawListProps> = ({ data, onWithdraw }) => {
                                     (() => {
                                         const totalSeconds = Number(item.timeLeft) || 0;
                                         const d = dayjs.duration(totalSeconds, "seconds");
+                                        if (d.asSeconds() <= 0) {
+                                            return "0M";
+                                        }
                                         const days = d.days();
                                         const hours = d.hours();
                                         const minutes = d.minutes();

@@ -30,7 +30,7 @@ export async function unStake(params: any) {
 export async function withdraw(params: any) {
     const { signer, inputCurrencyAmount, inputCurrency } = params;
     const vaultContract = new ethers.Contract(VAULT_ADDRESS, VAULT_ABI, signer);
-    const tx = await vaultContract.withdraw(true);
+    const tx = await vaultContract.completeWithdrawal(true);
     return tx;
 }
 
@@ -49,7 +49,8 @@ export async function quote(params: any) {
                     routerAddress: VAULT_ADDRESS,
                     txn: {
                         ...tx
-                    }
+                    },
+                    sub_type: "Unstake"
                 }
             }
     
@@ -68,7 +69,8 @@ export async function quote(params: any) {
                     routerAddress: VAULT_ADDRESS,
                     txn: {
                         ...tx
-                    }
+                    },
+                    sub_type: "Stake"
                 }
             }
     

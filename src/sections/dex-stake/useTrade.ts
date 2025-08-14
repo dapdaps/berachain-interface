@@ -8,15 +8,12 @@ import chains from "@/configs/chains";
 import { providers } from "ethers";
 import { useInterval } from "ahooks";
 
-
-
 export default function useTrade({ chainId, template, from, onSuccess, dapp }: any) {
   const [loading, setLoading] = useState(false);
   const [trade, setTrade] = useState<any>();
   const { account, provider } = useAccount();
   const toast = useToast();
   const { addAction } = useAddAction(from || "dapp");
-  const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
   const [apr, setApr] = useState(0);
   const [quoteNumber, setQuoteNumber] = useState("0");
@@ -45,9 +42,9 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
 
       const signer = provider.getSigner(account);
 
-      const amount = Big(inputCurrencyAmount)
-        .mul(10 ** inputCurrency.decimals)
-        .toFixed(0);
+      // const amount = Big(inputCurrencyAmount)
+      //   .mul(10 ** inputCurrency.decimals)
+      //   .toFixed(0);
 
       try {
         setLoading(true);
@@ -67,7 +64,8 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
             inputCurrencyAmount,
             inputCurrency,
             outputCurrency,
-            template: dapp.name
+            template: dapp.name,
+            sub_type: quoteResult.sub_type
           });
         } else {
           setTrade(null);
@@ -108,18 +106,20 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
           inputCurrencyAmount: trade.inputCurrencyAmount,
           outputCurrencyAmount: trade.outputCurrencyAmount,
           transactionHash: transactionHash,
-          tradeFrom: trade.template
+          tradeFrom: trade.template,
+          sub_type: trade.sub_type
         });
       } else {
         toast.fail({ title: `Stake failed!` });
       }
       addAction({
         type: "Staking",
-        action: 'Stake',
+        action: trade.sub_type,
         amount: trade.inputCurrencyAmount,
         tokens: [trade.inputCurrency, trade.outputCurrency],
         template: dapp.name,
         status,
+        sub_type: trade.sub_type,
         transactionHash,
         add: 0,
       });
@@ -140,6 +140,7 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
     const signer = provider.getSigner(account);
     setLoading(true);
     let toastId = toast.loading({ title: "Confirming..." });
+
     try {
       const tx = await withdraw(dapp.name, {
         signer,
@@ -202,7 +203,6 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
 
   useInterval(() => {
     if (account) {
-      console.log("getWithdrawList")
       getWithdrawList()
     }
   }, 10000, { immediate: true })
