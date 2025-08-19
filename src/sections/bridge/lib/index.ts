@@ -6,18 +6,22 @@ import { getIcon, getAllToken, getChainScan, getBridgeMsg } from './util/index'
 import { getQuoteInfo, setQuote } from './util/routerController'
 import { getQuote as getStargateRoute, execute as executeStargate, getStatus as getStargateStatus } from './bridges/stargate'
 import { getQuote as getJumperRoute, execute as executeJumper, getStatus as getJumperStatus } from './bridges/jumper'
+import { getQuote as getKodiakRoute, execute as executeKodiak, getStatus as getKodiakStatus } from './bridges/kodiak'
 
 import { ExecuteRequest, QuoteRequest, QuoteResponse, StatusParams, StatusRes } from './type'
 
 const executeTypes: any = {
   executeStargate,
   executeJumper,
+  executeKodiak,
 }
 
 
 export async function execute(executeRequest: ExecuteRequest, signer: Signer) {
   const quoteInfo = getQuoteInfo(executeRequest.uuid)
   const executeFn = executeTypes[`execute${quoteInfo.bridgeType}`]
+
+  console.log(executeRequest, 'executeRequest')
 
   if (executeFn) {
     try {
@@ -59,6 +63,9 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
           break;
         case 'jumper':
           quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))
+          break;
+        case 'kodiak':
+          quoteP.push(getKodiakRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('kodiak:', e)))
           break;
       }
     }

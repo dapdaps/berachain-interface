@@ -22,8 +22,11 @@ const chainList = Object.values(chains).filter((chain) =>
 );
 
 export default function BridgeContent({
+  type,
   defaultFromToken,
   defaultToToken,
+  defaultFromChain = 1,
+  defaultToChain = 80094,
   isShowConfirm = true,
   onCallback,
   onShowHistory,
@@ -35,6 +38,7 @@ export default function BridgeContent({
 
   const { bridgeType } = useBridgeType();
   const allTokens = useAllToken();
+
 
   const {
     fromChain,
@@ -60,8 +64,8 @@ export default function BridgeContent({
     routes,
     executeRoute
   } = useBridge({
-    originFromChain: chains[1],
-    originToChain: chains[80094],
+    originFromChain: chains[defaultFromChain],
+    originToChain: chains[defaultToChain],
     derection: 1,
     account: address,
     defaultBridgeText: "Bridge",
@@ -120,8 +124,8 @@ export default function BridgeContent({
   }, [fromChain, fromToken, bridgeType, allTokens]);
 
   useEffect(() => {
-    const fromTokens = allTokens[1];
-    const toTokens = allTokens[80094];
+    const fromTokens = allTokens[defaultFromChain];
+    const toTokens = allTokens[defaultToChain];
     if (defaultFromToken && defaultToToken) {
       setFromToken(
         fromTokens.find(
@@ -146,6 +150,8 @@ export default function BridgeContent({
       setToToken(toToken);
     }
   }, [defaultFromToken, defaultToToken, allTokens]);
+  
+  console.log(type, 'type');
 
   return (
     <>
@@ -153,7 +159,7 @@ export default function BridgeContent({
         <TokenAmout
           isDest={false}
           allTokens={allTokens}
-          limitBera={limitBera === 1}
+          limitBera={type === "kodiak" ? true : limitBera === 1}
           chain={fromChain}
           token={fromToken ?? null}
           amount={sendAmount}
@@ -210,7 +216,7 @@ export default function BridgeContent({
         <TokenAmout
           allTokens={_allTokens}
           isDest={true}
-          limitBera={limitBera === 0}
+          limitBera={type === "kodiak" ? true : limitBera === 0}
           amount={reciveAmount ?? ""}
           chainList={chainList}
           chain={toChain}

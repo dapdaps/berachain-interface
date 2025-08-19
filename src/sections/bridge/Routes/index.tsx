@@ -7,7 +7,7 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
             routes.map((route: any, index) => (
                 <Route
                     checked={selectedRoute === route}
-                    key={route.bridgeType}
+                    key={route.bridgeType + index}
                     name={route.bridgeName}
                     toToken={toToken}
                     fee={route.fee}

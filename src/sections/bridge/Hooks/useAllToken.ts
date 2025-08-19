@@ -4,6 +4,7 @@ import { fullToken, stargateToken } from '../lib/allTokens'
 
 const _allTokens: any = {
     'jumper': fullToken,
+    'kodiak': fullToken,
     'stargate': stargateToken
 }
 export default function useAllToken() {
