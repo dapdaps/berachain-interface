@@ -9,6 +9,7 @@ import { FeeType } from '../../type/index'
 import { Chain, createWalletClient, custom } from 'viem';
 import { http } from 'viem';
 import { mainnet, berachain, polygon, arbitrum, optimism, scroll, polygonZkEvm ,metis, bsc, manta, mode, base, mantle, avalanche, fantom, gnosis, linea, zksync } from 'viem/chains';
+import { approve } from '../../util/approve';
 
 const chains = [arbitrum, mainnet, optimism, polygon, scroll, metis,berachain, polygonZkEvm, manta, mode, bsc, base, mantle, avalanche, fantom, gnosis, linea, zksync]
 
@@ -78,7 +79,14 @@ export async function execute(request: ExecuteRequest, signer: Signer): Promise<
 
     console.log(request, 'request')
 
-    const route = getQuoteInfo(request.uuid).route
+    const { route, isNative, amount, fromToken } = getQuoteInfo(request.uuid)
+
+    if (!isNative) {
+        const isApprove = await approve(fromToken.address, amount, route.to, signer)
+        if (!isApprove) {
+            return null
+        }
+    }
 
     const account = await signer.getAddress()
 
@@ -123,8 +131,10 @@ function createRoute(result: any, routes: any, quoteRequest: QuoteRequest) {
             route: {
                 ...result.methodParameters
             },
+            fromToken: quoteRequest.fromToken,
+            toToken: quoteRequest.toToken,
             amount: quoteRequest.amount,
-            isNative: false,
+            isNative: quoteRequest.fromToken.symbol.toLowerCase() === 'eth' || quoteRequest.fromToken.symbol.toLowerCase() === 'bera',
             bridgeType: 'Kodiak',
         })
 
