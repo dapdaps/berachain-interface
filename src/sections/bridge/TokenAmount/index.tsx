@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import TokenSelector from '../TokenSelector';
-
+import Range from "@/components/range";
 
 import useTokenBalance from '@/hooks/use-token-balance';
 import Loading from '@/components/loading';
@@ -14,6 +13,9 @@ import type { Chain, Token } from '@/types';
 import ChainAndTokenSelector from '../ChainAndTokenSelector';
 import { useParams } from 'next/navigation';
 import useBridgeType from '../Hooks/useBridgeType';
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
+import Big from 'big.js';
 
 interface Props {
   chain: Chain;
@@ -52,6 +54,20 @@ export default function TokenAmout({
   const prices: any = usePriceStore(store => store.price);
 
   const { bridgeType } = useBridgeType()
+  const [percent, setPercent] = useState<any>(0);
+  const handleRangeChange = (e: any, isAmountChange = true) => {
+    const formatedBalance = balanceFormated(tokenBalance);
+    if (["-", "Loading", "0"].includes(formatedBalance)) return;
+    const _percent = e.target.value || 0;
+    setPercent(_percent);
+    isAmountChange &&
+      onAmountChange?.(
+        Big(tokenBalance)
+          .times(Big(_percent).div(100))
+          .toFixed(token?.decimals)
+          .replace(/[.]?0+$/, "")
+      );
+  };
 
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
@@ -63,7 +79,7 @@ export default function TokenAmout({
             if (isDest && limitBera && bridgeType === 'stargate') {
               return;
             }
-            
+
             setTokenSelectorShow(true);
           }}
           className='border cursor-pointer flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]'
@@ -75,7 +91,7 @@ export default function TokenAmout({
                   key={token?.address}
                   className='w-[26px] h-[26px]'
                   src={token?.icon}
-                /> : <div className='w-[26px] h-[26px] rounded-[50%] bg-[#000]' />  
+                /> : <div className='w-[26px] h-[26px] rounded-[50%] bg-[#000]' />
               }
               <img
                 // key={token?.icon}
@@ -121,6 +137,33 @@ export default function TokenAmout({
         <div >${(token && tokenBalance) ? balanceFormated(prices[token.symbol.toUpperCase()] * (amount as any), 4) : '~'}</div>
       </div>
 
+
+      {
+        !isDest && <div className="flex justify-between md:flex-col md:items-stretch md:justify-start items-center gap-[22px] mt-[10px]">
+          <div className="flex items-center gap-[8px]">
+            {BalancePercentList.map((p) => (
+              <motion.div
+                key={p.value}
+                className={clsx(
+                  "cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[14px] font-[400] px-[8px] flex justify-center items-center",
+                  '')
+                }
+                animate={percent == p.value ? { background: "#FFDC50" } : {}}
+                onClick={() => handleRangeChange({ target: p })}
+              >
+                {p.label}
+              </motion.div>
+            ))}
+          </div>
+          <Range
+            style={{ marginTop: 0, flex: 1 }}
+            value={percent}
+            onChange={handleRangeChange}
+          />
+        </div>
+      }
+
+
       {/* <TokenSelector
         show={tokenSelectorShow}
         tokenList={allTokens[chain.chainId].filter((token: Token) => !!tokenPairs[chain.chainId][(token.symbol).toUpperCase()])}
@@ -154,3 +197,11 @@ export default function TokenAmout({
     </div>
   );
 }
+
+
+const BalancePercentList = [
+  { value: 25, label: "25%" },
+  { value: 50, label: "50%" },
+  { value: 75, label: "75%" },
+  { value: 100, label: "Max" }
+];
