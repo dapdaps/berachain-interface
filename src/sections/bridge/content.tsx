@@ -261,7 +261,7 @@ export default function BridgeContent({
         )}
 
         <SubmitBtn
-          text={type === "kodiak" ? "Bridge" : "SUperSwap"}
+          text={type !== "kodiak" ? "Bridge" : "SuperSwap"}
           fromChainId={fromChain.chainId}
           isLoading={quoteLoading || sendLoading}
           disabled={sendDisabled || !selectedRoute}
