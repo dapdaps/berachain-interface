@@ -151,7 +151,6 @@ export default function BridgeContent({
     }
   }, [defaultFromToken, defaultToToken, allTokens]);
   
-  console.log(type, 'type');
 
   return (
     <>
@@ -262,6 +261,7 @@ export default function BridgeContent({
         )}
 
         <SubmitBtn
+          text={type === "kodiak" ? "Bridge" : "SUperSwap"}
           fromChainId={fromChain.chainId}
           isLoading={quoteLoading || sendLoading}
           disabled={sendDisabled || !selectedRoute}

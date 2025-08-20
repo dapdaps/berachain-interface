@@ -21,8 +21,6 @@ export async function execute(executeRequest: ExecuteRequest, signer: Signer) {
   const quoteInfo = getQuoteInfo(executeRequest.uuid)
   const executeFn = executeTypes[`execute${quoteInfo.bridgeType}`]
 
-  console.log(executeRequest, 'executeRequest')
-
   if (executeFn) {
     try {
       return executeFn(executeRequest, signer)

@@ -103,16 +103,8 @@ export async function execute(request: ExecuteRequest, signer: Signer): Promise<
 }
 
 export async function getStatus(params: StatusParams) {
-    const res: any = await fetch(`https://li.quest/v1/status?txHash=${params.hash}`).then(res => res.json())
-
-    if (res.status === 'DONE') {
-        return {
-            status: 1
-        }
-    }
-    
     return {
-        status: 0
+        status: 1
     }
 }
 
@@ -138,9 +130,16 @@ function createRoute(result: any, routes: any, quoteRequest: QuoteRequest) {
             bridgeType: 'Kodiak',
         })
 
+        let icon = ''
+        if (result.provider.toLowerCase() === 'kodiak') {
+            icon = '/images/dapps/kodiak.svg'
+        } else {
+            icon = '/images/dapps/kx.png'
+        }
+
         const route: any = {
             uuid,
-            icon: 'https://s3.amazonaws.com/dapdap.prod/images/li.fi.png',
+            icon,
             bridgeName: result.provider,
             bridgeType: 'Kodiak',
             fee: computeFee(result, quoteRequest.fromToken),
