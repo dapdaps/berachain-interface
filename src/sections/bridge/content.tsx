@@ -13,6 +13,7 @@ import { tokenPairs } from "./lib/bridges/stargate/config";
 import useBridge from "./Hooks/useBridge";
 import type { Token, Chain } from "@/types";
 import useBridgeType from "./Hooks/useBridgeType";
+import useToast from "@/hooks/use-toast";
 
 const ComingSoon = false;
 const chainList = Object.values(chains).filter((chain) =>
@@ -38,6 +39,7 @@ export default function BridgeContent({
 
   const { bridgeType } = useBridgeType();
   const allTokens = useAllToken();
+  const { success } = useToast();
 
 
   const {
@@ -276,7 +278,12 @@ export default function BridgeContent({
               template: selectedRoute?.bridgeName
             });
             if (result?.isSuccess && isShowConfirm) {
-              setConfirmShow(true);
+              if (type === 'kodiak') {
+
+              } else {
+                setConfirmShow(true);
+              }
+              
             }
           }}
           comingSoon={ComingSoon}
