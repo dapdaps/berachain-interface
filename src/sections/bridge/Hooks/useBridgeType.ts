@@ -13,7 +13,7 @@ export default function useBridgeType() {
 
 
     const bridgeType = useMemo(() => {
-        if (pathname.includes('/kodiak')) {
+        if (pathname.includes('/super-swap')) {
             return 'kodiak'
         }
 
