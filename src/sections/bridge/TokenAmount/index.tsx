@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Range from "@/components/range";
 
 import useTokenBalance from '@/hooks/use-token-balance';
@@ -30,6 +30,7 @@ interface Props {
   limitBera: boolean;
   isDest: boolean;
   allTokens: any;
+  updateRef: number;
 }
 
 export default function TokenAmout({
@@ -44,7 +45,8 @@ export default function TokenAmout({
   chainList,
   limitBera,
   isDest,
-  allTokens
+  allTokens,
+  updateRef
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
 
@@ -52,6 +54,10 @@ export default function TokenAmout({
     token ? (token.isNative ? 'native' : token.address) : '', token?.decimals ?? 0, token?.chainId ?? 0
   )
   const prices: any = usePriceStore(store => store.price);
+
+  useEffect(() => {
+    update();
+  }, [updateRef]);
 
   const { bridgeType } = useBridgeType()
   const [percent, setPercent] = useState<any>(0);

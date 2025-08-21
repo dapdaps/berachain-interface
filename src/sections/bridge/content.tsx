@@ -40,6 +40,7 @@ export default function BridgeContent({
   const { bridgeType } = useBridgeType();
   const allTokens = useAllToken();
   const { success } = useToast();
+  const [banlanceIndex, setBanlanceIndex] = useState(0);
 
 
   const {
@@ -175,6 +176,7 @@ export default function BridgeContent({
             setFromToken(token);
           }}
           comingSoon={ComingSoon}
+          updateRef={banlanceIndex}
         />
         <div
           className="h-[8px] md:h-4 flex justify-center items-center"
@@ -230,6 +232,7 @@ export default function BridgeContent({
             setToToken(token);
           }}
           comingSoon={ComingSoon}
+          updateRef={banlanceIndex}
         />
         <div className="flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]">
           <div>Receive address</div>
@@ -277,6 +280,7 @@ export default function BridgeContent({
               outputCurrency: toToken,
               template: selectedRoute?.bridgeName
             });
+            setBanlanceIndex(banlanceIndex + 1);
             if (result?.isSuccess && isShowConfirm) {
               if (type === 'kodiak') {
 
