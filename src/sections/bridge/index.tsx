@@ -98,7 +98,7 @@ const DappHeader: React.FC<{ type?: string }> = ({ type }) => {
 
   const name = useMemo(() => {
     if (type === 'kodiak') {
-      return 'Beratown DEX'
+      return 'Super Swap'
     }
     return 'Bridge'
   }, [type])
