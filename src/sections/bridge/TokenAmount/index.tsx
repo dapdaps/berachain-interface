@@ -11,11 +11,15 @@ import { tokenPairs } from '../Hooks/Stargate/config';
 
 import type { Chain, Token } from '@/types';
 import ChainAndTokenSelector from '../ChainAndTokenSelector';
+import TokenOnlySelector from '../TokenOnlySelector';
 import { useParams } from 'next/navigation';
 import useBridgeType from '../Hooks/useBridgeType';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import Big from 'big.js';
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import chains from '@/configs/chains';
+import { useAccount } from 'wagmi';
 
 interface Props {
   chain: Chain;
@@ -49,6 +53,7 @@ export default function TokenAmout({
   updateRef
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
+  const { address: account } = useAccount();
 
   const { tokenBalance, isError, isLoading, update } = useTokenBalance(
     token ? (token.isNative ? 'native' : token.address) : '', token?.decimals ?? 0, token?.chainId ?? 0
@@ -99,15 +104,22 @@ export default function TokenAmout({
                   src={token?.icon}
                 /> : <div className='w-[26px] h-[26px] rounded-[50%] bg-[#000]' />
               }
-              <img
-                // key={token?.icon}
-                className='w-[10px] h-[10px] absolute right-0 bottom-0 md:rounded-sm'
-                src={chain.icon}
-              />
+              {
+                bridgeType !== 'superSwap' && (
+                  <img
+                    className='w-[26px] h-[26px]'
+                    src='/images/super-swap/super-swap-logo.png'
+                  />
+                )
+              }
             </div>
             <div>
               <div className='text-[16px] font-[600] whitespace-nowrap overflow-hidden text-ellipsis'>{token?.symbol}</div>
-              <div className='text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis'>{chain?.chainName}</div>
+              {
+                bridgeType !== 'superSwap' && (
+                  <div className='text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis'>{chain?.chainName}</div>
+                )
+              }
             </div>
           </div>
           {
@@ -181,7 +193,7 @@ export default function TokenAmout({
       /> */}
 
       {
-        tokenSelectorShow && <ChainAndTokenSelector
+        tokenSelectorShow && bridgeType !== 'superSwap' && <ChainAndTokenSelector
           onClose={() => {
             setTokenSelectorShow(false);
           }}
@@ -199,6 +211,24 @@ export default function TokenAmout({
           }}
         />
       }
+
+
+      {
+        bridgeType === 'superSwap' && tokenSelectorShow && <TokenOnlySelector
+          display={true}
+          chainIdNotSupport={chain.chainId !== DEFAULT_CHAIN_ID}
+          selectedTokenAddress={token?.address}
+          chainId={DEFAULT_CHAIN_ID}
+          tokens={allTokens[chain.chainId]}
+          account={account}
+          explor={chains[DEFAULT_CHAIN_ID].blockExplorers.default.url}
+          onClose={() => {
+            setTokenSelectorShow(false);
+          }}
+          onSelect={onTokenChange as any}
+        />
+      }
+
 
     </div>
   );

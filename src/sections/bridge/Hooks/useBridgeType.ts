@@ -14,7 +14,7 @@ export default function useBridgeType() {
 
     const bridgeType = useMemo(() => {
         if (pathname.includes('/super-swap')) {
-            return 'kodiak'
+            return 'superSwap'
         }
 
         if (dappName) {

@@ -43,7 +43,7 @@ export default function Bridge({ type, defaultFromChain, defaultToChain, default
       </div>
 
       {
-        bridgeType !== 'kodiak' && <>
+        bridgeType !== 'superSwap' && <>
           <div
             className={clsx(
               "absolute z-50  left-[50%] translate-x-[400px] w-[164px] h-[191px]",
@@ -97,7 +97,7 @@ const DappHeader: React.FC<{ type?: string }> = ({ type }) => {
   };
 
   const name = useMemo(() => {
-    if (type === 'kodiak') {
+    if (type === 'super-swap') {
       return 'Super Swap'
     }
     return 'Bridge'
