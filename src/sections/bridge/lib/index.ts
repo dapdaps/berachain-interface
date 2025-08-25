@@ -66,7 +66,12 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
           quoteP.push(getKodiakRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('kodiak:', e)))
           break;
       }
+    } 
+
+    if (engine.includes('superSwap' as any)) {
+      quoteP.push(getKodiakRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('superSwap:', e)))
     }
+
   } else {
     quoteP.push(getStargateRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('stargate:', e)))
     quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))

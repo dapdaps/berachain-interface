@@ -149,6 +149,7 @@ function createRoute(result: any, routes: any, quoteRequest: QuoteRequest) {
             feeType: FeeType.usd,
             gasType: FeeType.origin,
             identification: quoteRequest.identification,
+            toexchangeRate: new Big(result.quoteDecimals).div(quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals)).toString()
         }
 
         routes.push(route)

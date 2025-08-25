@@ -196,12 +196,12 @@ export default function useBridge({
           return { isSuccess: false };
         }
 
-        if (tool === 'kodiak') {
+        if (tool === 'superSwap') {
           addSwapAction({
             type: "Swap",
             inputCurrency: fromToken,
             outputCurrency: toToken,
-            template: tool,
+            template: selectedRoute.bridgeType,
             transactionHash: txHash,
             inputCurrencyAmount: parseFloat(inputValue),
             outputCurrencyAmount: parseFloat(reciveAmount),
