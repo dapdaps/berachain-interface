@@ -108,7 +108,7 @@ export default function TokenAmout({
                 bridgeType !== 'superSwap' && (
                   <img
                     className='w-[26px] h-[26px]'
-                    src='/images/super-swap/super-swap-logo.png'
+                    src={chain?.icon}
                   />
                 )
               }
