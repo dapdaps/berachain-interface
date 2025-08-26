@@ -85,36 +85,24 @@ const CheckInReward = (props: any) => {
           {
             data?.length === 1 ? (
               <>
-                <button
-                  type="button"
-                  className="w-full h-[50px] shrink-0 rounded-[10px] border border-black bg-[#FFDC50] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
-                >
+                <RewardButton type="primary">
                   {data[0].type === RewardType.Spin ? "Play Lucky 777" : "Check all Lootboxes"}
-                </button>
+                </RewardButton>
                 {data[0].type === RewardType.Spin && (
-                  <button
-                    type="button"
-                    className="w-full shrink-0 rounded-[10px text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
-                  >
+                  <RewardButton>
                     Check all Lootboxes
-                  </button>
+                  </RewardButton>
                 )
                 }
               </>
             ) : (
               <>
-                <button
-                  type="button"
-                  className="w-full h-[50px] shrink-0 rounded-[10px] border border-black bg-[#FFDC50] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
-                >
+                <RewardButton type="primary">
                   Play Lucky 777
-                </button>
-                <button
-                  type="button"
-                  className="w-full shrink-0 rounded-[10px text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
-                >
+                </RewardButton>
+                <RewardButton>
                   Check all Lootboxes
-                </button>
+                </RewardButton>
               </>
             )
           }
@@ -125,3 +113,29 @@ const CheckInReward = (props: any) => {
 };
 
 export default CheckInReward;
+
+const RewardButton = (props: any) => {
+  const { type, children, htmlType = "button", ...restProps } = props;
+
+  if (type === "primary") {
+    return (
+      <button
+        type={htmlType}
+        className="w-full h-[50px] hover:translate-y-[2px] hover:shadow-[6px_4px_0_0_rgba(0,0,0,0.25)] transition-all duration-150 shrink-0 rounded-[10px] border border-black bg-[#FFDC50] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
+        {...restProps}
+      >
+        Play Lucky 777
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type={htmlType}
+      className="hover:opacity-80 transition-all duration-150 w-full shrink-0 rounded-[10px text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
+      {...restProps}
+    >
+      Check all Lootboxes
+    </button>
+  );
+};
