@@ -6,12 +6,13 @@ import Popover, { PopoverPlacement, PopoverTrigger } from "../popover";
 import CheckIn from ".";
 import { useState } from "react";
 import CheckInReward from "./reward";
+import { Reward } from "./config";
 
 const CheckInEntry = (props: any) => {
   const { className } = props;
 
   const [openReward, setOpenReward] = useState<boolean>(false);
-  const [rewardData, setRewardData] = useState<any>();
+  const [rewardData, setRewardData] = useState<Reward[]>();
 
   return (
     <>

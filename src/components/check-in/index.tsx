@@ -4,6 +4,7 @@ import { useRequest } from "ahooks";
 import useCustomAccount from "@/hooks/use-account";
 import { cloneDeep } from "lodash";
 import { useState } from "react";
+import { RewardType } from "./config";
 
 const CheckIn = (props: any) => {
   const { className, setOpenReward, setRewardData } = props;
@@ -35,11 +36,20 @@ const CheckIn = (props: any) => {
     getCheckInData(mockCheckedDay + 1);
     if ((mockCheckedDay + 1) % 7 === 0) {
       setOpenReward(true);
-      const randomMockType = Math.ceil(Math.random() * 10) % 2 === 0;
-      setRewardData({
-        type: randomMockType ? CheckInReward.Lootbox : CheckInReward.Points,
-        amount: randomMockType ? Math.ceil(Math.random() * 1000) : Math.ceil(Math.random() * 10),
-      });
+      const randomMockGemAmount = Math.ceil(Math.random() * 1000);
+      const randomMockSpinAmount = Math.ceil(Math.random() * 10);
+      setRewardData([
+        {
+          type: RewardType.Spin,
+          amount: randomMockSpinAmount,
+          label: `${randomMockSpinAmount} Free Spin`,
+        },
+        {
+          type: RewardType.Gem,
+          amount: randomMockGemAmount,
+          label: `${randomMockGemAmount} Gem`,
+        },
+      ]);
     }
   }, {
     manual: true,
@@ -113,7 +123,7 @@ const CheckIn = (props: any) => {
                       }
                       {
                         item.reward === CheckInReward.Points && (
-                          <div className="bg-[url('/images/check-in/gem.png')] bg-no-repeat bg-center bg-contain w-[18px] h-[22px] shrink-0" />
+                          <div className="bg-[url('/images/check-in/gem2.png')] bg-no-repeat bg-center bg-contain w-[28px] h-[25px] shrink-0" />
                         )
                       }
                     </div>
