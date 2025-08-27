@@ -6,10 +6,10 @@ import { useActivityStore } from "@/stores/useActivityStore";
 import clsx from "clsx";
 import useBridgeType from "./Hooks/useBridgeType";
 import History from "./History";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import BridgeContent from "./content";
 
-export default function Bridge() {
+export default function Bridge({ type, defaultFromChain, defaultToChain, defaultFromToken, defaultToToken }: { type?: string, defaultFromChain?: number, defaultToChain?: number, defaultFromToken?: string, defaultToToken?: string }) {
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
   const { isDefaultTheme } = useActivityStore();
@@ -17,6 +17,7 @@ export default function Bridge() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("pending");
   const [historyShow, setHistoryShow] = useState(false);
+
 
   return (
     <div className="h-full overflow-auto">
@@ -27,64 +28,80 @@ export default function Bridge() {
         <div className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
       )}
       <div className="lg:w-[520px] md:w-[92.307vw] m-auto relative z-10 ">
-        <DappHeader />
+        <DappHeader type={type} />
         <BridgeContent
-          fromToken={searchParams.get("fromToken")}
-          toToken={searchParams.get("toToken")}
+          type={type}
+          defaultFromChain={defaultFromChain}
+          defaultToChain={defaultToChain}
+          defaultFromToken={searchParams.get("fromToken") || defaultFromToken}
+          defaultToToken={searchParams.get("toToken") || defaultToToken}
           onShowHistory={() => {
             setHistoryShow(true);
             setActiveTab("pending");
           }}
         />
       </div>
-      <div
-        className={clsx(
-          "absolute z-50  left-[50%] translate-x-[400px] w-[164px] h-[191px]",
-          isDefaultTheme() ? "bottom-[213px]" : "bottom-[14vw]"
-        )}
-      >
-        <img
-          src="/images/background/bridge-type-bg.svg"
-          className="w-[164px]"
-        />
-        <div className="absolute top-[22px] right-[12px]">
-          {bridgeType === "stargate" ? checkIcon : unCheckIcon}
-        </div>
-        <div className="absolute top-[90px] right-[32px]">
-          {bridgeType === "jumper" ? checkIcon : unCheckIcon}
-        </div>
 
-        <div
-          className="absolute w-[164px] h-[65px] cursor-pointer  left-0 top-0"
-          onClick={() => {
-            router.push("/bridge/stargate");
-          }}
-        ></div>
+      {
+        bridgeType !== 'superSwap' && <>
+          <div
+            className={clsx(
+              "absolute z-50  left-[50%] translate-x-[400px] w-[164px] h-[191px]",
+              isDefaultTheme() ? "bottom-[213px]" : "bottom-[14vw]"
+            )}
+          >
+            <img
+              src="/images/background/bridge-type-bg.svg"
+              className="w-[164px]"
+            />
+            <div className="absolute top-[22px] right-[12px]">
+              {bridgeType === "stargate" ? checkIcon : unCheckIcon}
+            </div>
+            <div className="absolute top-[90px] right-[32px]">
+              {bridgeType === "jumper" ? checkIcon : unCheckIcon}
+            </div>
 
-        <div
-          className="absolute w-[164px] h-[65px] cursor-pointer  left-0 top-[75px]"
-          onClick={() => {
-            router.push("/bridge/lifi");
-          }}
-        ></div>
-      </div>
-      <History
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isOpen={historyShow}
-        setIsOpen={setHistoryShow}
-      />
+            <div
+              className="absolute w-[164px] h-[65px] cursor-pointer  left-0 top-0"
+              onClick={() => {
+                router.push("/bridge/stargate");
+              }}
+            ></div>
+
+            <div
+              className="absolute w-[164px] h-[65px] cursor-pointer  left-0 top-[75px]"
+              onClick={() => {
+                router.push("/bridge/lifi");
+              }}
+            ></div>
+          </div>
+          <History
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            isOpen={historyShow}
+            setIsOpen={setHistoryShow}
+          />
+        </>
+      }
+
     </div>
   );
 }
 
-const DappHeader: React.FC = () => {
+const DappHeader: React.FC<{ type?: string }> = ({ type }) => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
 
   const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+
+  const name = useMemo(() => {
+    if (type === 'super-swap') {
+      return 'Super Swap'
+    }
+    return 'Bridge'
+  }, [type])
 
   if (dappName) {
     return (
@@ -101,15 +118,17 @@ const DappHeader: React.FC = () => {
     );
   }
 
+
+
   return (
     <>
       {isMobile ? (
         <div className="relative left-[25%] mt-7 top-5">
-          <MenuButton className="w-[51.282vw]">Bridge</MenuButton>
+          <MenuButton className="w-[51.282vw]">{name}</MenuButton>
         </div>
       ) : (
         <div className="text-[60px] text-center py-[30px] font-CherryBomb">
-          Bridge
+          {name}
         </div>
       )}
     </>

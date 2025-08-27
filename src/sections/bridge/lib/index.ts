@@ -6,12 +6,14 @@ import { getIcon, getAllToken, getChainScan, getBridgeMsg } from './util/index'
 import { getQuoteInfo, setQuote } from './util/routerController'
 import { getQuote as getStargateRoute, execute as executeStargate, getStatus as getStargateStatus } from './bridges/stargate'
 import { getQuote as getJumperRoute, execute as executeJumper, getStatus as getJumperStatus } from './bridges/jumper'
+import { getQuote as getKodiakRoute, execute as executeKodiak, getStatus as getKodiakStatus } from './bridges/kodiak'
 
 import { ExecuteRequest, QuoteRequest, QuoteResponse, StatusParams, StatusRes } from './type'
 
 const executeTypes: any = {
   executeStargate,
   executeJumper,
+  executeKodiak,
 }
 
 
@@ -60,8 +62,16 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
         case 'jumper':
           quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))
           break;
+        case 'kodiak':
+          quoteP.push(getKodiakRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('kodiak:', e)))
+          break;
       }
+    } 
+
+    if (engine.includes('superSwap' as any)) {
+      quoteP.push(getKodiakRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('superSwap:', e)))
     }
+
   } else {
     quoteP.push(getStargateRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('stargate:', e)))
     quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))
