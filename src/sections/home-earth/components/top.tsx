@@ -9,7 +9,7 @@ import { useContext } from "react";
 import LGBTLogo from "./lgbt-animated-logo";
 
 const HomeEarthTop = (props: any) => {
-  const {} = props;
+  const { isLogo = true, isAirdrop = true } = props;
   const { isDefaultTheme } = useActivityStore();
   const { isRainyDay } = useContext(HomeEarthContext);
   const { scrollY } = useScroll();
@@ -20,36 +20,40 @@ const HomeEarthTop = (props: any) => {
 
   return (
     <div className="relative w-full pt-[20px] flex justify-center shrink-0">
-      <motion.div className="mt-[40px]" style={{ y: logoY }}>
-        {isDefaultTheme() ? (
-          <motion.img
-            src="/images/home-earth/beratown-logo.png"
-            alt=""
-            className="w-[340px] h-[209px]"
-            variants={{
-              visible: {
-                opacity: 1,
-                scale: 1
-              },
-              invisible: {
-                opacity: 0,
-                scale: 0.5
-              }
-            }}
-            animate="visible"
-            initial="invisible"
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 15,
-              duration: 1,
-              delay: 0.3
-            }}
-          />
-        ) : (
-          <LGBTLogo />
-        )}
-      </motion.div>
+      {
+        isLogo && (
+          <motion.div className="mt-[40px]" style={{ y: logoY }}>
+            {isDefaultTheme() ? (
+              <motion.img
+                src="/images/home-earth/beratown-logo.png"
+                alt=""
+                className="w-[340px] h-[209px]"
+                variants={{
+                  visible: {
+                    opacity: 1,
+                    scale: 1
+                  },
+                  invisible: {
+                    opacity: 0,
+                    scale: 0.5
+                  }
+                }}
+                animate="visible"
+                initial="invisible"
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15,
+                  duration: 1,
+                  delay: 0.3
+                }}
+              />
+            ) : (
+              <LGBTLogo />
+            )}
+          </motion.div>
+        )
+      }
       <div className="absolute left-0 -top-[88px] w-[472px] h-[371px] overflow-hidden">
         <AnimatePresence mode="wait">
           {isRainyDay ? (
@@ -92,7 +96,11 @@ const HomeEarthTop = (props: any) => {
           )}
         </AnimatePresence>
       </div>
-      <Vaults className="!left-[unset] right-[100px] !top-[150px]" />
+      {
+        isAirdrop && (
+          <Vaults className="!left-[unset] right-[100px] !top-[150px]" />
+        )
+      }
     </div>
   );
 };

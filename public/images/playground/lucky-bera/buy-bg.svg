@@ -1,0 +1,18 @@
+<svg width="230" height="187" viewBox="0 0 230 187" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <mask id="mask0_694_1226" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="230" height="187">
+    <rect width="230" height="187" rx="20" fill="url(#paint0_linear_694_1226)"/>
+  </mask>
+  <g mask="url(#mask0_694_1226)">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M129.83 -38H101.171L107.425 55.36L66.1603 -28.6193L41.3408 -14.2897L93.4354 63.4335L15.7113 11.3384L1.38175 36.1579L85.3638 77.4234L-8 71.1694L-8 99.8285L85.3594 93.5747L1.38134 134.838L15.7109 159.658L93.4411 107.559L41.341 185.29L66.1605 199.62L107.424 115.641L101.171 209H129.83L123.576 115.638L164.841 199.619L189.66 185.289L137.562 107.56L215.29 159.658L229.62 134.838L145.642 93.5748L239 99.8285V71.1694L145.637 77.4233L229.619 36.1579L215.29 11.3384L137.568 63.4322L189.661 -14.2887L164.841 -28.6182L123.576 55.3631L129.83 -38Z" fill="url(#paint1_radial_694_1226)"/>
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear_694_1226" x1="115" y1="0" x2="115" y2="187" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD965"/>
+      <stop offset="1" stop-color="#FF9752"/>
+    </linearGradient>
+    <radialGradient id="paint1_radial_694_1226" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(115.5 85.5) rotate(90) scale(123.5)">
+      <stop stop-color="white" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
