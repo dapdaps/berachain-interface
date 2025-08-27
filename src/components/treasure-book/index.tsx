@@ -6,10 +6,13 @@ export default function TreasureBook() {
 
     return (
         <>
-            <div onClick={() => setIsOpen(true)} className="fixed z-[51] right-[10px] top-[560px] cursor-pointer">
+            <div
+                onClick={() => setIsOpen(true)}
+                className="fixed z-[51] right-[10px] top-[560px] cursor-pointer transition-transform duration-200 hover:scale-110"
+            >
                 <img src="/images/treasure-book/book.png" className="w-[81px] h-[81px]" alt="treasure-book" />
             </div>
-            {isOpen && <BookModal />}
+            {isOpen && <BookModal onClose={() => setIsOpen(false)} />}
         </>
     );
 }
