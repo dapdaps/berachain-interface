@@ -20,7 +20,6 @@ import { useActivityStore } from "@/stores/useActivityStore";
 import NavigationMenu from "@/sections/home-earth/components/menu";
 import Downtime from "@/components/downtime";
 import TreasureBook from "@/components/treasure-book";
-import Guide from "@/components/guide";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
@@ -332,7 +331,6 @@ const MainLayout = (props: Props) => {
             </AnimatePresence>
             <NavigationMenu />
             <TreasureBook />
-            <Guide onClose={() => setShowGuide(false)} show={showGuide} />
           </>
         )
       }

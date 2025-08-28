@@ -1,6 +1,7 @@
 import { useState } from "react";
 import BookModal from "./book-modal";
 import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
+import { AnimatePresence } from "framer-motion";
 
 export default function TreasureBook() {
     const {
@@ -21,7 +22,9 @@ export default function TreasureBook() {
                     alt="treasure-book"
                 />
             </div>
-            {treasureBookOpen && <BookModal onClose={() => setTreasureBookOpen(false)} />}
+            <AnimatePresence>
+                {treasureBookOpen && <BookModal onClose={() => setTreasureBookOpen(false)} />}
+            </AnimatePresence>
         </>
     );
 }

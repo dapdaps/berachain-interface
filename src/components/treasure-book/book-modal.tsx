@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import GetMore from "./get-more";
 import TotalCollected from "./total-collected";
 import YourRewords from "./your-rewords";
@@ -19,14 +20,41 @@ export default function BookModal({ onClose }: { onClose: () => void }) {
     }, []);
 
     return (
-        <div
+        <motion.div
             className="fixed z-[52] left-0 top-0 w-full h-full bg-black/50"
-            style={{
-                transform: `scale(${scale})`,
-                transformOrigin: "50% 100%",
-            }}
             onClick={onClose}
+            initial={{
+                opacity: 0,
+            }}
+            animate={{
+                opacity: 1,
+            }}
+            transition={{
+                duration: 0.15,
+            }}
         >
+            <motion.div
+                className="w-full h-full"
+                style={{
+                    transform: `scale(${scale})`,
+                    transformOrigin: "50% 100%",
+                    perspectiveOrigin: "50% 100%",
+                    transformStyle: "preserve-3d",
+                }}
+                initial={{
+                    transform: `scale(${scale}) perspective(1000px) rotateX(70deg) translateY(300px) translateZ(-300px)`,
+                }}
+                animate={{
+                    transform: `scale(${scale}) perspective(1000px) rotateX(0deg) translateY(0px) translateZ(0px)`,
+                }}
+                exit={{
+                    transform: `scale(${scale}) perspective(1000px) rotateX(70deg) translateY(300px) translateZ(-300px)`,
+                }}
+                transition={{
+                    duration: 0.75,
+                    ease: "easeInOut",
+                }}
+            >
                 <div className="w-[1560px] h-[810px] absolute bottom-[-30px] left-1/2 -translate-x-1/2">
                     <img src="/images/treasure-book/bg.png" className="w-full h-full" alt="treasure-book" />
                 </div>
@@ -41,7 +69,7 @@ export default function BookModal({ onClose }: { onClose: () => void }) {
                     Beratown treasure Book
                 </div>
 
-                <div  className="w-[1560px] h-[810px] absolute left-1/2 -translate-x-1/2 bottom-[30px] pl-[220px] flex justify-between">
+                <div className="w-[1560px] h-[810px] absolute left-1/2 -translate-x-1/2 bottom-[30px] pl-[220px] flex justify-between">
                     <div className="flex-1 h-full" onClick={(e) => e.stopPropagation()}>
                         <TotalCollected />
                         <YourRewords />
@@ -50,6 +78,7 @@ export default function BookModal({ onClose }: { onClose: () => void }) {
                         <GetMore />
                     </div>
                 </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }
