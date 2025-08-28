@@ -13,16 +13,14 @@ const LuckyBera = () => {
   } = useLuckyBera();
 
   return (
-    <div className="w-full h-full">
-      <Tiger
-        spinMultiplier={spinMultiplier}
-        toggleSpinMultiplier={toggleSpinMultiplier}
-        spinUserData={spinUserData}
-        lastSpinResult={lastSpinResult}
-        handleSpinResult={handleSpinResult}
-        toggleOutHoneyVisible={() => { }}
-      />
-    </div>
+    <Tiger
+      spinMultiplier={spinMultiplier}
+      toggleSpinMultiplier={toggleSpinMultiplier}
+      spinUserData={spinUserData}
+      lastSpinResult={lastSpinResult}
+      handleSpinResult={handleSpinResult}
+      toggleOutHoneyVisible={() => { }}
+    />
   );
 };
 

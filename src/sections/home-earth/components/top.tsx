@@ -7,9 +7,10 @@ import { useActivityStore } from "@/stores/useActivityStore";
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import { useContext } from "react";
 import LGBTLogo from "./lgbt-animated-logo";
+import clsx from "clsx";
 
 const HomeEarthTop = (props: any) => {
-  const { isLogo = true, isAirdrop = true } = props;
+  const { isLogo = true, isAirdrop = true, className } = props;
   const { isDefaultTheme } = useActivityStore();
   const { isRainyDay } = useContext(HomeEarthContext);
   const { scrollY } = useScroll();
@@ -19,7 +20,7 @@ const HomeEarthTop = (props: any) => {
   });
 
   return (
-    <div className="relative w-full pt-[20px] flex justify-center shrink-0">
+    <div className={clsx("relative w-full pt-[20px] flex justify-center shrink-0", className)}>
       {
         isLogo && (
           <motion.div className="mt-[40px]" style={{ y: logoY }}>

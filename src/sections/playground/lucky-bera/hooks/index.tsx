@@ -5,6 +5,7 @@ import { SpinMultiplier, SpinResultData, SpinUserData } from '../config';
 import useToast from '@/hooks/use-toast';
 import { useLuckyBeraStore } from '../store';
 import useCustomAccount from '@/hooks/use-account';
+import axios from 'axios';
 
 const tgUserId = 7150006688;
 const getUserInfo = () => {};
@@ -19,15 +20,15 @@ export function useLuckyBera() {
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
 
   const { run: getSpinUserData, data: spinUserData, loading: spinUserDataLoading } = useRequest<SpinUserData, any>(async () => {
-    const res = await get("https://dev-api-game.beratown.app/api/spin/user", {
-      tg_user_id: tgUserId,
-    });
-    if (res.code !== 200) {
+    const url = new URL("https://dev-api-game.beratown.app/api/spin/user");
+    url.searchParams.set("tg_user_id", tgUserId.toString());
+    const res = await axios.get(url.toString());
+    if (res.data.code !== 200) {
       checkSpinMultiplier();
       return {};
     }
-    checkSpinMultiplier(res.data);
-    return res.data;
+    checkSpinMultiplier(res.data.data);
+    return res.data.data;
   }, {
     manual: true,
   });
@@ -40,15 +41,20 @@ export function useLuckyBera() {
 
   const { runAsync: handleSpinResult, data: spinResultData, loading: spinResultDataLoading } = useRequest<SpinResultData | boolean, any>(async () => {
     if (!accountWithAk) return;
-    const res = await post("https://dev-api-game.beratown.app/api/spin", {
-      spin: spinMultiplier,
-    });
-    if (res.code !== 200) {
-      toast.fail({ title: `Spin failed: ${res.message || res.data}` });
+    try {
+      const res = await post("https://dev-api-game.beratown.app/api/spin", {
+        spin: spinMultiplier,
+      });
+      if (res.code !== 200) {
+        toast.fail({ title: `Spin failed: ${res.message || res.data}` });
+        return false;
+      }
+      reloadSpinData(res.data);
+      return res.data;
+    } catch (error: any) {
+      toast.fail({ title: `Spin failed: ${error.message}` });
       return false;
     }
-    reloadSpinData(res.data);
-    return res.data;
   }, {
     manual: true,
   });

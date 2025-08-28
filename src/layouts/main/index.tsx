@@ -130,7 +130,7 @@ const MainLayout = (props: Props) => {
     themeConfig.primaryColor
   ]);
 
-  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/playground"];
+  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/playground/lucky-bera"];
 
   return (
     <div
