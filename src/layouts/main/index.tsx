@@ -10,7 +10,7 @@ import { useAccount } from "wagmi";
 import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
-import GuidingTutorial from "@/components/GuidingTour/mainnet";
+import GuidingTutorial from "@/components/GuidingTour/lootbox-season";
 import { SceneContext } from "@/context/scene";
 import { SceneStatus } from "@/configs/scene";
 import RainyDay from "@/components/rainy-day";

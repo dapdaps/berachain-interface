@@ -5,16 +5,27 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 const PointsEntry = (props: any) => {
-  const { className } = props;
+  const { className, isGuide = false } = props;
 
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(isGuide);
 
   return (
     <motion.button
       type="button"
-      className={clsx("relative h-[34px] rounded-[16px] bg-[#4B371F] pb-[4px] shrink-0", className)}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      id="lootboxSeasonGemsEntry"
+      className={clsx(
+        "relative rounded-[16px] bg-[#4B371F] pb-[4px] shrink-0",
+        isGuide ? "!cursor-default h-[38px] border-[2px] border-white" : "cursor-pointer h-[34px]",
+        className
+      )}
+      onHoverStart={() => {
+        if (isGuide) return;
+        setIsHovered(true);
+      }}
+      onHoverEnd={() => {
+        if (isGuide) return;
+        setIsHovered(false);
+      }}
     >
       <motion.div
         className="w-[22px] h-[28px] absolute top-0 left-[10px] bg-[url('/images/check-in/gem.png')] bg-no-repeat bg-center bg-contain shrink-0"

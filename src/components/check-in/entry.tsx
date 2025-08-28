@@ -28,6 +28,7 @@ const CheckInEntry = (props: any) => {
       >
         <motion.button
           type="button"
+          id="lootboxSeasonCheckInEntry"
           className={clsx("w-[45px] h-[42px] shrink-0 bg-[url('/images/check-in/entry.png')] bg-no-repeat bg-center bg-contain", className)}
           initial={{
             rotate: 0,
