@@ -262,6 +262,15 @@ export const ENTRIES: any = [
     y: -68
   },
   {
+    sort: 2.1,
+    name: "Playground",
+    disabled: false,
+    icon: "/images/home-earth/entry-playground.svg",
+    signpost: "/images/home-earth/signpost-playground.svg",
+    path: "/playground/lucky-bera",
+    y: -40
+  },
+  {
     sort: 3,
     name: "Token Marketplace",
     disabled: false,
@@ -296,7 +305,6 @@ export const ENTRIES: any = [
     path: "/vaults",
     bp: "1022-001-003"
   },
-
   {
     sort: 7,
     name: "Cave",

@@ -20,6 +20,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
+import CheckInEntry from "@/components/check-in/entry";
+import PointsEntry from "@/components/points/entry";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -63,6 +65,9 @@ const MainLayoutHeader = (props: Props) => {
             <img src="/images/mint-honey.png" alt="mint" />
           </div> */}
 
+          <CheckInEntry />
+
+          <PointsEntry />
 
           <motion.div
             className="cursor-pointer relative -top-[8px] w-[57px]"

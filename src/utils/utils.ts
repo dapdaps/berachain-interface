@@ -76,3 +76,17 @@ export function capitalize(str: string) {
   if (!str) return str;
   return str.charAt(0).toUpperCase() + str.substring(1);
 }
+
+export function clampStyle(styles: React.CSSProperties, baseWidth: number = 1544) {
+  const _styles: any = {};
+  Object.entries(styles).forEach(([key, value]) => {
+    const _value = parseFloat(value);
+    const _percent = Math.abs(_value) / baseWidth;
+    if (_value < 0) {
+      _styles[key] = `clamp(calc(var(--beratown-base-width) * -${_percent}), -${_percent * 100}vw, 1px)`;
+    } else {
+      _styles[key] = `clamp(1px, ${_percent * 100}vw, calc(var(--beratown-base-width) * ${_percent}))`;
+    }
+  });
+  return _styles;
+}

@@ -2,7 +2,7 @@
 
 import useTokenPrice from "@/hooks/use-token-price";
 import MainLayoutHeader from "@/layouts/main/header";
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import MapModal from "@/sections/home/map-modal";
 import useUser from "@/hooks/use-user";
@@ -10,7 +10,7 @@ import { useAccount } from "wagmi";
 import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
-import GuidingTutorial from "@/components/GuidingTour/mainnet";
+import GuidingTutorial from "@/components/GuidingTour/lootbox-season";
 import { SceneContext } from "@/context/scene";
 import { SceneStatus } from "@/configs/scene";
 import RainyDay from "@/components/rainy-day";
@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useActivityStore } from "@/stores/useActivityStore";
 import NavigationMenu from "@/sections/home-earth/components/menu";
 import Downtime from "@/components/downtime";
+import TreasureBook from "@/components/treasure-book";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
@@ -129,7 +130,9 @@ const MainLayout = (props: Props) => {
     themeConfig.primaryColor
   ]);
 
-  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong"];
+  const [showGuide, setShowGuide] = useState(true);
+
+  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/playground/lucky-bera"];
 
   return (
     <div
@@ -327,6 +330,7 @@ const MainLayout = (props: Props) => {
                 )}
             </AnimatePresence>
             <NavigationMenu />
+            <TreasureBook />
           </>
         )
       }

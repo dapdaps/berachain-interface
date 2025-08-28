@@ -48,6 +48,7 @@ body {
 :root {
   --background: #96d6ff;
   --foreground: #000000;
+  --beratown-base-width: 1544px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -228,4 +229,16 @@ input[type="number"]::-webkit-inner-spin-button {
 
 body > [data-rk] {
   height: 100%;
+}
+
+@keyframes flickering-light {
+  0% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.1;
+  }
 }
