@@ -237,7 +237,7 @@ export default memo(function BgtMain() {
             <div className="text-[#3D405A]">Active Incentives</div>
             <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">
               {formatValueDecimal(
-                pageData?.polGetGlobalInfo?.sumAllIncentivesInHoney,
+                pageData?.polGetGlobalInfo?.totalActiveIncentivesValueUSD,
                 "$",
                 2,
                 true,
