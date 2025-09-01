@@ -14,6 +14,8 @@ export function useLuckyBera() {
   const { accountWithAk } = useCustomAccount();
   const toast = useToast();
   const { setLastSpinResult, lastSpinResult } = useLuckyBeraStore();
+
+  const [buySpinsModalOpen, setBuySpinsModalOpen] = useState(false);
  
   const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");
 
@@ -95,5 +97,7 @@ export function useLuckyBera() {
     spinResultDataLoading,
     toggleSpinMultiplier,
     lastSpinResult,
+    buySpinsModalOpen,
+    setBuySpinsModalOpen,
   };
 }
