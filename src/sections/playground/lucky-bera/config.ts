@@ -2,7 +2,7 @@ export const BUY_SPINS_CONTRACT_ADDRESS = "0x75F89c147E9Aa9C2C878E9D3065A5D42456
 export const BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS = 0.1;
 
 export enum SpinCategory {
-  Spin = "Honey",
+  Spin = "Spin",
   Gem = "Gem",
   Box = "Box",
   Rocket = "Rocket",
@@ -11,35 +11,35 @@ export enum SpinCategory {
 
 export const SPIN_CATEGORIES: Record<SpinCategory, any> = {
   [SpinCategory.Spin]: {
-    code: "2",
+    code: 2,
     icon: "/images/playground/lucky-bera/icon-reward/spin.svg",
     value: SpinCategory.Spin,
     centerScale: 0.85,
     centerY: -4,
   },
   [SpinCategory.Gem]: {
-    code: "1",
+    code: 1,
     icon: "/images/playground/lucky-bera/icon-reward/gem.svg",
     value: SpinCategory.Gem,
     centerScale: 0.85,
     centerY: -2,
   },
   [SpinCategory.Box]: {
-    code: "3",
+    code: 3,
     icon: "/images/playground/lucky-bera/icon-reward/box.svg",
     value: SpinCategory.Box,
     centerScale: 0.85,
     centerY: 0,
   },
   [SpinCategory.Rocket]: {
-    code: "4",
+    code: 4,
     icon: "/images/playground/lucky-bera/icon-reward/rocket.svg",
     value: SpinCategory.Rocket,
     centerScale: 0.85,
     centerY: -2,
   },
   [SpinCategory.Apple]: {
-    code: "5",
+    code: 5,
     icon: "/images/playground/lucky-bera/icon-reward/apple.svg",
     value: SpinCategory.Apple,
     centerScale: 0.85,

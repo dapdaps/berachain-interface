@@ -1,15 +1,16 @@
 import { motion, useAnimate, useMotionValue } from 'framer-motion';
 import { memo, useEffect, useRef } from 'react';
-import { SPIN_CATEGORIES, SpinCategory } from '../config';
+import { SPIN_CATEGORIES, SpinCategory, SpinResultData } from '../config';
 import LightingButton from './lighting-button';
 import { numberFormatter } from '@/utils/number-formatter';
 import useToast from '@/hooks/use-toast';
 import Big from 'big.js';
-import { useRequest } from 'ahooks';
+import { useDebounceFn, useRequest } from 'ahooks';
 import clsx from 'clsx';
 
 const WHEEL_SIZE = 500;
 const WHEEL_AREA = 120;
+const WHEEL_CENTER_OFFSET = 110;
 const WHEEL_ICON_SIZE = 60;
 const SPIN_PROGRESS_BASE = 10; // percent
 const EXPLOSION_COIN_SIZE = 100;
@@ -41,11 +42,11 @@ export default memo(function Tiger(props: any) {
   const toast = useToast();
 
   const [leftWheel, leftWheelAnimate] = useAnimate();
-  const leftWheelRotation = useMotionValue(24);
+  const leftWheelRotation = useMotionValue(SpinCategoryRotation);
   const [centerWheel, centerWheelAnimate] = useAnimate();
-  const centerWheelRotation = useMotionValue(-1);
+  const centerWheelRotation = useMotionValue(0);
   const [rightWheel, rightWheelAnimate] = useAnimate();
-  const rightWheelRotation = useMotionValue(-48 + (-SpinCategoryRotation * 1.5));
+  const rightWheelRotation = useMotionValue(SpinCategoryRotation * 2);
   const spinRef = useRef<any>();
   const spinTimerInfinityLeft = useRef<any>();
   const spinTimerInfinityCenter = useRef<any>();
@@ -164,12 +165,15 @@ export default memo(function Tiger(props: any) {
     createWave(240, numberOfCoins);    // Third wave with delay
   };
 
-  const startCoinExplosion = (params: any) => {
-    const { category } = params;
+  const startCoinExplosion = (params: SpinResultData) => {
+    const { draw_reward } = params;
 
-    const currCategory = SPIN_CATEGORIES[category as SpinCategory];
+    const currCategory = SPIN_CATEGORIES[draw_reward as SpinCategory];
 
-    if (!spinRef.current || !currCategory) return;
+    if (!spinRef.current || !currCategory) {
+      startSlowScrollDebounce();
+      return;
+    }
 
     // Calculate center position for coin explosion
     const rect = spinRef.current.getBoundingClientRect();
@@ -181,7 +185,7 @@ export default memo(function Tiger(props: any) {
 
   const startSlowScroll = () => {
     leftWheelAnimate(leftWheel.current, {
-      rotate: [leftWheelRotation.get(), leftWheelRotation.get() + 360]
+      rotateX: [leftWheelRotation.get(), leftWheelRotation.get() + 360]
     }, {
       ...WheelInfinityAnimation,
       duration: WheelInfinitySlowDuration,
@@ -193,19 +197,21 @@ export default memo(function Tiger(props: any) {
       duration: WheelInfinitySlowDuration,
     });
     rightWheelAnimate(rightWheel.current, {
-      rotate: [rightWheelRotation.get(), rightWheelRotation.get() - 360]
+      rotateX: [rightWheelRotation.get(), rightWheelRotation.get() + 360]
     }, {
       ...WheelInfinityAnimation,
       duration: WheelInfinitySlowDuration,
     });
   };
 
+  const { run: startSlowScrollDebounce, cancel: cancelStartSlowScrollDebounce } = useDebounceFn(startSlowScroll, { wait: 5000 });
+
   const startInfinityScroll: () => Promise<any> = () => new Promise((resolve) => {
     let leftWheelAnimation: any;
     let centerWheelAnimation: any;
     let rightWheelAnimation: any;
     leftWheelAnimation = leftWheelAnimate(leftWheel.current, {
-      rotate: [leftWheelRotation.get(), leftWheelRotation.get() + 360]
+      rotateX: [leftWheelRotation.get(), leftWheelRotation.get() + 360]
     }, WheelInfinityAnimation);
     spinTimerInfinityLeft.current = setTimeout(() => {
       clearTimeout(spinTimerInfinityLeft.current);
@@ -216,7 +222,7 @@ export default memo(function Tiger(props: any) {
     spinTimerInfinityCenter.current = setTimeout(() => {
       clearTimeout(spinTimerInfinityCenter.current);
       rightWheelAnimation = rightWheelAnimate(rightWheel.current, {
-        rotate: [rightWheelRotation.get(), rightWheelRotation.get() - 360]
+        rotateX: [rightWheelRotation.get(), rightWheelRotation.get() - 360]
       }, WheelInfinityAnimation);
     }, WheelInfinityDelay * 1000 * 2);
 
@@ -232,8 +238,8 @@ export default memo(function Tiger(props: any) {
 
   const startWheelResultScroll: (params: any) => Promise<any> = (params) => new Promise((resolve) => {
     // calc wheel position
-    const { code, category } = params.data;
-    const [leftCode, centerCode, rightCode] = [code.slice(0, 1), code.slice(1, 2), code.slice(2)];
+    const { draw_codes } = params.data as SpinResultData;
+    const [leftCode, centerCode, rightCode] = draw_codes;
 
     const leftCategoryIndex = SpinCategories.findIndex((it) => it.code === leftCode);
     const centerCategoryIndex = SpinCategories.findIndex((it) => it.code === centerCode);
@@ -249,21 +255,14 @@ export default memo(function Tiger(props: any) {
       SpinCategories[rightCategoryIndex].value,
     );
 
-    const leftRandomArea = 0;
-    const centerRandomArea = 0;
-    const rightRandomArea = 0;
     const baseRotation = 360 * SpinBase;
 
-    console.log("lottery wheel random area: %o, center: %o, right: %o", leftRandomArea, centerRandomArea, rightRandomArea);
-
-    const leftWheelCodeRotation = baseRotation + WHEEL_AREA * leftRandomArea + (WHEEL_AREA - leftCategoryIndex * SpinCategoryRotation);
-    const centerWheelCodeRotation = baseRotation + WHEEL_AREA * centerRandomArea + (WHEEL_AREA - centerCategoryIndex * SpinCategoryRotation) - 1;
-    const rightWheelCodeRotation = baseRotation + WHEEL_AREA * rightRandomArea + (WHEEL_AREA - rightCategoryIndex * SpinCategoryRotation) + SpinCategoryRotation * 1.5;
-
-    console.log("lottery wheel rotation left: %o, center: %o, right: %o", leftWheelCodeRotation, centerWheelCodeRotation, rightWheelCodeRotation);
+    const leftWheelCodeRotation = baseRotation + (WHEEL_AREA - leftCategoryIndex * SpinCategoryRotation) - 1;
+    const centerWheelCodeRotation = baseRotation + (WHEEL_AREA - centerCategoryIndex * SpinCategoryRotation) - 1;
+    const rightWheelCodeRotation = baseRotation + (WHEEL_AREA - rightCategoryIndex * SpinCategoryRotation) - 1;
 
     leftWheelAnimate(leftWheel.current, {
-      rotate: [leftWheelRotation.get(), leftWheelCodeRotation]
+      rotateX: [leftWheelRotation.get(), leftWheelCodeRotation]
     }, {
       type: "spring",
       onComplete: () => {
@@ -273,7 +272,7 @@ export default memo(function Tiger(props: any) {
           type: "spring",
           onComplete: () => {
             rightWheelAnimate(rightWheel.current, {
-              rotate: [rightWheelRotation.get(), -rightWheelCodeRotation]
+              rotateX: [rightWheelRotation.get(), rightWheelCodeRotation]
             }, {
               type: "spring",
               onComplete: () => {
@@ -295,6 +294,8 @@ export default memo(function Tiger(props: any) {
       openBuySpinsModal();
       return;
     }
+
+    cancelStartSlowScrollDebounce();
 
     // start wheel scroll
     const animations = await startInfinityScroll();
@@ -343,21 +344,21 @@ export default memo(function Tiger(props: any) {
           <div className="absolute z-[1] top-[140px] left-0 right-0 flex flex-col items-center">
             <div className="flex items-center justify-center gap-[4px] w-[301px] h-[43px] bg-[url('/images/playground/lucky-bera/amount-bg.svg')] bg-no-repeat bg-center bg-contain">
               {
-                !!lastSpinResult?.amount && (
+                !!lastSpinResult?.draw_reward_amount && (
                   <>
                     {
-                      !!SPIN_CATEGORIES[lastSpinResult.category as SpinCategory] && (
+                      !!SPIN_CATEGORIES[lastSpinResult.draw_reward as SpinCategory] && (
                         <div className="w-[22px]">
                           <img
-                            src={SPIN_CATEGORIES[lastSpinResult.category as SpinCategory].icon}
-                            alt={SPIN_CATEGORIES[lastSpinResult.category as SpinCategory].value}
+                            src={SPIN_CATEGORIES[lastSpinResult.draw_reward as SpinCategory].icon}
+                            alt={SPIN_CATEGORIES[lastSpinResult.draw_reward as SpinCategory].value}
                             className="translate-y-0.5"
                           />
                         </div>
                       )
                     }
                     <div className="text-[#FFF4C2] text-stroke-2 text-[24px] font-CherryBomb">
-                      {numberFormatter(lastSpinResult.amount, 2, true)}
+                      {numberFormatter(lastSpinResult.draw_reward_amount, 2, true)}
                     </div>
                   </>
                 )
@@ -380,16 +381,20 @@ export default memo(function Tiger(props: any) {
                 {numberFormatter(spinUserData?.xp_balance, 2, true)} / {numberFormatter(spinUserData?.game_xp?.xp, 2, true)}
               </div>
 
-              <div className="absolute -right-[30px] -top-[8px]">
-                <img
-                  src="/images/playground/lucky-bera/ticket-spin.png"
-                  alt="coin_2"
-                  className="w-[55px] h-[46px] object-center object-contain shrink-0"
-                />
-                <div className="absolute whitespace-nowrap left-1/2 -translate-x-1/2 bottom-[4px] font-CherryBomb text-[16px] text-[#FFE7A5] [text-shadow:0_2px_0_rgba(0,0,0,0.5)] [-webkit-text-stroke:1px_#4B371F] leading-none">
-                  1Spins
-                </div>
-              </div>
+              {
+                !!spinUserData?.game_xp && (
+                  <div className="absolute -right-[30px] -top-[8px]">
+                    <img
+                      src={SPIN_CATEGORIES[spinUserData?.game_xp?.reward as SpinCategory]?.icon}
+                      alt=""
+                      className="w-[55px] h-[46px] object-center object-contain shrink-0"
+                    />
+                    <div className="absolute whitespace-nowrap left-1/2 -translate-x-1/2 bottom-[4px] font-CherryBomb text-[16px] text-[#FFE7A5] [text-shadow:0_2px_0_rgba(0,0,0,0.5)] [-webkit-text-stroke:1px_#4B371F] leading-none">
+                      {spinUserData?.game_xp?.rewardAmount}{spinUserData?.game_xp?.reward}
+                    </div>
+                  </div>
+                )
+              }
             </div>
             <div className="relative flex items-center w-[353px] h-[188px] bg-[url('/images/playground/lucky-bera/turntable_bg.svg')] bg-center bg-contain bg-no-repeat">
               <div className="absolute top-1/2 translate-x-[-40px] -translate-y-1/2">
@@ -410,42 +415,43 @@ export default memo(function Tiger(props: any) {
               <div className="absolute left-[6px] right-[6px] top-[5px] bottom-[5px] overflow-hidden">
                 {/*#region Left*/}
                 <motion.div
-                  ref={leftWheel}
-                  className="absolute left-0 top-1/2 rounded-full"
+                  className="absolute left-1/2 top-1/2"
                   style={{
-                    y: "-50%",
-                    rotate: leftWheelRotation,
+                    transform: `translateX(calc(-50% - ${WHEEL_CENTER_OFFSET}px)) translateY(-50%) perspective(1000px)`,
                     width: WHEEL_SIZE,
                     height: WHEEL_SIZE,
                   }}
                 >
-                  {
-                    new Array(360 / WHEEL_AREA).fill(null).map((_, index) => SpinCategories.map((item, idx) => (
-                      <div
-                        key={`${index}-${idx}`}
-                        className="absolute left-0 right-0 top-1/2 px-[10px] w-full"
-                        style={{
-                          transform: "translateY(-50%) rotate(" + (index * WHEEL_AREA + idx * SpinCategoryRotation) + "deg)",
-                          height: WHEEL_ICON_SIZE,
-                        }}
-                      >
+                  <motion.div
+                    ref={leftWheel}
+                    className="w-full h-full relative [transform-style:preserve-3d]"
+                    style={{
+                      rotateX: leftWheelRotation,
+                    }}
+                  >
+                    {
+                      new Array(360 / WHEEL_AREA).fill(null).map((_, index) => SpinCategories.map((item, idx) => (
                         <div
-                          className=""
+                          key={`${index}-${idx}`}
+                          className="absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -mt-[30px] -ml-[30px] [backface-visibility:hidden]"
                           style={{
-                            width: WHEEL_ICON_SIZE,
+                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * 0.7 / 2}px) translateY(${item.centerY}px)`,
+                            width: WHEEL_ICON_SIZE * item.centerScale,
+                            height: WHEEL_ICON_SIZE * item.centerScale,
                           }}
                         >
                           <img src={item.icon} alt="" className="w-full" />
                         </div>
-                      </div>
-                    )))
-                  }
+                      )))
+                    }
+                  </motion.div>
                 </motion.div>
                 {/*#endregion*/}
                 {/*#region Center*/}
                 <motion.div
-                  className="absolute left-1/2 top-1/2 translate-x-[calc(-50%_+_5px)] -translate-y-1/2 [perspective:1000px]"
+                  className="absolute left-1/2 top-1/2"
                   style={{
+                    transform: "translateX(calc(-50%)) translateY(-50%) perspective(1000px)",
                     width: WHEEL_SIZE,
                     height: WHEEL_SIZE,
                   }}
@@ -477,36 +483,36 @@ export default memo(function Tiger(props: any) {
                 {/*#endregion*/}
                 {/*#region Right*/}
                 <motion.div
-                  ref={rightWheel}
-                  className="absolute right-0 top-1/2 rounded-full"
+                  className="absolute left-1/2 top-1/2"
                   style={{
-                    rotate: rightWheelRotation,
-                    y: "-50%",
+                    transform: `translateX(calc(-50% + ${WHEEL_CENTER_OFFSET}px)) translateY(-50%) perspective(1000px)`,
                     width: WHEEL_SIZE,
                     height: WHEEL_SIZE,
                   }}
                 >
-                  {
-                    new Array(360 / WHEEL_AREA).fill(null).map((_, index) => [...SpinCategories].reverse().map((item, idx) => (
-                      <div
-                        key={`${index}-${idx}`}
-                        className="absolute left-0 right-0 top-1/2 w-full px-[10px]"
-                        style={{
-                          transform: "translateY(-50%) rotate(" + (index * WHEEL_AREA + idx * SpinCategoryRotation) + "deg)",
-                          height: WHEEL_ICON_SIZE,
-                        }}
-                      >
+                  <motion.div
+                    ref={rightWheel}
+                    className="w-full h-full relative [transform-style:preserve-3d]"
+                    style={{
+                      rotateX: rightWheelRotation,
+                    }}
+                  >
+                    {
+                      new Array(360 / WHEEL_AREA).fill(null).map((_, index) => SpinCategories.map((item, idx) => (
                         <div
-                          className="-rotate-180"
+                          key={`${index}-${idx}`}
+                          className="absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -mt-[30px] -ml-[30px] [backface-visibility:hidden]"
                           style={{
-                            width: WHEEL_ICON_SIZE,
+                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * 0.7 / 2}px) translateY(${item.centerY}px)`,
+                            width: WHEEL_ICON_SIZE * item.centerScale,
+                            height: WHEEL_ICON_SIZE * item.centerScale,
                           }}
                         >
                           <img src={item.icon} alt="" className="w-full" />
                         </div>
-                      </div>
-                    )))
-                  }
+                      )))
+                    }
+                  </motion.div>
                 </motion.div>
                 {/*#endregion*/}
               </div>
@@ -568,9 +574,9 @@ export default memo(function Tiger(props: any) {
                 </div>
               </div>
               <LightingButton
-               outerClassName="!h-[47px]"
-               className="!px-[29px]"
-               onClick={openBuySpinsModal}
+                outerClassName="!h-[47px]"
+                className="!px-[29px]"
+                onClick={openBuySpinsModal}
               >
                 BUY
               </LightingButton>

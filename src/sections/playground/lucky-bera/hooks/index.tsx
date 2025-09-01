@@ -1,7 +1,7 @@
 import { useDebounceFn, useRequest } from 'ahooks';
 import { get, post } from '@/utils/http';
 import { useEffect, useState } from 'react';
-import { BUY_SPINS_CONTRACT_ADDRESS, BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS, SpinMultiplier, SpinResultData, SpinUserData } from '../config';
+import { BUY_SPINS_CONTRACT_ADDRESS, BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS, SPIN_CATEGORIES, SpinMultiplier, SpinResultData, SpinUserData, SpinCategory } from '../config';
 import useToast from '@/hooks/use-toast';
 import { useLuckyBeraStore } from '../store';
 import useCustomAccount from '@/hooks/use-account';
@@ -22,21 +22,31 @@ export function useLuckyBera() {
 
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
 
-  const { run: getSpinUserData, data: spinUserData, loading: spinUserDataLoading } = useRequest<SpinUserData, any>(async () => {
+  const [spinUserData, setSpinUserData] = useState<SpinUserData>();
+  const { run: getSpinUserData, loading: spinUserDataLoading } = useRequest<SpinUserData, any>(async () => {
     const res = await get("/api/go/game/777/user");
     if (res.code !== 200) {
       checkSpinMultiplier();
       return {};
     }
     checkSpinMultiplier(res.data);
+    setSpinUserData(res.data);
     return res.data;
   }, {
     manual: true,
   });
 
-  const { run: reloadSpinData } = useDebounceFn((lastSpinResult: any) => {
-    getSpinUserData();
-    setLastSpinResult(lastSpinResult);
+  const { run: reloadSpinData } = useDebounceFn((_lastSpinResult: SpinResultData) => {
+    // getSpinUserData();
+    setSpinUserData((prev) => {
+      return {
+        ...prev,
+        spin_balance: _lastSpinResult.spin_balance,
+      } as SpinUserData;
+    });
+    if (SPIN_CATEGORIES[_lastSpinResult?.draw_reward as SpinCategory]) {
+      setLastSpinResult(_lastSpinResult);
+    }
   }, { wait: 5000 });
 
   const { runAsync: handleSpinResult, data: spinResultData, loading: spinResultDataLoading } = useRequest<SpinResultData | boolean, any>(async () => {
