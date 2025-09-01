@@ -20,6 +20,10 @@ const LootboxSeason = (props: any) => {
     guideVisible,
     setGuideVisible,
     onFinishGuide,
+    userCategoryList,
+    setUserCategoryList,
+    hadUserCategory,
+    lootboxOpenedData,
   } = useLootboxSeason();
   const connectModal = useConnectModal();
 
@@ -35,8 +39,13 @@ const LootboxSeason = (props: any) => {
             connectModal.openConnectModal?.();
             return;
           }
+          if (hadUserCategory) {
+            onFinish(true);
+            return;
+          }
           onModalToggle(LootboxSeasonGuides.Open, true);
         }}
+        hadUserCategory={hadUserCategory}
       />
       <LootboxSeasonOpenModal
         open={open.open}
@@ -45,13 +54,15 @@ const LootboxSeason = (props: any) => {
         }}
         onNext={onOpenLootbox}
         loading={openLootboxPending}
+        userCategoryList={userCategoryList}
+        setUserCategoryList={setUserCategoryList}
       />
       <LootboxSeasonGemsModal
         open={open.gems}
         onClose={() => {
           onFinish(false);
         }}
-        points={100}
+        data={lootboxOpenedData}
         onNext={onFinish}
       />
       <LootboxSeasonGuide

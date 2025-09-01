@@ -30,9 +30,12 @@ export function useUser() {
     setUserInfo({ loading: true });
     try {
       const result = await get('/api/user');
+      // lootbox season user info
+      const result2 = await get('/api/go/user');
       const data = result?.data || {};
-      setUserInfo({ user: data, loading: false });
-      return data;
+      const data2 = result2?.data || {};
+      setUserInfo({ user: { ...data, ...data2 }, loading: false });
+      return { ...data, ...data2 };
     } catch (err) {
       console.log('getUserInfo failed: %o', err);
       setUserInfo({ user: {}, loading: false });
