@@ -5,7 +5,7 @@ import useAccount from "@/hooks/use-account";
 import { useEffect } from "react";
 
 const LootboxSeasonStart = (props: any) => {
-  const { onNext } = props;
+  const { onNext, hadUserCategory } = props;
 
   const { account } = useAccount();
 
@@ -78,14 +78,18 @@ const LootboxSeasonStart = (props: any) => {
           className="!px-[100px]"
           onClick={onNext}
         >
-          <img
-            src="/images/guiding-tour/lootbox-season/box@2x.png"
-            alt=""
-            className="w-[82px] h-[66px] shrink-0 object-center object-contain absolute left-[-40px]"
-          />
+          {
+            !!account && !hadUserCategory && (
+              <img
+                src="/images/guiding-tour/lootbox-season/box@2x.png"
+                alt=""
+                className="w-[82px] h-[66px] shrink-0 object-center object-contain absolute left-[-40px]"
+              />
+            )
+          }
           <div className="">
             {
-              !account ? "Connect Wallet" : "Get Lootbox"
+              !account ? "Connect Wallet" : (hadUserCategory ? "Check daily missions" : "Get Lootbox")
             }
           </div>
         </LootboxSeasonButton>

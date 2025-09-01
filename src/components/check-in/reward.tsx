@@ -2,9 +2,14 @@ import clsx from "clsx";
 import Modal from "../modal";
 import { motion } from "framer-motion";
 import { RewardType } from "./config";
+import { useRouter } from "next/navigation";
+import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
 
 const CheckInReward = (props: any) => {
   const { open, onClose, data } = props;
+
+  const router = useRouter();
+  const { setTreasureBookOpen } = useLootboxSeasonStore();
 
   return (
     <Modal
@@ -85,11 +90,26 @@ const CheckInReward = (props: any) => {
           {
             data?.length === 1 ? (
               <>
-                <RewardButton type="primary">
+                <RewardButton
+                  type="primary"
+                  onClick={() => {
+                    if (data[0].type === RewardType.Spin) {
+                      router.push("/playground/lucky-bera?from=check-in");
+                      return;
+                    }
+                    onClose();
+                    setTreasureBookOpen(true);
+                  }}
+                >
                   {data[0].type === RewardType.Spin ? "Play Lucky 777" : "Check all Lootboxes"}
                 </RewardButton>
                 {data[0].type === RewardType.Spin && (
-                  <RewardButton>
+                  <RewardButton
+                    onClick={() => {
+                      onClose();
+                      setTreasureBookOpen(true);
+                    }}
+                  >
                     Check all Lootboxes
                   </RewardButton>
                 )
@@ -97,10 +117,20 @@ const CheckInReward = (props: any) => {
               </>
             ) : (
               <>
-                <RewardButton type="primary">
+                <RewardButton
+                  type="primary"
+                  onClick={() => {
+                    router.push("/playground/lucky-bera?from=check-in");
+                  }}
+                >
                   Play Lucky 777
                 </RewardButton>
-                <RewardButton>
+                <RewardButton
+                  onClick={() => {
+                    onClose();
+                    setTreasureBookOpen(true);
+                  }}
+                >
                   Check all Lootboxes
                 </RewardButton>
               </>

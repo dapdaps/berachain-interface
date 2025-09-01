@@ -1,9 +1,33 @@
 import { motion } from "framer-motion";
 import LootboxSeasonTitle from "../../components/title";
 import LootboxSeasonButton from "../../components/button";
+import { useMemo } from "react";
+import { Reward, RewardType } from "@/components/check-in/config";
+import { numberFormatter } from "@/utils/number-formatter";
 
 const LootboxSeasonGems = (props: any) => {
-  const { onNext, points } = props;
+  const { onNext, data } = props;
+
+  const { reward_Spin_amount, reward_gem_amount } = data ?? {};
+
+  const rewards = useMemo(() => {
+    const _rewards: Reward[] = [];
+    if (reward_gem_amount) {
+      _rewards.push({
+        type: RewardType.Gem,
+        amount: reward_gem_amount,
+        label: `You’ve got ${numberFormatter(reward_gem_amount, 0, true)} Gems`,
+      });
+    }
+    if (reward_Spin_amount) {
+      _rewards.push({
+        type: RewardType.Spin,
+        amount: reward_Spin_amount,
+        label: `You’ve got ${numberFormatter(reward_Spin_amount, 0, true)} Spins`,
+      });
+    }
+    return _rewards;
+  }, [reward_Spin_amount, reward_gem_amount]);
 
   return (
     <div className="w-full">
@@ -38,25 +62,56 @@ const LootboxSeasonGems = (props: any) => {
               ease: "linear"
             }}
           />
-          <motion.img
-            src="/images/guiding-tour/lootbox-season/gems@2x.png"
-            alt=""
-            className="w-[166px] h-[97px] shrink-0 object-center object-contain absolute z-[1] top-[90px]"
-            animate={{
-              transform: [`translateY(0px)`, `translateY(10px)`, `translateY(0)`],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
+          {
+            rewards?.some((reward) => reward.type === RewardType.Gem) && (
+              <motion.img
+                src="/images/guiding-tour/lootbox-season/gems@2x.png"
+                alt=""
+                className="w-[166px] h-[97px] shrink-0 object-center object-contain absolute z-[1] top-[90px]"
+                style={{
+                  left: rewards?.length > 1 ? "20px" : "unset",
+                }}
+                animate={{
+                  transform: [`translateY(0px)`, `translateY(10px)`, `translateY(0)`],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+            )
+          }
+          {
+            rewards?.some((reward) => reward.type === RewardType.Spin) && (
+              <motion.img
+                src="/images/check-in/lucky777.png"
+                alt=""
+                className="w-[200px] h-[150px] shrink-0 object-center object-contain absolute z-[1] top-[90px]"
+                style={{
+                  right: rewards?.length > 1 ? "20px" : "unset",
+                }}
+                animate={{
+                  transform: [`translateY(0px)`, `translateY(10px)`, `translateY(0)`],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+            )
+          }
         </div>
       </div>
       <div className="w-full mt-[36px] font-Montserrat text-[16px] leading-[150%] text-black font-[500] px-[26px] text-center">
-        <div className="text-[24px font-[900] leading-[120%]">
-          You’ve got {points} Gems
-        </div>
+        {
+          rewards.map((reward) => (
+            <div className="text-[24px font-[900] leading-[120%]" key={reward.type}>
+              {reward.label}
+            </div>
+          ))
+        }
         <div className="mt-[18px]">
           Want more lootbox? Complete daily missions
         </div>

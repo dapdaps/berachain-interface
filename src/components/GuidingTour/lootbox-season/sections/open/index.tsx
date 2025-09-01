@@ -4,40 +4,12 @@ import LootboxSeasonTitle from "../../components/title";
 import LootboxSeasonButton from "../../components/button";
 
 const LootboxSeasonOpen = (props: any) => {
-  const { onNext, loading } = props;
-
-  const [list, setList] = useState([
-    {
-      key: 1,
-      label: "Yield Farmer",
-      description: "Show me the highest APY",
-      selected: false,
-    },
-    {
-      key: 2,
-      label: "DeFi Curious",
-      description: "Help me explore DeFi",
-      selected: false,
-    },
-    {
-      key: 3,
-      label: "Cross-chain Explorer",
-      description: "I want to bridge and swap",
-      selected: false,
-    },
-    {
-      key: 4,
-      label: "Berachain Baller",
-      description: "Here for the vibes",
-      selected: true,
-    },
-    {
-      key: 5,
-      label: "First Timer",
-      description: "I’m new, help me start",
-      selected: false,
-    },
-  ]);
+  const {
+    onNext,
+    loading,
+    userCategoryList,
+    setUserCategoryList,
+  } = props;
 
   return (
     <div className="w-full">
@@ -53,13 +25,13 @@ const LootboxSeasonOpen = (props: any) => {
       </div>
       <div className="w-full mt-[58px] flex flex-col items-stretch gap-[12px] px-[26px]">
         {
-          list.map((item, index) => (
+          userCategoryList.map((item: any, index: number) => (
             <LootboxSeasonRadioSelector
               key={item.key}
               selected={item.selected}
               description={item.description}
               onClick={() => {
-                setList((prev) => {
+                setUserCategoryList((prev: any) => {
                   const _list = [...prev];
                   _list.forEach((it) => {
                     it.selected = false;
@@ -81,7 +53,7 @@ const LootboxSeasonOpen = (props: any) => {
           className="!px-[100px]"
           onClick={onNext}
           loading={loading}
-          disabled={loading || !list.some((it) => it.selected)}
+          disabled={loading || !userCategoryList.some((it: any) => it.selected)}
         >
           <img
             src="/images/guiding-tour/lootbox-season/box@2x.png"

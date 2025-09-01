@@ -7,7 +7,7 @@ const LightButton = (props: any) => {
     <button
       type="button"
       className={clsx(
-        "disabled:opacity-30 disabled:!cursor-not-allowed hover:scale-[1.02] transition-scale duration-150 h-[52px] p-[2px] shrink-0 rounded-[16px] border-[2px] border-[#4B371F] bg-[#FFB050] text-[#F7F9EA] text-center font-CherryBomb text-[20px] font-[400] leading-[20px] tracking-[2px] uppercase [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]",
+        "disabled:opacity-30 disabled:!cursor-not-allowed hover:scale-[1.02] hover:disabled:scale-100 transition-scale duration-150 h-[52px] p-[2px] shrink-0 rounded-[16px] border-[2px] border-[#4B371F] bg-[#FFB050] text-[#F7F9EA] text-center font-CherryBomb text-[20px] font-[400] leading-[20px] tracking-[2px] uppercase [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]",
         className
       )}
       {...restProps}
