@@ -1,44 +1,47 @@
+export const BUY_SPINS_CONTRACT_ADDRESS = "0x75F89c147E9Aa9C2C878E9D3065A5D4245672201";
+export const BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS = 0.1;
+
 export enum SpinCategory {
-  Coin = "coin",
-  Gem = "gem",
-  Bear = "bear",
-  Bee = "bee",
-  Honey = "honey",
+  Spin = "Honey",
+  Gem = "Gem",
+  Box = "Box",
+  Rocket = "Rocket",
+  Apple = "Apple",
 }
 
 export const SPIN_CATEGORIES: Record<SpinCategory, any> = {
-  [SpinCategory.Coin]: {
-    code: "1",
-    icon: "/images/playground/lucky-bera/reward-coin.svg",
-    value: SpinCategory.Coin,
+  [SpinCategory.Spin]: {
+    code: "2",
+    icon: "/images/playground/lucky-bera/icon-reward/spin.svg",
+    value: SpinCategory.Spin,
     centerScale: 0.85,
     centerY: -4,
   },
   [SpinCategory.Gem]: {
-    code: "2",
-    icon: "/images/playground/lucky-bera/reward-gem.svg",
+    code: "1",
+    icon: "/images/playground/lucky-bera/icon-reward/gem.svg",
     value: SpinCategory.Gem,
     centerScale: 0.85,
     centerY: -2,
   },
-  [SpinCategory.Bear]: {
+  [SpinCategory.Box]: {
     code: "3",
-    icon: "/images/playground/lucky-bera/reward-bear.svg",
-    value: SpinCategory.Bear,
+    icon: "/images/playground/lucky-bera/icon-reward/box.svg",
+    value: SpinCategory.Box,
     centerScale: 0.85,
     centerY: 0,
   },
-  [SpinCategory.Bee]: {
+  [SpinCategory.Rocket]: {
     code: "4",
-    icon: "/images/playground/lucky-bera/reward-bee.svg",
-    value: SpinCategory.Bee,
+    icon: "/images/playground/lucky-bera/icon-reward/rocket.svg",
+    value: SpinCategory.Rocket,
     centerScale: 0.85,
     centerY: -2,
   },
-  [SpinCategory.Honey]: {
+  [SpinCategory.Apple]: {
     code: "5",
-    icon: "/images/playground/lucky-bera/reward-honey.svg",
-    value: SpinCategory.Honey,
+    icon: "/images/playground/lucky-bera/icon-reward/apple.svg",
+    value: SpinCategory.Apple,
     centerScale: 0.85,
     centerY: 2,
   },
@@ -57,24 +60,58 @@ export enum SpinMultiplier {
 }
 
 export interface SpinUserData {
-  id: number;
-  tg_user_id: string;
-  spin: number;
-  bee: number;
-  bee_level: number;
-  refill_time: number;
-  gem: number;
-  bee_level_amount: number;
-  bee_level_reward_coins: number;
+  address: string;
+  game_xp: {
+    level: number;
+    reward: string;
+    rewardAmount: number;
+    xp: number;
+  };
+  spin_balance: number;
+  xp_balance: number;
+  xp_level: number;
 }
 
 export interface SpinResultData {
-  amount: number;
-  bee: number;
-  bee_level_amount: number;
-  bee_level_reward_coins: number;
-  category: SpinCategory;
-  code: string;
-  gem: number;
-  spin: number;
+  codes: number[];
+  draw_codes: number[];
+  draw_reward: string;
+  draw_reward_amount: string;
+  game_xp: {
+    level: number;
+    reward: string;
+    rewardAmount: number;
+    xp: number;
+  };
+  spin_balance: number;
+  xp_balance: number;
+  xp_changed: boolean;
+  xp_level: number;
 }
+
+export const GoodsList = [
+  {
+    id: 1,
+    price: 10,
+    delPrice: 10.5,
+    amount: 105,
+    isHot: true,
+    add: 0.05,
+  },
+  {
+    id: 2,
+    price: 20,
+    delPrice: 22,
+    amount: 220,
+    isHot: false,
+    add: 0.1,
+  },
+  {
+    id: 3,
+    price: 50,
+    delPrice: 60,
+    amount: 600,
+    isHot: false,
+    add: 0.2,
+  },
+];

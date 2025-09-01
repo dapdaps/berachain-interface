@@ -35,7 +35,6 @@ export default memo(function Tiger(props: any) {
     spinUserData,
     lastSpinResult,
     handleSpinResult,
-    toggleOutHoneyVisible,
     openBuySpinsModal,
   } = props;
 
@@ -292,8 +291,8 @@ export default memo(function Tiger(props: any) {
   });
 
   const { run: handleSpin, loading: spinning } = useRequest<any, any>(async () => {
-    if (!spinUserData?.spin) {
-      toggleOutHoneyVisible(true);
+    if (!spinUserData?.spin_balance) {
+      openBuySpinsModal();
       return;
     }
 
@@ -366,29 +365,29 @@ export default memo(function Tiger(props: any) {
             </div>
             <div className="m-[14px_0_18px] relative pl-[4px] w-[200px] h-[25px] flex items-center  rounded-[10px] border-2 border-[#E49F63] bg-[#582911]">
               <img
-                src="/images/playground/lucky-bera/reward-bee.svg"
+                src="/images/playground/lucky-bera/icon-rocket.png"
                 alt="theme"
-                className="w-[35px] absolute -left-[15px]"
+                className="w-[50px] h-[50px] object-center object-contain shrink-0 absolute -left-[15px]"
               />
               <motion.div
                 className="h-[18px] rounded-[6px] border-2 border-[#F8C200] bg-[#FFE380] shadow-[0px_4px_0px_0px_rgba(255, 255, 255, 0.50)_inset]"
                 animate={{
-                  width: Big(spinUserData?.bee_level_amount ?? 0).gt(0) ? Big(spinUserData?.bee ?? 0).div(spinUserData?.bee_level_amount).times(100).toFixed(2) + "%" : "0%"
+                  width: Big(spinUserData?.xp_balance ?? 0).gt(0) ? Big(spinUserData?.xp_balance ?? 0).div(spinUserData?.game_xp?.xp ?? 0).times(100).toFixed(2) + "%" : "0%"
                 }}
               />
 
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-CherryBomb text-[12px] text-stroke-1-FFF4C2 bg-gradient-to-b from-[#926D48] to-[#221911] bg-clip-text text-transparent [-webkit-text-fill-color: transparent]">
-                {numberFormatter(spinUserData?.bee, 2, true)} / {numberFormatter(spinUserData?.bee_level_amount, 2, true)}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[linear-gradient(180deg,_#926D48_0%,_#221911_100%)] bg-clip-text [-webkit-text-fill-color:_transparent] text-[12px] font-CherryBomb [-webkit-text-stroke-width:_1px] [-webkit-text-stroke-color:_#FFF4C2] font-[400] leading-[100%] text-center">
+                {numberFormatter(spinUserData?.xp_balance, 2, true)} / {numberFormatter(spinUserData?.game_xp?.xp, 2, true)}
               </div>
 
-              <div className="absolute -right-[9.4px] -top-[3px]">
+              <div className="absolute -right-[30px] -top-[8px]">
                 <img
-                  src="/images/playground/lucky-bera/coin_2.svg"
+                  src="/images/playground/lucky-bera/ticket-spin.png"
                   alt="coin_2"
-                  className="w-[35px]"
+                  className="w-[55px] h-[46px] object-center object-contain shrink-0"
                 />
-                <div className="absolute left-1/2 -translate-x-1/2 -bottom-[4px] font-CherryBomb text-[16px] text-[#FFE7A5] [text-shadow:0_2px_0_rgba(0,0,0,0.5)] [-webkit-text-stroke:1px_#4B371F] leading-none">
-                  {numberFormatter(spinUserData?.bee_level_reward_coins, 2, true, { isShort: true, isShortUppercase: true })}
+                <div className="absolute whitespace-nowrap left-1/2 -translate-x-1/2 bottom-[4px] font-CherryBomb text-[16px] text-[#FFE7A5] [text-shadow:0_2px_0_rgba(0,0,0,0.5)] [-webkit-text-stroke:1px_#4B371F] leading-none">
+                  1Spins
                 </div>
               </div>
             </div>
@@ -559,13 +558,13 @@ export default memo(function Tiger(props: any) {
                 <motion.div
                   className="h-[24px] relative border-[2px] overflow-hidden border-[#F8C200] bg-[#F8D61F] rounded-[12px] shadow-[0px_4px_0px_0px_rgba(255,255,255,0.50)_inset]"
                   animate={{
-                    width: `${Big(SPIN_PROGRESS_BASE).plus(Big(spinUserData?.spin ?? 0).div(TOTAL_SPINS).times(Big(100).minus(SPIN_PROGRESS_BASE))).toFixed(2)}%`,
+                    width: `${Big(SPIN_PROGRESS_BASE).plus(Big(spinUserData?.spin_balance ?? 0).div(TOTAL_SPINS).times(Big(100).minus(SPIN_PROGRESS_BASE))).toFixed(2)}%`,
                   }}
                 >
                   <div className="w-full h-full rounded-[8px] bg-[#f8d621] translate-y-[2px]"></div>
                 </motion.div>
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-[linear-gradient(180deg,_#926D48_0%,_#221911_100%)] bg-clip-text [-webkit-text-fill-color:_transparent] text-[20px] font-CherryBomb [-webkit-text-stroke-width:_1px] [-webkit-text-stroke-color:_#FFF4C2] font-[400] leading-[100%] text-center">
-                  {spinUserData?.spin || 0} / {TOTAL_SPINS}
+                  {spinUserData?.spin_balance || 0} / {TOTAL_SPINS}
                 </div>
               </div>
               <LightingButton
