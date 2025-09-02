@@ -42,10 +42,20 @@ export function useLuckyBera() {
   const { run: reloadSpinData } = useDebounceFn((_lastSpinResult: SpinResultData) => {
     // getSpinUserData();
     setSpinUserData((prev) => {
-      return {
+      const _spinUserData = {
         ...prev,
-        spin_balance: _lastSpinResult.spin_balance,
-      } as SpinUserData;
+      };
+      _spinUserData.spin_balance = _lastSpinResult.spin_balance;
+      // if (_lastSpinResult.draw_reward === SpinCategory.Spin) {
+      // }
+      if (_lastSpinResult.draw_reward === "Xp" && _spinUserData.game_xp) {
+        _spinUserData.xp_balance = Big(_spinUserData.xp_balance || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber();
+      }
+      if (Big(_spinUserData.xp_balance || 0).gte(_spinUserData.game_xp?.xp || 0)) {
+        // relaod api
+        getSpinUserData();
+      }
+      return _spinUserData as SpinUserData;
     });
     if (SPIN_CATEGORIES[_lastSpinResult?.draw_reward as SpinCategory]) {
       setLastSpinResult(_lastSpinResult);
