@@ -34,8 +34,6 @@ export default function TreasureBook() {
         show: treasureBookOpen
     });
 
-    console.log('unCompleteQuestion:', unCompleteQuestion);
-
     return (
         <>
             <div
@@ -88,26 +86,28 @@ export default function TreasureBook() {
                     }
                 </div>
 
-                <div 
-                    onClick={e => e.stopPropagation()} 
-                    className="absolute right-0 bottom-[-132px] w-[235px] py-[10px] px-[20px] rounded-[16px] bg-[#FFF1C7] font-Montserrat text-[14px] font-[700] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200"
-                >
-                    {
-                        qoutionProgress === 3 && <>
-                            <div className="text-center">
-                            Your next lootbox is being prepared. 
-                            Come back then to claim it.
-                            </div>
-                        </>
-                    }
-                    {
-                        qoutionProgress < 3 && <>
-                            <div className="text-center">
-                                <div>Finish the daily missions to get { unCompleteQuestion?.reward_box_amount > 0 ? unCompleteQuestion?.reward_box_amount + ' lootbox' :  unCompleteQuestion?.reward_gem_amount + ' gem'} </div>
-                                <button onClick={() => handleQuestionComplete(unCompleteQuestion)} className="bg-[#FFDC50] text-[12px] mt-[5px] rounded-[10px] font-[700] leading-[1] text-black px-[20px] h-[30px] w-full border border-black">{ QUEST_CONFIG[unCompleteQuestion?.id] }</button>
-                            </div>
-                        </>
-                    }
+                <div className="absolute right-0 bottom-[-132px] pt-[30px] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+                    <div 
+                        onClick={e => e.stopPropagation()} 
+                        className="w-[235px] py-[10px] px-[20px] rounded-[16px] bg-[#FFF1C7] font-Montserrat text-[14px] font-[700] "
+                    >
+                        {
+                            qoutionProgress === 3 && <>
+                                <div className="text-center">
+                                Your next lootbox is being prepared. 
+                                Come back then to claim it.
+                                </div>
+                            </>
+                        }
+                        {
+                            qoutionProgress < 3 && <>
+                                <div className="text-center">
+                                    <div>Finish the daily missions to get { unCompleteQuestion?.reward_box_amount > 0 ? unCompleteQuestion?.reward_box_amount + ' lootbox' :  unCompleteQuestion?.reward_gem_amount + ' gem'} </div>
+                                    <button onClick={() => handleQuestionComplete(unCompleteQuestion)} className="bg-[#FFDC50] text-[12px] mt-[5px] rounded-[10px] font-[700] leading-[1] text-black px-[20px] h-[30px] w-full border border-black">{ QUEST_CONFIG[unCompleteQuestion?.id] }</button>
+                                </div>
+                            </>
+                        }
+                    </div>
                 </div>
             </div>
             <AnimatePresence>
