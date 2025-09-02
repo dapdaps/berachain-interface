@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { post } from "@/utils/http";
 import { useUserStore } from "@/stores/user";
 import useUser from "./use-user";
+import Big from "big.js";
 
 export function useLootboxSeason(props?: any) {
   const { } = props ?? {};

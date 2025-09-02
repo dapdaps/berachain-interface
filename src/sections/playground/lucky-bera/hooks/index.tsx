@@ -1,6 +1,6 @@
 import { useDebounceFn, useRequest } from 'ahooks';
-import { get, post } from '@/utils/http';
-import { useEffect, useState } from 'react';
+import { post } from '@/utils/http';
+import { useState } from 'react';
 import { BUY_SPINS_CONTRACT_ADDRESS, BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS, SPIN_CATEGORIES, SpinMultiplier, SpinResultData, SpinUserData, SpinCategory } from '../config';
 import useToast from '@/hooks/use-toast';
 import { useLuckyBeraStore } from '../store';
@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 import Big from 'big.js';
 import { bera } from '@/configs/tokens/bera';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { usePlaygroundContext } from '../../context';
 
 const costToken = bera["bera"];
 
@@ -17,31 +18,21 @@ export function useLuckyBera() {
   const toast = useToast();
   const { setLastSpinResult, lastSpinResult } = useLuckyBeraStore();
   const connectModal = useConnectModal();
+  const {
+    multipliers,
+    spinMultiplier,
+    setSpinMultiplier,
+    spinUserData,
+    setSpinUserData,
+    getSpinUserData,
+    spinUserDataLoading,
+  } = usePlaygroundContext();
 
   const [buySpinsModalOpen, setBuySpinsModalOpen] = useState(false);
 
-  const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");
-
-  const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
-
-  const [spinUserData, setSpinUserData] = useState<SpinUserData>();
-  const { runAsync: getSpinUserData, loading: spinUserDataLoading } = useRequest<SpinUserData, any>(async () => {
-    const res = await get("/api/go/game/777/user");
-    if (res.code !== 200) {
-      checkSpinMultiplier();
-      setSpinUserData(void 0);
-      return {};
-    }
-    checkSpinMultiplier(res.data);
-    setSpinUserData(res.data);
-    return res.data;
-  }, {
-    manual: true,
-  });
-
   const { run: reloadSpinData } = useDebounceFn((_lastSpinResult: SpinResultData) => {
     // getSpinUserData();
-    setSpinUserData((prev) => {
+    setSpinUserData((prev: SpinUserData) => {
       const _spinUserData = {
         ...prev,
       };
@@ -167,7 +158,7 @@ export function useLuckyBera() {
       // close buy spins modal
       setBuySpinsModalOpen(false);
       // update user spin data
-      setSpinUserData((prev) => {
+      setSpinUserData((prev: SpinUserData) => {
         return {
           ...prev,
           spin_balance: Big(prev?.spin_balance || 0).plus(amount).toNumber(),
@@ -185,11 +176,6 @@ export function useLuckyBera() {
   }, {
     manual: true,
   });
-
-  useEffect(() => {
-    if (!accountWithAk) return;
-    getSpinUserData();
-  }, [accountWithAk]);
 
   return {
     spinUserData,
