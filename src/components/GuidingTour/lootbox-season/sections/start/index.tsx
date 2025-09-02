@@ -65,12 +65,10 @@ const LootboxSeasonStart = (props: any) => {
       </div>
       <div className="w-full mt-[4px] font-Montserrat text-[16px] leading-[150%] text-black font-[500] px-[26px]">
         <div className="text-[24px font-[900] leading-[120%]">
-          Beratown Lootbox Season Starts!
+          Beratown ‘Incentivise Everything’ Begins!
         </div>
         <div className="mt-[11px]">
-          Beratown just got a glow-up! Now it makes DeFi effortlessly rewarding.<br />
-          And guess what?<br />
-          MeBera left you a free lootbox just for showing up. No gas, no catch, just vibes, just connect your wallet.
+          Da town just received a glow-up. We are adding a new incentivise layer that rewards all your usual DeFi activity.<br /> And guess what? McBera left you a free lootbox just for showing up. No catch, just connect your wallet.
         </div>
       </div>
       <div className="w-full mt-[29px] flex justify-center pb-[30px]">
@@ -89,7 +87,7 @@ const LootboxSeasonStart = (props: any) => {
           }
           <div className="">
             {
-              !account ? "Connect Wallet" : (hadUserCategory ? "Check daily missions" : "Get Lootbox")
+              !account ? "Connect Wallet" : (hadUserCategory ? "Daily missions" : "Earn Lootbox")
             }
           </div>
         </LootboxSeasonButton>

@@ -1,11 +1,15 @@
 "use client";
 
+import { useUserStore } from "@/stores/user";
+import { numberFormatter } from "@/utils/number-formatter";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 const PointsEntry = (props: any) => {
   const { className, isGuide = false } = props;
+
+  const userInfo = useUserStore((store: any) => store.user);
 
   const [isHovered, setIsHovered] = useState(isGuide);
 
@@ -65,7 +69,7 @@ const PointsEntry = (props: any) => {
         </motion.div>
       </motion.div>
       <div className="w-full h-full pl-[40px] pr-[14px] font-CherryBomb text-[16px] font-[400] leading-[22px] text-white [letter-spacing:0.8px] [text-shadow:0_2px_0_#4B371F] border-[2px] border-[#855B5B] bg-[#FFBABB] rounded-[16px]">
-        500
+        {numberFormatter(userInfo?.gem, 2, true, { isShort: true, isShortUppercase: true })}
       </div>
     </motion.button>
   );

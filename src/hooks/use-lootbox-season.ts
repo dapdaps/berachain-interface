@@ -6,6 +6,7 @@ import { useDebounceFn, useRequest } from "ahooks";
 import { usePathname } from "next/navigation";
 import { post } from "@/utils/http";
 import { useUserStore } from "@/stores/user";
+import useUser from "./use-user";
 
 export function useLootboxSeason(props?: any) {
   const { } = props ?? {};
@@ -22,7 +23,7 @@ export function useLootboxSeason(props?: any) {
   const { account, accountWithAk } = useAccount();
   const pathname = usePathname();
   const userInfo = useUserStore((store: any) => store.user);
-  const setUserInfo = useUserStore((store: any) => store.set);
+  const { getUserInfo } = useUser();
 
   const [open, setOpen] = useState<Record<LootboxSeasonGuides, boolean>>({
     [LootboxSeasonGuides.Start]: false,
@@ -95,9 +96,6 @@ export function useLootboxSeason(props?: any) {
       return;
     }
 
-    // refresh user info
-    setUserInfo({ user: { ...userInfo, category: currCategory } });
-
     // open box
     const resBox = await post("/api/go/treasure/draw", {
       box_amount: 1,
@@ -118,6 +116,7 @@ export function useLootboxSeason(props?: any) {
   const onFinish = (isOpenTreasureBook = true) => {
     onModalToggle(LootboxSeasonGuides.Gems, false);
     setVisited(account, true);
+    getUserInfo();
     if (isOpenTreasureBook) {
       setTreasureBookOpen(true);
       return;
@@ -142,14 +141,8 @@ export function useLootboxSeason(props?: any) {
       return;
     }
 
-    if (hadUserCategory) {
-      onModalToggle(LootboxSeasonGuides.Start, false);
-      setVisited(account, true);
-      return;
-    }
-
     onModalToggleDelay();
-  }, [visited, account, pathname, userInfo, hadUserCategory]);
+  }, [visited, account, pathname, userInfo]);
 
   const [guideVisible, setGuideVisible] = useState<boolean>(false);
 
@@ -182,6 +175,12 @@ export function useLootboxSeason(props?: any) {
 
     setGuideVisibleDelay();
   }, [visited, guideVisited, account, pathname, treasureBookOpen]);
+
+  useEffect(() => {
+    if (hadUserCategory) {
+      setVisited(account, true);
+    }
+  }, [hadUserCategory]);
 
   return {
     open,
