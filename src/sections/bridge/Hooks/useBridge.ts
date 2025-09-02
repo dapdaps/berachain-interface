@@ -201,7 +201,7 @@ export default function useBridge({
             type: "Swap",
             inputCurrency: fromToken,
             outputCurrency: toToken,
-            template: selectedRoute.bridgeType,
+            template: 'Superswap',
             transactionHash: txHash,
             inputCurrencyAmount: parseFloat(inputValue),
             outputCurrencyAmount: parseFloat(reciveAmount),
