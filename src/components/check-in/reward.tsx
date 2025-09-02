@@ -94,7 +94,7 @@ const CheckInReward = (props: any) => {
                   type="primary"
                   onClick={() => {
                     if (data[0].type === RewardType.Spin) {
-                      router.push("/playground/lucky-bera?from=check-in");
+                      router.push("/carnival/lucky-bera?from=check-in");
                       return;
                     }
                     onClose();
@@ -103,16 +103,17 @@ const CheckInReward = (props: any) => {
                 >
                   {data[0].type === RewardType.Spin ? "Play Lucky 777" : "Check all Lootboxes"}
                 </RewardButton>
-                {data[0].type === RewardType.Spin && (
-                  <RewardButton
-                    onClick={() => {
-                      onClose();
-                      setTreasureBookOpen(true);
-                    }}
-                  >
-                    Check all Lootboxes
-                  </RewardButton>
-                )
+                {
+                  data[0].type === RewardType.Spin && (
+                    <RewardButton
+                      onClick={() => {
+                        onClose();
+                        setTreasureBookOpen(true);
+                      }}
+                    >
+                      Check all Lootboxes
+                    </RewardButton>
+                  )
                 }
               </>
             ) : (
@@ -120,7 +121,7 @@ const CheckInReward = (props: any) => {
                 <RewardButton
                   type="primary"
                   onClick={() => {
-                    router.push("/playground/lucky-bera?from=check-in");
+                    router.push("/carnival/lucky-bera?from=check-in");
                   }}
                 >
                   Play Lucky 777
@@ -154,7 +155,7 @@ const RewardButton = (props: any) => {
         className="w-full h-[50px] hover:translate-y-[2px] hover:shadow-[6px_4px_0_0_rgba(0,0,0,0.25)] transition-all duration-150 shrink-0 rounded-[10px] border border-black bg-[#FFDC50] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
         {...restProps}
       >
-        Play Lucky 777
+        {children}
       </button>
     );
   }
@@ -165,7 +166,7 @@ const RewardButton = (props: any) => {
       className="hover:opacity-80 transition-all duration-150 w-full shrink-0 rounded-[10px text-black text-center font-Montserrat text-[16px] font-bold leading-[150%]"
       {...restProps}
     >
-      Check all Lootboxes
+      {children}
     </button>
   );
 };
