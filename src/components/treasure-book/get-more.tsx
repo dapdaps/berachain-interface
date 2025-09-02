@@ -5,25 +5,10 @@ import CheckInModal from "../check-in/modal";
 import useUser from "@/hooks/use-user";
 
 
-export default function GetMore({ question, completeViewQuest, questionLoading, getQuestion }: { question: any, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, getQuestion: () => Promise<void> }) {
+export default function GetMore({ question, completeViewQuest, questionLoading, getQuestion, handleQuestionComplete, inviteLink, handleShare }: { question: any, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, getQuestion: () => Promise<void>, handleQuestionComplete: (quest: any) => Promise<any>, inviteLink: string, handleShare: () => void }) {
     const [loadingId, setLoadingId] = useState<string | null>(null);
-    const [openCheckInModal, setOpenCheckInModal] = useState(false);
-
+    
     const { userInfo } = useUser();
-
-    const inviteLink = useMemo(() => {
-        return window.location.origin + '/referral/' + userInfo?.invite_code;
-    }, [userInfo]);
-
-    const handleShare = () => {
-        const text = `McBera went full degen…
-🎁 Lootboxes everywhere
-🎰 Games in the arcade
-💸 Rewards on every move
-I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
-
-        window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
-    }
 
     return <div>
         <div className="text-[36px] font-CherryBomb text-[#FDD54C]  text-center" style={{
@@ -42,31 +27,14 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
 
                     <div className={clsx("flex-1", index % 2 !== 0 ? "order-[1]" : "order-[2]")}>
                         <LinkItem config={Config[item.id]} onClick={() => {
-                            if (item.url) {
-                                const url = item.url; 
-                                const match = url.match(/^https?:\/\/[^/]+(\/[^?#]*)/);
-                                const path = match ? match[1] : item.url;
-                                window.open(`${window.location.origin}${path}`, '_blank');
-                            }
-
-                            if (item.category.toLowerCase() === 'share') {
-                                handleShare();
-                            }
-
-                            if (item.category.toLowerCase() === 'checkin') {
-                                setOpenCheckInModal(true);
-                            }
-
-                            if ((item.category.toLowerCase() === 'view' && item.page) || (item.category.toLowerCase() === 'share')) {
-                                completeViewQuest(item);
-                            }
+                            handleQuestionComplete(item);
                         }} />
                         <RewardItem data={item} questionLoading={questionLoading} getQuestion={getQuestion} loadingId={loadingId} setLoadingId={setLoadingId} />
                     </div>
                 </div>
             ))
         }
-        <CheckInModal open={openCheckInModal} onClose={() => setOpenCheckInModal(false)} />
+        
     </div>;
 }
 
