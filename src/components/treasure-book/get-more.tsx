@@ -1,15 +1,17 @@
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
+import CheckInModal from "../check-in/modal";
+
 
 export default function GetMore({ question, completeViewQuest, questionLoading, getQuestion }: { question: any, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, getQuestion: () => Promise<void> }) {
     const [loadingId, setLoadingId] = useState<string | null>(null);
-    
+    const [openCheckInModal, setOpenCheckInModal] = useState(false);
+
     return <div>
         <div className="text-[36px] font-CherryBomb text-[#FDD54C] mt-[160px] text-center" style={{
             WebkitTextStroke: "2px #000000",
         }} >How To Get More?</div>
-
 
         {
             question && question.map((item: any, index: number) => (
@@ -22,8 +24,7 @@ export default function GetMore({ question, completeViewQuest, questionLoading, 
                     </div>
 
                     <div className={clsx("flex-1", index % 2 !== 0 ? "order-[1]" : "order-[2]")}>
-                        <div className="text-[18px] font-bold">{item.title}</div>
-                        <div onClick={() => {
+                        <LinkItem config={Config[item.id]} onClick={() => {
                             if (item.page) {
                                 window.open(`./${item.page}`, '_blank');
                             }
@@ -32,16 +33,20 @@ export default function GetMore({ question, completeViewQuest, questionLoading, 
                                 window.open('https://x.com/intent/tweet?text=beratown treasure book', '_blank');
                             }
 
+                            if (item.category.toLowerCase() === 'checkin') {
+                                setOpenCheckInModal(true);
+                            }
+
                             if ((item.category.toLowerCase() === 'view' && item.page) || (item.category.toLowerCase() === 'share')) {
                                 completeViewQuest(item);
                             }
-
-                        }} className="text-[24px] font-bold cursor-pointer underline">{item.category}</div>
+                        }} />
                         <RewardItem data={item} questionLoading={questionLoading} getQuestion={getQuestion} loadingId={loadingId} setLoadingId={setLoadingId} />
                     </div>
                 </div>
             ))
         }
+        <CheckInModal open={openCheckInModal} onClose={() => setOpenCheckInModal(false)} />
     </div>;
 }
 
@@ -49,7 +54,7 @@ function RewardItem({ data, questionLoading, getQuestion, loadingId, setLoadingI
     const isLoading = useMemo(() => {
         return loadingId === data.id && questionLoading;
     }, [loadingId, data, questionLoading]);
-    
+
     return <div className="flex items-center justify-between mt-[10px] bg-[#FFFFFF33] rounded-[10px] p-[10px] border border-dashed border-[#8B6A45]">
         <div className="flex items-center gap-[5px]">
             {
@@ -98,4 +103,54 @@ function RewardItem({ data, questionLoading, getQuestion, loadingId, setLoadingI
         }
 
     </div>;
+}
+
+function LinkItem({ config, onClick }: { config: any, onClick: () => void }) {
+    return <div onClick={onClick}>{config}</div>;
+}
+
+const Config: any = {
+    1: <><div className="text-[24px] font-bold cursor-pointer underline inline">Bridge</div><div className="text-[18px] font-bold">$100 to Berachain</div></>,
+    2: <><div className="text-[18px] font-bold">Stake at least $100 in <div className="text-[24px] font-bold cursor-pointer underline inline">Vaults</div></div></>,
+    3: <><div className="text-[18px] font-bold">Check your <div className="text-[24px] font-bold cursor-pointer underline inline">portfolio</div> page</div></>,
+    4: <>
+        <div className="text-[18px] font-bold">
+            Make a swap on <div className="text-[24px] font-bold cursor-pointer underline inline">Superswap</div>
+        </div>
+    </>,
+    5: <>
+        <div className="text-[18px] font-bold">
+            Stake at least <span className="text-[24px] font-bold cursor-pointer underline inline">$10</span> for <div className="text-[24px] font-bold cursor-pointer underline inline">BERA</div>
+        </div>
+    </>,
+    6: <>
+        <div className="text-[18px] font-bold">
+            Stake at least <span className="text-[24px] font-bold cursor-pointer underline inline">$10</span> for <div className="text-[24px] font-bold cursor-pointer underline inline">iBGT</div>
+        </div>
+    </>,
+    7: <>
+        <div className="text-[18px] font-bold">
+            Complete 1 daily <div className="text-[24px] font-bold cursor-pointer underline inline">check-in</div>
+        </div>
+    </>,
+    8: <>
+        <div className="text-[18px] font-bold">
+            Play 1 <div className="text-[24px] font-bold cursor-pointer underline inline">Carnival</div> game
+        </div>
+    </>,
+    9: <>
+        <div className="text-[18px] font-bold">
+            Swap $100+ in $HENLO on <div className="text-[24px] font-bold cursor-pointer underline inline">Kodiak</div>
+        </div>
+    </>,
+    10: <>
+        <div className="text-[18px] font-bold cursor-pointer">
+            Share Beratown on x
+        </div>
+    </>,
+    11: <>
+        <div className="text-[18px] font-bold">
+            <div className="text-[24px] font-bold cursor-pointer underline inline">Invite</div> a new user and need him to complete a transaction
+        </div>
+    </>,
 }
