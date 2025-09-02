@@ -4,11 +4,14 @@ import { get } from "@/utils/http";
 import { useRequest } from "ahooks";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { SPIN_CATEGORIES, SpinCategory } from "../../config";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useState } from "react";
 import Pagination from "@/components/pager/pagination";
 import { useLuckyBeraRecordsStore } from "./store";
+
+dayjs.extend(utc);
 
 const LuckyBeraResults = (props: any) => {
   const { className } = props;
@@ -29,7 +32,7 @@ const LuckyBeraResults = (props: any) => {
       title: "Date",
       dataIndex: "date",
       render: (record: any, idx: number) => {
-        return dayjs(record.created_at).format("YYYY/M/D HH:mm");
+        return dayjs.utc(record.created_at).format("YYYY/M/D HH:mm");
       },
     },
     {
@@ -47,7 +50,9 @@ const LuckyBeraResults = (props: any) => {
       render: (record: any, idx: number) => {
         const currentReward = SPIN_CATEGORIES[record.category as SpinCategory];
         if (!currentReward) {
-          return "0";
+          return (
+            <div className="opacity-30">0</div>
+          );
         }
         return (
           <div className="flex items-center gap-[5px]">
