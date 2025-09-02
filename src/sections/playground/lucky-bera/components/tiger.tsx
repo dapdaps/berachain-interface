@@ -534,7 +534,7 @@ export default memo(function Tiger(props: any) {
               </div>
             </div>
           </div>
-          <LightingButton
+          {/* <LightingButton
             outerClassName="absolute bottom-[20px] w-[192px] h-[48px] left-1/2 -translate-x-1/2"
             className="flex justify-center items-center gap-[3px]"
             onClick={toggleSpinMultiplier}
@@ -543,7 +543,7 @@ export default memo(function Tiger(props: any) {
               BET X{numberFormatter(spinMultiplier, 0, true, { isShort: true, isShortUppercase: true })}
             </div>
             <img src="/images/playground/lucky-bera/icon-flash.png" alt="" className="w-[16px] shrink-0 h-[25px] object-center object-contain bg-no-repeat" />
-          </LightingButton>
+          </LightingButton> */}
         </div>
         <div className="relative z-[2] flex justify-center w-full h-[276px] translate-y-[-15px] overflow-hidden">
           <div className="relative z-[2] flex flex-col items-center w-[616px] max-w-full h-full bg-[url('/images/playground/lucky-bera/bear-bottom.png')] bg-top bg-contain bg-no-repeat">
