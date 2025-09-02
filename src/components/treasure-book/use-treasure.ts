@@ -32,7 +32,8 @@ export const useTreasure = ({ show }: { show: boolean }) => {
             box_amount: boxAmount,
         });
         if (res.code === 200) {
-            return res.data;
+            getUser();
+            return res;
         }
 
         return null;

@@ -16,13 +16,13 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
 
     const openBoxFn = useCallback(async (boxAmount: number) => {
         const res = await openBox(boxAmount);
-        if (res.code === 200) {
+        if (res?.code === 200) {
             setOpenReward(true);
             const rewards = []
-            if (res.data.reward_Spin_amount > 0) {
+            if (res.data.reward_spin_amount > 0) {
                 rewards.push({
                     type: RewardType.Spin,
-                    amount: res.data.reward_Spin_amount,
+                    amount: res.data.reward_spin_amount,
                 });
             }
             if (res.data.reward_gem_amount > 0) {

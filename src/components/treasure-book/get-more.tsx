@@ -47,7 +47,7 @@ function RewardItem({ data, questionLoading, getQuestion, loadingId, setLoadingI
         <div className="flex items-center gap-[5px]">
             {
                 data.reward_box_amount > 0 && <>
-                    <div className="text-[18px] font-bold">1</div>
+                    <div className="text-[18px] font-bold">{ data.reward_box_amount }</div>
                     <img src="/images/treasure-book/box.png" className="w-[30px]" alt="item" />
                 </>
             }
@@ -59,7 +59,6 @@ function RewardItem({ data, questionLoading, getQuestion, loadingId, setLoadingI
                     <img src="/images/treasure-book/gem.png" className="w-[30px]" alt="item" />
                 </>
             }
-
         </div>
 
         {
