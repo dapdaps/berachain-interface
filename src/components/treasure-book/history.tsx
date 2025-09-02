@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import FlexTable, { Column } from '@/components/flex-table';
 import Pager from '@/components/pager';
 import { get } from '@/utils/http';
+import { formatEnglishDate, formatSimpleDate } from '@/utils/date';
 
 
 const PAGE_SIZE = 10;
@@ -11,25 +12,48 @@ export default function History({ onClose }: { onClose: () => void }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [history, setHistory] = useState<any[]>([]);
     const [maxPage, setMaxPage] = useState(1);
-
+    const [loading, setLoading] = useState(false);
 
     const columns: Column[] = [
         {
             title: 'Reward',
-            dataIndex: 'reward',
+            dataIndex: 'box',
             width: '35%',
-
+            render: (text: any, record: any) => {
+                return <div className="flex items-center gap-1">
+                    {
+                        record.reward_gem_amount > 0 && <>Points</>
+                    }
+                    {
+                        record.reward_spin_amount > 0 && <>Spins</>
+                    }
+                </div>
+            }
         },
         {
             title: 'Amount',
             dataIndex: 'amount',
             width: '20%',
-
+            render: (text: any, record: any) => {
+                return <div className="flex items-center gap-1">
+                    {
+                        record.reward_gem_amount > 0 && <>X {record.reward_gem_amount}</>
+                    }
+                    {
+                        record.reward_spin_amount > 0 && <>X {record.reward_spin_amount}</>
+                    }
+                </div>
+            }
         },
         {
             title: 'Date',
-            dataIndex: 'date',
+            dataIndex: 'created_at',
             width: '35%',
+            render: (text: any, record: any) => {
+                return <div className="flex items-center gap-1 whitespace-nowrap">
+                    {formatSimpleDate(record.created_at)}
+                </div>
+            }
         }
     ];
 
@@ -38,6 +62,7 @@ export default function History({ onClose }: { onClose: () => void }) {
     }, []);
 
     const getList = () => {
+        setLoading(true);
         get('/api/go/treasure/draw/list', {
             page: currentPage,
             page_size: PAGE_SIZE,
@@ -46,6 +71,8 @@ export default function History({ onClose }: { onClose: () => void }) {
                 setHistory(res.data?.data || []);
                 setMaxPage(res.data?.total_page || 0);
             }
+        }).finally(() => {
+            setLoading(false);
         });
     }
 
@@ -79,9 +106,10 @@ export default function History({ onClose }: { onClose: () => void }) {
                     <FlexTable
                         columns={columns}
                         list={history}
+                        loading={loading}
                         wrapperClass=""
                         headClass="text-[14px] text-[#553322]"
-                        bodyClass="text-[14px] odd:bg-inherit text-[#553322] border-b border-black/20 rounded-none "
+                        bodyClass="text-[14px] odd:bg-inherit text-[#553322] border-b border-black/20 rounded-none py-[4px]!"
                         showHeader={true}
                         pagination={<div className="flex justify-end mt-[30px]">
                             {

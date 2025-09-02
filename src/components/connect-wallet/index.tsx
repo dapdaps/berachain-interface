@@ -339,6 +339,32 @@ const User = (props: any) => {
             {balanceShown}
           </div>
         </div>
+
+        <div>
+        <div className="w-[230px] rounded-[14px] border border-[#E6E1C2] bg-[#FFFDEB] p-[10px] flex flex-col gap-[8px] font-Montserrat">
+          <div className="flex items-center justify-between text-[#77350F] text-[16px]">
+            <span className="font-[600]">Invited Frenz</span>
+            <span className="underline cursor-pointer">12</span>
+          </div>
+          <div className="flex items-center justify-between bg-[#FDD54C] rounded-[8px] px-2 py-2">
+            <span className="text-[#77350F] text-[16px] font-medium truncate max-w-[120px]">...referral/XR56DF45</span>
+            <div className="click cursor-pointer" onClick={handleCopy}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="4.73047" width="9.62531" height="10.2668" rx="2" stroke="#77350F" stroke-width="2" />
+                <path d="M5.375 3.33336V3C5.375 1.89543 6.27043 1 7.375 1H13.0003C14.1049 1 15.0003 1.89543 15.0003 3V9.26676C15.0003 10.3713 14.1049 11.2668 13.0003 11.2668H12.3752" stroke="#77350F" stroke-width="2" />
+              </svg>
+          </div>
+          </div>
+          <div className="flex items-center justify-between mt-1">
+            <div className="flex items-center gap-1">
+              <img src="/images/treasure-book/gem.png" alt="gem" className="w-[22px] h-[22px]" />
+              <span className="text-black font-[600] text-[14px]">21.25</span>
+            </div>
+            <button className="text-black text-[14px] underline cursor-pointer px-1">Claim</button>
+          </div>
+        </div>
+        </div>
+
         {/* <div
           onClick={() => {
             router.push("/hall?tab=bgt")
@@ -379,7 +405,7 @@ const User = (props: any) => {
       initial="default"
     >
       <Popover
-        trigger={PopoverTrigger.Hover}
+        trigger={PopoverTrigger.Click}
         placement={PopoverPlacement.BottomRight}
         content={isMobile ? null : content}
         contentStyle={{

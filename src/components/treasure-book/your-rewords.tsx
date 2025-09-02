@@ -38,7 +38,7 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
         }}>
             <div className="w-[86px] h-[86px] relative flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
                 <img src={`/images/treasure-book/gem.png`} className={clsx("w-[60px] opacity-10", gemNum > 0 ? "opacity-100" : "opacity-10")} alt="item" />
-                <div className="opacity-10 mt-[-20px]">GEM</div>
+                <div className={clsx("opacity-10 mt-[-20px]", gemNum > 0 ? "opacity-100" : "opacity-10")}>GEM</div>
                 {
                     gemNum > 0 && (
                         <div style={{
@@ -49,7 +49,7 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
             </div>
             <div className="w-[86px] h-[86px] relative flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
                 <img src={`/images/treasure-book/777.png`} className={clsx("w-[80px] opacity-10", spinNum > 0 ? "opacity-100" : "opacity-10")} alt="item" />
-                <div className="opacity-10 mt-[-20px]">777</div>
+                <div className={clsx("opacity-10 mt-[-20px]", spinNum > 0 ? "opacity-100" : "opacity-10")}>777</div>
                 {
                     spinNum > 0 && (
                         <div style={{
