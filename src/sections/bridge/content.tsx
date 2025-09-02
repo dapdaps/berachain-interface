@@ -289,7 +289,7 @@ export default function BridgeContent({
             });
             setBanlanceIndex(banlanceIndex + 1);
             if (result?.isSuccess && isShowConfirm) {
-              if (type === 'kodiak') {
+              if (type === 'super-swap') {
 
               } else {
                 setConfirmShow(true);

@@ -109,7 +109,7 @@ export default function History({ onClose }: { onClose: () => void }) {
                         loading={loading}
                         wrapperClass=""
                         headClass="text-[14px] text-[#553322]"
-                        bodyClass="text-[14px] odd:bg-inherit text-[#553322] border-b border-black/20 rounded-none py-[4px]!"
+                        bodyClass="text-[14px] odd:bg-inherit text-[#553322] border-b border-black/20 rounded-none py-[4px]"
                         showHeader={true}
                         pagination={<div className="flex justify-end mt-[30px]">
                             {
