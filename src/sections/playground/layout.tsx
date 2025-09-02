@@ -9,7 +9,7 @@ const PlaygroundLayout = (props: any) => {
       <HomeEarthTop isLogo={false} isAirdrop={false} className="!pt-[0]" />
       <div className="absolute w-full top-[98px] flex justify-center items-center gap-[4px] z-[2]">
         <div className="text-[60px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
-          Playground
+          Carnival
         </div>
         <button
           type="button"

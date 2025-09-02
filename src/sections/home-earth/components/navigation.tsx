@@ -259,7 +259,7 @@ export const ENTRIES: any = [
     disabled: false,
     icon: "/images/home-earth/entry-playground.svg",
     signpost: "/images/home-earth/signpost-playground.svg",
-    path: "/playground/lucky-bera",
+    path: "/carnival/lucky-bera",
     y: -40
   },
   {

@@ -13,6 +13,10 @@ const LuckyBera = () => {
     handleSpinResult,
     buySpinsModalOpen,
     setBuySpinsModalOpen,
+    onBuySpins,
+    buyingSpins,
+    buySpinsAmount,
+    setBuySpinsAmount,
   } = useLuckyBera();
 
   return (
@@ -23,12 +27,15 @@ const LuckyBera = () => {
         spinUserData={spinUserData}
         lastSpinResult={lastSpinResult}
         handleSpinResult={handleSpinResult}
-        toggleOutHoneyVisible={() => { }}
         openBuySpinsModal={() => setBuySpinsModalOpen(true)}
       />
       <BuySpinsModal
         open={buySpinsModalOpen}
         onClose={() => setBuySpinsModalOpen(false)}
+        onBuySpins={onBuySpins}
+        buyingSpins={buyingSpins}
+        buySpinsAmount={buySpinsAmount}
+        setBuySpinsAmount={setBuySpinsAmount}
       />
     </>
   );
