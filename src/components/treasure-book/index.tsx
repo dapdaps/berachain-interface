@@ -12,7 +12,9 @@ export default function TreasureBook() {
     } = useLootboxSeasonStore();
     const { userInfo } = useUser();
 
-    const { treasure, openBox, question, completeViewQuest, questionLoading, userLoading, getQuestion } = useTreasure();
+    const { treasure, openBox, question, completeViewQuest, questionLoading, userLoading, getQuestion } = useTreasure({
+        show: treasureBookOpen
+    });
 
     return (
         <>
@@ -31,15 +33,15 @@ export default function TreasureBook() {
                 />
             </div>
             <AnimatePresence>
-                {treasureBookOpen && <BookModal 
-                treasure={treasure} 
-                question={question} 
-                completeViewQuest={completeViewQuest} 
-                onClose={() => setTreasureBookOpen(false)} 
-                openBox={openBox} 
-                questionLoading={questionLoading} 
-                userLoading={userLoading} 
-                getQuestion={getQuestion}
+                {treasureBookOpen && <BookModal
+                    treasure={treasure}
+                    question={question}
+                    completeViewQuest={completeViewQuest}
+                    onClose={() => setTreasureBookOpen(false)}
+                    openBox={openBox}
+                    questionLoading={questionLoading}
+                    userLoading={userLoading}
+                    getQuestion={getQuestion}
                 />}
             </AnimatePresence>
         </>

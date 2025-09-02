@@ -31,11 +31,11 @@ export function getUTCDatetime(datetime?: any) {
 export function formatSimpleDate(date: Date | string | number) {
   if (!date) return '';
   const d = new Date(date);
-  const year = d.getFullYear();
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
-  const hour = d.getHours();
-  const minute = d.getMinutes();
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  const hour = d.getUTCHours();
+  const minute = d.getUTCMinutes();
   return `${year}/${month}/${day} ${hour}:${minute < 10 ? '0' + minute : minute}`;
 }
 
