@@ -5,13 +5,13 @@ import YourRewords from "./your-rewords";
 import { useEffect, useState } from "react";
 import type { TreasureData } from "./use-treasure";
 
-export default function BookModal({ 
-    treasure, 
-    question, 
-    onClose, 
-    openBox, 
-    completeViewQuest, 
-    questionLoading, 
+export default function BookModal({
+    treasure,
+    question,
+    onClose,
+    openBox,
+    completeViewQuest,
+    questionLoading,
     getQuestion,
     userLoading }: { treasure: TreasureData | null, question: any, onClose: () => void, openBox: (boxAmount: number) => Promise<any>, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, userLoading: boolean, getQuestion: () => Promise<void> }) {
     const [scale, setScale] = useState(1)
@@ -79,16 +79,16 @@ export default function BookModal({
                 </div>
 
                 <div className="w-[1560px] h-[810px] absolute left-1/2 -translate-x-1/2 bottom-[30px] pl-[220px] flex justify-between">
-                    <div className="flex-1 h-full" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex-1 h-full mt-[150px]" onClick={(e) => e.stopPropagation()}>
                         <TotalCollected treasure={treasure} openBox={openBox} />
                         <YourRewords treasure={treasure} />
                     </div>
-                    <div className="flex-1 h-full pr-[120px]" onClick={(e) => e.stopPropagation()}>
-                        <GetMore 
-                        question={question} 
-                        completeViewQuest={completeViewQuest} 
-                        questionLoading={questionLoading} 
-                        getQuestion={getQuestion} />
+                    <div className="flex-1 h-full mr-[120px] mt-[160px]" onClick={(e) => e.stopPropagation()}>
+                        <GetMore
+                            question={question}
+                            completeViewQuest={completeViewQuest}
+                            questionLoading={questionLoading}
+                            getQuestion={getQuestion} />
                     </div>
                 </div>
             </motion.div>

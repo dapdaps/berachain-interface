@@ -26,7 +26,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
     }
 
     return <div>
-        <div className="text-[36px] font-CherryBomb text-[#FDD54C] mt-[160px] text-center" style={{
+        <div className="text-[36px] font-CherryBomb text-[#FDD54C]  text-center" style={{
             WebkitTextStroke: "2px #000000",
         }} >How To Get More?</div>
 
@@ -140,7 +140,7 @@ const Config: any = {
     </>,
     5: <>
         <div className="text-[18px] font-bold">
-            Stake at least <span className="text-[24px] font-bold cursor-pointer underline inline">$10</span> for <div className="text-[24px] font-bold cursor-pointer underline inline">BERA</div>
+            Stake at least $10 for <div className="text-[24px] font-bold cursor-pointer underline inline">BERA</div>
         </div>
     </>,
     6: <>
@@ -160,11 +160,11 @@ const Config: any = {
     </>,
     9: <>
         <div className="text-[18px] font-bold">
-            Swap $100+ in $HENLO on <div className="text-[24px] font-bold cursor-pointer underline inline">Kodiak</div>
+        Swap $100+ in $HENLO on <div className="text-[24px] font-bold cursor-pointer underline inline">Kodiak</div>
         </div>
     </>,
     10: <>
-        <div className="text-[18px] font-bold cursor-pointer">
+        <div className="text-[24px] font-bold cursor-pointer underline">
             Share Beratown on x
         </div>
     </>,
