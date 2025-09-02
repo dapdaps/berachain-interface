@@ -1,6 +1,6 @@
 import { motion, useAnimate, useMotionValue } from 'framer-motion';
 import { memo, useEffect, useMemo, useRef } from 'react';
-import { SPIN_CATEGORIES, SpinCategory, SpinResultData } from '../config';
+import { SPIN_CATEGORIES, SPIN_XP_REWARD_CATEGORIES, SpinCategory, SpinResultData, SpinXpRewardCategory } from '../config';
 import LightingButton from './lighting-button';
 import { numberFormatter } from '@/utils/number-formatter';
 import useToast from '@/hooks/use-toast';
@@ -390,7 +390,7 @@ export default memo(function Tiger(props: any) {
                 !!spinUserData?.game_xp && (
                   <div className="absolute -right-[30px] -top-[8px]">
                     <img
-                      src={SPIN_CATEGORIES[spinUserData?.game_xp?.reward as SpinCategory]?.icon}
+                      src={SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon}
                       alt=""
                       className="w-[55px] h-[46px] object-center object-contain shrink-0"
                     />
