@@ -21,7 +21,7 @@ const MENU_LIST = [
   {
     label: "Swap",
     bg: "#D8FF8D",
-    href: "/swap",
+    href: "/super-swap",
     sort: 3
   },
   {
