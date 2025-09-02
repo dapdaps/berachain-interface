@@ -10,6 +10,8 @@ import useCustomAccount from "@/hooks/use-account";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useToast from "@/hooks/use-toast";
 import Big from "big.js";
+import CheckInRewardModal from "@/components/check-in/reward";
+import { RewardType } from "@/components/check-in/config";
 
 const WheelList = [
   {
@@ -78,15 +80,16 @@ const BigWheel = () => {
 
   const [openRedeemSpin, setOpenRedeemSpin] = useState(false);
   const [buySpinsAmount, setBuySpinsAmount] = useState("");
+  const [openRewardModal, setOpenRewardModal] = useState(false);
 
   const WheelValues = useMemo(() => {
     const _wheelValues: any = {};
     WheelList.forEach((it) => {
-      if (!_wheelValues[it.code]) {
-        _wheelValues[it.code] = [it];
+      if (!_wheelValues[it.value]) {
+        _wheelValues[it.value] = [it];
         return;
       }
-      _wheelValues[it.code].push(it);
+      _wheelValues[it.value].push(it);
     });
     return _wheelValues;
   }, [WheelList]);
@@ -121,7 +124,7 @@ const BigWheel = () => {
     refreshDeps: [accountWithAk],
   });
 
-  const { runAsync: onSpin, loading: spinning } = useRequest(async () => {
+  const { runAsync: onSpin, loading: spinning, data: rewardData } = useRequest(async () => {
     if (!account) {
       connectModal?.openConnectModal?.();
       return;
@@ -182,6 +185,13 @@ const BigWheel = () => {
       duration: 7,
       ease: [0, 1, 0.2, 1],
     });
+
+    setOpenRewardModal(true);
+    return [{
+      type: RewardType.Spin,
+      amount: reward_spin_amount,
+      label: `${numberFormatter(reward_spin_amount, 0, true)} spin tickets`,
+    }];
   }, { manual: true });
 
   const { runAsync: onBuySpins, loading: buyingSpins } = useRequest(async () => {
@@ -283,6 +293,13 @@ const BigWheel = () => {
         setBuySpinsAmount={setBuySpinsAmount}
         onBuySpins={onBuySpins}
         buyingSpins={buyingSpins}
+      />
+      <CheckInRewardModal
+        open={openRewardModal && !!rewardData}
+        onClose={() => {
+          setOpenRewardModal(false);
+        }}
+        data={rewardData}
       />
     </div>
   );

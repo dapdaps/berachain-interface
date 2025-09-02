@@ -30,25 +30,25 @@ const CheckInReward = (props: any) => {
                   <img
                     src="/images/check-in/gem.png"
                     alt=""
-                    className={clsx("w-[60px] h-[70px] object-center object-contain shrink-0", data.length > 1 ? "rotate-[10deg]" : "")}
-                  />
-                );
-              }
-              if (item.type === RewardType.Spin && data.length === 1) {
-                return (
-                  <img
-                    src="/images/check-in/lucky777.png"
-                    alt=""
-                    className="w-[117px] h-[88px] object-center object-contain shrink-0 translate-y-[-10px]"
+                    className={clsx(
+                      "w-[60px] h-[70px] object-center object-contain shrink-0",
+                      data.length > 1 ? "rotate-[10deg]" : "",
+                      (data.length > 1 && index > 0) && "translate-x-[-20px]",
+                      (data.length > 1 && index === 0) && "translate-y-[-10px]",
+                    )}
                   />
                 );
               }
               if (item.type === RewardType.Spin) {
                 return (
                   <img
-                    src="/images/check-in/spin.png"
+                    src="/images/playground/lucky-bera/ticket-spin.png"
                     alt=""
-                    className="w-[82px] h-[84px] object-center object-contain shrink-0"
+                    className={clsx(
+                      "w-[99px] h-[81px] object-center object-contain shrink-0",
+                      (data.length > 1 && index > 0) && "translate-x-[-20px]",
+                      (data.length > 1 && index === 0) && "translate-y-[-10px]",
+                    )}
                   />
                 );
               }

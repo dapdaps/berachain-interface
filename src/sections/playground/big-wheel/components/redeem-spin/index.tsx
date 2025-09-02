@@ -6,6 +6,7 @@ import { useUserStore } from "@/stores/user";
 import Big from "big.js";
 import { numberFormatter } from "@/utils/number-formatter";
 import Loading from "@/components/loading";
+import useUser from "@/hooks/use-user";
 
 const RedeemSpin = (props: any) => {
   const {
@@ -17,6 +18,7 @@ const RedeemSpin = (props: any) => {
     setBuySpinsAmount,
   } = props;
 
+  const { getUserInfo } = useUser();
   const userInfo = useUserStore((store: any) => store.user);
   const userInfoLoading = useUserStore((store: any) => store.loading);
 
@@ -44,6 +46,8 @@ const RedeemSpin = (props: any) => {
   }, [userInfoLoading, buyingSpins, buySpinsAmount, userInfo]);
 
   useEffect(() => {
+    getUserInfo();
+
     return () => {
       setBuySpinsAmount("");
     };
@@ -91,7 +95,7 @@ const RedeemSpin = (props: any) => {
       </div>
       <div className="w-full mt-[7px] flex justify-between items-center text-[14px]">
         <div className="">
-          Your PTS: {numberFormatter(userInfo.gem, 0, true, { isShort: true, isShortUppercase: true })}
+          Your PTS: {numberFormatter(userInfo.gem, 2, true, { isShort: true, isShortUppercase: true })}
         </div>
         <div className="flex justify-end items-center gap-[3px]">
           <img
