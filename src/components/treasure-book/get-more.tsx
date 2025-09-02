@@ -2,11 +2,28 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import CheckInModal from "../check-in/modal";
+import useUser from "@/hooks/use-user";
 
 
 export default function GetMore({ question, completeViewQuest, questionLoading, getQuestion }: { question: any, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, getQuestion: () => Promise<void> }) {
     const [loadingId, setLoadingId] = useState<string | null>(null);
     const [openCheckInModal, setOpenCheckInModal] = useState(false);
+
+    const { userInfo } = useUser();
+
+    const inviteLink = useMemo(() => {
+        return window.location.origin + '/referral/' + userInfo?.invite_code;
+    }, [userInfo]);
+
+    const handleShare = () => {
+        const text = `McBera went full degen…
+🎁 Lootboxes everywhere
+🎰 Games in the arcade
+💸 Rewards on every move
+I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
+
+        window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+    }
 
     return <div>
         <div className="text-[36px] font-CherryBomb text-[#FDD54C] mt-[160px] text-center" style={{
@@ -25,12 +42,12 @@ export default function GetMore({ question, completeViewQuest, questionLoading, 
 
                     <div className={clsx("flex-1", index % 2 !== 0 ? "order-[1]" : "order-[2]")}>
                         <LinkItem config={Config[item.id]} onClick={() => {
-                            if (item.page) {
-                                window.open(`./${item.page}`, '_blank');
+                            if (item.url) {
+                                window.open(`./${item.url}`, '_blank');
                             }
 
                             if (item.category.toLowerCase() === 'share') {
-                                window.open('https://x.com/intent/tweet?text=beratown treasure book', '_blank');
+                                handleShare();
                             }
 
                             if (item.category.toLowerCase() === 'checkin') {

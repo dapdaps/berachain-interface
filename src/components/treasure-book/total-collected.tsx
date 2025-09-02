@@ -35,6 +35,11 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
         }
     }, [openBox]);
 
+    console.log('leftShow:', leftShow);
+    console.log('balanceShow:', balanceShow);
+    console.log('treasure?.total:', treasure?.total);
+    console.log('treasure?.balance:', treasure?.balance);
+
 
 
     return <div className="font-CherryBomb pt-[150px] relative text-[#FDD54C]" style={{
@@ -58,7 +63,7 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
             }
             
             {
-                leftShow > 0 && Array.from({ length: (treasure?.total || 3) - (treasure?.balance || 0) }).map((_, index) => (
+                leftShow > 0 && Array.from({ length: 3 - (treasure?.balance || 0) }).map((_, index) => (
                     <div key={index + 5} className="w-[160px] h-[160px] flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
                         <img src={`/images/treasure-book/box.png`} className="w-[100px] opacity-10" alt="item" />
                     </div>
