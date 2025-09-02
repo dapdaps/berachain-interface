@@ -5,15 +5,23 @@ import YourRewords from "./your-rewords";
 import { useEffect, useState } from "react";
 import type { TreasureData } from "./use-treasure";
 
-export default function BookModal({
-    treasure,
-    question,
-    onClose,
-    openBox,
-    completeViewQuest,
-    questionLoading,
-    getQuestion,
-    userLoading }: { treasure: TreasureData | null, question: any, onClose: () => void, openBox: (boxAmount: number) => Promise<any>, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, userLoading: boolean, getQuestion: () => Promise<void> }) {
+
+export interface BookModalProps {
+    treasure: TreasureData | null;
+    question: any;
+    onClose: () => void;
+    openBox: (boxAmount: number) => Promise<any>;
+    completeViewQuest: (quest: any) => Promise<any>;
+    questionLoading: boolean;
+    userLoading: boolean;
+    getQuestion: () => Promise<void>;
+    handleQuestionComplete: (quest: any) => Promise<any>;
+    inviteLink: string;
+    handleShare: () => void;
+}
+export default function BookModal(props: BookModalProps) {
+    const { treasure, question, onClose, openBox, completeViewQuest, questionLoading, userLoading, getQuestion, handleQuestionComplete, inviteLink, handleShare } = props;
+
     const [scale, setScale] = useState(1)
 
     useEffect(() => {
@@ -88,7 +96,11 @@ export default function BookModal({
                             question={question}
                             completeViewQuest={completeViewQuest}
                             questionLoading={questionLoading}
-                            getQuestion={getQuestion} />
+                            getQuestion={getQuestion}
+                            handleQuestionComplete={handleQuestionComplete}
+                            inviteLink={inviteLink}
+                            handleShare={handleShare}
+                        />
                     </div>
                 </div>
             </motion.div>
