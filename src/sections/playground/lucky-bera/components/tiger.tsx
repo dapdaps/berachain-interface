@@ -332,7 +332,7 @@ export default memo(function Tiger(props: any) {
 
   return (
     <div className="w-full min-h-[100dvh] flex items-end justify-center">
-      <div className="relative w-full flex flex-col items-center justify-center scale-90 origin-bottom">
+      <div className="relative flex flex-col items-center justify-center scale-90 origin-bottom z-[2]">
         <div className="relative z-[3] w-[608px] h-[506px] max-w-full bg-[url('/images/playground/lucky-bera/bear-top.png')] bg-center bg-contain">
           <div className="flex justify-center items-start absolute z-[2] w-full top-[20px] pointer-events-none">
             <img
