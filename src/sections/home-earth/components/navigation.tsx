@@ -330,6 +330,15 @@ export const BADDIES_ENTRIES: any = [
     y: -30
   },
   {
+    sort: 2.1,
+    name: "Playground",
+    disabled: false,
+    icon: "/images/home-earth/baddies/baddies-playground.svg",
+    signpost: "/images/home-earth/signpost-playground.svg",
+    path: "/carnival/lucky-bera",
+    y: -30
+  },
+  {
     sort: 3,
     name: "Token Marketplace",
     disabled: false,
