@@ -154,11 +154,15 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
     }
 
     useEffect(() => {
+        if (unCompleteQuestion) {
+            return;
+        }
+        setUtcRemain(calcUtcRemain());
         const timer = setInterval(() => {
             setUtcRemain(calcUtcRemain());
         }, 1000 * 60);
         return () => clearInterval(timer);
-    }, []);
+    }, [unCompleteQuestion]);
 
     return {
         treasure,

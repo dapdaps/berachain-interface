@@ -304,7 +304,7 @@ const User = (props: any) => {
 
   const toast = useToast();
   const [inviteModalVisible, setInviteModalVisible] = useState(false);  
-  const { invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage } = useInvite();
+  const { invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage, totalInvitedCount } = useInvite();
 
   console.log('invitedUsers', invitedUsers);
 
@@ -366,7 +366,7 @@ const User = (props: any) => {
         <div className="w-[230px] rounded-[14px] border border-[#E6E1C2] bg-[#FFFDEB] p-[10px] flex flex-col gap-[8px] font-Montserrat">
           <div className="flex items-center justify-between text-[#77350F] text-[16px]">
             <span className="font-[600]">Invited Frenz</span>
-            <span onClick={() => setInviteModalVisible(true)} className="underline cursor-pointer">12</span>
+            <span onClick={() => setInviteModalVisible(true)} className="underline cursor-pointer">{totalInvitedCount || 0}</span>
           </div>
           <div className="flex items-center justify-between bg-[#FDD54C] rounded-[8px] px-2 py-2">
             <span className="text-[#77350F] text-[16px]">
@@ -461,6 +461,7 @@ const User = (props: any) => {
       setPage={setPage}
       page={page}
       totalPage={totalPage}
+      totalInvitedCount={totalInvitedCount}
     />
     </>
   );

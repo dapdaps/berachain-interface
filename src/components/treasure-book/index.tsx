@@ -14,23 +14,23 @@ export default function TreasureBook() {
     } = useLootboxSeasonStore();
     const { userInfo } = useUser();
 
-    const { 
-        treasure, 
-        openBox, 
-        question, 
-        completeViewQuest, 
-        questionLoading, 
-        userLoading, 
-        getQuestion, 
-        qoutionProgress, 
-        utcRemain, 
+    const {
+        treasure,
+        openBox,
+        question,
+        completeViewQuest,
+        questionLoading,
+        userLoading,
+        getQuestion,
+        qoutionProgress,
+        utcRemain,
         unCompleteQuestion,
         handleQuestionComplete,
         inviteLink,
         handleShare,
         openCheckInModal,
         setOpenCheckInModal,
-     } = useTreasure({
+    } = useTreasure({
         show: treasureBookOpen
     });
 
@@ -54,25 +54,29 @@ export default function TreasureBook() {
                         qoutionProgress < 3 && <>
                             <div className="relative z-10 w-[32px] h-[32px] bg-white rounded-full flex justify-center items-center">{qoutionProgress}/3</div>
                             <div className="absolute right-0 bottom-0">
-                                <svg
-                                    width="44"
-                                    height="44"
-                                    viewBox="0 0 44 44"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ background: "transparent" }}
-                                >
-                                    <circle
-                                        cx="22"
-                                        cy="22"
-                                        r="20"
-                                        fill="transparent"
-                                        stroke="#FFCF23"
-                                        strokeWidth="4"
-                                        strokeLinecap="round"
-                                        strokeDasharray={qoutionProgress === 1 ? "41.888 83.776" : '83.776 41.888'}
-                                        transform="rotate(-90 22 22)"
-                                    />
-                                </svg>
+                                {
+                                    qoutionProgress > 0 && (
+                                        <svg
+                                            width="44"
+                                            height="44"
+                                            viewBox="0 0 44 44"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            style={{ background: "transparent" }}
+                                        >
+                                            <circle
+                                                cx="22"
+                                                cy="22"
+                                                r="20"
+                                                fill="transparent"
+                                                stroke="#FFCF23"
+                                                strokeWidth="4"
+                                                strokeLinecap="round"
+                                                strokeDasharray={qoutionProgress === 1 ? "41.888 83.776" : '83.776 41.888'}
+                                                transform="rotate(-90 22 22)"
+                                            />
+                                        </svg>
+                                    )
+                                }
                             </div>
                         </>
                     }
@@ -80,30 +84,30 @@ export default function TreasureBook() {
                     {
                         qoutionProgress === 3 && <>
                             <div className="text-[12px] font-[400] leading-[1] text-white">
-                                { utcRemain.hours }:{ utcRemain.minutes }
+                                {utcRemain.hours}:{utcRemain.minutes}
                             </div>
                         </>
                     }
                 </div>
 
                 <div className="absolute right-0 bottom-[-132px] pt-[30px] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
-                    <div 
-                        onClick={e => e.stopPropagation()} 
+                    <div
+                        onClick={e => e.stopPropagation()}
                         className="w-[235px] py-[10px] px-[20px] rounded-[16px] bg-[#FFF1C7] font-Montserrat text-[14px] font-[700] "
                     >
                         {
                             qoutionProgress === 3 && <>
                                 <div className="text-center">
-                                Your next lootbox is being prepared. 
-                                Come back then to claim it.
+                                    Your next lootbox is being prepared.
+                                    Come back then to claim it.
                                 </div>
                             </>
                         }
                         {
                             qoutionProgress < 3 && <>
                                 <div className="text-center">
-                                    <div>Finish the daily missions to get { unCompleteQuestion?.reward_box_amount > 0 ? unCompleteQuestion?.reward_box_amount + ' lootbox' :  unCompleteQuestion?.reward_gem_amount + ' gem'} </div>
-                                    <button onClick={() => handleQuestionComplete(unCompleteQuestion)} className="bg-[#FFDC50] text-[12px] mt-[5px] rounded-[10px] font-[700] leading-[1] text-black px-[20px] h-[30px] w-full border border-black">{ QUEST_CONFIG[unCompleteQuestion?.id] }</button>
+                                    <div>Finish the daily missions to get {unCompleteQuestion?.reward_box_amount > 0 ? unCompleteQuestion?.reward_box_amount + ' lootbox' : unCompleteQuestion?.reward_gem_amount + ' gem'} </div>
+                                    <button onClick={() => handleQuestionComplete(unCompleteQuestion)} className="bg-[#FFDC50] text-[12px] mt-[5px] rounded-[10px] font-[700] leading-[1] text-black px-[20px] h-[30px] w-full border border-black">{QUEST_CONFIG[unCompleteQuestion?.id]}</button>
                                 </div>
                             </>
                         }

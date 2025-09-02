@@ -10,106 +10,6 @@ import Empty from '../empty';
 import Loading from '../loading';
 import Pager from '../pager';
 
-
-const mockInvitedUsers = [
-    {
-        id: 1,
-        avatar: '/images/avatars/astronaut.png',
-        address: '0x3bcb...b717',
-        joinedTime: '2025/9/1 10:35:02',
-        rewards: 5.25,
-        hasRewards: true
-    },
-    {
-        id: 2,
-        avatar: '/images/avatars/generic.png',
-        address: 'e23bcb...b342',
-        joinedTime: '2025/8/31 20:56:41',
-        rewards: 4.85,
-        hasRewards: true
-    },
-    {
-        id: 3,
-        avatar: '/images/avatars/oh.png',
-        address: '0x4abc...c123',
-        joinedTime: '2025/8/30 15:22:18',
-        rewards: 4.35,
-        hasRewards: true
-    },
-    {
-        id: 4,
-        avatar: '/images/avatars/gradient.png',
-        address: '0x5def...d456',
-        joinedTime: '2025/8/29 09:45:33',
-        rewards: 3.35,
-        hasRewards: true
-    },
-    {
-        id: 5,
-        avatar: '/images/avatars/emoji.png',
-        address: '0x6ghi...e789',
-        joinedTime: '2025/8/28 14:12:07',
-        rewards: 1.95,
-        hasRewards: true
-    },
-    {
-        id: 6,
-        avatar: '/images/avatars/turtle.png',
-        address: '0x7jkl...f012',
-        joinedTime: '2025/8/27 18:30:45',
-        rewards: 0,
-        hasRewards: false
-    },
-    {
-        id: 7,
-        avatar: '/images/avatars/robot.png',
-        address: '0x8mno...g345',
-        joinedTime: '2025/8/26 11:20:15',
-        rewards: 0,
-        hasRewards: false
-    },
-    {
-        id: 8,
-        avatar: '/images/avatars/cat.png',
-        address: '0x9pqr...h678',
-        joinedTime: '2025/8/25 16:45:22',
-        rewards: 0,
-        hasRewards: false
-    },
-    {
-        id: 9,
-        avatar: '/images/avatars/dog.png',
-        address: '0x1stu...i901',
-        joinedTime: '2025/8/24 13:15:38',
-        rewards: 0,
-        hasRewards: false
-    },
-    {
-        id: 10,
-        avatar: '/images/avatars/bird.png',
-        address: '0x2vwx...j234',
-        joinedTime: '2025/8/23 20:05:12',
-        rewards: 0,
-        hasRewards: false
-    },
-    {
-        id: 11,
-        avatar: '/images/avatars/fish.png',
-        address: '0x3yza...k567',
-        joinedTime: '2025/8/22 07:30:29',
-        rewards: 0,
-        hasRewards: false
-    },
-    {
-        id: 12,
-        avatar: '/images/avatars/elephant.png',
-        address: '0x4bcd...l890',
-        joinedTime: '2025/8/21 22:18:44',
-        rewards: 0,
-        hasRewards: false
-    }
-];
-
 interface InviteModalProps {
     open: boolean;
     onClose: () => void;
@@ -121,9 +21,10 @@ interface InviteModalProps {
     setPage: (page: number) => void;
     page: number;
     totalPage: number;
+    totalInvitedCount: number;
 }
 
-export default function InviteModal({ open, onClose, invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage }: InviteModalProps) {
+export default function InviteModal({ open, onClose, invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage, totalInvitedCount }: InviteModalProps) {
     const toast = useToast();
     const { userInfo } = useUser();
     const [sort, setSort] = useState('joinedTime');
@@ -233,23 +134,23 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                     <table className="min-w-full text-left">
                         <thead>
                             <tr className="sticky top-0 bg-[#FFFDEB] font-[Gantari] z-10 border-b border-[#20232912] text-[14px] font-bold">
-                                <th className="px-2 py-4 pl-[24px]"><span className='font-[600]'>12</span> Invited</th>
-                                <th className="px-2 py-4 cursor-pointer whitespace-nowrap" onClick={() => {
+                                <th className="px-2 py-4 pl-[24px]"><span className='font-[600]'>{totalInvitedCount || 0}</span> Invited</th>
+                                <th className="px-2 py-4 whitespace-nowrap" onClick={() => {
                                     setSort('joinedTime')
                                     setSortType(-sortType)
                                 }}>
                                     <div className='flex items-center gap-1'>
                                         Joined time
-                                        <SortIcon sortType={sortType} isActive={sort === 'joinedTime'} />
+                                        {/* <SortIcon sortType={sortType} isActive={sort === 'joinedTime'} /> */}
                                     </div>
                                 </th>
-                                <th className="px-2 py-4 cursor-pointer whitespace-nowrap" onClick={() => {
+                                <th className="px-2 py-4 whitespace-nowrap" onClick={() => {
                                     setSort('rewards')
                                     setSortType(-sortType)
                                 }}>
                                     <div className='flex items-center gap-1'>
                                         Rewards
-                                        <SortIcon sortType={sortType} isActive={sort === 'rewards'} />
+                                        {/* <SortIcon sortType={sortType} isActive={sort === 'rewards'} /> */}
                                     </div>
                                 </th>
                             </tr>
@@ -278,13 +179,23 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                                     </td>
                                 </tr>
                             ))}
-                            {invitedUsers?.length === 0 && (
+                            {invitedUsers?.length === 0 && !loading && (
                                 <tr>
                                     <td colSpan={3} className="px-2 py-[40px] text-center">
                                         <Empty desc="No data" />
                                     </td>
                                 </tr>
                             )}
+                            
+                            {
+                                loading && (
+                                    <tr>
+                                        <td colSpan={3} className="px-2 py-[40px] text-center">
+                                            <Loading size={24} />
+                                        </td>
+                                    </tr>
+                                )
+                            }
                         </tbody>
                     </table>
 
