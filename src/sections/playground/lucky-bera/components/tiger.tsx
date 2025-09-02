@@ -1,5 +1,5 @@
 import { motion, useAnimate, useMotionValue } from 'framer-motion';
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { SPIN_CATEGORIES, SpinCategory, SpinResultData } from '../config';
 import LightingButton from './lighting-button';
 import { numberFormatter } from '@/utils/number-formatter';
@@ -320,6 +320,11 @@ export default memo(function Tiger(props: any) {
     manual: true,
   });
 
+  const spinProgress = useMemo(() => {
+    const progress = +Big(SPIN_PROGRESS_BASE).plus(Big(spinUserData?.spin_balance ?? 0).div(TOTAL_SPINS).times(Big(100).minus(SPIN_PROGRESS_BASE))).toFixed(2);
+    return Math.min(Math.max(progress, 0), 100);
+  }, [spinUserData]);
+
   useEffect(() => {
     startSlowScroll();
 
@@ -564,7 +569,7 @@ export default memo(function Tiger(props: any) {
                 <motion.div
                   className="h-[24px] relative border-[2px] overflow-hidden border-[#F8C200] bg-[#F8D61F] rounded-[12px] shadow-[0px_4px_0px_0px_rgba(255,255,255,0.50)_inset]"
                   animate={{
-                    width: `${Big(SPIN_PROGRESS_BASE).plus(Big(spinUserData?.spin_balance ?? 0).div(TOTAL_SPINS).times(Big(100).minus(SPIN_PROGRESS_BASE))).toFixed(2)}%`,
+                    width: `${spinProgress}%`,
                   }}
                 >
                   <div className="w-full h-full rounded-[8px] bg-[#f8d621] translate-y-[2px]"></div>
