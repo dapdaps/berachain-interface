@@ -7,6 +7,8 @@ import { formatSimpleDate } from '@/utils/date';
 import useToast from '@/hooks/use-toast';
 import useUser from '@/hooks/use-user';
 import Empty from '../empty';
+import Loading from '../loading';
+import Pager from '../pager';
 
 
 const mockInvitedUsers = [
@@ -111,12 +113,17 @@ const mockInvitedUsers = [
 interface InviteModalProps {
     open: boolean;
     onClose: () => void;
+    invitedUsers: any[];
+    totalRewards: number;
+    loading: boolean;
+    claimLoading: boolean;
+    handleClaim: () => void;
+    setPage: (page: number) => void;
+    page: number;
+    totalPage: number;
 }
 
-export default function InviteModal({ open, onClose }: InviteModalProps) {
-    const [invitedUsers, setInvitedUsers] = useState(mockInvitedUsers);
-    const [totalRewards, setTotalRewards] = useState(21.25);
-    const [loading, setLoading] = useState(false);
+export default function InviteModal({ open, onClose, invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage }: InviteModalProps) {
     const toast = useToast();
     const { userInfo } = useUser();
     const [sort, setSort] = useState('joinedTime');
@@ -131,9 +138,7 @@ export default function InviteModal({ open, onClose }: InviteModalProps) {
             title: `Copied link ${inviteLink}`
         });
     };
-    const handleClaim = () => {
-        console.log('Claiming rewards:', totalRewards);
-    };
+    ;
 
     return (
         <Modal
@@ -216,9 +221,10 @@ export default function InviteModal({ open, onClose }: InviteModalProps) {
                         </div>
                         <button
                             onClick={handleClaim}
-                            className="bg-[#FFDC50] hover:bg-[#FFC700] text-black text-[18px] font-[600] px-[20px] py-[10px] rounded-[10px] border border-black"
+                            disabled={claimLoading || Number(totalRewards) <= 1}
+                            className="bg-[#FFDC50] hover:bg-[#FFC700] text-black text-[18px] font-[600] px-[20px] py-[10px] rounded-[10px] border border-black disabled:opacity-30 disabled:cursor-not-allowed"
                         >
-                            Claim
+                            {claimLoading ? <Loading size={14} /> : null} Claim
                         </button>
                     </div>
                 </div>
@@ -274,13 +280,28 @@ export default function InviteModal({ open, onClose }: InviteModalProps) {
                             ))}
                             {invitedUsers?.length === 0 && (
                                 <tr>
-                                    <td colSpan={3} className="px-2 py-4 text-center">
+                                    <td colSpan={3} className="px-2 py-[40px] text-center">
                                         <Empty desc="No data" />
                                     </td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
+
+                    {
+                        totalPage > 1 && (
+                            <div className="flex justify-end mt-[30px] pr-[24px]">
+                                <Pager
+                                    maxPage={totalPage}
+                                    defaultPage={page}
+                                    onPageChange={(page) => {
+                                        setPage(page);
+                                    }}
+                                />
+                            </div>
+                        )
+                    }
+
                 </div>
             </div>
         </Modal>

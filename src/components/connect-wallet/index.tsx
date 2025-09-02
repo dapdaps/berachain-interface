@@ -43,6 +43,7 @@ const dropdownAnimations = {
 import chains from '@/sections/bridge/lib/util/chainConfig'
 import { useBgtCount } from "@/hooks/use-bgt-count";
 import InviteModal from '../invite';
+import { useInvite } from '../invite/use-invite';
 
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useConnectModal();
@@ -303,6 +304,9 @@ const User = (props: any) => {
 
   const toast = useToast();
   const [inviteModalVisible, setInviteModalVisible] = useState(false);  
+  const { invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage } = useInvite();
+
+  console.log('invitedUsers', invitedUsers);
 
   const inviteLink = useMemo(() => {
     return window.location.origin + '/referral/' + userInfo?.invite_code;
@@ -380,7 +384,7 @@ const User = (props: any) => {
           <div className="flex items-center justify-between mt-1">
             <div className="flex items-center gap-1">
               <img src="/images/treasure-book/gem.png" alt="gem" className="w-[22px] h-[22px]" />
-              <span className="text-black font-[600] text-[14px]">21.25</span>
+              <span className="text-black font-[600] text-[14px]">{ totalRewards || 0 }</span>
             </div>
             <button onClick={() => setInviteModalVisible(true)} className="text-black text-[14px] underline cursor-pointer px-1">Claim</button>
           </div>
@@ -428,7 +432,7 @@ const User = (props: any) => {
       initial="default"
     >
       <Popover
-        trigger={PopoverTrigger.Click}
+        trigger={PopoverTrigger.Hover}
         placement={PopoverPlacement.BottomRight}
         content={isMobile ? null : content}
         contentStyle={{
@@ -448,7 +452,15 @@ const User = (props: any) => {
     </motion.div>
     <InviteModal
       open={inviteModalVisible}
+      invitedUsers={invitedUsers}
+      totalRewards={totalRewards}
+      loading={loading}
+      claimLoading={claimLoading}
+      handleClaim={handleClaim}
       onClose={() => setInviteModalVisible(false)}
+      setPage={setPage}
+      page={page}
+      totalPage={totalPage}
     />
     </>
   );
