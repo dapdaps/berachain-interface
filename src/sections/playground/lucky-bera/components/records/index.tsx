@@ -23,15 +23,6 @@ const LuckyBeraRecords = (props: any) => {
           }}
           className="w-[285px] !h-[40px]"
         />
-        <button
-          type="button"
-          className="absolute right-[20px] flex items-center gap-[8px] text-[#532] font-montserrat text-[14px] not-italic font-medium leading-[14px]"
-        >
-          <div className="w-[20px] h-[20px] rounded-full overflow-hidden border border-[#373A53] bg-white p-[2px]">
-            <div className="w-full h-full rounded-full bg-[#FFDC50] border border-[#373A53]"></div>
-          </div>
-          <div className="">Win only</div>
-        </button>
       </div>
       <div className="w-full mt-[10px]">
         <AnimatePresence>
