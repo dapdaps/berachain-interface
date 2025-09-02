@@ -108,12 +108,12 @@ const Config: any = {
     </>,
     5: <>
         <div className="text-[18px] font-bold">
-            Stake at least $10 for <div className="text-[24px] font-bold cursor-pointer underline inline">BERA</div>
+        <div className="text-[24px] font-bold cursor-pointer underline inline">Stake</div> at least $10 for BERA
         </div>
     </>,
     6: <>
         <div className="text-[18px] font-bold">
-            Stake at least <span className="text-[24px] font-bold cursor-pointer underline inline">$10</span> for <div className="text-[24px] font-bold cursor-pointer underline inline">iBGT</div>
+        <div className="text-[24px] font-bold cursor-pointer underline inline">Stake</div> at least $10 for iBGT
         </div>
     </>,
     7: <>

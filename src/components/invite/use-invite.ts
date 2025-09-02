@@ -9,6 +9,7 @@ export function useInvite() {
     const { userInfo } = useUser();
     const [invitedUsers, setInvitedUsers] = useState([]);
     const [totalRewards, setTotalRewards] = useState(0);
+    const [totalInvitedCount, setTotalInvitedCount] = useState(0);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
@@ -16,7 +17,10 @@ export function useInvite() {
     const toast = useToast();
     const getInvitedRewards = async () => {
         const res = await get('/api/go/invite/user');
-        setTotalRewards(res.data?.reward_amount || 0);
+        if (res.code === 200) {
+            setTotalInvitedCount(res.data?.total_invite || 0);
+            setTotalRewards(res.data?.reward_amount || 0);
+        }
     }
     const getInvitedUsers = async () => {
         if (loading) return;
@@ -60,6 +64,7 @@ export function useInvite() {
     return {
         invitedUsers,
         totalRewards,
+        totalInvitedCount,
         loading,
         totalPage,
         page,
