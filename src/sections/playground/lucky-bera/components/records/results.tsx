@@ -8,14 +8,20 @@ import { SPIN_CATEGORIES, SpinCategory } from "../../config";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useState } from "react";
 import Pagination from "@/components/pager/pagination";
+import { useLuckyBeraRecordsStore } from "./store";
 
 const LuckyBeraResults = (props: any) => {
   const { className } = props;
 
   const { accountWithAk } = useCustomAccount();
+  const {
+    resultsPage: page,
+    setResultsPage: setPage,
+    resultsWinOnly: winOnly,
+    setResultsWinOnly: setWinOnly,
+  } = useLuckyBeraRecordsStore();
 
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [pageTotal, setPageTotal] = useState(1);
 
   const columns = [
@@ -59,13 +65,14 @@ const LuckyBeraResults = (props: any) => {
     },
   ];
 
-  const { data, loading } = useRequest(async () => {
+  const { data, loading, runAsync: getData } = useRequest(async () => {
     if (!accountWithAk) {
       return [];
     }
     const res = await get("/api/go/game/777/draw/records", {
       page: page,
       page_size: pageSize,
+      win_only: winOnly ? "1" : "",
     });
     if (res.code !== 200) {
       return [];
@@ -73,12 +80,12 @@ const LuckyBeraResults = (props: any) => {
     setPageTotal(res.data.total_page);
     return res.data.data;
   }, {
-    refreshDeps: [accountWithAk, page, pageSize],
+    refreshDeps: [accountWithAk, page, pageSize, winOnly],
   });
 
   return (
     <motion.div
-      className="w-full"
+      className="w-full relative"
       initial={{
         opacity: 0,
         x: -50,
@@ -92,10 +99,29 @@ const LuckyBeraResults = (props: any) => {
         x: -50,
       }}
     >
+      <button
+        type="button"
+        className="!hidden absolute right-[20px] top-[-40px] flex items-center gap-[8px] text-[#532] font-montserrat text-[14px] not-italic font-medium leading-[14px]"
+        onClick={() => {
+          const _winOnly = !winOnly;
+          setPage(1);
+          setWinOnly(_winOnly);
+        }}
+      >
+        <div className="w-[20px] h-[20px] rounded-full overflow-hidden border border-[#373A53] bg-white p-[2px]">
+          {
+            winOnly && (
+              <div className="w-full h-full rounded-full bg-[#FFDC50] border border-[#373A53]"></div>
+            )
+          }
+        </div>
+        <div className="">Win only</div>
+      </button>
       <GridTable
         columns={columns}
         data={data}
         loading={loading}
+        bodyClassName="min-h-[438px]"
       />
       <Pagination
         className="justify-end pr-[25px] mt-[18px]"
