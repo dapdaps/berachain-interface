@@ -7,7 +7,7 @@ const steps = [
   {
     index: 0,
     id: "lootboxSeasonCheckInEntry",
-    description: "☕️ Daily check-in to get gems and lootbox",
+    description: "️☕️ Daily check-in to earn points and lootbox",
     cardPosition: {
       left: "-120px",
       bottom: "-160px",
@@ -32,7 +32,7 @@ const steps = [
   {
     index: 1,
     id: "lootboxSeasonGemsEntry",
-    description: "💎 Your collected gems will be shown here",
+    description: "💎 Your collected points will be shown here",
     cardPosition: {
       left: "-80px",
       bottom: "-165px",

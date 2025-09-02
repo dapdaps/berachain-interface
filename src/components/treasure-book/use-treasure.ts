@@ -11,7 +11,7 @@ export interface TreasureData {
     };
 }
 
-export const useTreasure = () => {
+export const useTreasure = ({ show }: { show: boolean }) => {
     const [questionLoading, setQuestionLoading] = useState(false);
     const [userLoading, setUserLoading] = useState(false);
     const [treasure, setTreasure] = useState<TreasureData | null>(null);
@@ -19,10 +19,10 @@ export const useTreasure = () => {
     const { userInfo } = useUser();
 
     useEffect(() => {
-        if (!userInfo || !userInfo.address) return;
+        if (!userInfo || !userInfo.address || !show) return;
         getUser();
         getQuestion();
-    }, [userInfo]);
+    }, [userInfo, show]);
 
     const openBox = async (boxAmount: number): Promise<any> => {
         const res = await post('/api/go/treasure/draw', {

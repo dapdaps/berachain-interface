@@ -91,7 +91,7 @@ const BuySpins = (props: any) => {
           value={buySpinsAmount}
           onNumberChange={(value) => setBuySpinsAmount(value)}
           integerOnly
-          disabled={buttonValid.loading}
+          autoFocus
         />
         <div className="absolute flex items-center gap-[5px] left-[0px] top-1/2 -translate-y-1/2">
           <img

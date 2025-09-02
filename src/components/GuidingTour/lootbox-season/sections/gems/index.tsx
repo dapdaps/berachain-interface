@@ -16,14 +16,14 @@ const LootboxSeasonGems = (props: any) => {
       _rewards.push({
         type: RewardType.Gem,
         amount: reward_gem_amount,
-        label: `You’ve got ${numberFormatter(reward_gem_amount, 0, true)} Gems`,
+        label: `You’ve received ${numberFormatter(reward_gem_amount, 0, true)} points`,
       });
     }
     if (reward_spin_amount) {
       _rewards.push({
         type: RewardType.Spin,
         amount: reward_spin_amount,
-        label: `You’ve got ${numberFormatter(reward_spin_amount, 0, true)} Spins`,
+        label: `You’ve received ${numberFormatter(reward_spin_amount, 0, true)} Spins`,
       });
     }
     return _rewards;
