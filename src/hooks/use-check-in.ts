@@ -53,6 +53,7 @@ export const useCheckIn = () => {
     // popup reward
     const _rewardData: any = [];
     if (reward_box_amount) {
+      // TODO
       // _rewardData.push({
 
       // });
@@ -61,7 +62,7 @@ export const useCheckIn = () => {
       _rewardData.push({
         type: RewardType.Gem,
         amount: reward_gem_amount,
-        label: `${numberFormatter(reward_gem_amount, 0, true, { isShort: true, isShortUppercase: true })} Gem`,
+        label: `${numberFormatter(reward_gem_amount, 0, true, { isShort: true, isShortUppercase: true })} Points`,
       });
     }
     if (_rewardData.length > 0) {

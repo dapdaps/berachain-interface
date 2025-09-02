@@ -149,9 +149,6 @@ export function useLuckyBera() {
       const { status, transactionHash } = await txResponse.wait();
       toast.dismiss(toastId);
 
-      // reload spin data
-      await getSpinUserData();
-
       if (status !== 1) {
         toast.fail({
           title: "Purchase failed, please try again later",
@@ -166,6 +163,17 @@ export function useLuckyBera() {
         chainId,
         tx: transactionHash,
       });
+
+      // close buy spins modal
+      setBuySpinsModalOpen(false);
+      // update user spin data
+      setSpinUserData((prev) => {
+        return {
+          ...prev,
+          spin_balance: Big(prev?.spin_balance || 0).plus(amount).toNumber(),
+        } as SpinUserData;
+      });
+      // getSpinUserData();
     } catch (error: any) {
       toast.dismiss(toastId);
       const isRejected = error?.message?.includes("user rejected transaction");
