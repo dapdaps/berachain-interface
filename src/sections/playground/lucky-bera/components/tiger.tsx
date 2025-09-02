@@ -561,24 +561,20 @@ export default memo(function Tiger(props: any) {
               }}
               onClick={handleSpin}
             />
-            <div className="absolute bottom-[37px] flex items-center justify-center gap-[10px]">
-              <div className="relative pl-[35px] pr-[13px] flex items-center w-[332px] h-[60px] bg-[url('/images/playground/lucky-bera/honey-progress.svg')] bg-no-repeat bg-center bg-contain">
-                <img
-                  src="/images/playground/lucky-bera/ticket-spin.png"
-                  alt=""
-                  className="w-[100px] h-[80px] object-center object-contain absolute z-[2] left-[-20px] translate-y-[2px]"
-                />
-                <div className="w-[34px] h-[34px] rounded-full bg-[#FFCF23] absolute left-[13px] top-1/2 -translate-y-1/2 z-[1]"></div>
-                <motion.div
-                  className="h-[24px] relative border-[2px] overflow-hidden border-[#F8C200] bg-[#F8D61F] rounded-[12px] shadow-[0px_4px_0px_0px_rgba(255,255,255,0.50)_inset]"
-                  animate={{
-                    width: `${spinProgress}%`,
-                  }}
-                >
-                  <div className="w-full h-full rounded-[8px] bg-[#f8d621] translate-y-[2px]"></div>
-                </motion.div>
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-[linear-gradient(180deg,_#926D48_0%,_#221911_100%)] bg-clip-text [-webkit-text-fill-color:_transparent] text-[20px] font-CherryBomb [-webkit-text-stroke-width:_1px] [-webkit-text-stroke-color:_#FFF4C2] font-[400] leading-[100%] text-center">
-                  {spinUserData?.spin_balance || 0} / {TOTAL_SPINS}
+            <div className="absolute bottom-[45px] flex items-center justify-center gap-[10px]">
+              <div className="relative flex items-center gap-[15px] h-[50px]">
+                <div className="text-[#B76F39] font-CherryBomb font-[400] text-[16px] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]">
+                  Spin Tickets
+                </div>
+                <div className="w-[200px] flex justify-between items-center pr-[14px] text-[#FFF4C2] text-[24px] font-CherryBomb [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] font-[400] h-full border-[2px] border-[#AD885E] rounded-[10px] bg-[#322C2C] shadow-[2px_7px_0_0_rgba(0,_0,_0,_0.25)_inset]">
+                  <img
+                    src="/images/playground/lucky-bera/ticket-spin.png"
+                    alt=""
+                    className="w-[70px] h-[56px] object-center object-contain translate-y-[2px]"
+                  />
+                  <div className="">
+                    {numberFormatter(spinUserData?.spin_balance, 0, true)}
+                  </div>
                 </div>
               </div>
               <LightingButton

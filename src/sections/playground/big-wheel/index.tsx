@@ -12,6 +12,7 @@ import useToast from "@/hooks/use-toast";
 import Big from "big.js";
 import CheckInRewardModal from "@/components/check-in/reward";
 import { RewardType } from "@/components/check-in/config";
+import { usePlaygroundContext } from "../context";
 
 const WheelList = [
   {
@@ -73,6 +74,12 @@ const BigWheel = () => {
   const { accountWithAk, account } = useCustomAccount();
   const connectModal = useConnectModal();
   const toast = useToast();
+  const {
+    wheelUserData,
+    setWheelUserData,
+    wheelUserDataLoading,
+    getWheelUserData,
+  } = usePlaygroundContext();
 
   const [wheelRef, wheelAnimate] = useAnimate();
   const wheelRotation = useMotionValue(0);
@@ -106,23 +113,6 @@ const BigWheel = () => {
       });
     });
   };
-
-  const [wheelUserData, setWheelUserData] = useState<WheelUserData>();
-  const { loading: wheelUserDataLoading, runAsync: getWheelUserData } = useRequest<WheelUserData, any>(async () => {
-    if (!accountWithAk) {
-      setWheelUserData(void 0);
-      return;
-    }
-    const res = await get("/api/go/game/wheel/user");
-    if (res.code !== 200) {
-      setWheelUserData(void 0);
-      return;
-    }
-    setWheelUserData(res.data);
-    return res.data;
-  }, {
-    refreshDeps: [accountWithAk],
-  });
 
   const { runAsync: onSpin, loading: spinning, data: rewardData } = useRequest(async () => {
     if (!account) {
@@ -165,7 +155,7 @@ const BigWheel = () => {
     const randomReward = currentReward[currentRewardIndex];
 
     // update wheel user data
-    setWheelUserData((prev) => {
+    setWheelUserData((prev: WheelUserData) => {
       return {
         ...prev,
         wheel_balance: wheel_balance,

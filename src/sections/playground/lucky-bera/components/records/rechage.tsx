@@ -5,9 +5,12 @@ import { get } from "@/utils/http";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useRequest } from "ahooks";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLuckyBeraRecordsStore } from "./store";
+
+dayjs.extend(utc);
 
 const LuckyBeraRechage = (props: any) => {
   const { className } = props;
@@ -26,7 +29,7 @@ const LuckyBeraRechage = (props: any) => {
       title: "Date",
       dataIndex: "date",
       render: (record: any, idx: number) => {
-        return dayjs(record.created_at).format("YYYY/M/D HH:mm");
+        return dayjs.utc(record.created_at).format("YYYY/M/D HH:mm");
       },
     },
     {
