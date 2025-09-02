@@ -19,7 +19,7 @@ export const useTreasure = () => {
     const { userInfo } = useUser();
 
     useEffect(() => {
-        if (!userInfo || !userInfo.accessToken) return;
+        if (!userInfo || !userInfo.address) return;
         getUser();
         getQuestion();
     }, [userInfo]);
