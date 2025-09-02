@@ -1,33 +1,23 @@
 "use client";
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import FlexTable, { Column } from '@/components/flex-table';
 import Pager from '@/components/pager';
+import { get } from '@/utils/http';
 
-const mockData = [
-    { reward: 'GEM', amount: 'x100', from: 'Treasure Box', date: '2025/8/30 15:39' },
-
-];
 
 const PAGE_SIZE = 10;
 
 export default function History({ onClose }: { onClose: () => void }) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [history, setHistory] = useState<any[]>([]);
+    const [maxPage, setMaxPage] = useState(1);
 
-    const maxPage = useMemo(() => {
-        return Math.ceil(mockData.length / PAGE_SIZE) || 1;
-    }, []);
-
-    const currentData = useMemo(() => {
-        const startIndex = (currentPage - 1) * PAGE_SIZE;
-        const endIndex = startIndex + PAGE_SIZE;
-        return mockData.slice(startIndex, endIndex);
-    }, [currentPage]);
 
     const columns: Column[] = [
         {
             title: 'Reward',
             dataIndex: 'reward',
-            width: '25%',
+            width: '35%',
 
         },
         {
@@ -37,21 +27,30 @@ export default function History({ onClose }: { onClose: () => void }) {
 
         },
         {
-            title: 'From',
-            dataIndex: 'from',
-            width: '30%',
-
-        },
-        {
             title: 'Date',
             dataIndex: 'date',
-            width: '25%',
-
+            width: '35%',
         }
     ];
 
+    useEffect(() => {
+        getList();
+    }, []);
+
+    const getList = () => {
+        get('/api/go/treasure/draw/list', {
+            page: currentPage,
+            page_size: PAGE_SIZE,
+        }).then((res) => {
+            if (res.code === 200) {
+                setHistory(res.data?.data || []);
+                setMaxPage(res.data?.total_page || 0);
+            }
+        });
+    }
+
     return (
-        <div className="absolute w-[540px] h-[656px] top-[130px] right-[120px]">
+        <div className="absolute z-10 w-[540px] h-[656px] top-[130px] right-[120px]">
             <div className="w-full h-full bg-[#FFF9CD] absolute top-0 left-0 border border-black rotate-[-1.06deg]"></div>
             <img src="/images/treasure-book/history-title.png" className="absolute top-[-14px] left-[120px] w-[260px]" />
             <div onClick={onClose} className="absolute top-[20px] right-[20px] cursor-pointer z-10">
@@ -76,28 +75,30 @@ export default function History({ onClose }: { onClose: () => void }) {
             </div>
 
             <div className="relative pt-[80px]">
-
                 <div className="px-[40px]">
                     <FlexTable
                         columns={columns}
-                        list={currentData}
+                        list={history}
                         wrapperClass=""
                         headClass="text-[14px] text-[#553322]"
                         bodyClass="text-[14px] odd:bg-inherit text-[#553322] border-b border-black/20 rounded-none "
                         showHeader={true}
-                        pagination={true}
+                        pagination={<div className="flex justify-end mt-[30px]">
+                            {
+                                maxPage > 1 && <Pager
+                                    maxPage={maxPage}
+                                    defaultPage={currentPage}
+                                    onPageChange={(page) => {
+                                        setCurrentPage(page);
+                                        getList();
+                                    }}
+                                    isFirst={true}
+                                    isLast={true}
+                                />
+                            }
+                        </div>}
                     />
                 </div>
-
-                {/* <div className="flex justify-center mt-[25px]">
-                    <Pager
-                        maxPage={maxPage}
-                        defaultPage={currentPage}
-                        onPageChange={setCurrentPage}
-                        isFirst={true}
-                        isLast={true}
-                    />
-                </div> */}
             </div>
         </div>
     );
