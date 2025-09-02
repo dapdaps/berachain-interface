@@ -1,5 +1,5 @@
 import { motion, useAnimate, useMotionValue } from 'framer-motion';
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { SPIN_CATEGORIES, SPIN_XP_REWARD_CATEGORIES, SpinCategory, SpinResultData, SpinXpRewardCategory } from '../config';
 import LightingButton from './lighting-button';
 import { numberFormatter } from '@/utils/number-formatter';
@@ -7,6 +7,7 @@ import useToast from '@/hooks/use-toast';
 import Big from 'big.js';
 import { useDebounceFn, useRequest } from 'ahooks';
 import clsx from 'clsx';
+import LuckyBeraRecordsModal from './records/modal';
 
 const WHEEL_SIZE = 500;
 const WHEEL_AREA = 120;
@@ -51,6 +52,8 @@ export default memo(function Tiger(props: any) {
   const spinTimerInfinityLeft = useRef<any>();
   const spinTimerInfinityCenter = useRef<any>();
   const spinTimerInfinityRight = useRef<any>();
+
+  const [openRecordsModal, setOpenRecordsModal] = useState(false);
 
   const createCoin = (x: number, y: number, icon: string) => {
     const coin = document.createElement('div');
@@ -598,7 +601,20 @@ export default memo(function Tiger(props: any) {
           alt=""
           className="absolute translate-x-[270px] bottom-[170px] z-[1] w-[240px] h-[197px] object-center object-contain pointer-events-none"
         />
+        <button
+          type="button"
+          className="absolute z-[1] translate-x-[310px] hover:translate-x-[320px] transition-all duration-150 bottom-[70px] w-[125px] h-[50px] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
+          onClick={() => {
+            setOpenRecordsModal(true);
+          }}
+        />
       </div>
+      <LuckyBeraRecordsModal
+        open={openRecordsModal}
+        onClose={() => {
+          setOpenRecordsModal(false);
+        }}
+      />
     </div>
   )
 });
