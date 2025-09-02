@@ -132,7 +132,7 @@ const MainLayout = (props: Props) => {
 
   const [showGuide, setShowGuide] = useState(true);
 
-  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/playground/lucky-bera"];
+  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/carnival/lucky-bera", "/carnival/big-wheel"];
 
   return (
     <div
