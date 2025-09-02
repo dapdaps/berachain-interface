@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { SpinMultiplier, SpinUserData } from "./lucky-bera/config";
+import { SpinMultiplier, SpinUserData } from "../lucky-bera/config";
 import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
-import { WheelUserData } from "./big-wheel/config";
+import { WheelUserData } from "../big-wheel/config";
 
 export function usePlayground() {
   const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");

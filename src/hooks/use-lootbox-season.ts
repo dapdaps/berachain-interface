@@ -24,7 +24,6 @@ export function useLootboxSeason(props?: any) {
   const { account, accountWithAk } = useAccount();
   const pathname = usePathname();
   const userInfo = useUserStore((store: any) => store.user);
-  const setUserInfo = useUserStore((store: any) => store.set);
   const { getUserInfo } = useUser();
 
   const [open, setOpen] = useState<Record<LootboxSeasonGuides, boolean>>({
@@ -109,11 +108,6 @@ export function useLootboxSeason(props?: any) {
 
     // open gems modal
     onModalToggle(LootboxSeasonGuides.Gems, true);
-
-    // refresh user gems
-    if (resBox.data.reward_gem_amount) {
-      setUserInfo({ user: { ...userInfo, gem: Big(userInfo.gem || 0).plus(resBox.data.reward_gem_amount).toNumber() } });
-    }
 
     return resBox.data;
   }, {

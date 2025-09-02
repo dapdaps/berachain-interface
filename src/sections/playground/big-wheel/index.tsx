@@ -13,6 +13,8 @@ import Big from "big.js";
 import CheckInRewardModal from "@/components/check-in/reward";
 import { RewardType } from "@/components/check-in/config";
 import { usePlaygroundContext } from "../context";
+import { SpinUserData } from "../lucky-bera/config";
+import { useCoinExplosion } from "../hooks/use-coin-explosion";
 
 const WheelList = [
   {
@@ -58,6 +60,7 @@ const WheelList = [
 ];
 const WheelSpace = 360 / WheelList.length;
 const WheelDeadArea = 5;
+const EXPLOSION_COIN_SIZE = 100;
 
 const getRandomWheelSpace = (index: number) => {
   const rotationStart = index * WheelSpace;
@@ -79,11 +82,14 @@ const BigWheel = () => {
     setWheelUserData,
     wheelUserDataLoading,
     getWheelUserData,
+    setSpinUserData,
   } = usePlaygroundContext();
+  const { createCoinsExplosion } = useCoinExplosion({ size: EXPLOSION_COIN_SIZE });
 
   const [wheelRef, wheelAnimate] = useAnimate();
   const wheelRotation = useMotionValue(0);
   const wheelAnimation = useRef<any>();
+  const wheelButtonRef = useRef<any>();
 
   const [openRedeemSpin, setOpenRedeemSpin] = useState(false);
   const [buySpinsAmount, setBuySpinsAmount] = useState("");
@@ -112,6 +118,21 @@ const BigWheel = () => {
         },
       });
     });
+  };
+
+  const startRewardExplosion = (params: WheelResultData) => {
+    const { } = params;
+
+    if (!wheelButtonRef.current) {
+      return;
+    }
+
+    // Calculate center position for coin explosion
+    const rect = wheelButtonRef.current.getBoundingClientRect();
+    const startX = rect.left + rect.width / 2 - EXPLOSION_COIN_SIZE / 2;
+    const startY = rect.top + rect.height / 2 - EXPLOSION_COIN_SIZE;
+
+    createCoinsExplosion(startX, startY, "/images/playground/lucky-bera/icon-reward/spin.svg");
   };
 
   const { runAsync: onSpin, loading: spinning, data: rewardData } = useRequest(async () => {
@@ -176,12 +197,21 @@ const BigWheel = () => {
       ease: [0, 1, 0.2, 1],
     });
 
-    setOpenRewardModal(true);
-    return [{
-      type: RewardType.Spin,
-      amount: reward_spin_amount,
-      label: `${numberFormatter(reward_spin_amount, 0, true)} spin tickets`,
-    }];
+    // update user spin data
+    setSpinUserData((prev: SpinUserData) => {
+      return {
+        ...prev,
+        spin_balance: Big(prev?.spin_balance || 0).plus(reward_spin_amount).toNumber(),
+      } as SpinUserData;
+    });
+
+    startRewardExplosion(res.data);
+    // setOpenRewardModal(true);
+    // return [{
+    //   type: RewardType.Spin,
+    //   amount: reward_spin_amount,
+    //   label: `${numberFormatter(reward_spin_amount, 0, true)} spin tickets`,
+    // }];
   }, { manual: true });
 
   const { runAsync: onBuySpins, loading: buyingSpins } = useRequest(async () => {
@@ -231,6 +261,7 @@ const BigWheel = () => {
             } */}
           </motion.div>
           <motion.button
+            ref={wheelButtonRef}
             type="button"
             className="flex justify-center items-center shrink-0 absolute z-[2] w-[100px] h-[100px] bg-[url('/images/playground/big-wheel/btn-spin.png')] bg-no-repeat bg-center bg-contain"
             disabled={spinning || wheelUserDataLoading}
