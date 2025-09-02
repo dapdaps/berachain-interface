@@ -26,7 +26,7 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
     }, [treasure]);
 
 
-    return <div className="px-[30px]">
+    return <div className="px-[30px]" >
         <div className=" mt-[40px] flex justify-between items-center">
             <div style={{
                 WebkitTextStroke: "2px #000000",

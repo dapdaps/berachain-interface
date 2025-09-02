@@ -6,6 +6,7 @@ import { get } from '@/utils/http';
 import { formatSimpleDate } from '@/utils/date';
 import useToast from '@/hooks/use-toast';
 import useUser from '@/hooks/use-user';
+import Empty from '../empty';
 
 
 const mockInvitedUsers = [
@@ -222,8 +223,6 @@ export default function InviteModal({ open, onClose }: InviteModalProps) {
                     </div>
                 </div>
 
-
-
                 <div className="max-h-[300px] overflow-y-auto rounded-[12px]">
                     <table className="min-w-full text-left">
                         <thead>
@@ -250,7 +249,7 @@ export default function InviteModal({ open, onClose }: InviteModalProps) {
                             </tr>
                         </thead>
                         <tbody>
-                            {invitedUsers.map((user, idx) => (
+                            {invitedUsers?.map((user, idx) => (
                                 <tr key={user.id} className="hover:bg-[#FFF3B0] transition text-[14px] font-[600]" >
                                     <td className="px-2 py-4 pl-[24px]">
                                         {user.address}
@@ -273,6 +272,13 @@ export default function InviteModal({ open, onClose }: InviteModalProps) {
                                     </td>
                                 </tr>
                             ))}
+                            {invitedUsers?.length === 0 && (
+                                <tr>
+                                    <td colSpan={3} className="px-2 py-4 text-center">
+                                        <Empty desc="No data" />
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

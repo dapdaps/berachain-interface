@@ -35,14 +35,8 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
         }
     }, [openBox]);
 
-    console.log('leftShow:', leftShow);
-    console.log('balanceShow:', balanceShow);
-    console.log('treasure?.total:', treasure?.total);
-    console.log('treasure?.balance:', treasure?.balance);
 
-
-
-    return <div className="font-CherryBomb pt-[150px] relative text-[#FDD54C]" style={{
+    return <div onClick={(e) => e.stopPropagation()} className="font-CherryBomb relative text-[#FDD54C]" style={{
         WebkitTextStroke: "2px #000000",
     }}>
         <div className="w-[200px] text-center pl-[30px] mt-[15px]">
@@ -71,7 +65,7 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
             }
         </div>
 
-        <div className="flex flex-col items-center gap-[10px] justify-center pb-[40px] absolute right-[30px] top-[130px] w-[180px] h-[204px] bg-[url('/images/treasure-book/flag.png')] bg-no-repeat bg-center bg-contain">
+        <div className="flex flex-col items-center gap-[10px] justify-center pb-[40px] absolute right-[30px] top-[-40px] w-[180px] h-[204px] bg-[url('/images/treasure-book/flag.png')] bg-no-repeat bg-center bg-contain">
             <div className="text-[60px] leading-[50px]">{ treasure?.balance || 0 }</div>
             <div className="text-[20px] leading-[20px]">To be opened</div>
             {
