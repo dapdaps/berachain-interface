@@ -45,7 +45,6 @@ export function useUser() {
 
   const getAccessToken = async () => {
     setUserInfo({ accessTokenLoading: true });
-    // 获取当前使用的地址
     const currentAddress = isNearPage && near_current_wallet
       ? near_current_wallet.address
       : address;
@@ -64,9 +63,10 @@ export function useUser() {
     }
 
     // register
-    const checkedRes = await checkAccount({
-      address: currentAddress,
-    });
+
+
+
+    
     let _walletName = walletName ?? '';
     const isBitget = _walletName.toLowerCase().includes('bitget');
     const isCoin98 = _walletName.toLowerCase().includes('coin98');
@@ -75,27 +75,43 @@ export function useUser() {
       _walletName = 'bitget';
     }
 
-    if (!checkedRes.isActivated) {
-      const activateRes = await activateAccount({
-        address: currentAddress,
-        code: '',
-        source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
-        wallet: _walletName.toLowerCase(),
-      });
-      if (!activateRes.isSuccess && !isNearPage) {
-        toast.fail({
-          title: 'Account activated failed, please try again later!',
-          message: activateRes?.message ?? '',
-        });
-      }
-    }
 
-    const res = await post('/api/auth/access-token', {
+    // const checkedRes = await checkAccount({
+    //   address: currentAddress,
+    // });
+
+    // if (!checkedRes.isActivated) {
+    //   const activateRes = await activateAccount({
+    //     address: currentAddress,
+    //     code: '',
+    //     source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
+    //     wallet: _walletName.toLowerCase(),
+    //   });
+    //   if (!activateRes.isSuccess && !isNearPage) {
+    //     toast.fail({
+    //       title: 'Account activated failed, please try again later!',
+    //       message: activateRes?.message ?? '',
+    //     });
+    //   }
+    // }
+    const loginRes = await login({
       address: currentAddress,
       wallet: _walletName.toLowerCase(),
+      source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
+      code: window.localStorage.getItem('referral_code') ?? '',
     });
+
+    console.log('loginRes', loginRes)
+
+    // const res = await post('/api/auth/access-token', {
+    //   address: currentAddress,
+    //   wallet: _walletName.toLowerCase(),
+    // });
+
+    // console.log('res', res)
+
     setUserInfo({
-      accessToken: res,
+      accessToken: loginRes?.data,
       accessTokenLoading: false,
     });
     await getUserInfo();
@@ -142,5 +158,15 @@ const activateAccount = async (params: any) => {
       isSuccess: false,
       message: err?.message ?? '',
     };
+  }
+};
+
+const login = async (params: any) => {
+  try {
+    const loginRes = await post('/api/go/login', params);
+    return loginRes;
+  } catch (err: any) {
+    console.log(err);
+    return null;
   }
 };
