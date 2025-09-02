@@ -43,7 +43,10 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
                     <div className={clsx("flex-1", index % 2 !== 0 ? "order-[1]" : "order-[2]")}>
                         <LinkItem config={Config[item.id]} onClick={() => {
                             if (item.url) {
-                                window.open(`./${item.url}`, '_blank');
+                                const url = item.url; 
+                                const match = url.match(/^https?:\/\/[^/]+(\/[^?#]*)/);
+                                const path = match ? match[1] : item.url;
+                                window.open(`${window.location.origin}${path}`, '_blank');
                             }
 
                             if (item.category.toLowerCase() === 'share') {
