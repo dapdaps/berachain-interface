@@ -47,6 +47,22 @@ export const SPIN_CATEGORIES: Record<SpinCategory, any> = {
   },
 };
 
+export enum SpinXpRewardCategory {
+  Spin = "Spin",
+  Wheel = "Wheel",
+}
+
+export const SPIN_XP_REWARD_CATEGORIES: Record<SpinXpRewardCategory, any> = {
+  [SpinXpRewardCategory.Spin]: {
+    icon: "/images/playground/lucky-bera/icon-reward/spin.svg",
+    value: SpinXpRewardCategory.Spin,
+  },
+  [SpinXpRewardCategory.Wheel]: {
+    icon: "/images/check-in/spin.png",
+    value: SpinXpRewardCategory.Wheel,
+  },
+}
+
 export enum SpinMultiplier {
   X1 = 1,
   X2 = 2,
