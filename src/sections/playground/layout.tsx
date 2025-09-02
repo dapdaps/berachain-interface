@@ -6,7 +6,7 @@ import Lights from "./components/lights";
 import Link from "next/link";
 import clsx from "clsx";
 import { PlaygroundProvider } from "./context";
-import { usePlayground } from "./use-playground";
+import { usePlayground } from "./hooks";
 import { numberFormatter } from "@/utils/number-formatter";
 
 const PlaygroundLayout = (props: any) => {
