@@ -1,8 +1,14 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import HomeEarthTop from "../home-earth/components/top";
 import Lights from "./components/lights";
+import Link from "next/link";
 
 const PlaygroundLayout = (props: any) => {
   const { children } = props;
+
+  const pathname = usePathname();
 
   return (
     <div className="w-full">
@@ -25,6 +31,15 @@ const PlaygroundLayout = (props: any) => {
         <Lights className="!absolute right-[-90px] bottom-[30px] rotate-[0deg]" delay={1.5} /> */}
       </div>
       <div className="w-full min-h-[100dvh] bg-[url('/images/playground/bg-ground.png')] bg-[length:100%_auto] bg-bottom bg-no-repeat relative z-[1]">
+        {
+          ["/carnival/lucky-bera"].includes(pathname) && (
+            <Link
+              href="/carnival/big-wheel"
+              prefetch
+              className="block absolute w-[186px] h-[222px] left-1/2 -translate-x-[calc(50%_+_500px)] bottom-[177px] z-[1] bg-[url('/images/playground/big-wheel.png')] bg-no-repeat bg-center bg-contain"
+            />
+          )
+        }
         {children}
       </div>
     </div>

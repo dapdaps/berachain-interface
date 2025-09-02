@@ -2,12 +2,15 @@ import { useState } from "react";
 import BookModal from "./book-modal";
 import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
 import { AnimatePresence } from "framer-motion";
+import { useTreasure } from "./use-treasure";
 
 export default function TreasureBook() {
     const {
         treasureBookOpen,
         setTreasureBookOpen,
     } = useLootboxSeasonStore();
+
+    const { treasure, openBox, question, completeViewQuest, questionLoading, userLoading, getQuestion } = useTreasure();
 
     return (
         <>
@@ -23,7 +26,16 @@ export default function TreasureBook() {
                 />
             </div>
             <AnimatePresence>
-                {treasureBookOpen && <BookModal onClose={() => setTreasureBookOpen(false)} />}
+                {treasureBookOpen && <BookModal 
+                treasure={treasure} 
+                question={question} 
+                completeViewQuest={completeViewQuest} 
+                onClose={() => setTreasureBookOpen(false)} 
+                openBox={openBox} 
+                questionLoading={questionLoading} 
+                userLoading={userLoading} 
+                getQuestion={getQuestion}
+                />}
             </AnimatePresence>
         </>
     );
