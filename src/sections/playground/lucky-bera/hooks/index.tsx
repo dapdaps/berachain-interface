@@ -8,6 +8,7 @@ import useCustomAccount from '@/hooks/use-account';
 import { ethers } from 'ethers';
 import Big from 'big.js';
 import { bera } from '@/configs/tokens/bera';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 const costToken = bera["bera"];
 
@@ -15,6 +16,7 @@ export function useLuckyBera() {
   const { accountWithAk, provider, account, chainId } = useCustomAccount();
   const toast = useToast();
   const { setLastSpinResult, lastSpinResult } = useLuckyBeraStore();
+  const connectModal = useConnectModal();
 
   const [buySpinsModalOpen, setBuySpinsModalOpen] = useState(false);
 
@@ -23,10 +25,11 @@ export function useLuckyBera() {
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
 
   const [spinUserData, setSpinUserData] = useState<SpinUserData>();
-  const { run: getSpinUserData, loading: spinUserDataLoading } = useRequest<SpinUserData, any>(async () => {
+  const { runAsync: getSpinUserData, loading: spinUserDataLoading } = useRequest<SpinUserData, any>(async () => {
     const res = await get("/api/go/game/777/user");
     if (res.code !== 200) {
       checkSpinMultiplier();
+      setSpinUserData(void 0);
       return {};
     }
     checkSpinMultiplier(res.data);
@@ -50,6 +53,10 @@ export function useLuckyBera() {
   }, { wait: 5000 });
 
   const { runAsync: handleSpinResult, data: spinResultData, loading: spinResultDataLoading } = useRequest<SpinResultData | boolean, any>(async () => {
+    if (!account) {
+      connectModal?.openConnectModal?.();
+      return;
+    }
     if (!accountWithAk) return;
     if (!spinUserData?.spin_balance) {
       setBuySpinsModalOpen(true);
@@ -97,6 +104,10 @@ export function useLuckyBera() {
 
   const [buySpinsAmount, setBuySpinsAmount] = useState("");
   const { runAsync: onBuySpins, loading: buyingSpins } = useRequest(async (params?: { discount?: number; amount?: string; }) => {
+    if (!account) {
+      connectModal?.openConnectModal?.();
+      return;
+    }
     let { discount, amount } = params ?? {};
     amount = amount || buySpinsAmount;
 

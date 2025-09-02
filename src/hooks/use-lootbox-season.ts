@@ -6,7 +6,6 @@ import { useDebounceFn, useRequest } from "ahooks";
 import { usePathname } from "next/navigation";
 import { post } from "@/utils/http";
 import { useUserStore } from "@/stores/user";
-import useUser from "./use-user";
 
 export function useLootboxSeason(props?: any) {
   const { } = props ?? {};
@@ -32,8 +31,8 @@ export function useLootboxSeason(props?: any) {
   });
 
   const [hadUserCategory] = useMemo(() => {
-    return [userInfo?.category > 0];
-  }, [userInfo]);
+    return [!!account && userInfo?.address?.toLowerCase() === account?.toLowerCase() && userInfo?.category > 0];
+  }, [userInfo, account]);
 
   const onModalToggle = (type: LootboxSeasonGuides, open: boolean) => {
     setOpen((prev) => {
@@ -127,22 +126,30 @@ export function useLootboxSeason(props?: any) {
   };
 
   useEffect(() => {
-    if (pathname !== '/') return;
-
-    if (account && !userInfo) {
-      return;
-    }
-
     onModalToggleCancel();
 
+    if (pathname !== '/') return;
+
+    if (account) {
+      if (typeof userInfo?.gem === "undefined") {
+        return;
+      }
+    }
+
     const _visited = visited[account || 'DEFAULT'];
-    if (_visited || hadUserCategory) {
+    if (_visited) {
       onModalToggle(LootboxSeasonGuides.Start, false);
       return;
     }
 
+    if (hadUserCategory) {
+      onModalToggle(LootboxSeasonGuides.Start, false);
+      setVisited(account, true);
+      return;
+    }
+
     onModalToggleDelay();
-  }, [visited, account, pathname, hadUserCategory, userInfo]);
+  }, [visited, account, pathname, userInfo, hadUserCategory]);
 
   const [guideVisible, setGuideVisible] = useState<boolean>(false);
 
@@ -156,9 +163,9 @@ export function useLootboxSeason(props?: any) {
   };
 
   useEffect(() => {
-    if (pathname !== '/') return
-
     setGuideVisibleCancel();
+
+    if (pathname !== '/') return
 
     const _visited = visited[account || 'DEFAULT'];
 

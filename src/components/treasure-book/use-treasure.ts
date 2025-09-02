@@ -1,3 +1,4 @@
+import useUser from "@/hooks/use-user";
 import { get, post } from "@/utils/http";
 import { useEffect, useState } from "react";
 
@@ -15,11 +16,13 @@ export const useTreasure = () => {
     const [userLoading, setUserLoading] = useState(false);
     const [treasure, setTreasure] = useState<TreasureData | null>(null);
     const [question, setQuestion] = useState<any>(null);
+    const { userInfo } = useUser();
 
     useEffect(() => {
+        if (!userInfo || !userInfo.accessToken) return;
         getUser();
         getQuestion();
-    }, []);
+    }, [userInfo]);
 
     const openBox = async (boxAmount: number): Promise<any> => {
         const res = await post('/api/go/treasure/draw', {

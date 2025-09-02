@@ -55,10 +55,10 @@ const BuySpins = (props: any) => {
   };
 
   useEffect(() => {
-    if (!open) {
+    return () => {
       setBuySpinsAmount("");
-    }
-  }, [open]);
+    };
+  }, []);
 
   return (
     <div className="w-full relative px-[20px] text-[16px] font-Montserrat font-[600] leading-[90%]">
