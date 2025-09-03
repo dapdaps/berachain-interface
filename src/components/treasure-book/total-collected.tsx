@@ -4,11 +4,15 @@ import Reward from "@/components/check-in/reward";
 
 import type { TreasureData } from "./use-treasure";
 import { RewardType } from "../check-in/config";
+import { useUserStore } from "@/stores/user";
+import Big from "big.js";
 
 export default function TotalCollected({ treasure, openBox }: { treasure: TreasureData | null, openBox: (boxAmount: number) => Promise<any> }) {
     const [openReward, setOpenReward] = useState(false);
     const [openRewardData, setOpenRewardData] = useState<any>(null);
 
+    const userInfo = useUserStore((store: any) => store.user);
+    const setUserInfo = useUserStore((store: any) => store.set);
 
     const total = treasure?.total || 0;
     const balanceShow = Math.min(treasure?.balance || 0, 3);
@@ -31,6 +35,13 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
                     amount: res.data.reward_gem_amount,
                     label: res.data.reward_gem_amount +' Points',
                 });
+                // update usr total gem amount
+                setUserInfo({
+                    user: {
+                      ...userInfo,
+                      gem: Big(userInfo.gem || 0).plus(res.data.reward_gem_amount).toNumber(),
+                    }
+                  });
             }
             setOpenRewardData(rewards);
             setOpenReward(true);
