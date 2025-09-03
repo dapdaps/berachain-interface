@@ -11,11 +11,13 @@ interface BeraPrice {
 type RainyDayState = {
   rainyDay: Scene;
   beraPrice?: BeraPrice;
+  isWeatherOpen?: boolean;
 };
 
 type RainyDayStore = RainyDayState & {
   setRainyDay: (scene: Scene) => void;
   setBeraPrice: (price: BeraPrice) => void;
+  setIsWeatherOpen: (isWeatherOpen: boolean) => void;
 };
 
 export const RAINY_DAY: Scene = {
@@ -35,6 +37,7 @@ export const useRainyDayStore = create(
     (set) => ({
       rainyDay: RAINY_DAY,
       beraPrice: {},
+      isWeatherOpen: true,
       setRainyDay: (scene) => {
         set((state) => ({ ...state, rainyDay: scene }));
       },
@@ -44,13 +47,17 @@ export const useRainyDayStore = create(
           beraPrice: { ...state.beraPrice, ...price },
         }));
       },
+      setIsWeatherOpen: (isWeatherOpen) => {
+        set((state) => ({ ...state, isWeatherOpen }));
+      },
     }),
     {
       name: "_rainyDay",
-      version: 0.1,
+      version: 0.2,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         rainyDay: state.rainyDay,
+        isWeatherOpen: state.isWeatherOpen,
       } as any)
     }
   )
