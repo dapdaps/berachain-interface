@@ -131,7 +131,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
             setOpenCheckInModal(true);
         }
 
-        if ((quest.category.toLowerCase() === 'view' && quest.page) || (quest.category.toLowerCase() === 'share')) {
+        if ((quest.category.toLowerCase() === 'view' && quest.url) || (quest.category.toLowerCase() === 'share')) {
             completeViewQuest(quest);
         }
 

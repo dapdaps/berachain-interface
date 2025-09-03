@@ -1,8 +1,6 @@
 import { stake as bexStake, unStake as bexUnstake, quote as bexQuote, getApr as bexGetApr, getWithdrawalRequests as bexGetWithdrawalRequests, withdraw as bexWithdraw } from "./bex";
 
 export async function stake(dexType: string, params: any) {
-    console.log("stake", dexType, params);
-
     switch (dexType.toLowerCase()) {
         case "bex":
             return bexStake(params);
