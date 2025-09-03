@@ -8,7 +8,7 @@ import useToast from '@/hooks/use-toast';
 import useUser from '@/hooks/use-user';
 import Empty from '../empty';
 import Loading from '../loading';
-import Pager from '../pager';
+import Pagination from "@/components/pager/pagination";
 
 interface InviteModalProps {
     open: boolean;
@@ -202,10 +202,10 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                     {
                         totalPage > 1 && (
                             <div className="flex justify-end mt-[30px] pr-[24px]">
-                                <Pager
-                                    maxPage={totalPage}
-                                    defaultPage={page}
-                                    onPageChange={(page) => {
+                                <Pagination
+                                    totalPage={totalPage}
+                                    page={page}
+                                    onPageChange={(page: number) => {
                                         setPage(page);
                                     }}
                                 />

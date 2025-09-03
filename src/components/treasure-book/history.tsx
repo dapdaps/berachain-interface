@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect } from 'react';
 import FlexTable, { Column } from '@/components/flex-table';
-import Pager from '@/components/pager';
+import Pagination from "@/components/pager/pagination";
 import { get } from '@/utils/http';
 import { formatEnglishDate, formatSimpleDate } from '@/utils/date';
 
@@ -113,10 +113,10 @@ export default function History({ onClose }: { onClose: () => void }) {
                         showHeader={true}
                         pagination={<div className="flex justify-end mt-[30px]">
                             {
-                                maxPage > 1 && <Pager
-                                    maxPage={maxPage}
-                                    defaultPage={currentPage}
-                                    onPageChange={(page) => {
+                                maxPage >1 && <Pagination
+                                    totalPage={maxPage}
+                                    page={currentPage}
+                                    onPageChange={(page: number) => {
                                         setCurrentPage(page);
                                         getList();
                                     }}
