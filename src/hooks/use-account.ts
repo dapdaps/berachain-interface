@@ -64,7 +64,7 @@ export default function useCustomAccount() {
       chainId: account?.chainId || DEFAULT_CHAIN_ID,
       provider,
       chain: account?.chain || null,
-      accountWithAk: (account && accessToken) ? `${account}-${accessToken}` : void 0,
+      accountWithAk: (account?.address && accessToken) ? `${account?.address}-${accessToken}` : void 0,
     }),
     [account, provider, accessToken]
   );

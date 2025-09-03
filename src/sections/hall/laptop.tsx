@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import PageBack from "@/components/back";
 import BearBackground from "@/components/bear-background";
 import Tabs from "@/components/tabs";
@@ -7,9 +8,14 @@ import IbgtPageView from "@/sections/bgt/ibgt";
 import { useHall } from "@/stores/hall";
 import { memo, useMemo } from "react";
 import Validators from "../bgt/validators";
+
 export default memo(function Laptop() {
-  const store = useHall()
-  const currentTab = useMemo(() => ["bgt", "ibgt", "validators"].includes(store.currentTab) ? store.currentTab : "validators")
+  const store: any = useHall();
+
+  const currentTab = useMemo(() => {
+    return ["bgt", "ibgt", "validators"].includes(store.currentTab) ? store.currentTab : "validators";
+  }, [store.currentTab]);
+
   return (
     <BearBackground type="hall">
       <div className="py-[22px] flex flex-col items-center h-full overflow-scroll">
