@@ -44,6 +44,7 @@ import chains from '@/sections/bridge/lib/util/chainConfig'
 import { useBgtCount } from "@/hooks/use-bgt-count";
 import InviteModal from '../invite';
 import { useInvite } from '../invite/use-invite';
+import { useInviteModal } from '@/stores/use-invite-modal';
 
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useConnectModal();
@@ -303,7 +304,8 @@ const User = (props: any) => {
 
 
   const toast = useToast();
-  const [inviteModalVisible, setInviteModalVisible] = useState(false);  
+  // const [inviteModalVisible, setInviteModalVisible] = useState(false);  
+  const inviteModalStore: any = useInviteModal();
   const { invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage, totalInvitedCount } = useInvite();
 
   const inviteLink = useMemo(() => {
@@ -361,32 +363,32 @@ const User = (props: any) => {
         </div>
 
         <div>
-        <div className="w-[230px] rounded-[14px] border border-[#E6E1C2] bg-[#FFFDEB] p-[10px] flex flex-col gap-[8px] font-Montserrat">
-          <div className="flex items-center justify-between text-[#77350F] text-[16px]">
-            <span className="font-[600]">Invited Frenz</span>
-            <span onClick={() => setInviteModalVisible(true)} className="underline cursor-pointer">{totalInvitedCount || 0}</span>
-          </div>
-          <div className="flex items-center justify-between bg-[#FDD54C] rounded-[8px] px-2 py-2">
-            <span className="text-[#77350F] text-[16px]">
-              {inviteLink?.length > 14
-                ? '...' + inviteLink.slice(-14)
-                : inviteLink}
-            </span>
-            <div className="click cursor-pointer" onClick={handleCopyLink}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="1" y="4.73047" width="9.62531" height="10.2668" rx="2" stroke="#77350F" stroke-width="2" />
-                <path d="M5.375 3.33336V3C5.375 1.89543 6.27043 1 7.375 1H13.0003C14.1049 1 15.0003 1.89543 15.0003 3V9.26676C15.0003 10.3713 14.1049 11.2668 13.0003 11.2668H12.3752" stroke="#77350F" stroke-width="2" />
-              </svg>
-          </div>
-          </div>
-          <div className="flex items-center justify-between mt-1">
-            <div className="flex items-center gap-1">
-              <img src="/images/treasure-book/gem.png" alt="gem" className="w-[22px] h-[22px]" />
-              <span className="text-black font-[600] text-[14px]">{ totalRewards || 0 }</span>
+          <div className="w-[230px] rounded-[14px] border border-[#E6E1C2] bg-[#FFFDEB] p-[10px] flex flex-col gap-[8px] font-Montserrat">
+            <div className="flex items-center justify-between text-[#77350F] text-[16px]">
+              <span className="font-[600]">Invited Frenz</span>
+              <span onClick={() => inviteModalStore.set({ showInviteModal: true })} className="underline cursor-pointer">{totalInvitedCount || 0}</span>
             </div>
-            <button onClick={() => setInviteModalVisible(true)} className="text-black text-[14px] underline cursor-pointer px-1">Claim</button>
+            <div className="flex items-center justify-between bg-[#FDD54C] rounded-[8px] px-2 py-2">
+              <span className="text-[#77350F] text-[16px]">
+                {inviteLink?.length > 14
+                  ? '...' + inviteLink.slice(-14)
+                  : inviteLink}
+              </span>
+              <div className="click cursor-pointer" onClick={handleCopyLink}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1" y="4.73047" width="9.62531" height="10.2668" rx="2" stroke="#77350F" stroke-width="2" />
+                  <path d="M5.375 3.33336V3C5.375 1.89543 6.27043 1 7.375 1H13.0003C14.1049 1 15.0003 1.89543 15.0003 3V9.26676C15.0003 10.3713 14.1049 11.2668 13.0003 11.2668H12.3752" stroke="#77350F" stroke-width="2" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center gap-1">
+                <img src="/images/treasure-book/gem.png" alt="gem" className="w-[22px] h-[22px]" />
+                <span className="text-black font-[600] text-[14px]">{totalRewards || 0}</span>
+              </div>
+              <button onClick={() => inviteModalStore.set({ showInviteModal: true })} className="text-black text-[14px] underline cursor-pointer px-1">Claim</button>
+            </div>
           </div>
-        </div>
         </div>
 
         {/* <div
@@ -422,45 +424,45 @@ const User = (props: any) => {
 
   return (
     <>
-    <motion.div
-      className="relative flex justify-center items-center cursor-pointer transition-all duration-300"
-      onClick={isNearPage ? null : handleConnect}
-      whileHover="active"
-      animate="default"
-      initial="default"
-    >
-      <Popover
-        trigger={PopoverTrigger.Hover}
-        placement={PopoverPlacement.BottomRight}
-        content={isMobile ? null : content}
-        contentStyle={{
-          zIndex: 52
-        }}
+      <motion.div
+        className="relative flex justify-center items-center cursor-pointer transition-all duration-300"
+        onClick={isNearPage ? null : handleConnect}
+        whileHover="active"
+        animate="default"
+        initial="default"
       >
-        {address && userInfo?.avatar ? (
-          <img
-            src={userInfo?.avatar}
-            alt=""
-            className="w-[28px] h-[28px] rounded-full"
-          />
-        ) : (
-          <div className="w-[28px] h-[28px] rounded-[50%] border-[2px] border-black bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
-        )}
-      </Popover>
-    </motion.div>
-    <InviteModal
-      open={inviteModalVisible}
-      invitedUsers={invitedUsers}
-      totalRewards={totalRewards}
-      loading={loading}
-      claimLoading={claimLoading}
-      handleClaim={handleClaim}
-      onClose={() => setInviteModalVisible(false)}
-      setPage={setPage}
-      page={page}
-      totalPage={totalPage}
-      totalInvitedCount={totalInvitedCount}
-    />
+        <Popover
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.BottomRight}
+          content={isMobile ? null : content}
+          contentStyle={{
+            zIndex: 52
+          }}
+        >
+          {address && userInfo?.avatar ? (
+            <img
+              src={userInfo?.avatar}
+              alt=""
+              className="w-[28px] h-[28px] rounded-full"
+            />
+          ) : (
+            <div className="w-[28px] h-[28px] rounded-[50%] border-[2px] border-black bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
+          )}
+        </Popover>
+      </motion.div>
+      <InviteModal
+        open={inviteModalStore.showInviteModal}
+        invitedUsers={invitedUsers}
+        totalRewards={totalRewards}
+        loading={loading}
+        claimLoading={claimLoading}
+        handleClaim={handleClaim}
+        onClose={() => inviteModalStore.set({ showInviteModal: false })}
+        setPage={setPage}
+        page={page}
+        totalPage={totalPage}
+        totalInvitedCount={totalInvitedCount}
+      />
     </>
   );
 };
