@@ -13,7 +13,7 @@ export default function TreasureBook() {
         setTreasureBookOpen,
     } = useLootboxSeasonStore();
     const { userInfo } = useUser();
-
+    const [isHovered, setIsHovered] = useState(false);
     const {
         treasure,
         openBox,
@@ -45,8 +45,14 @@ export default function TreasureBook() {
             >
                 <img
                     id="lootboxSeasonTreasureBookEntry"
-                    src="/images/treasure-book/book.png"
-                    className="w-[81px] h-[81px] transition-transform duration-200 hover:scale-110"
+                    src={isHovered ? "/images/guiding-tour/lootbox-season/book3@2x.png" : "/images/treasure-book/book.png"}
+                    onMouseEnter={() => {
+                        setIsHovered(true);
+                    }}
+                    onMouseLeave={() => {
+                        setIsHovered(false);
+                    }}
+                    className="w-[81px] h-[81px] duration-200"
                     alt="treasure-book"
                 />
                 <div className="absolute flex justify-center items-center right-0 bottom-[-22px] w-[44px] h-[44px] rounded-full font-CherryBomb text-[16px] font-[400] leading-[1] backdrop-blur-md bg-white/20">

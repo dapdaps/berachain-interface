@@ -4,6 +4,7 @@ import FlexTable, { Column } from '@/components/flex-table';
 import Pagination from "@/components/pager/pagination";
 import { get } from '@/utils/http';
 import { formatEnglishDate, formatSimpleDate } from '@/utils/date';
+import clsx from 'clsx';
 
 
 const PAGE_SIZE = 10;
@@ -50,12 +51,18 @@ export default function History({ onClose }: { onClose: () => void }) {
             dataIndex: 'created_at',
             width: '35%',
             render: (text: any, record: any) => {
-                return <div className="flex items-center gap-1 whitespace-nowrap">
+                return <div className="flex items-center justify-end gap-1 whitespace-nowrap">
                     {formatSimpleDate(record.created_at)}
                 </div>
             }
         }
     ];
+
+    const renderTitle = (col: any, colIdx: number) => {
+        return <div className={clsx("flex flex-1 items-center gap-1 whitespace-nowrap", col.title === 'Date' ? 'justify-end': '')}>
+            {col.title}
+        </div>
+    }
 
     useEffect(() => {
         getList();
@@ -107,6 +114,7 @@ export default function History({ onClose }: { onClose: () => void }) {
                         columns={columns}
                         list={history}
                         loading={loading}
+                        renderTitle={renderTitle}
                         wrapperClass=""
                         headClass="text-[14px] text-[#553322]"
                         bodyClass="text-[14px] odd:bg-inherit text-[#553322] border-b border-black/20 rounded-none py-[4px]"

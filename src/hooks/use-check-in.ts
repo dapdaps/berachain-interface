@@ -6,10 +6,14 @@ import { useRequest } from "ahooks";
 import { cloneDeep } from "lodash";
 import { get, post } from "@/utils/http";
 import { numberFormatter } from "@/utils/number-formatter";
+import { useUserStore } from "@/stores/user";
+import Big from "big.js";
 
 export const useCheckIn = () => {
   const { accountWithAk } = useCustomAccount();
   const checkInRef = useRef<any>();
+  const userInfo = useUserStore((store: any) => store.user);
+  const setUserInfo = useUserStore((store: any) => store.set);
 
   const [openReward, setOpenReward] = useState<boolean>(false);
   const [rewardData, setRewardData] = useState<Reward[]>();
@@ -63,6 +67,12 @@ export const useCheckIn = () => {
         type: RewardType.Gem,
         amount: reward_gem_amount,
         label: `${numberFormatter(reward_gem_amount, 0, true, { isShort: true, isShortUppercase: true })} Points`,
+      });
+      setUserInfo({
+        user: {
+          ...userInfo,
+          gem: Big(userInfo.gem || 0).plus(reward_gem_amount).toNumber()
+        }
       });
     }
     if (_rewardData.length > 0) {
