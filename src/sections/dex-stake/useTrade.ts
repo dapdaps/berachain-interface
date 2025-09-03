@@ -116,7 +116,7 @@ export default function useTrade({ chainId, template, from, onSuccess, dapp }: a
         type: "Staking",
         action: trade.sub_type,
         amount: trade.inputCurrencyAmount,
-        tokens: [trade.inputCurrency, trade.outputCurrency],
+        tokens: [trade.inputCurrency],
         template: dapp.name,
         status,
         sub_type: trade.sub_type,

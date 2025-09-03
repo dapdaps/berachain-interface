@@ -29,7 +29,7 @@ const LightingButton = (props: Props) => {
           viewBox="0 0 50 13"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="absolute left-[3px] top-[2px]"
+          className="absolute left-[3px] top-[2px] z-[0]"
         >
           <path d="M1.91113 11.4713C1.91113 6.37023 3.23192 1.83594 10.2761 1.83594M15.9995 1.83594H47.6984" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
         </svg>

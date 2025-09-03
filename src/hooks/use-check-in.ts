@@ -57,10 +57,11 @@ export const useCheckIn = () => {
     // popup reward
     const _rewardData: any = [];
     if (reward_box_amount) {
-      // TODO
-      // _rewardData.push({
-
-      // });
+      _rewardData.push({
+        type: RewardType.Box,
+        amount: reward_box_amount,
+        label: `${numberFormatter(reward_box_amount, 0, true, { isShort: true, isShortUppercase: true })} Lootbox`,
+      });
     }
     if (reward_gem_amount) {
       _rewardData.push({

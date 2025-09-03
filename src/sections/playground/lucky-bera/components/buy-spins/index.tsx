@@ -68,12 +68,12 @@ const BuySpins = (props: any) => {
         className="w-[102px] h-[92px] object-center object-contain absolute left-1/2 -translate-x-1/2 top-[-50px]"
       />
       <div className="flex items-center justify-center gap-[7px] pt-[30px]">
-        <div className="text-[30px] font-CherryBomb font-normal leading-normal capitalize text-center text-[#FDD54C] [text-shadow:0_2px_0_#000] [text-stroke:2px_#000] [-webkit-text-stroke:2px_#000]">
-          Buy Lucky Bera Spin
+        <div className="text-[30px] font-CherryBomb [text-transform:capitalize] [letter-spacing:-1px] font-[400] leading-normal [text-shadow:0_4px_0_#000] text-center text-[#FDD54C] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#000]">
+          Buy Spin Ticket
         </div>
       </div>
       <div className="mt-[10px] flex justify-center items-center">
-        <div className="h-[46px] px-[12px] gap-[8px] rounded-[23px] bg-black/10 text-white text-center font-CherryBomb text-[18px] font-normal leading-[100%] tracking-[0.9px] [text-stroke:2px_#4B371F] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] flex items-center justify-center">
+        <div className="h-[46px] px-[12px] gap-[8px] rounded-[23px] bg-black/10 text-white text-center font-CherryBomb text-[18px] font-normal leading-[100%] tracking-[-1px] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] flex items-center justify-center">
           <img
             src={costToken.icon}
             alt=""
