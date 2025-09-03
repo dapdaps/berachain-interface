@@ -52,9 +52,9 @@ export function useLuckyBera() {
       if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _spinUserData.game_xp) {
         _spinUserData.xp_balance = Big(_spinUserData.xp_balance || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber();
       }
-      if (Big(_spinUserData.xp_balance || 0).gte(_spinUserData.game_xp?.xp || 0)) {
-        // relaod api
-        getSpinUserData();
+      if (_lastSpinResult.game_xp) {
+        // update level reward
+        _spinUserData.game_xp = _lastSpinResult.game_xp;
       }
       return _spinUserData as SpinUserData;
     });

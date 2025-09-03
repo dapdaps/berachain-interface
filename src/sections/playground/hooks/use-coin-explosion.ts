@@ -54,39 +54,23 @@ export function useCoinExplosion() {
     let moveKeyframes;
 
     if (hasTarget) {
-      // When targetRef is specified: coins gather to target and shrink
-      const horizontalDistance = (Math.random() - 0.5) * 150; // Further reduced horizontal spread
-      const maxHeight = -(Math.random() * 200 + 150); // Further reduced height for tighter gathering
-
+      // When targetRef is specified: coins go directly to target without ascent
+      const horizontalDistance = (Math.random() - 0.5) * 200; // Moderate horizontal spread
+      
       moveKeyframes = [
         // Initial position
         {
           transform: 'translate(0, 50px) rotate(0deg) scale(1)',
           offset: 0
         },
-        // First rapid ascent phase
+        // Direct path to target
         {
-          transform: `translate(${horizontalDistance * 0.3}px, ${maxHeight * 0.4}px) rotate(${Math.random() * 180}deg) scale(1)`,
-          offset: 0.2
+          transform: `translate(${targetPos.x - startX + horizontalDistance * 0.3}px, ${targetPos.y - startY + 30}px) rotate(${Math.random() * 360}deg) scale(0.8)`,
+          offset: 0.5
         },
-        // Peak point
+        // Final position at target
         {
-          transform: `translate(${horizontalDistance * 0.6}px, ${maxHeight}px) rotate(${Math.random() * 540}deg) scale(0.8)`,
-          offset: 0.4
-        },
-        // Start descent towards target
-        {
-          transform: `translate(${horizontalDistance * 0.8}px, ${maxHeight * 0.3}px) rotate(${Math.random() * 720}deg) scale(0.6)`,
-          offset: 0.6
-        },
-        // Almost at target
-        {
-          transform: `translate(${targetPos.x - startX + horizontalDistance * 0.2}px, ${targetPos.y - startY - 20}px) rotate(${Math.random() * 900}deg) scale(0.4)`,
-          offset: 0.85
-        },
-        // Final landing - perfectly gather at target center
-        {
-          transform: `translate(${targetPos.x - startX}px, ${targetPos.y - startY}px) rotate(${Math.random() * 1080}deg) scale(0.2)`,
+          transform: `translate(${targetPos.x - startX}px, ${targetPos.y - startY}px) rotate(${Math.random() * 720}deg) scale(0.3)`,
           offset: 1
         }
       ];
@@ -178,13 +162,13 @@ export function useCoinExplosion() {
 
     // Create animations with adjusted duration
     const moveAnimation = coin.animate(moveKeyframes, {
-      duration: hasTarget ? 2500 : targetConfig?.customPosition ? 3000 : 4000, // Custom duration for each case
+      duration: hasTarget ? 1500 : targetConfig?.customPosition ? 3000 : 4000, // Faster for targetRef
       easing: 'cubic-bezier(0.2, 1, 0.3, 1)', // Adjusted easing for smoother motion
       fill: 'forwards'
     });
 
     const opacityAnimation = coin.animate(opacityKeyframes, {
-      duration: hasTarget ? 2000 : targetConfig?.customPosition ? 2500 : 3000, // Custom duration for each case
+      duration: hasTarget ? 1200 : targetConfig?.customPosition ? 2500 : 3000, // Faster for targetRef
       easing: 'linear',
       fill: 'forwards'
     });

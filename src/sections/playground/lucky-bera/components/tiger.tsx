@@ -62,7 +62,10 @@ export default memo(function Tiger(props: any) {
   const startCoinExplosion = (params: SpinResultData) => {
     const { draw_reward } = params;
 
-    const currCategory = SPIN_CATEGORIES[draw_reward as SpinCategory];
+    let currCategory = SPIN_CATEGORIES[draw_reward as SpinCategory];
+    if (!draw_reward) {
+      currCategory = SPIN_CATEGORIES[SpinCategory.Apple];
+    }
 
     if (!spinRef.current || !currCategory) {
       startSlowScrollDebounce();
@@ -81,7 +84,8 @@ export default memo(function Tiger(props: any) {
       ref: isRocket ? spinXpRef : void 0,
       offsetX: -40,
       offsetY: -40,
-      delayBetweenCoins: 150,
+      delayBetweenCoins: isRocket ? 300 : 150,
+      coinCount: isRocket ? 5 : 15,
     });
 
     if (isRocket) {

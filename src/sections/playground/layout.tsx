@@ -8,12 +8,16 @@ import clsx from "clsx";
 import { PlaygroundProvider } from "./context";
 import { usePlayground } from "./hooks";
 import { numberFormatter } from "@/utils/number-formatter";
+import PlaygroundRulesModal from "./components/rules";
+import { useState } from "react";
 
 const PlaygroundLayout = (props: any) => {
   const { children } = props;
 
   const pathname = usePathname();
   const playground = usePlayground();
+
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
   return (
     <PlaygroundProvider value={playground}>
@@ -26,6 +30,9 @@ const PlaygroundLayout = (props: any) => {
           <button
             type="button"
             className="text-black text-center font-CherryBomb text-[16px] font-[400] leading-[90%] w-[55px] h-[30px] rotate-[-8.017deg] translate-y-[5px] flex-shrink-0 rounded-[12px] border border-black bg-[linear-gradient(180deg,_#FFCE78_0%,_#9E762F_100%)]"
+            onClick={() => {
+              setShowRulesModal(true);
+            }}
           >
             Rules
           </button>
@@ -80,6 +87,12 @@ const PlaygroundLayout = (props: any) => {
             )
           }
         </div>
+        <PlaygroundRulesModal
+          open={showRulesModal}
+          onClose={() => {
+            setShowRulesModal(false);
+          }}
+        />
       </div>
     </PlaygroundProvider>
   );

@@ -73,7 +73,7 @@ const BuySpins = (props: any) => {
         </div>
       </div>
       <div className="mt-[10px] flex justify-center items-center">
-        <div className="h-[46px] px-[12px] gap-[8px] rounded-[23px] bg-black/10 text-white text-center font-CherryBomb text-[18px] font-normal leading-[100%] tracking-[-1px] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] flex items-center justify-center">
+        <div className="h-[46px] px-[12px] gap-[8px] rounded-[23px] bg-black/10 text-[#4B371F] text-center font-CherryBomb text-[18px] font-normal leading-[100%] flex items-center justify-center">
           <img
             src={costToken.icon}
             alt=""
