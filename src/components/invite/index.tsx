@@ -122,7 +122,7 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                         </div>
                         <button
                             onClick={handleClaim}
-                            disabled={claimLoading || Number(totalRewards) <= 1}
+                            disabled={claimLoading || Number(totalRewards) < 1}
                             className="bg-[#FFDC50] hover:bg-[#FFC700] text-black text-[18px] font-[600] px-[20px] py-[10px] rounded-[10px] border border-black disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                             {claimLoading ? <Loading size={14} /> : null} Claim
@@ -159,15 +159,15 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                             {invitedUsers?.map((user, idx) => (
                                 <tr key={user.id} className="hover:bg-[#FFF3B0] transition text-[14px] font-[600]" >
                                     <td className="px-2 py-4 pl-[24px]">
-                                        {user.address}
+                                        {user.address && user.address.slice(0, 5) + '...' + user.address.slice(-5)}
                                     </td>
                                     <td className="px-2 py-4">
-                                        {user.joinedTime}
+                                        { user.created_at ? formatSimpleDate(user.created_at) : '-'}
                                     </td>
                                     <td className="px-2 py-4">
-                                        {user.hasRewards ? (
+                                        {user.reward_amount && Number(user.reward_amount) > 0 ? (
                                             <span className="flex items-center gap-1">
-                                                {user.rewards}
+                                                {user.reward_amount}
                                                 <img src="/images/treasure-book/gem.png" alt="gem" className="w-[18px] h-[18px] inline" />
                                             </span>
                                         ) : (

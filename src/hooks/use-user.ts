@@ -98,7 +98,7 @@ export function useUser() {
       address: currentAddress,
       wallet: _walletName.toLowerCase(),
       source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
-      code: window.localStorage.getItem('referral_code') ?? '',
+      invite_code: window.localStorage.getItem('referral_code') ?? '',
     });
 
     console.log('loginRes', loginRes)
