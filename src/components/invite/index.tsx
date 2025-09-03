@@ -39,7 +39,6 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
             title: `Copied link ${inviteLink}`
         });
     };
-    ;
 
     return (
         <Modal

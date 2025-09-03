@@ -37,6 +37,12 @@ export default function TreasureBook() {
     return (
         <>
             <div
+                onMouseEnter={() => {
+                    setIsHovered(true);
+                }}
+                onMouseLeave={() => {
+                    setIsHovered(false);
+                }}
                 onClick={() => {
                     if (!userInfo || !userInfo.address) return;
                     setTreasureBookOpen(true)
@@ -46,12 +52,6 @@ export default function TreasureBook() {
                 <img
                     id="lootboxSeasonTreasureBookEntry"
                     src={isHovered ? "/images/guiding-tour/lootbox-season/book3@2x.png" : "/images/treasure-book/book.png"}
-                    onMouseEnter={() => {
-                        setIsHovered(true);
-                    }}
-                    onMouseLeave={() => {
-                        setIsHovered(false);
-                    }}
                     className="w-[81px] h-[81px] duration-200"
                     alt="treasure-book"
                 />
