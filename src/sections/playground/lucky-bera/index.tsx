@@ -17,6 +17,7 @@ const LuckyBera = () => {
     buyingSpins,
     buySpinsAmount,
     setBuySpinsAmount,
+    isChainSupported,
   } = useLuckyBera();
 
   return (
@@ -36,6 +37,7 @@ const LuckyBera = () => {
         buyingSpins={buyingSpins}
         buySpinsAmount={buySpinsAmount}
         setBuySpinsAmount={setBuySpinsAmount}
+        isChainSupported={isChainSupported}
       />
     </>
   );
