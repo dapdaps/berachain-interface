@@ -7,18 +7,16 @@ const SpinGood = (props: any) => {
 
   return (
     <div
-      className="w-full h-[153px] pt-[8px] flex flex-col items-center flex-shrink-0 font-CherryBomb rounded-[16px] border-[2px] border-[#D7C69D] bg-[#FFFAEA] text-[#FF7EC1] text-center text-[24px] leading-[100%] tracking-[2.4px] uppercase [text-shadow:0_2px_0_#B42647] [font-style:normal] [font-weight:400] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] [-webkit-text-stroke:2px_#4B371F] "
+      className="w-full h-[153px] pt-[8px] flex flex-col items-center flex-shrink-0 font-CherryBomb rounded-[16px] border-[2px] border-[#D7C69D] bg-[#FFFAEA] text-[#FF7EC1] text-center text-[24px] leading-[100%] tracking-[-1px] uppercase [text-shadow:0_4px_0_#B42647] [font-style:normal] [font-weight:400] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] [-webkit-text-stroke:2px_#4B371F] "
     >
       <div className="text-center flex justify-center items-end gap-[2px] rotate-[-6deg]">
-        <div className="">{data.amount}</div>
-        <div
-          className="text-[#F7F9EA] text-center font-CherryBomb text-[12px] font-normal leading-[100%] tracking-[1.2px] uppercase"
-          style={{
-            WebkitTextStrokeWidth: '2px',
-            WebkitTextStrokeColor: '#4B371F',
-          }}
-        >
-          +{numberFormatter(Big(data.add || 0).times(100), 2, true)}%
+        <div className="relative">
+          <div className="">{data.amount}</div>
+          <div
+            className="absolute right-[-20px] bottom-[-5px] text-[#F7F9EA] text-center font-CherryBomb text-[14px] font-normal leading-[100%] tracking-[0px] uppercase [text-shadow:0_0px_0_#4B371F] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]"
+          >
+            +{numberFormatter(Big(data.add || 0).times(100), 2, true)}%
+          </div>
         </div>
       </div>
       <img
@@ -27,7 +25,7 @@ const SpinGood = (props: any) => {
         className="w-[70px] h-[70px] shrink-0 object-center object-contain mt-[5px]"
       />
       <LightingButton
-        outerClassName="w-full mt-auto !h-[48px]"
+        outerClassName="w-full mt-auto !h-[50px]"
         className="flex-col !gap-[0px] whitespace-nowrap !leading-[100%] relative"
         disabled={loading}
         onClick={() => {
@@ -44,7 +42,7 @@ const SpinGood = (props: any) => {
           )
         }
 
-        <div className="text-[10px] line-through [-webkit-text-stroke-width:1px] [-webkit-text-stroke-color:#4B371F]">
+        <div className="relative z-[1] text-[12px] line-through decoration-red-500 decoration-2 [-webkit-text-stroke-width:1px] [-webkit-text-stroke-color:#4B371F]">
           {data.delPrice} {costToken.symbol}
         </div>
         <div className="flex justify-center items-center gap-[4px]">
@@ -53,7 +51,7 @@ const SpinGood = (props: any) => {
             alt=""
             className="w-[16px] h-[16px] rounded-full object-center object-contain"
           />
-          <div className="">
+          <div className="translate-y-[-1px]">
             {data.price}
           </div>
         </div>
