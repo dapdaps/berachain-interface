@@ -156,7 +156,7 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                         </thead>
                         <tbody>
                             {invitedUsers?.map((user, idx) => (
-                                <tr key={user.id} className="hover:bg-[#FFF3B0] transition text-[14px] font-[600]" >
+                                <tr key={idx} className="hover:bg-[#FFF3B0] transition text-[14px] font-[600]" >
                                     <td className="px-2 py-4 pl-[24px]">
                                         {user.address && user.address.slice(0, 5) + '...' + user.address.slice(-5)}
                                     </td>

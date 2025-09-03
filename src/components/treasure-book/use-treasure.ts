@@ -1,5 +1,6 @@
 import useUser from "@/hooks/use-user";
 import { useHall } from "@/stores/hall";
+import { useInviteModal } from "@/stores/use-invite-modal";
 import { get, post } from "@/utils/http";
 import { useEffect, useMemo, useState } from "react";
 
@@ -22,6 +23,7 @@ export const useTreasure = ({ show }: { show: boolean }) => {
     const [utcRemain, setUtcRemain] = useState<{ minutes: string, seconds: string, hours: string }>({ minutes: "00", seconds: "00", hours: "00" });
 
     const hallStore: any = useHall()
+    const inviteModalStore: any = useInviteModal();
 
     useEffect(() => {
         if (!userInfo || !userInfo.address) return;
@@ -131,6 +133,10 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
 
         if ((quest.category.toLowerCase() === 'view' && quest.page) || (quest.category.toLowerCase() === 'share')) {
             completeViewQuest(quest);
+        }
+
+        if (quest.id === 10) {
+            inviteModalStore.set({ showInviteModal: true });
         }
 
          
