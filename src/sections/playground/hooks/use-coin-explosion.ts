@@ -1,8 +1,32 @@
-export function useCoinExplosion(props?: any) {
-  const { size = 100 } = props ?? {};
+export function useCoinExplosion() {
 
+  // Get target landing position
+  const getTargetPosition = (targetConfig?: { ref?: React.RefObject<HTMLElement>; offsetX?: number; offsetY?: number; customPosition?: { x: number; y: number } }) => {
+    // If custom position is specified, use it directly
+    if (targetConfig?.customPosition) {
+      return {
+        x: targetConfig.customPosition.x,
+        y: targetConfig.customPosition.y
+      };
+    }
+    
+    if (targetConfig?.ref?.current) {
+      const rect = targetConfig.ref.current.getBoundingClientRect();
+      const offsetX = targetConfig.offsetX ?? 0;
+      const offsetY = targetConfig.offsetY ?? 0;
+      return {
+        x: rect.left + offsetX, // Top-left corner X with offset
+        y: rect.top + offsetY   // Top-left corner Y with offset
+      };
+    }
+    // If no targetRef is specified, default to ground (bottom of screen)
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight
+    };
+  };
 
-  const createCoin = (x: number, y: number, icon: string) => {
+  const createCoin = (x: number, y: number, icon: string, size: number) => {
     const coin = document.createElement('div');
     // Set basic styles for coin element
     coin.style.position = 'fixed';
@@ -23,46 +47,127 @@ export function useCoinExplosion(props?: any) {
     return coin;
   };
 
-  const animateCoin = (coin: HTMLDivElement, startX: number, startY: number) => {
-    const horizontalDistance = (Math.random() - 0.5) * 400;
-    const maxHeight = -(Math.random() * 400 + 300);
+  const animateCoin = (coin: HTMLDivElement, startX: number, startY: number, targetConfig?: { ref?: React.RefObject<HTMLElement>; offsetX?: number; offsetY?: number; customPosition?: { x: number; y: number } }) => {
+    const targetPos = getTargetPosition(targetConfig);
+    const hasTarget = !!targetConfig?.ref?.current;
 
-    // Movement and rotation animation keyframes
-    const moveKeyframes = [
-      // Initial position
-      {
-        transform: 'translate(0, 50px) rotate(0deg)',
-        offset: 0
-      },
-      // First rapid ascent phase
-      {
-        transform: `translate(${horizontalDistance * 0.2}px, ${maxHeight * 0.3}px) rotate(${Math.random() * 180}deg)`,
-        offset: 0.15
-      },
-      // Second rapid ascent phase
-      {
-        transform: `translate(${horizontalDistance * 0.4}px, ${maxHeight * 0.7}px) rotate(${Math.random() * 360}deg)`,
-        offset: 0.3
-      },
-      // Peak point
-      {
-        transform: `translate(${horizontalDistance * 0.6}px, ${maxHeight}px) rotate(${Math.random() * 540}deg)`,
-        offset: 0.4
-      },
-      // Start slow descent
-      {
-        transform: `translate(${horizontalDistance * 0.8}px, ${maxHeight * 0.6}px) rotate(${Math.random() * 720}deg)`,
-        offset: 0.7
-      },
-      // Accelerated descent
-      {
-        transform: `translate(${horizontalDistance}px, ${Math.abs(maxHeight * 0.5)}px) rotate(${Math.random() * 1080}deg)`,
-        offset: 1
-      }
-    ];
+    let moveKeyframes;
+
+    if (hasTarget) {
+      // When targetRef is specified: coins gather to target and shrink
+      const horizontalDistance = (Math.random() - 0.5) * 150; // Further reduced horizontal spread
+      const maxHeight = -(Math.random() * 200 + 150); // Further reduced height for tighter gathering
+
+      moveKeyframes = [
+        // Initial position
+        {
+          transform: 'translate(0, 50px) rotate(0deg) scale(1)',
+          offset: 0
+        },
+        // First rapid ascent phase
+        {
+          transform: `translate(${horizontalDistance * 0.3}px, ${maxHeight * 0.4}px) rotate(${Math.random() * 180}deg) scale(1)`,
+          offset: 0.2
+        },
+        // Peak point
+        {
+          transform: `translate(${horizontalDistance * 0.6}px, ${maxHeight}px) rotate(${Math.random() * 540}deg) scale(0.8)`,
+          offset: 0.4
+        },
+        // Start descent towards target
+        {
+          transform: `translate(${horizontalDistance * 0.8}px, ${maxHeight * 0.3}px) rotate(${Math.random() * 720}deg) scale(0.6)`,
+          offset: 0.6
+        },
+        // Almost at target
+        {
+          transform: `translate(${targetPos.x - startX + horizontalDistance * 0.2}px, ${targetPos.y - startY - 20}px) rotate(${Math.random() * 900}deg) scale(0.4)`,
+          offset: 0.85
+        },
+        // Final landing - perfectly gather at target center
+        {
+          transform: `translate(${targetPos.x - startX}px, ${targetPos.y - startY}px) rotate(${Math.random() * 1080}deg) scale(0.2)`,
+          offset: 1
+        }
+      ];
+    } else if (targetConfig?.customPosition) {
+      // When customPosition is specified: coins go directly to position without descent
+      const horizontalDistance = (Math.random() - 0.5) * 400; // Larger horizontal spread
+      const maxHeight = -(Math.random() * 200 + 150); // Lower height for direct path
+      
+      moveKeyframes = [
+        // Initial position
+        {
+          transform: 'translate(0, 50px) rotate(0deg)',
+          offset: 0
+        },
+        // First ascent phase
+        {
+          transform: `translate(${horizontalDistance * 0.3}px, ${maxHeight * 0.4}px) rotate(${Math.random() * 180}deg)`,
+          offset: 0.3
+        },
+        // Peak point
+        {
+          transform: `translate(${horizontalDistance * 0.6}px, ${maxHeight}px) rotate(${Math.random() * 540}deg)`,
+          offset: 0.6
+        },
+        // Direct path to final position
+        {
+          transform: `translate(${targetPos.x - startX + horizontalDistance}px, ${targetPos.y - startY}px) rotate(${Math.random() * 1080}deg)`,
+          offset: 1
+        }
+      ];
+    } else {
+      // When no targetRef: original behavior - spread out and fall to ground
+      const horizontalDistance = (Math.random() - 0.5) * 400;
+      const maxHeight = -(Math.random() * 400 + 300);
+
+      moveKeyframes = [
+        // Initial position
+        {
+          transform: 'translate(0, 50px) rotate(0deg)',
+          offset: 0
+        },
+        // First rapid ascent phase
+        {
+          transform: `translate(${horizontalDistance * 0.2}px, ${maxHeight * 0.3}px) rotate(${Math.random() * 180}deg)`,
+          offset: 0.15
+        },
+        // Second rapid ascent phase
+        {
+          transform: `translate(${horizontalDistance * 0.4}px, ${maxHeight * 0.7}px) rotate(${Math.random() * 360}deg)`,
+          offset: 0.3
+        },
+        // Peak point
+        {
+          transform: `translate(${horizontalDistance * 0.6}px, ${maxHeight}px) rotate(${Math.random() * 540}deg)`,
+          offset: 0.4
+        },
+        // Start slow descent
+        {
+          transform: `translate(${horizontalDistance * 0.8}px, ${maxHeight * 0.6}px) rotate(${Math.random() * 720}deg)`,
+          offset: 0.7
+        },
+        // Accelerated descent - fall to ground
+        {
+          transform: `translate(${horizontalDistance}px, ${window.innerHeight - startY}px) rotate(${Math.random() * 1080}deg)`,
+          offset: 1
+        }
+      ];
+    }
 
     // Opacity animation keyframes
-    const opacityKeyframes = [
+    const opacityKeyframes = hasTarget ? [
+      { opacity: 0, offset: 0 },     // Initially invisible
+      { opacity: 1, offset: 0.1 },  // Quick fade in
+      { opacity: 1, offset: 0.8 },  // Keep visible until almost at target
+      { opacity: 0, offset: 1 }     // Fade out only after reaching target
+    ] : targetConfig?.customPosition ? [
+      { opacity: 0, offset: 0 },     // Initially invisible
+      { opacity: 1, offset: 0.1 },  // Quick fade in
+      { opacity: 1, offset: 0.5 },  // Keep visible until halfway
+      { opacity: 0, offset: 0.65 }  // Fade out very quickly
+    ] : [
       { opacity: 0, offset: 0 },     // Initially invisible
       { opacity: 1, offset: 0.1 },  // Brief invisibility period
       { opacity: 1, offset: 0.2 },  // Quick fade in
@@ -73,13 +178,13 @@ export function useCoinExplosion(props?: any) {
 
     // Create animations with adjusted duration
     const moveAnimation = coin.animate(moveKeyframes, {
-      duration: 4000,
+      duration: hasTarget ? 2500 : targetConfig?.customPosition ? 3000 : 4000, // Custom duration for each case
       easing: 'cubic-bezier(0.2, 1, 0.3, 1)', // Adjusted easing for smoother motion
       fill: 'forwards'
     });
 
     const opacityAnimation = coin.animate(opacityKeyframes, {
-      duration: 3000, // Match movement animation duration
+      duration: hasTarget ? 2000 : targetConfig?.customPosition ? 2500 : 3000, // Custom duration for each case
       easing: 'linear',
       fill: 'forwards'
     });
@@ -95,17 +200,22 @@ export function useCoinExplosion(props?: any) {
     opacityAnimation.onfinish = removeElement;
   };
 
-  const createCoinsExplosion = (centerX: number, centerY: number, icon: string) => {
-    const numberOfCoins = 15;
-    const delayBetweenCoins = 100; // Delay between each coin's animation
+  const createCoinsExplosion = (centerX: number, centerY: number, icon: string, targetConfig?: { ref?: React.RefObject<HTMLElement>; offsetX?: number; offsetY?: number; customPosition?: { x: number; y: number }; coinCount?: number; size?: number; delayBetweenCoins?: number }) => {
+    const numberOfCoins = targetConfig?.coinCount ?? 15;
+    const coinSize = targetConfig?.size ?? 100;
+    const delayBetweenCoins = targetConfig?.delayBetweenCoins ?? 100; // Delay between each coin's animation
+
+    // Store timeout IDs for cleanup
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
     // Create multiple waves of coins with different delays and parameters
     const createWave = (delay: number, count: number) => {
       for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-          const coin = createCoin(centerX, centerY, icon);
-          animateCoin(coin, centerX, centerY);
+        const timeoutId = setTimeout(() => {
+          const coin = createCoin(centerX, centerY, icon, coinSize);
+          animateCoin(coin, centerX, centerY, targetConfig);
         }, i * delayBetweenCoins + delay);
+        timeoutIds.push(timeoutId);
       }
     };
 
@@ -113,6 +223,12 @@ export function useCoinExplosion(props?: any) {
     createWave(0, numberOfCoins);      // First wave
     createWave(120, numberOfCoins);    // Second wave with delay
     createWave(240, numberOfCoins);    // Third wave with delay
+
+    // Return cleanup function
+    return () => {
+      timeoutIds.forEach(id => clearTimeout(id));
+      timeoutIds.length = 0;
+    };
   };
 
   return {

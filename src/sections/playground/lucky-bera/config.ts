@@ -5,7 +5,7 @@ export enum SpinCategory {
   Spin = "Spin",
   Gem = "Gem",
   Box = "Box",
-  Rocket = "Rocket",
+  Rocket = "Xp",
   Apple = "Apple",
 }
 

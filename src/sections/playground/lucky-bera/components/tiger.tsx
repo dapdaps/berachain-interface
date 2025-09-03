@@ -42,7 +42,7 @@ export default memo(function Tiger(props: any) {
   } = props;
 
   const toast = useToast();
-  const { createCoinsExplosion } = useCoinExplosion({ size: EXPLOSION_COIN_SIZE });
+  const { createCoinsExplosion } = useCoinExplosion();
 
   const [leftWheel, leftWheelAnimate] = useAnimate();
   const leftWheelRotation = useMotionValue(SpinCategoryRotation);
@@ -51,6 +51,8 @@ export default memo(function Tiger(props: any) {
   const [rightWheel, rightWheelAnimate] = useAnimate();
   const rightWheelRotation = useMotionValue(SpinCategoryRotation * 2);
   const spinRef = useRef<any>();
+  const spinXpRef = useRef<any>();
+  const spinXpRewardRef = useRef<any>();
   const spinTimerInfinityLeft = useRef<any>();
   const spinTimerInfinityCenter = useRef<any>();
   const spinTimerInfinityRight = useRef<any>();
@@ -72,7 +74,31 @@ export default memo(function Tiger(props: any) {
     const startX = rect.left + rect.width / 2 - EXPLOSION_COIN_SIZE / 2;
     const startY = rect.top + rect.height / 2 - EXPLOSION_COIN_SIZE;
 
-    createCoinsExplosion(startX, startY, currCategory.icon);
+    const isRocket = draw_reward === SpinCategory.Rocket;
+
+    createCoinsExplosion(startX, startY, currCategory.icon, {
+      size: EXPLOSION_COIN_SIZE,
+      ref: isRocket ? spinXpRef : void 0,
+      offsetX: -40,
+      offsetY: -40,
+      delayBetweenCoins: 150,
+    });
+
+    if (isRocket) {
+      const xpRewardRect = spinXpRewardRef.current.getBoundingClientRect();
+      const startXpRewardX = xpRewardRect.left + xpRewardRect.width / 2 - EXPLOSION_COIN_SIZE / 2;
+      const startXpRewardY = xpRewardRect.top + xpRewardRect.height / 2 - EXPLOSION_COIN_SIZE;
+      const xpRewardIcon = SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon;
+      createCoinsExplosion(startXpRewardX, startXpRewardY, xpRewardIcon, {
+        size: EXPLOSION_COIN_SIZE / 3 * 2,
+        customPosition: {
+          x: window.innerWidth / 2,
+          y: -100,
+        },
+        coinCount: 5,
+        delayBetweenCoins: 500,
+      });
+    }
   };
 
   const startSlowScroll = () => {
@@ -261,7 +287,7 @@ export default memo(function Tiger(props: any) {
                 )
               }
             </div>
-            <div className="m-[14px_0_18px] relative pl-[4px] w-[200px] h-[25px] flex items-center  rounded-[10px] border-2 border-[#E49F63] bg-[#582911]">
+            <div ref={spinXpRef} className="m-[14px_0_18px] relative pl-[4px] w-[200px] h-[25px] flex items-center  rounded-[10px] border-2 border-[#E49F63] bg-[#582911]">
               <img
                 src="/images/playground/lucky-bera/icon-rocket.png"
                 alt="theme"
@@ -282,6 +308,7 @@ export default memo(function Tiger(props: any) {
                 !!spinUserData?.game_xp && (
                   <div className="absolute -right-[30px] -top-[8px]">
                     <img
+                      ref={spinXpRewardRef}
                       src={SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon}
                       alt=""
                       className="w-[55px] h-[46px] object-center object-contain shrink-0"
