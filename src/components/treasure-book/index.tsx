@@ -58,7 +58,7 @@ export default function TreasureBook() {
                 <div className="absolute flex justify-center items-center right-0 bottom-[-22px] w-[44px] h-[44px] rounded-full font-CherryBomb text-[16px] font-[400] leading-[1] backdrop-blur-md bg-white/20">
                     {
                         qoutionProgress < 3 && <>
-                            <div className="relative z-10 w-[32px] h-[32px] bg-white rounded-full flex justify-center items-center">{qoutionProgress}/3</div>
+                            <div className="relative z-10 w-[32px] h-[32px] bg-white rounded-full flex justify-center items-center">{3 - qoutionProgress}/3</div>
                             <div className="absolute right-0 bottom-0">
                                 {
                                     qoutionProgress > 0 && (
