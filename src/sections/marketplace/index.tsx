@@ -27,13 +27,13 @@ const splitArray = (list: Record<string, any>[]) => {
 };
 const MemeTokens: any = [
   bera.yeet,
-  bera.bonga,
+  // bera.bonga,
   bera.bblast,
   bera.bm,
   bera.henlo,
   // bera.lbgt,
-  bera.azt,
-  bera.artio,
+  // bera.azt,
+  // bera.artio,
   bera.bitcoin
 ];
 
