@@ -108,7 +108,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
         if (quest.url) {
             const url = quest.url;
             const match = url.match(/^https?:\/\/[^/]+(\/[^?#]*)/);
-            const path = match ? match[1] : quest.url;
+            const path = match ? match[1] : '/' + quest.url;
             window.open(`${window.location.origin}${path}`, '_blank');
         }
 
