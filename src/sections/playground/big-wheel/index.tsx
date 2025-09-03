@@ -84,7 +84,7 @@ const BigWheel = () => {
     getWheelUserData,
     setSpinUserData,
   } = usePlaygroundContext();
-  const { createCoinsExplosion } = useCoinExplosion({ size: EXPLOSION_COIN_SIZE });
+  const { createCoinsExplosion } = useCoinExplosion();
 
   const [wheelRef, wheelAnimate] = useAnimate();
   const wheelRotation = useMotionValue(0);
@@ -132,7 +132,7 @@ const BigWheel = () => {
     const startX = rect.left + rect.width / 2 - EXPLOSION_COIN_SIZE / 2;
     const startY = rect.top + rect.height / 2 - EXPLOSION_COIN_SIZE;
 
-    createCoinsExplosion(startX, startY, "/images/playground/lucky-bera/icon-reward/spin.svg");
+    createCoinsExplosion(startX, startY, "/images/playground/lucky-bera/icon-reward/spin.svg", { size: EXPLOSION_COIN_SIZE });
   };
 
   const { runAsync: onSpin, loading: spinning, data: rewardData } = useRequest(async () => {

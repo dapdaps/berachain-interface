@@ -10,6 +10,7 @@ import Big from 'big.js';
 import { bera } from '@/configs/tokens/bera';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { usePlaygroundContext } from '../../context';
+import { useUserStore } from '@/stores/user';
 
 const costToken = bera["bera"];
 
@@ -27,6 +28,8 @@ export function useLuckyBera() {
     getSpinUserData,
     spinUserDataLoading,
   } = usePlaygroundContext();
+  const userInfo = useUserStore((store: any) => store.user);
+  const setUserInfo = useUserStore((store: any) => store.set);
 
   const [buySpinsModalOpen, setBuySpinsModalOpen] = useState(false);
 
@@ -37,9 +40,16 @@ export function useLuckyBera() {
         ...prev,
       };
       _spinUserData.spin_balance = _lastSpinResult.spin_balance;
-      // if (_lastSpinResult.draw_reward === SpinCategory.Spin) {
-      // }
-      if (_lastSpinResult.draw_reward === "Xp" && _spinUserData.game_xp) {
+      if (_lastSpinResult.draw_reward === SpinCategory.Gem) {
+        // update user total gem amount
+        setUserInfo({
+          user: {
+            ...userInfo,
+            gem: Big(userInfo.gem || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber()
+          }
+        });
+      }
+      if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _spinUserData.game_xp) {
         _spinUserData.xp_balance = Big(_spinUserData.xp_balance || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber();
       }
       if (Big(_spinUserData.xp_balance || 0).gte(_spinUserData.game_xp?.xp || 0)) {
