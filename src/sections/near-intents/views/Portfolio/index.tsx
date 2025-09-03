@@ -16,6 +16,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
 import ConnectWalletBar from "../../components/ConnectWalletBar";
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
+import SuggestTokenModal from "./suggest-token";
 import useToast from "@/hooks/use-toast";
 
 const Portfolio = (props: any) => {
@@ -30,7 +31,7 @@ const Portfolio = (props: any) => {
 
   const isMobile = useIsMobile();
   const toast = useToast();
-
+  const [showSuggestTokenModal, setShowSuggestTokenModal] = useState(false);
   const swapUIActorRef = SwapUIMachineContext.useActorRef();
   const depositedBalanceRef = useSelector(
     swapUIActorRef,
@@ -50,10 +51,10 @@ const Portfolio = (props: any) => {
           totalBalance == null
             ? undefined
             : {
-                balance: totalBalance.toString(),
-                balanceUsd: undefined,
-                convertedLast: undefined,
-              },
+              balance: totalBalance.toString(),
+              balanceUsd: undefined,
+              convertedLast: undefined,
+            },
       });
     }
 
@@ -73,22 +74,22 @@ const Portfolio = (props: any) => {
         if (!asset.balance?.balance || !asset.token?.decimals) return 0;
         return Number(asset.balance.balance) / 10 ** asset.token.decimals;
       };
-    
+
       const aBalance = getFormattedBalance(a);
       const bBalance = getFormattedBalance(b);
-    
+
       if (aBalance !== bBalance) {
         return bBalance - aBalance;
       }
-    
+
       const indexA = priorityOrder.indexOf(a.token.symbol);
       const indexB = priorityOrder.indexOf(b.token.symbol);
-    
+
       if (indexA !== -1 && indexB === -1) return -1;
       if (indexA === -1 && indexB !== -1) return 1;
-    
+
       if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-    
+
       return a.token.symbol.localeCompare(b.token.symbol);
     });
 
@@ -130,10 +131,14 @@ const Portfolio = (props: any) => {
     <div className="lg:px-[20px] lg:py-[16px] pb-[30px]">
       <div className="flex items-center justify-between">
         <div className="font-CherryBomb text-[26px]">Assets</div>
-        <IconHistory
-          className="opacity-30 cursor-pointer hover:opacity-60"
-          onClick={() => setShowHistory(true)}
-        />
+        <div className="flex items-center gap-2">
+          <div onClick={() => setShowSuggestTokenModal(true)} className="font-Montserrat font-[300] text-[14px] leading-[20px] cursor-pointer underline select-none">Suggest a Token</div>
+          <IconHistory
+            className="opacity-30 cursor-pointer hover:opacity-60 select-none"
+            onClick={() => setShowHistory(true)}
+          />
+        </div>
+
       </div>
       <div className="flex items-center justify-between gap-2 my-5">
         <button
@@ -173,9 +178,8 @@ const Portfolio = (props: any) => {
         {assetList.map(({ token, balance }, index) => (
           <div
             key={index}
-            className={`flex items-center justify-between ${
-              index === 0 ? "" : "mt-5"
-            } mb-5`}
+            className={`flex items-center justify-between ${index === 0 ? "" : "mt-5"
+              } mb-5`}
           >
             <div className="flex items-center gap-2">
               <img
@@ -191,6 +195,7 @@ const Portfolio = (props: any) => {
           </div>
         ))}
       </div>
+      <SuggestTokenModal open={showSuggestTokenModal} onClose={() => setShowSuggestTokenModal(false)} />
     </div>
   );
 
@@ -200,7 +205,7 @@ const Portfolio = (props: any) => {
         isMobile
           ? ""
           : "w-[340px] mr-5 bg-[#FFFDEB] h-[680px] border border-[#373A53] rounded-[30px] shadow-shadow1 overflow-hidden",
-          className
+        className
       )}
     >
       {!isMobile && <ConnectWalletBar />}
@@ -221,9 +226,9 @@ function renderBalance(
     <Text as="span" size="2" weight="medium">
       {balance != null
         ? formatTokenValue(balance, token.decimals, {
-            min: 0.0001,
-            fractionDigits: 4,
-          })
+          min: 0.0001,
+          fractionDigits: 4,
+        })
         : null}{" "}
     </Text>
   );

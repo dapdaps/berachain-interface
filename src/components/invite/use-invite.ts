@@ -18,8 +18,8 @@ export function useInvite() {
     const getInvitedRewards = async () => {
         const res = await get('/api/go/invite/user');
         if (res.code === 200) {
-            setTotalInvitedCount(res.data?.total_invite || 0);
-            setTotalRewards(res.data?.reward_amount || 0);
+            setTotalInvitedCount(Number(res.data?.total_invite || 0));
+            setTotalRewards(Number(res.data?.reward_amount || 0));
         }
     }
     const getInvitedUsers = async () => {

@@ -275,6 +275,12 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
             </ButtonCustom>
           )}
         </Flex>
+
+        <div className="w-full py-2 mt-[18px] text-center">
+          <span className="text-[#373A53] font-montserrat font-medium text-[14px] leading-[20px]">
+            We’re using Near’s intent trading system to handle chain swaps
+          </span>
+        </div>
       </Form>
 
       {renderIntentCreationResult(intentCreationResult)}
