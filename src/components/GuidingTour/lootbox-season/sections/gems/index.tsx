@@ -33,7 +33,7 @@ const LootboxSeasonGems = (props: any) => {
     <div className="w-full">
       <div className="relative w-full h-[378px] bg-[url('/images/guiding-tour/lootbox-season/bg@2x.png')] bg-no-repeat bg-top bg-cover pt-[32px]">
         <LootboxSeasonTitle className="relative z-[2]">
-          Good Luck!
+          Henlo!
         </LootboxSeasonTitle>
         <div className="w-[529px] h-[342px] shrink-0 absolute z-[1] top-0 left-1/2 -translate-x-1/2 overflow-hidden flex justify-center items-center opacity-40">
           <motion.img
