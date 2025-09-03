@@ -18,9 +18,10 @@ export interface BookModalProps {
     handleQuestionComplete: (quest: any) => Promise<any>;
     inviteLink: string;
     handleShare: () => void;
+    refreshQuestion: () => void;
 }
 export default function BookModal(props: BookModalProps) {
-    const { treasure, question, onClose, openBox, completeViewQuest, questionLoading, userLoading, getQuestion, handleQuestionComplete, inviteLink, handleShare } = props;
+    const { treasure, question, onClose, openBox, completeViewQuest, questionLoading, userLoading, getQuestion, handleQuestionComplete, inviteLink, handleShare, refreshQuestion } = props;
 
     const [scale, setScale] = useState(1)
 
@@ -100,6 +101,7 @@ export default function BookModal(props: BookModalProps) {
                             handleQuestionComplete={handleQuestionComplete}
                             inviteLink={inviteLink}
                             handleShare={handleShare}
+                            refreshQuestion={refreshQuestion}
                         />
                     </div>
                 </div>
