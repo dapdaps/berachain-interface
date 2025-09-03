@@ -39,7 +39,17 @@ export function useInvite() {
         try {
             setClaimLoading(true);
             const res = await post('/api/go/invite/claim');
-            setClaimLoading(false);
+            if (res.code === 200) {
+                toast.success({
+                    title: 'Claim successful!',
+                });
+            } else {
+                toast.fail({
+                    title: 'Claim failed!',
+                    text: res.message,
+                });
+            }
+           
             getInvitedRewards();
             getInvitedUsers();
         } catch (err) {
