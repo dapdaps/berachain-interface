@@ -1,20 +1,25 @@
 "use client";
 import { useState } from 'react';
 import Modal from '@/components/modal';
+import { post } from '@/utils/http';
+import useUser from '@/hooks/use-user';
+import useToast from '@/hooks/use-toast';
+import Loading from '@/components/loading';
 
 interface SuggestTokenModalProps {
     open: boolean;
     onClose: () => void;
-    onSubmit?: (data: { tokenName: string; chain: string; address: string }) => void;
 }
 
-export default function SuggestTokenModal({ open, onClose, onSubmit }: SuggestTokenModalProps) {
+export default function SuggestTokenModal({ open, onClose }: SuggestTokenModalProps) {
     const [formData, setFormData] = useState({
         tokenName: '',
         chain: '',
         address: ''
     });
     const [loading, setLoading] = useState(false);
+    const { userInfo } = useUser();
+    const toast = useToast();
 
     const handleInputChange = (field: string, value: string) => {
         setFormData(prev => ({
@@ -31,7 +36,23 @@ export default function SuggestTokenModal({ open, onClose, onSubmit }: SuggestTo
 
         setLoading(true);
         try {
-            await onSubmit?.(formData);
+            const res = await post('/api/go/bintent/suggestToken', {
+                token_address: formData.address,
+                chain: formData.chain,
+                token_name: formData.tokenName,
+                address: userInfo.address
+            });
+
+            if (res.code === 200) {
+                toast.success({
+                    title: 'Suggest token successful',
+                });
+            } else {
+                toast.fail({
+                    title: 'Suggest token failed',
+                    text: res.message,
+                });
+            }
 
             setFormData({
                 tokenName: '',
@@ -40,14 +61,15 @@ export default function SuggestTokenModal({ open, onClose, onSubmit }: SuggestTo
             });
             onClose();
         } catch (error) {
-            console.error('Submit failed:', error);
+            toast.fail({
+                title: 'Suggest token failed',
+            });
         } finally {
             setLoading(false);
         }
     };
 
     const handleClose = () => {
-        // 关闭时清空表单
         setFormData({
             tokenName: '',
             chain: '',
@@ -147,14 +169,14 @@ export default function SuggestTokenModal({ open, onClose, onSubmit }: SuggestTo
                 <div className="mt-[30px] text-center">
                     <button
                         onClick={handleSubmit}
-                        disabled={loading || !formData.tokenName || !formData.chain || !formData.address}
+                        disabled={loading || !formData.chain || !formData.address}
                         className="bg-[#FFD700] hover:bg-[#FFC700] w-full border border-black disabled:cursor-not-allowed text-black font-bold text-[18px] px-[40px] py-[12px] rounded-[12px] shadow-lg transition-all duration-200 transform hover:scale-105 disabled:transform-none"
                     >
                         {loading ? (
-                            <div className="flex items-center justify-center gap-2">
-                                <div className="w-[16px] h-[16px] border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                                Submitting...
-                            </div>
+                            <>
+                                <Loading size={18}/>
+                                 Submitting...
+                            </>
                         ) : (
                             'Submit'
                         )}
