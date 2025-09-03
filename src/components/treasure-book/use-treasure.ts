@@ -135,7 +135,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
             completeViewQuest(quest);
         }
 
-        if (quest.id === 10) {
+        if (quest.id === 11) {
             inviteModalStore.set({ showInviteModal: true });
         }
 
