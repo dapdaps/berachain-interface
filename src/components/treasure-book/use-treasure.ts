@@ -1,7 +1,9 @@
 import useUser from "@/hooks/use-user";
 import { useHall } from "@/stores/hall";
 import { useInviteModal } from "@/stores/use-invite-modal";
+import { useUserStore } from "@/stores/user";
 import { get, post } from "@/utils/http";
+import Big from "big.js";
 import { useEffect, useMemo, useState } from "react";
 
 export interface TreasureData {
@@ -18,9 +20,11 @@ export const useTreasure = ({ show }: { show: boolean }) => {
     const [userLoading, setUserLoading] = useState(false);
     const [treasure, setTreasure] = useState<TreasureData | null>(null);
     const [question, setQuestion] = useState<any>(null);
-    const { userInfo } = useUser();
+    const { userInfo, getUserInfo } = useUser();
     const [openCheckInModal, setOpenCheckInModal] = useState(false);
     const [utcRemain, setUtcRemain] = useState<{ minutes: string, seconds: string, hours: string }>({ minutes: "00", seconds: "00", hours: "00" });
+
+    
 
     const hallStore: any = useHall()
     const inviteModalStore: any = useInviteModal();
@@ -188,6 +192,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
         }
         getQuestion();
         getUser();
+        getUserInfo();
     };
 
     return {
