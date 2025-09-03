@@ -47,13 +47,13 @@ const SpinGood = (props: any) => {
         <div className="relative z-[1] text-[12px] line-through decoration-red-500 decoration-2 [-webkit-text-stroke-width:1px] [-webkit-text-stroke-color:#4B371F]">
           {data.delPrice} {costToken.symbol}
         </div>
-        <div className="flex justify-center items-center gap-[4px]">
+        <div className="flex justify-center items-center gap-[4px] translate-y-[-2px]">
           <img
             src={costToken.icon}
             alt=""
-            className="w-[16px] h-[16px] rounded-full object-center object-contain"
+            className="w-[20px] h-[20px] rounded-full object-center object-contain"
           />
-          <div className="translate-y-[-1px]">
+          <div className="translate-y-[-1px] [-webkit-text-stroke-width:0px text-[#4B371F] text-[20px] tracking-[1px] font-[400]">
             {data.price}
           </div>
         </div>
