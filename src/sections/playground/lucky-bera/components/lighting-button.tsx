@@ -8,7 +8,7 @@ const LightingButton = (props: Props) => {
   return (
     <button
       type="button"
-      className={clsx("h-[40px] rounded-[16px] p-[2px] border-[2px] border-[#4B371F] text-[#F7F9EA] font-CherryBomb text-stroke-2 text-[16px] font-[400] disabled:opacity-30", outerClassName)}
+      className={clsx("h-[40px] rounded-[16px] p-[2px] border-[2px] border-[#4B371F] text-[#F7F9EA] font-CherryBomb text-stroke-2 text-[16px] font-[400] disabled:opacity-50", outerClassName)}
       style={{
         ...style,
         backgroundColor: currentType.outerBg,

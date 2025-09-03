@@ -1,9 +1,10 @@
 import { numberFormatter } from "@/utils/number-formatter";
 import LightingButton from "../lighting-button";
 import Big from "big.js";
+import clsx from "clsx";
 
 const SpinGood = (props: any) => {
-  const { className, costToken, data, onBuySpins, loading } = props;
+  const { className, costToken, data, onBuySpins, loading, isChainSupported } = props;
 
   return (
     <div
@@ -27,9 +28,12 @@ const SpinGood = (props: any) => {
         className="w-[70px] h-[70px] shrink-0 object-center object-contain mt-[5px]"
       />
       <LightingButton
-        outerClassName="w-full mt-auto !h-[50px]"
+        outerClassName={clsx(
+          "w-full mt-auto !h-[50px]",
+          (loading || !isChainSupported) ? "translate-y-[-4px]" : "",
+        )}
         className="flex-col !gap-[0px] whitespace-nowrap !leading-[100%] relative"
-        disabled={loading}
+        disabled={loading || !isChainSupported}
         onClick={() => {
           onBuySpins(data);
         }}

@@ -16,6 +16,7 @@ const BuySpins = (props: any) => {
     buySpinsAmount,
     setBuySpinsAmount,
     open,
+    isChainSupported,
   } = props;
 
   const costToken = bera["bera"];
@@ -31,6 +32,11 @@ const BuySpins = (props: any) => {
     if (buyingSpins || isLoading) {
       result.loading = true;
     }
+    if (!isChainSupported) {
+      result.valid = true;
+      result.text = "Switch Network";
+      return result;
+    }
     if (!buySpinsAmount || Big(buySpinsAmount).lte(0)) {
       return result;
     }
@@ -43,7 +49,7 @@ const BuySpins = (props: any) => {
     result.valid = true;
 
     return result;
-  }, [buySpinsAmount, tokenBalance, buyingSpins, isLoading, BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS]);
+  }, [buySpinsAmount, tokenBalance, buyingSpins, isLoading, BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS, isChainSupported]);
 
   const onBuyGood = async (data: any) => {
     const cost = Big(data.amount).div(Big(1).plus(data.add)).times(BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS);
@@ -143,6 +149,7 @@ const BuySpins = (props: any) => {
               data={item}
               loading={buyingSpins}
               onBuySpins={onBuyGood}
+              isChainSupported={isChainSupported}
             />
           ))
         }

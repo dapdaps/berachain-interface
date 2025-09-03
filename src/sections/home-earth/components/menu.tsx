@@ -43,10 +43,11 @@ const MENU_LIST = [
     sort: 6
   },
   {
-    label: "Tokens",
-    bg: "#C0FF96",
-    href: "/tokens",
-    sort: 7
+    label: "Carnival",
+    bg: "#FF8284",
+    href: "/carnival/lucky-bera",
+    sort: 7,
+    isBlink: true,
   },
   {
     label: "Portfolio",
@@ -92,12 +93,78 @@ const NavigationMenu = (props: any) => {
               key={index}
               href={menu.href}
               prefetch={true}
-              className="rounded-[12px] rounded-r-[0] border border-black w-[110px] shrink-0 flex items-center shadow-[2px_2px_0px_0px_#000] text-black text-center font-CherryBomb text-base font-normal leading-none py-2 px-4"
+              className="relative rounded-[12px] rounded-r-[0] border border-black w-[110px] shrink-0 flex items-center shadow-[2px_2px_0px_0px_#000] text-black text-center font-CherryBomb text-base font-normal leading-none py-2 px-4"
               style={{
                 background: menu.bg,
               }}
             >
               {menu.label}
+              {
+                menu.isBlink && (
+                  <div className="absolute left-[0px] top-[0px] w-full h-full pointer-events-none">
+                    <motion.img
+                      src="/images/check-in/star.svg"
+                      alt=""
+                      className="w-[16px] h-[16px] object-center object-contain absolute left-[5px] top-[-8px]"
+                      animate={{
+                        transform: ["scale(1)", "scale(0.5)", "scale(1)"],
+                        opacity: [1, 0.9, 1],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        delay: 0,
+                      }}
+                    />
+                    <motion.img
+                      src="/images/check-in/star.svg"
+                      alt=""
+                      className="w-[24px] h-[24px] object-center object-contain absolute left-[60px] top-[-10px]"
+                      animate={{
+                        transform: ["scale(1)", "scale(0.8)", "scale(1)"],
+                        opacity: [1, 0.9, 1],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        delay: 0.2,
+                      }}
+                    />
+                    <motion.img
+                      src="/images/check-in/star.svg"
+                      alt=""
+                      className="w-[16px] h-[16px] object-center object-contain absolute left-[-2px] bottom-[-6px]"
+                      animate={{
+                        transform: ["scale(1)", "scale(0.7)", "scale(1)"],
+                        opacity: [1, 0.9, 1],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        delay: 0.15,
+                      }}
+                    />
+                    <motion.img
+                      src="/images/check-in/star.svg"
+                      alt=""
+                      className="w-[16px] h-[16px] object-center object-contain absolute left-[50px] bottom-[-8px]"
+                      animate={{
+                        transform: ["scale(1)", "scale(0.8)", "scale(1)"],
+                        opacity: [1, 0.9, 1],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        delay: 0.1,
+                      }}
+                    />
+                  </div>
+                )
+              }
             </Link>
           </motion.div>
         ))

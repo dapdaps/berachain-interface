@@ -1,6 +1,6 @@
 import { useDebounceFn, useRequest } from 'ahooks';
 import { post } from '@/utils/http';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { BUY_SPINS_CONTRACT_ADDRESS, BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS, SPIN_CATEGORIES, SpinMultiplier, SpinResultData, SpinUserData, SpinCategory } from '../config';
 import useToast from '@/hooks/use-toast';
 import { useLuckyBeraStore } from '../store';
@@ -11,6 +11,8 @@ import { bera } from '@/configs/tokens/bera';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { usePlaygroundContext } from '../../context';
 import { useUserStore } from '@/stores/user';
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useSwitchChain } from 'wagmi';
 
 const costToken = bera["bera"];
 
@@ -30,8 +32,13 @@ export function useLuckyBera() {
   } = usePlaygroundContext();
   const userInfo = useUserStore((store: any) => store.user);
   const setUserInfo = useUserStore((store: any) => store.set);
+  const { isPending: switching, switchChain } = useSwitchChain();
 
   const [buySpinsModalOpen, setBuySpinsModalOpen] = useState(false);
+
+  const [isChainSupported] = useMemo(() => {
+    return [chainId === DEFAULT_CHAIN_ID];
+  }, [chainId]);
 
   const { run: reloadSpinData } = useDebounceFn((_lastSpinResult: SpinResultData) => {
     // getSpinUserData();
@@ -119,6 +126,12 @@ export function useLuckyBera() {
       connectModal?.openConnectModal?.();
       return;
     }
+    if (!isChainSupported) {
+      switchChain({
+        chainId: DEFAULT_CHAIN_ID,
+      });
+      return;
+    }
     let { discount, amount } = params ?? {};
     amount = amount || buySpinsAmount;
 
@@ -202,5 +215,6 @@ export function useLuckyBera() {
     buyingSpins,
     buySpinsAmount,
     setBuySpinsAmount,
+    isChainSupported,
   };
 }
