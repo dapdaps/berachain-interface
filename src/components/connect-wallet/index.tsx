@@ -306,8 +306,6 @@ const User = (props: any) => {
   const [inviteModalVisible, setInviteModalVisible] = useState(false);  
   const { invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage, totalInvitedCount } = useInvite();
 
-  console.log('invitedUsers', invitedUsers);
-
   const inviteLink = useMemo(() => {
     return window.location.origin + '/referral/' + userInfo?.invite_code;
   }, [userInfo]);
