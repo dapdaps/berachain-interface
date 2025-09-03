@@ -142,7 +142,7 @@ const CheckInReward = (props: any) => {
         </div>
         <div className="w-full relative z-[2]">
           <div className="font-CherryBomb text-[26px] font-[400] leading-[90%] text-center mt-[177px]">
-            Good Luck!
+            Henlo!
           </div>
           <div className="text-center mt-[20px]">
             You’ve got

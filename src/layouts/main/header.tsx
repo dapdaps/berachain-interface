@@ -69,7 +69,7 @@ const MainLayoutHeader = (props: Props) => {
 
           <PointsEntry />
 
-          <motion.div
+          {/* <motion.div
             className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
               router.push("/kingdomly")
@@ -78,9 +78,9 @@ const MainLayoutHeader = (props: Props) => {
             transition={{ duration: 0.2 }}
           >
             <img src="/images/icon-nft.png" alt="icon-nft" />
-          </motion.div>
+          </motion.div> */}
 
-          <MintStable />
+          {/* <MintStable /> */}
 
 
           {/* <div className="relative">
