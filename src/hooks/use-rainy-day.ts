@@ -11,7 +11,7 @@ export function useRainyDay(props?: { isLoadPrice?: boolean; }) {
   const { isLoadPrice } = props || {};
 
   const { isDefaultTheme } = useActivityStore();
-  const { rainyDay, setRainyDay, beraPrice, setBeraPrice } = useRainyDayStore();
+  const { rainyDay, setRainyDay, beraPrice, setBeraPrice, isWeatherOpen } = useRainyDayStore();
 
   const _isDefaultTheme = isDefaultTheme();
 
@@ -51,7 +51,7 @@ export function useRainyDay(props?: { isLoadPrice?: boolean; }) {
 
   return {
     rainyDay,
-    isRainyDay,
+    isRainyDay: isRainyDay && isWeatherOpen,
     beraPrice,
   };
 }
