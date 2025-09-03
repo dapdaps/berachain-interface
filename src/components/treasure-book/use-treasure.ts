@@ -131,7 +131,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
             setOpenCheckInModal(true);
         }
 
-        if ((quest.category.toLowerCase() === 'view' && quest.page) || (quest.category.toLowerCase() === 'share')) {
+        if ((quest.category.toLowerCase() === 'view' && quest.url) || (quest.category.toLowerCase() === 'share')) {
             completeViewQuest(quest);
         }
 
@@ -182,6 +182,14 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
         return () => clearInterval(timer);
     }, [unCompleteQuestion]);
 
+    const refreshQuestion = (): void => {
+        if (!userInfo?.address) {
+            return;
+        }
+        getQuestion();
+        getUser();
+    };
+
     return {
         treasure,
         openBox,
@@ -198,5 +206,6 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
         inviteLink,
         openCheckInModal,
         setOpenCheckInModal,
+        refreshQuestion,
     };
 };

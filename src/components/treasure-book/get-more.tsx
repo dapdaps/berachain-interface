@@ -5,7 +5,7 @@ import CheckInModal from "../check-in/modal";
 import useUser from "@/hooks/use-user";
 
 
-export default function GetMore({ question, completeViewQuest, questionLoading, getQuestion, handleQuestionComplete, inviteLink, handleShare }: { question: any, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, getQuestion: () => Promise<void>, handleQuestionComplete: (quest: any) => Promise<any>, inviteLink: string, handleShare: () => void }) {
+export default function GetMore({ question, completeViewQuest, questionLoading, getQuestion, handleQuestionComplete, inviteLink, handleShare, refreshQuestion }: { question: any, completeViewQuest: (quest: any) => Promise<any>, questionLoading: boolean, getQuestion: () => Promise<void>, handleQuestionComplete: (quest: any) => Promise<any>, inviteLink: string, handleShare: () => void, refreshQuestion: () => void }) {
     const [loadingId, setLoadingId] = useState<string | null>(null);
     
     const { userInfo } = useUser();
@@ -29,7 +29,7 @@ export default function GetMore({ question, completeViewQuest, questionLoading, 
                         <LinkItem config={Config[item.id]} onClick={() => {
                             handleQuestionComplete(item);
                         }} />
-                        <RewardItem data={item} questionLoading={questionLoading} getQuestion={getQuestion} loadingId={loadingId} setLoadingId={setLoadingId} />
+                        <RewardItem data={item} questionLoading={questionLoading} refreshQuestion={refreshQuestion} loadingId={loadingId} setLoadingId={setLoadingId} />
                     </div>
                 </div>
             ))
@@ -38,7 +38,7 @@ export default function GetMore({ question, completeViewQuest, questionLoading, 
     </div>;
 }
 
-function RewardItem({ data, questionLoading, getQuestion, loadingId, setLoadingId }: { data: any, questionLoading: boolean, getQuestion: () => Promise<void>, loadingId: string | null, setLoadingId: (id: string | null) => void }) {
+function RewardItem({ data, questionLoading, loadingId, setLoadingId, refreshQuestion }: { data: any, questionLoading: boolean, loadingId: string | null, setLoadingId: (id: string | null) => void, refreshQuestion: () => void }) {
     const isLoading = useMemo(() => {
         return loadingId === data.id && questionLoading;
     }, [loadingId, data, questionLoading]);
@@ -70,7 +70,7 @@ function RewardItem({ data, questionLoading, getQuestion, loadingId, setLoadingI
                 onClick={() => {
                     if (questionLoading) return;
                     setLoadingId(data.id);
-                    getQuestion();
+                    refreshQuestion();
                 }}
             >
                 <motion.svg

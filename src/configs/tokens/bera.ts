@@ -673,7 +673,7 @@ export const bera: { [key: string]: Token } = {
   swbera: {
     chainId: CHAIN_ID,
     address: "0x118D2cEeE9785eaf70C15Cd74CD84c9f8c3EeC9a",
-    symbol: "SWBERA",
+    symbol: "sWBERA",
     name: "Staked WBERA",
     decimals: 18,
     icon: "/assets/tokens/swbera.png",

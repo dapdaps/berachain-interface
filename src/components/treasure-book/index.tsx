@@ -30,6 +30,7 @@ export default function TreasureBook() {
         handleShare,
         openCheckInModal,
         setOpenCheckInModal,
+        refreshQuestion,
     } = useTreasure({
         show: treasureBookOpen
     });
@@ -133,6 +134,7 @@ export default function TreasureBook() {
                     handleQuestionComplete={handleQuestionComplete}
                     inviteLink={inviteLink}
                     handleShare={handleShare}
+                    refreshQuestion={refreshQuestion}
                 />}
             </AnimatePresence>
             <CheckInModal open={openCheckInModal} onClose={() => setOpenCheckInModal(false)} />
