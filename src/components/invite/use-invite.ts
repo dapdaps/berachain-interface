@@ -25,6 +25,7 @@ export function useInvite() {
     const getInvitedUsers = async () => {
         if (loading) return;
         setLoading(true);
+        setInvitedUsers([]);
         const res = await get('/api/go/invite/records', {
             page,
             page_size: PAGE_SIZE,

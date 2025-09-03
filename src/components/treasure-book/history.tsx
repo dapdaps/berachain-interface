@@ -70,6 +70,7 @@ export default function History({ onClose }: { onClose: () => void }) {
 
     const getList = () => {
         setLoading(true);
+        setHistory([]);
         get('/api/go/treasure/draw/list', {
             page: currentPage,
             page_size: PAGE_SIZE,
