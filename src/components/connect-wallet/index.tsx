@@ -304,7 +304,7 @@ const User = (props: any) => {
 
 
   const toast = useToast();
-  // const [inviteModalVisible, setInviteModalVisible] = useState(false);  
+  const [isLinkHover, setIsLinkHover] = useState(false);
   const inviteModalStore: any = useInviteModal();
   const { invitedUsers, totalRewards, loading, claimLoading, handleClaim, setPage, page, totalPage, totalInvitedCount } = useInvite();
 
@@ -318,6 +318,15 @@ const User = (props: any) => {
       title: `Copied link ${inviteLink}`
     });
   };
+
+  const inviteLinkShown = useMemo(() => {
+    if (!isLinkHover) {
+      return inviteLink?.length > 14
+        ? '...' + inviteLink.slice(-14)
+        : inviteLink;
+    }
+    return inviteLink;
+  }, [inviteLink, isLinkHover]);
 
   const router = useRouter()
   if (isNearPage && currentWallet) {
@@ -368,12 +377,12 @@ const User = (props: any) => {
               <span className="font-[600]">Invited Frenz</span>
               <span onClick={() => inviteModalStore.set({ showInviteModal: true })} className="underline cursor-pointer">{totalInvitedCount || 0}</span>
             </div>
-            <div className="flex items-center justify-between bg-[#FDD54C] rounded-[8px] px-2 py-2">
-              <span className="text-[#77350F] text-[16px]">
-                {inviteLink?.length > 14
-                  ? '...' + inviteLink.slice(-14)
-                  : inviteLink}
-              </span>
+            <div className="flex items-center justify-between bg-[#FDD54C] rounded-[8px] px-2 py-2 gap-2">
+              <div className="flex-1 overflow-auto h-[28px]" onMouseEnter={() => setIsLinkHover(true)} onMouseLeave={() => setIsLinkHover(false)}>
+                <div className="text-[#77350F] text-[16px] leading-[28px] whitespace-nowrap">
+                  { inviteLinkShown }
+                </div>
+              </div>
               <div className="click cursor-pointer" onClick={handleCopyLink}>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="1" y="4.73047" width="9.62531" height="10.2668" rx="2" stroke="#77350F" stroke-width="2" />
