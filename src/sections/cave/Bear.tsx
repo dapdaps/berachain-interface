@@ -35,14 +35,14 @@ export default function Bear({
       {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-2.png" className="absolute left-[78px] top-[0px] max-w-[306px]" />}
 
 
-      {!!hats.length && hats[0].checked && <img src="/images/cave/bear/hat/hat-1.png" className=" absolute w-[111px] left-[220px] top-[-30px]" />}
-      {!!hats.length && hats[1].checked && <img src="/images/cave/bear/hat/hat-2.png" className=" absolute w-[121px] left-[230px] top-[-37px]" />}
-      {!!hats.length && hats[2].checked && <img src="/images/cave/bear/hat/hat-3.png" className=" absolute w-[111px] left-[230px] top-[-37px]" />}
-      {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[111px] left-[230px] top-[-37px]" />}
+      {!!hats.length && hats[0].checked && <img src="/images/cave/bear/hat/hat-1.png" className=" absolute w-[111px] left-[220px] top-[-30px] z-[21]" />}
+      {!!hats.length && hats[1].checked && <img src="/images/cave/bear/hat/hat-2.png" className=" absolute w-[121px] left-[230px] top-[-37px] z-[21]" />}
+      {!!hats.length && hats[2].checked && <img src="/images/cave/bear/hat/hat-3.png" className=" absolute w-[111px] left-[230px] top-[-37px] z-[21]" />}
+      {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[111px] left-[230px] top-[-37px] z-[21]" />}
 
 
-      {!!clothes.length && clothes[0].checked && <img src="/images/cave/bear/cloth/cloth-1.png" className=" absolute w-[226px] left-[89px] top-[26px] z-20" />}
-      {!!clothes.length && clothes[1].checked && <img src="/images/cave/bear/cloth/cloth-2.png" className=" absolute w-[235px] left-[87px] top-[45px] z-20" />}
+      {!!clothes.length && clothes[0].checked && <img src="/images/cave/bear/cloth/cloth-1.png" className=" absolute w-[210px] left-[89px] top-[37px] z-20" />}
+      {!!clothes.length && clothes[1].checked && <img src="/images/cave/bear/cloth/cloth-2.png" className=" absolute w-[248px] left-[88px] top-[-18px] z-20" />}
       {!!clothes.length && clothes[2].checked && <img src="/images/cave/bear/cloth/cloth-3.png" className=" absolute w-[235px] left-[85px] top-[43px] z-20" />}
       {!!clothes.length && clothes[3].checked && <img src="/images/cave/bear/cloth/cloth-4.png" className=" absolute w-[235px] left-[85px] top-[44px] z-20" />}
 
