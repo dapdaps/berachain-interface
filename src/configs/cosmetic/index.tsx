@@ -26,8 +26,13 @@ export const CosmeticsList: Cosmetic[] = [
     style: {
       left: 70,
       top: 60,
-      // height: 102,
+      height: 102,
       marginLeft: -14,
+    },
+    styleNotOwned: {
+      left: 70,
+      top: 60,
+      height: 102,
     },
   },
   {
@@ -42,6 +47,11 @@ export const CosmeticsList: Cosmetic[] = [
       height: 102,
       marginLeft: -21,
     },
+    styleNotOwned: {
+      left: 137,
+      top: 54,
+      height: 102,
+    },
   },
   {
     level: 3,
@@ -54,6 +64,11 @@ export const CosmeticsList: Cosmetic[] = [
       top: 46,
       height: 102,
       marginLeft: -16,
+    },
+    styleNotOwned: {
+      left: 204,
+      top: 46,
+      height: 102,
     },
   },
   {
@@ -68,6 +83,11 @@ export const CosmeticsList: Cosmetic[] = [
       height: 102,
       marginLeft: -13,
     },
+    styleNotOwned: {
+      left: 272,
+      top: 38,
+      height: 102,
+    },
   },
   // hats
   {
@@ -78,7 +98,7 @@ export const CosmeticsList: Cosmetic[] = [
     img_not_owned: "/images/cave/hat/hat-1.png",
     style: {
       width: 125,
-      transform: "translateY(10px)",
+      transform: "translateY(18px)",
     },
   },
   {
@@ -92,6 +112,10 @@ export const CosmeticsList: Cosmetic[] = [
       transformOrigin: "top",
       transform: "scale(1.2) translateY(10px)",
     },
+    styleNotOwned: {
+      width: 120,
+      transform: "translateY(13px)",
+    },
   },
   {
     level: 3,
@@ -103,6 +127,10 @@ export const CosmeticsList: Cosmetic[] = [
       width: 116,
       transform: "translateY(4px)",
     },
+    styleNotOwned: {
+      width: 116,
+      transform: "translateY(12px)",
+    },
   },
   {
     level: 4,
@@ -113,6 +141,10 @@ export const CosmeticsList: Cosmetic[] = [
     style: {
       width: 116,
       transform: "translateY(3px)",
+    },
+    styleNotOwned: {
+      width: 116,
+      transform: "translateY(10px)",
     },
   },
   // coats
