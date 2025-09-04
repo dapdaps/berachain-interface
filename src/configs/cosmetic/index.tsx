@@ -13,7 +13,8 @@ export interface Cosmetic {
   img_not_owned: string;
   style?: React.CSSProperties;
   styleNotOwned?: React.CSSProperties;
-  label?: string;
+  // the userface display name
+  label: string;
 }
 
 export const CosmeticsList: Cosmetic[] = [
@@ -22,6 +23,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 1,
     category: CosmeticCategory.Cars,
     name: "Bicycle",
+    label: "Bicycle",
     img: "/images/cave/key/key-1-1.png",
     img_not_owned: "/images/cave/key/key-1.png",
     style: {
@@ -40,6 +42,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 2,
     category: CosmeticCategory.Cars,
     name: "Scooter",
+    label: "Scooter",
     img: "/images/cave/key/key-2-2.png",
     img_not_owned: "/images/cave/key/key-2.png",
     style: {
@@ -58,6 +61,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 3,
     category: CosmeticCategory.Cars,
     name: "Motobike",
+    label: "Motobike",
     img: "/images/cave/key/key-3-3.png",
     img_not_owned: "/images/cave/key/key-3.png",
     style: {
@@ -76,6 +80,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 4,
     category: CosmeticCategory.Cars,
     name: "Lambo",
+    label: "Lamborghini",
     img: "/images/cave/key/key-4-4.png",
     img_not_owned: "/images/cave/key/key-4.png",
     style: {
@@ -95,6 +100,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 1,
     category: CosmeticCategory.Hats,
     name: "HenloMascotHat",
+    label: "Henlo mascot hat",
     img: "/images/cave/hat/hat-1-1.png",
     img_not_owned: "/images/cave/hat/hat-1.png",
     style: {
@@ -106,6 +112,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 2,
     category: CosmeticCategory.Hats,
     name: "BullasMask",
+    label: "Bullas mask",
     img: "/images/cave/hat/hat-2-2.png",
     img_not_owned: "/images/cave/hat/hat-2.png",
     style: {
@@ -122,6 +129,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 3,
     category: CosmeticCategory.Hats,
     name: "RedSkiMask",
+    label: "Red ski mask",
     img: "/images/cave/hat/hat-3-3.png",
     img_not_owned: "/images/cave/hat/hat-3.png",
     style: {
@@ -137,6 +145,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 4,
     category: CosmeticCategory.Hats,
     name: "BlueSkiMask",
+    label: "Blue ski mask",
     img: "/images/cave/hat/hat-4-4.png",
     img_not_owned: "/images/cave/hat/hat-4.png",
     style: {
@@ -153,6 +162,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 1,
     category: CosmeticCategory.Jackets,
     name: "MiberaRaveTShirt",
+    label: "Mibera rave T-shirt",
     img: "/images/cave/clothing/cloth-1-1.png",
     img_not_owned: "/images/cave/clothing/cloth-1.png",
     style: {
@@ -175,6 +185,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 3,
     category: CosmeticCategory.Jackets,
     name: "coat1",
+    label: "",
     img: "/images/cave/clothing/cloth-3-3.png",
     img_not_owned: "/images/cave/clothing/cloth-3.png",
     style: {
@@ -185,6 +196,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 4,
     category: CosmeticCategory.Jackets,
     name: "coat2",
+    label: "",
     img: "/images/cave/clothing/cloth-4-4.png",
     img_not_owned: "/images/cave/clothing/cloth-4.png",
     style: {
