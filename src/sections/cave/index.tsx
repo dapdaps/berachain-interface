@@ -600,7 +600,7 @@ export default function Cave() {
         </div>
         {/*#endregion*/}
         {/*#region Window on Right*/}
-        <div className="absolute translate-x-[-50%] left-[calc(57%_+_120px_+_290px)] top-[150px]">
+        <div className="absolute z-[1] right-[13%] top-[150px]">
           <div className="w-[186px] h-[224px] bg-[url('/images/cave/window.png')] bg-contain bg-no-repeat bg-bottom" />
           <div className="relative w-[166px] h-[224px] mt-[50px] flex justify-center">
             <motion.button
@@ -697,10 +697,10 @@ export default function Cave() {
         </div> */}
         {/*#endregion*/}
         {/*#region Mirror on Right*/}
-        <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
+        <div className=" pointer-events-none absolute z-[2] w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
         {/*#endregion*/}
         {/*#region Stone on Right*/}
-        <div className=" pointer-events-none absolute w-[757px] h-[386px] bottom-[0px] right-0 bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
+        <div className=" pointer-events-none absolute z-[3] w-[757px] h-[386px] bottom-[0px] right-0 bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
         {/*#endregion*/}
         <Bear
           cars={cars}
