@@ -50,7 +50,7 @@ const Tabs = [
     label: "Results",
   },
   {
-    value: "rechage",
-    label: "Rechage",
+    value: "recharge",
+    label: "Recharge",
   },
 ];
