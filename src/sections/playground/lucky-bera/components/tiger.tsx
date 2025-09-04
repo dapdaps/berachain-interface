@@ -540,6 +540,11 @@ export default memo(function Tiger(props: any) {
           alt=""
           className="absolute translate-x-[270px] bottom-[170px] z-[1] w-[240px] h-[197px] object-center object-contain pointer-events-none"
         />
+         <img
+          src="/images/playground/lucky-bera/lucky-guy.png"
+          alt=""
+          className="absolute translate-x-[315px] bottom-[130px] z-[3] w-[202px] h-[408px] object-center object-contain pointer-events-none"
+        />
         <button
           type="button"
           className="absolute z-[1] translate-x-[310px] hover:translate-x-[320px] transition-all duration-150 bottom-[70px] w-[125px] h-[50px] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
