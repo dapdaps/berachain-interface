@@ -21,12 +21,17 @@ export default function History({ onClose }: { onClose: () => void }) {
             dataIndex: 'box',
             width: '35%',
             render: (text: any, record: any) => {
+                const list = [];
+                if (record.reward_gem_amount > 0) {
+                    list.push('Points');
+                }
+                if (record.reward_spin_amount > 0) {
+                    list.push('Spins');
+                }
+
                 return <div className="flex items-center gap-1">
                     {
-                        record.reward_gem_amount > 0 && <>Points</>
-                    }
-                    {
-                        record.reward_spin_amount > 0 && <>Spins</>
+                        list.join('/')
                     }
                 </div>
             }
@@ -36,12 +41,16 @@ export default function History({ onClose }: { onClose: () => void }) {
             dataIndex: 'amount',
             width: '20%',
             render: (text: any, record: any) => {
+                const list = [];
+                if (record.reward_gem_amount > 0) {
+                    list.push(`X ${record.reward_gem_amount}`);
+                }
+                if (record.reward_spin_amount > 0) {
+                    list.push(`X ${record.reward_spin_amount}`);
+                }
                 return <div className="flex items-center gap-1">
                     {
-                        record.reward_gem_amount > 0 && <>X {record.reward_gem_amount}</>
-                    }
-                    {
-                        record.reward_spin_amount > 0 && <>X {record.reward_spin_amount}</>
+                        list.join('/')
                     }
                 </div>
             }
