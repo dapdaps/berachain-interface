@@ -89,7 +89,7 @@ export default memo(function Tiger(props: any) {
     });
 
     if (isRocket) {
-      const isGetXpReward = Big(currentSpinUserData?.xp_balance || 0).plus(draw_reward_amount || 0).gt(currentSpinUserData?.game_xp?.xp || 0);
+      const isGetXpReward = Big(currentSpinUserData?.xp_balance || 0).plus(draw_reward_amount || 0).gte(currentSpinUserData?.game_xp?.xp || 0);
       if (isGetXpReward) {
         const xpRewardRect = spinXpRewardRef.current.getBoundingClientRect();
         const startXpRewardX = xpRewardRect.left + xpRewardRect.width / 2 - EXPLOSION_COIN_SIZE / 2;
