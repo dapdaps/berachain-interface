@@ -1,9 +1,12 @@
 import { useBearEqu } from '@/stores/useBearEqu';
 import { get } from '@/utils/http';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 import useCustomAccount from '@/hooks/use-account';
-import { CosmeticCategory, CosmeticsList } from '@/configs/cosmetic';
+import { CosmeticCategory, CosmeticsList, HiddenRewardCosmetic } from '@/configs/cosmetic';
+import { useRequest } from 'ahooks';
+import { RewardType } from '@/components/check-in/config';
+import { m } from 'framer-motion';
 
 export const hat_categories = ["elf_hat", "santa_hat"]
 export const cloth_cateogries = ["elf_jacket", "santa_coat"]
@@ -141,7 +144,7 @@ export default function useCollect({ address }: { address: string; }) {
     };
   };
 
-  const getItems = async () => {
+  const { runAsync: getItems, loading: getCosmeticLoading } = useRequest(async () => {
     const firstResponse = await getAllItems();
     let secondResponse: any;
     if (accountWithAk) {
@@ -149,7 +152,7 @@ export default function useCollect({ address }: { address: string; }) {
     }
 
     const allCosmetics = firstResponse.data || [];
-    const userCosmetics = secondResponse.data.cosmetic || [];
+    const userCosmetics = secondResponse?.data?.cosmetic || [];
 
     const cars: GameItem[] = []
     const clothes: GameItem[] = []
@@ -237,12 +240,60 @@ export default function useCollect({ address }: { address: string; }) {
       // items: _items,
       // nfts: _nfts,
     });
-  };
+  }, {
+    manual: true,
+  });
 
   useEffect(() => {
     getItems();
-  }, [accountWithAk])
+  }, [accountWithAk]);
 
+  const [userHiddenRewardCosmetic] = useState([{
+    type: RewardType.Cosmetic,
+    amount: 1,
+    label: `1 ${HiddenRewardCosmetic?.label}`,
+    cosmetic: HiddenRewardCosmetic?.img,
+  }]);
+  const [userHiddenRewardCosmeticModalOpen, setUserHiddenRewardCosmeticModalOpen] = useState(false);
+  const { runAsync: onOpenHiddenRewardCosmetic, loading: onOpenHiddenRewardCosmeticLoading } = useRequest(async () => {
+    // TODO
+    const mockReq = () => new Promise<any>((resolve) => {
+      const timer = setTimeout(() => {
+        resolve({
+          code: 200,
+          data: {},
+        });
+        clearTimeout(timer);
+      }, 1000);
+    });
+    const res = await mockReq();
+    if (res.code !== 200) {
+      return false;
+    }
+    setUserHiddenRewardCosmeticModalOpen(true);
+    // reload user cosmetics
+    getItems();
+    return true;
+  }, {
+    manual: true,
+  });
+  const [canUserOpenHiddenRewardBox] = useMemo(() => {
+    if (!HiddenRewardCosmetic || !collection || !accountWithAk || getCosmeticLoading || onOpenHiddenRewardCosmeticLoading) {
+      return [false];
+    }
+    let userHadHiddenRewardCosmetic = false;
+    for (const cosmeticType in collection) {
+      for (const cosmetic of collection[cosmeticType]) {
+        if (cosmetic.name === HiddenRewardCosmetic.name && cosmetic.pc_item) {
+          userHadHiddenRewardCosmetic = true;
+        }
+      }
+    }
+    if (userHadHiddenRewardCosmetic) {
+      return [false];
+    }
+    return [true];
+  }, [getCosmeticLoading, collection, accountWithAk, onOpenHiddenRewardCosmeticLoading]);
 
   const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace") => {
     if (type) {
@@ -330,6 +381,11 @@ export default function useCollect({ address }: { address: string; }) {
     setItems,
     setNfts,
     getItems,
+    canUserOpenHiddenRewardBox,
+    userHiddenRewardCosmetic,
+    userHiddenRewardCosmeticModalOpen,
+    setUserHiddenRewardCosmeticModalOpen,
+    onOpenHiddenRewardCosmetic,
   }
 }
 

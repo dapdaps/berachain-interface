@@ -19,6 +19,8 @@ import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 import AirDropTime from "./AirDropTime";
 import { AirDropHistoryData, AirDropRound, useAirdrop } from "./useAirdrop";
+import { motion, useAnimate } from "framer-motion";
+import CheckInRewardModal from "@/components/check-in/reward";
 
 const stakeDapps = [{
   icon: '/images/dapps/infrared.svg',
@@ -211,11 +213,32 @@ export default function Cave() {
 
   const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
   // const { airDropRound, airDropPrize, airDropHistory } = useAirdrop();
-  const { cars, hats, clothes, necklaces, items, nfts, getItems } = useCollect({
+  const {
+    cars,
+    hats,
+    clothes,
+    necklaces,
+    items,
+    nfts,
+    getItems,
+    canUserOpenHiddenRewardBox,
+    userHiddenRewardCosmetic,
+    userHiddenRewardCosmeticModalOpen,
+    setUserHiddenRewardCosmeticModalOpen,
+    onOpenHiddenRewardCosmetic,
+  } = useCollect({
     address: account as string,
   });
 
-  console.log("cars: %o", cars);
+  const [hiddenRewardÇosmeicBanner, hiddenRewardÇosmeicBannerAnimate] = useAnimate();
+  const onHiddenRewardÇosmeic = async () => {
+    hiddenRewardÇosmeicBannerAnimate(hiddenRewardÇosmeicBanner.current, {
+      rotate: 76.876,
+      x: 20,
+      y: 20,
+    });
+    await onOpenHiddenRewardCosmetic();
+  };
 
   const tipClick = useCallback((e: any, item: any, gameItem: any) => {
     // if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
@@ -577,10 +600,25 @@ export default function Cave() {
         </div>
         {/*#endregion*/}
         {/*#region Window on Right*/}
-        <div
-          style={{ left: 'calc(57% + 120px + 290px)' }}
-          className=" absolute w-[186px] h-[224px] top-[150px] translate-x-[-50%] bg-[url('/images/cave/window.png')] bg-contain bg-no-repeat bg-bottom"
-        ></div>
+        <div className="absolute translate-x-[-50%] left-[calc(57%_+_120px_+_290px)] top-[150px]">
+          <div className="w-[186px] h-[224px] bg-[url('/images/cave/window.png')] bg-contain bg-no-repeat bg-bottom" />
+          <div className="relative w-[166px] h-[224px] mt-[50px] flex justify-center">
+            <motion.button
+              ref={hiddenRewardÇosmeicBanner}
+              type="button"
+              className="absolute z-[1] w-full h-full bg-[url('/images/cave/cover-box-banner.png')] bg-contain bg-no-repeat bg-center origin-[top_center]"
+              disabled={!canUserOpenHiddenRewardBox}
+              onClick={onHiddenRewardÇosmeic}
+            />
+            <img
+              src="/images/cave/pushpin.png"
+              alt=""
+              className="w-[29px] h-[45px] object-contain object-center absolute z-[2] top-[5px]"
+            />
+            <div className="w-full h-full overflow-hidden bg-[url('/images/cave/box-in-wall.png')] bg-no-repeat bg-center bg-[length:97px_140px]">
+            </div>
+          </div>
+        </div>
         {/*#endregion*/}
         {/*#region necklace Left-top*/}
         {/* <div
@@ -723,6 +761,18 @@ export default function Cave() {
             </div>
         </div> */}
       <TransferItemsModal onAfterTransfer={getItems} />
+      <CheckInRewardModal
+        data={userHiddenRewardCosmetic}
+        open={userHiddenRewardCosmeticModalOpen}
+        onClose={() => {
+          setUserHiddenRewardCosmeticModalOpen(false);
+          hiddenRewardÇosmeicBannerAnimate(hiddenRewardÇosmeicBanner.current, {
+            rotate: 0,
+            x: 0,
+            y: 0,
+          });
+        }}
+      />
     </div>
   );
 }

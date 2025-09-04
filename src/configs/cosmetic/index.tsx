@@ -13,6 +13,7 @@ export interface Cosmetic {
   img_not_owned: string;
   style?: React.CSSProperties;
   styleNotOwned?: React.CSSProperties;
+  label?: string;
 }
 
 export const CosmeticsList: Cosmetic[] = [
@@ -163,6 +164,7 @@ export const CosmeticsList: Cosmetic[] = [
     level: 2,
     category: CosmeticCategory.Jackets,
     name: "MiberaBearKagi",
+    label: "Mibera bear kigu",
     img: "/images/cave/clothing/cloth-2-2.png",
     img_not_owned: "/images/cave/clothing/cloth-2.png",
     style: {
@@ -190,3 +192,5 @@ export const CosmeticsList: Cosmetic[] = [
     },
   },
 ];
+
+export const HiddenRewardCosmetic: Cosmetic | undefined = CosmeticsList.find((cosmetic) => cosmetic.name === "MiberaBearKagi");
