@@ -141,110 +141,105 @@ export default function useCollect({ address }: { address: string; }) {
     };
   };
 
-  const getItems = () => {
-    const promiseArray = [
-      getAllItems(),
-      get("/api/go/beracave/user")
-    ]
-    Promise.all(promiseArray).then((result: any) => {
-      const [firstResponse, secondResponse] = result;
+  const getItems = async () => {
+    const firstResponse = await getAllItems();
+    let secondResponse: any;
+    if (accountWithAk) {
+      secondResponse = await get("/api/go/beracave/user");
+    }
 
-      const allCosmetics = firstResponse.data || [];
-      const userCosmetics = secondResponse.data.cosmetic || [];
+    const allCosmetics = firstResponse.data || [];
+    const userCosmetics = secondResponse.data.cosmetic || [];
 
-      const cars: GameItem[] = []
-      const clothes: GameItem[] = []
-      const necklaces: GameItem[] = []
-      const hats: GameItem[] = []
+    const cars: GameItem[] = []
+    const clothes: GameItem[] = []
+    const necklaces: GameItem[] = []
+    const hats: GameItem[] = []
 
-      // const _transferItems: any[] = [];
-      // let necklacesIdx = 1;
-      allCosmetics.forEach((item: GameItem) => {
-        switch (item.category) {
-          case CosmeticCategory.Hats:
-            hats.push({
-              ...item,
-              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
-            })
-            break;
-          case CosmeticCategory.Jackets:
-            clothes.push({
-              ...item,
-              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
-            })
-            break;
-          case CosmeticCategory.Necklaces:
-            necklaces.push({
-              ...item,
-              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
-            })
-            break;
-          case CosmeticCategory.Cars:
-            cars.push({
-              ...item,
-              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
-            })
-            break;
-        }
-        // if (item.pc_item) {
-        //   switch (item.category) {
-        //     case CosmeticCategory.Hats:
-        //       item.img = `/images/cave/hat/hat-${item.level}-${item.level}.png`;
-        //       break;
-        //     case CosmeticCategory.Jackets:
-        //       item.img = `/images/cave/clothing/cloth-${item.level}-${item.level}.png`;
-        //       break;
-        //     case CosmeticCategory.Necklaces:
-        //       item.img = `/images/cave/neck/neck-${necklacesIdx}-${necklacesIdx}.png`;
-        //       necklacesIdx += 1;
-        //       break;
-        //     case CosmeticCategory.Cars:
-        //       item.img = `/images/cave/key/key-${item.level}-${item.level}.png`;
-        //       break;
-        //   }
-        // _transferItems.push(item);
-        // }
-      });
-      // setTransferItems(_transferItems.filter((it) => !it.transfer_to));
-
-
-      // const _items = items?.map(item => {
-      //   return {
-      //     ...item,
-      //     christmas: true,
-      //     pc_item: userCosmetics.findIndex((_item: any) => _item.category === item.category) > -1,
+    // const _transferItems: any[] = [];
+    // let necklacesIdx = 1;
+    allCosmetics.forEach((item: GameItem) => {
+      switch (item.category) {
+        case CosmeticCategory.Hats:
+          hats.push({
+            ...item,
+            pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+          })
+          break;
+        case CosmeticCategory.Jackets:
+          clothes.push({
+            ...item,
+            pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+          })
+          break;
+        case CosmeticCategory.Necklaces:
+          necklaces.push({
+            ...item,
+            pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+          })
+          break;
+        case CosmeticCategory.Cars:
+          cars.push({
+            ...item,
+            pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+          })
+          break;
+      }
+      // if (item.pc_item) {
+      //   switch (item.category) {
+      //     case CosmeticCategory.Hats:
+      //       item.img = `/images/cave/hat/hat-${item.level}-${item.level}.png`;
+      //       break;
+      //     case CosmeticCategory.Jackets:
+      //       item.img = `/images/cave/clothing/cloth-${item.level}-${item.level}.png`;
+      //       break;
+      //     case CosmeticCategory.Necklaces:
+      //       item.img = `/images/cave/neck/neck-${necklacesIdx}-${necklacesIdx}.png`;
+      //       necklacesIdx += 1;
+      //       break;
+      //     case CosmeticCategory.Cars:
+      //       item.img = `/images/cave/key/key-${item.level}-${item.level}.png`;
+      //       break;
       //   }
-      // })
+      // _transferItems.push(item);
+      // }
+    });
+    // setTransferItems(_transferItems.filter((it) => !it.transfer_to));
 
-      // const _nfts = userCosmetics.nfts?.map((item: any) => {
-      //   return {
-      //     ...item,
-      //     pc_item: true,
-      //   }
-      // })
 
-      setCars(cars.sort((a: any, b: any) => a.level - b.level))
-      setClothes(clothes.sort((a: any, b: any) => a.level - b.level))
-      setNecklaces(necklaces.sort((a: any, b: any) => a.level - b.level))
-      setHats(hats.sort((a: any, b: any) => a.level - b.level))
+    // const _items = items?.map(item => {
+    //   return {
+    //     ...item,
+    //     christmas: true,
+    //     pc_item: userCosmetics.findIndex((_item: any) => _item.category === item.category) > -1,
+    //   }
+    // })
 
-      // setItems(_items)
-      // setNfts(_nfts)
-      setCollection({
-        cars,
-        clothes,
-        necklaces,
-        hats,
-        // items: _items,
-        // nfts: _nfts,
-      })
+    // const _nfts = userCosmetics.nfts?.map((item: any) => {
+    //   return {
+    //     ...item,
+    //     pc_item: true,
+    //   }
+    // })
+
+    setCars(cars.sort((a: any, b: any) => a.level - b.level));
+    setClothes(clothes.sort((a: any, b: any) => a.level - b.level));
+    setNecklaces(necklaces.sort((a: any, b: any) => a.level - b.level));
+    setHats(hats.sort((a: any, b: any) => a.level - b.level));
+
+    // setItems(_items)
+    // setNfts(_nfts)
+    setCollection({
+      cars,
+      clothes,
+      necklaces,
+      hats,
+      // items: _items,
+      // nfts: _nfts,
     });
   };
 
   useEffect(() => {
-    if (!accountWithAk) {
-      return;
-    }
     getItems();
   }, [accountWithAk])
 

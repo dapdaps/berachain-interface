@@ -98,10 +98,6 @@ export const CosmeticsList: Cosmetic[] = [
     img_not_owned: "/images/cave/hat/hat-1.png",
     style: {
       width: 125,
-      transform: "translateY(10px)",
-    },
-    styleNotOwned: {
-      width: 125,
       transform: "translateY(18px)",
     },
   },
