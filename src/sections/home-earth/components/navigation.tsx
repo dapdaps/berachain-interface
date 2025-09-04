@@ -300,7 +300,7 @@ export const ENTRIES: any = [
   {
     sort: 7,
     name: "Cave",
-    disabled: true,
+    disabled: false,
     disabledIcon: "/images/home-earth/cave-lock.svg",
     icon: "/images/home-earth/entry-cave.svg",
     signpost: "/images/home-earth/signpost-cave.svg",
@@ -379,7 +379,7 @@ export const BADDIES_ENTRIES: any = [
   {
     sort: 7,
     name: "Cave",
-    disabled: true,
+    disabled: false,
     icon: "/images/home-earth/baddies/baddies-cave.svg",
     disabledIcon: "/images/home-earth/baddies/baddies-cave-lock.svg",
     signpost: "/images/home-earth/signpost-cave.svg",
