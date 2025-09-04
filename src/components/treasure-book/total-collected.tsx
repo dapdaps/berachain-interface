@@ -6,6 +6,7 @@ import type { TreasureData } from "./use-treasure";
 import { RewardType } from "../check-in/config";
 import { useUserStore } from "@/stores/user";
 import Big from "big.js";
+import { CosmeticsList } from "@/configs/cosmetic";
 
 export default function TotalCollected({ treasure, openBox }: { treasure: TreasureData | null, openBox: (boxAmount: number) => Promise<any> }) {
     const [openReward, setOpenReward] = useState(false);
@@ -43,6 +44,21 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
                     }
                   });
             }
+
+            if (res.data.reward_cosmetic) {
+                const cosmetics = res.data.reward_cosmetic.split(',');
+                if (cosmetics.length > 0) {
+                    const first = cosmetics[0];
+                    const firstCosmetic = CosmeticsList.find((cosmetic) => cosmetic.name.toLowerCase() === first.toLowerCase());
+                    rewards.push({
+                        type: RewardType.Cosmetic,
+                        amount: cosmetics.length,
+                        label: res.data.reward_cosmetic,
+                        cosmetic: firstCosmetic?.img,
+                    });
+                }
+            }
+
             setOpenRewardData(rewards);
             setOpenReward(true);
         }

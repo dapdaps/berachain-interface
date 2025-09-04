@@ -6,10 +6,7 @@ import clsx from "clsx";
 export default function YourRewords({ treasure }: { treasure: TreasureData | null }) {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
-
-    if (treasure?.rewards?.Gem && treasure?.rewards?.Gem > 0) {
-
-    }
+    console.log('treasure:  ', treasure);
 
     const gemNum = useMemo(() => {
         if (treasure?.rewards?.Gem && treasure?.rewards?.Gem > 0) {
@@ -22,6 +19,18 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
         if (treasure?.rewards?.Spin && treasure?.rewards?.Spin > 0) {
             return treasure?.rewards?.Spin;
         }
+        return 0;
+    }, [treasure]);
+
+    const cosmeticNum = useMemo(() => {
+        try {
+            if (treasure?.rewards?.Cosmetics) {
+                return treasure?.rewards?.Cosmetics
+            }
+        } catch (error) {
+            console.log('error:  ', error);
+        }
+
         return 0;
     }, [treasure]);
 
@@ -58,8 +67,16 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
                     )
                 }
             </div>
-            <div className="w-[86px] h-[86px] flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
-                <div className="opacity-10 text-[42px]">？</div>
+            <div className="w-[86px] h-[86px] relative flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
+                <img src={`/images/treasure-book/cosmetics.png`} className={clsx("h-[60px] opacity-10", cosmeticNum > 0 ? "opacity-100" : "opacity-10")} alt="item" />
+                <div className={clsx("opacity-10 mt-[-20px]", cosmeticNum > 0 ? "opacity-100" : "opacity-10")}>COSMETICS</div>
+                {
+                    spinNum > 0 && (
+                        <div style={{
+                            WebkitTextStroke: "2px #000000",
+                        }} className="absolute bottom-[-35px] left-[50%] translate-x-[-50%] font-CherryBomb text-[#FDD54C] text-[20px]">X{cosmeticNum}</div>
+                    )
+                }
             </div>
             <div className="w-[86px] h-[86px] flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
                 <div className="opacity-10 text-[42px]">？</div>

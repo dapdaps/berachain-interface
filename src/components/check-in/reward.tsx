@@ -120,6 +120,28 @@ const CheckInReward = (props: any) => {
                     />
                   );
                 }
+
+                if (item.type === RewardType.Cosmetic) {
+                  return (
+                    <motion.img
+                      src={item.cosmetic}
+                      alt=""
+                      className={clsx(
+                        "w-[80px] h-[68px] object-center object-contain shrink-0",
+                        (data.length > 1 && index > 0) && "translate-x-[-20px]",
+                        (data.length > 1 && index === 0) && "translate-y-[-10px]",
+                      )}
+                      animate={{
+                        transform: [`translateY(0px)`, `translateY(-10px)`, `translateY(0)`],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                    />
+                  );
+                }
               })
             }
           </motion.div>
