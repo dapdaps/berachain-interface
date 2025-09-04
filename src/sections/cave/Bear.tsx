@@ -35,10 +35,10 @@ export default function Bear({
       {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-2.png" className="absolute left-[78px] top-[0px] max-w-[306px]" />}
 
 
-      {!!hats.length && hats[0].checked && <img src="/images/cave/bear/hat/hat-1.png" className=" absolute w-[117px] left-[210px] top-[-30px]" />}
-      {!!hats.length && hats[1].checked && <img src="/images/cave/bear/hat/hat-2.png" className=" absolute w-[135px] left-[230px] top-[-35px]" />}
-      {!!hats.length && hats[2].checked && <img src="/images/cave/bear/hat/hat-3.png" className=" absolute w-[110px] left-[230px] top-[-20px]" />}
-      {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[120px] left-[230px] top-[-25px]" />}
+      {!!hats.length && hats[0].checked && <img src="/images/cave/bear/hat/hat-1.png" className=" absolute w-[111px] left-[220px] top-[-30px]" />}
+      {!!hats.length && hats[1].checked && <img src="/images/cave/bear/hat/hat-2.png" className=" absolute w-[121px] left-[230px] top-[-37px]" />}
+      {!!hats.length && hats[2].checked && <img src="/images/cave/bear/hat/hat-3.png" className=" absolute w-[111px] left-[230px] top-[-37px]" />}
+      {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[111px] left-[230px] top-[-37px]" />}
 
 
       {!!clothes.length && clothes[0].checked && <img src="/images/cave/bear/cloth/cloth-1.png" className=" absolute w-[226px] left-[89px] top-[26px] z-20" />}
