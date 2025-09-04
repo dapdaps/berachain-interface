@@ -29,7 +29,7 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
     const { userInfo } = useUser();
     const [sort, setSort] = useState('joinedTime');
     const [sortType, setSortType] = useState(-1);
-
+    const [isLinkHover, setIsLinkHover] = useState(false);
     const inviteLink = useMemo(() => {
         return window.location.origin + '/referral/' + userInfo?.invite_code;
     }, [userInfo]);
@@ -39,6 +39,16 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
             title: `Copied link ${inviteLink}`
         });
     };
+
+    const inviteLinkShown = useMemo(() => {
+        if (!isLinkHover) {
+            return inviteLink?.length > 26
+                ? '...' + inviteLink.slice(-26)
+                : inviteLink;
+        }
+        return inviteLink;
+    }, [inviteLink, isLinkHover]);
+    
 
     return (
         <Modal
@@ -93,10 +103,18 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                         <div className="text-black font-[600] text-[18px] mb-[5px]">{userInfo?.address && userInfo.address.slice(0, 5) + '...' + userInfo.address.slice(-5)}</div>
                         <div className="flex items-center gap-[10px]">
                             <span className="text-black text-[16px] font-medium">Invite link:</span>
-                            <div className="flex items-center gap-[20px] bg-[#00000014] px-[12px] py-[6px] rounded-[8px]">
-                                <span className="text-black text-[16px] font-medium">{inviteLink?.length > 30
-                                    ? '...' + inviteLink.slice(-30)
-                                    : inviteLink}</span>
+                            <div className="flex w-[300px] items-center gap-[20px] bg-[#00000014] px-[12px] py-[6px] rounded-[8px]">
+                                <div
+                                    onMouseLeave={() => setIsLinkHover(false)}
+                                    onMouseEnter={() => setIsLinkHover(true)}
+                                    className="flex-1 overflow-auto h-[32px]"
+                                >
+                                    <div
+                                        className="text-black text-[16px] font-medium leading-[32px]">
+                                        {inviteLinkShown}
+                                    </div>
+                                </div>
+
                                 <button
                                     onClick={handleCopyLink}
                                     className="w-[16px] h-[16px] flex items-center justify-center text-[#666] hover:text-[#333] transition-colors"
@@ -161,7 +179,7 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                                         {user.address && user.address.slice(0, 5) + '...' + user.address.slice(-5)}
                                     </td>
                                     <td className="px-2 py-4">
-                                        { user.created_at ? formatSimpleDate(user.created_at) : '-'}
+                                        {user.created_at ? formatSimpleDate(user.created_at) : '-'}
                                     </td>
                                     <td className="px-2 py-4">
                                         {user.reward_amount && Number(user.reward_amount) > 0 ? (
@@ -185,7 +203,7 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
                                     </td>
                                 </tr>
                             )}
-                            
+
                             {
                                 loading && (
                                     <tr>
