@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const PAGE_SIZE = 10;
 
 export function useInvite() {
-    const { userInfo } = useUser();
+    const { userInfo, getUserInfo } = useUser();
     const [invitedUsers, setInvitedUsers] = useState([]);
     const [totalRewards, setTotalRewards] = useState(0);
     const [totalInvitedCount, setTotalInvitedCount] = useState(0);
@@ -53,6 +53,8 @@ export function useInvite() {
            
             getInvitedRewards();
             getInvitedUsers();
+            getUserInfo();
+            setClaimLoading(false);
         } catch (err) {
             setClaimLoading(false);
         }
