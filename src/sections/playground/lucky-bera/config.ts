@@ -103,6 +103,8 @@ export interface SpinResultData {
   xp_balance: number;
   xp_changed: boolean;
   xp_level: number;
+  // front-end only
+  currentSpinUserData?: SpinUserData;
 }
 
 export const GoodsList = [

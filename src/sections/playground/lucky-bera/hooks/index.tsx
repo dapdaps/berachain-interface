@@ -56,8 +56,8 @@ export function useLuckyBera() {
           }
         });
       }
-      if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _spinUserData.game_xp) {
-        _spinUserData.xp_balance = Big(_spinUserData.xp_balance || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber();
+      if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _lastSpinResult.xp_balance) {
+        _spinUserData.xp_balance = _lastSpinResult.xp_balance;
       }
       if (_lastSpinResult.game_xp) {
         // update level reward
@@ -89,7 +89,10 @@ export function useLuckyBera() {
         return false;
       }
       reloadSpinData(res.data);
-      return res.data;
+      return {
+        ...res.data,
+        currentSpinUserData: spinUserData,
+      };
     } catch (error: any) {
       toast.fail({ title: `Spin failed: ${error.message}` });
       return false;
