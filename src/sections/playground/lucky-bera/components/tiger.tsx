@@ -60,7 +60,7 @@ export default memo(function Tiger(props: any) {
   const [openRecordsModal, setOpenRecordsModal] = useState(false);
 
   const startCoinExplosion = (params: SpinResultData) => {
-    const { draw_reward } = params;
+    const { draw_reward, draw_reward_amount, currentSpinUserData } = params;
 
     let currCategory = SPIN_CATEGORIES[draw_reward as SpinCategory];
     if (!draw_reward) {
@@ -89,19 +89,22 @@ export default memo(function Tiger(props: any) {
     });
 
     if (isRocket) {
-      const xpRewardRect = spinXpRewardRef.current.getBoundingClientRect();
-      const startXpRewardX = xpRewardRect.left + xpRewardRect.width / 2 - EXPLOSION_COIN_SIZE / 2;
-      const startXpRewardY = xpRewardRect.top + xpRewardRect.height / 2 - EXPLOSION_COIN_SIZE;
-      const xpRewardIcon = SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon;
-      createCoinsExplosion(startXpRewardX, startXpRewardY, xpRewardIcon, {
-        size: EXPLOSION_COIN_SIZE / 3 * 2,
-        customPosition: {
-          x: window.innerWidth / 2,
-          y: -100,
-        },
-        coinCount: 5,
-        delayBetweenCoins: 500,
-      });
+      const isGetXpReward = Big(currentSpinUserData?.xp_balance || 0).plus(draw_reward_amount || 0).gt(currentSpinUserData?.game_xp?.xp || 0);
+      if (isGetXpReward) {
+        const xpRewardRect = spinXpRewardRef.current.getBoundingClientRect();
+        const startXpRewardX = xpRewardRect.left + xpRewardRect.width / 2 - EXPLOSION_COIN_SIZE / 2;
+        const startXpRewardY = xpRewardRect.top + xpRewardRect.height / 2 - EXPLOSION_COIN_SIZE;
+        const xpRewardIcon = SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon;
+        createCoinsExplosion(startXpRewardX, startXpRewardY, xpRewardIcon, {
+          size: EXPLOSION_COIN_SIZE / 3 * 2,
+          customPosition: {
+            x: window.innerWidth / 2,
+            y: -100,
+          },
+          coinCount: 5,
+          delayBetweenCoins: 500,
+        });
+      }
     }
   };
 
