@@ -26,6 +26,8 @@ export const CosmeticsList: Cosmetic[] = [
     style: {
       left: 70,
       top: 60,
+      // height: 102,
+      marginLeft: -14,
     },
   },
   {
@@ -37,6 +39,8 @@ export const CosmeticsList: Cosmetic[] = [
     style: {
       left: 137,
       top: 54,
+      height: 102,
+      marginLeft: -21,
     },
   },
   {
@@ -48,6 +52,8 @@ export const CosmeticsList: Cosmetic[] = [
     style: {
       left: 204,
       top: 46,
+      height: 102,
+      marginLeft: -16,
     },
   },
   {
@@ -59,6 +65,8 @@ export const CosmeticsList: Cosmetic[] = [
     style: {
       left: 272,
       top: 38,
+      height: 102,
+      marginLeft: -13,
     },
   },
   // hats
@@ -76,19 +84,9 @@ export const CosmeticsList: Cosmetic[] = [
   {
     level: 2,
     category: CosmeticCategory.Hats,
-    name: "RedSkiMask",
+    name: "BullasMask",
     img: "/images/cave/hat/hat-2-2.png",
     img_not_owned: "/images/cave/hat/hat-2.png",
-    style: {
-      width: 117,
-    },
-  },
-  {
-    level: 3,
-    category: CosmeticCategory.Hats,
-    name: "BullasMask",
-    img: "/images/cave/hat/hat-3-3.png",
-    img_not_owned: "/images/cave/hat/hat-3.png",
     style: {
       width: 120,
       transformOrigin: "top",
@@ -96,18 +94,25 @@ export const CosmeticsList: Cosmetic[] = [
     },
   },
   {
+    level: 3,
+    category: CosmeticCategory.Hats,
+    name: "RedSkiMask",
+    img: "/images/cave/hat/hat-3-3.png",
+    img_not_owned: "/images/cave/hat/hat-3.png",
+    style: {
+      width: 116,
+      transform: "translateY(4px)",
+    },
+  },
+  {
     level: 4,
     category: CosmeticCategory.Hats,
-    name: "YellowSkiMask",
+    name: "BlueSkiMask",
     img: "/images/cave/hat/hat-4-4.png",
     img_not_owned: "/images/cave/hat/hat-4.png",
     style: {
-      width: 120,
-      transformOrigin: "top",
-      transform: "scale(1.2) translateY(1px)",
-    },
-    styleNotOwned: {
-      width: 102,
+      width: 116,
+      transform: "translateY(3px)",
     },
   },
   // coats

@@ -213,7 +213,9 @@ export default function Cave() {
   // const { airDropRound, airDropPrize, airDropHistory } = useAirdrop();
   const { cars, hats, clothes, necklaces, items, nfts, getItems } = useCollect({
     address: account as string,
-  })
+  });
+
+  console.log("cars: %o", cars);
 
   const tipClick = useCallback((e: any, item: any, gameItem: any) => {
     // if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
@@ -544,14 +546,13 @@ export default function Cave() {
               return (
                 <div
                   className="absolute cave-tip"
-                  style={item.style}
+                  style={item.pc_item ? item.style : (item.styleNotOwned || item.style)}
                   onClick={(e) => {
                     tipClick(e, carTips[item.level - 1], item)
                   }}
                 >
                   <img
                     className="h-[78px] object-contain object-center"
-                    style={item.pc_item ? item.style : (item.styleNotOwned || item.style)}
                     src={item.pc_item ? item.img : item.img_not_owned}
                   />
                   {
