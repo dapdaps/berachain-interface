@@ -326,17 +326,37 @@ export default memo(function Tiger(props: any) {
             </div>
             <div className="relative flex items-center w-[353px] h-[188px] bg-[url('/images/playground/lucky-bera/turntable_bg.svg')] bg-center bg-contain bg-no-repeat">
               <div className="absolute top-1/2 translate-x-[-40px] -translate-y-1/2">
-                <img
+                <motion.img
                   src="/images/playground/lucky-bera/pointer.svg"
                   alt="pointer"
                   className="w-[57px] h-[43px] object-center object-contain"
+                  animate={spinning ? {
+                    rotate: [0, -30, 30, 0],
+                  } : {
+                    rotate: [0, 0],
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    repeat: Infinity,
+                    repeatType: "loop",
+                  }}
                 />
               </div>
               <div className="absolute rotate-180 -right-[2px] top-1/2 translate-x-[35px] -translate-y-1/2">
-                <img
+                <motion.img
                   src="/images/playground/lucky-bera/pointer.svg"
                   alt="pointer"
                   className="w-[57px] h-[43px] object-center object-contain"
+                  animate={spinning ? {
+                    rotate: [0, -30, 30, 0],
+                  } : {
+                    rotate: [0, 0],
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    repeat: Infinity,
+                    repeatType: "loop",
+                  }}
                 />
               </div>
 
