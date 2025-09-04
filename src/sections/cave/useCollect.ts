@@ -2,6 +2,8 @@ import { useBearEqu } from '@/stores/useBearEqu';
 import { get } from '@/utils/http';
 import { useCallback, useEffect, useState } from 'react';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
+import useCustomAccount from '@/hooks/use-account';
+import { CosmeticCategory, CosmeticsList } from '@/configs/cosmetic';
 
 export const hat_categories = ["elf_hat", "santa_hat"]
 export const cloth_cateogries = ["elf_jacket", "santa_coat"]
@@ -77,7 +79,9 @@ export const giftBoxTips = [
   },
 ]
 
-export default function useCollect({ address, round }: { address: string, round: number | string }) {
+export default function useCollect({ address }: { address: string; }) {
+  const { accountWithAk } = useCustomAccount();
+
   const [collection, setCollection] = useState<any>()
   const [cars, setCars] = useState<GameItem[]>([])
   const [clothes, setClothes] = useState<GameItem[]>([])
@@ -123,154 +127,135 @@ export default function useCollect({ address, round }: { address: string, round:
     },
   ])
   const [nfts, setNfts] = useState<GameItem[]>([])
-  const [pets, setPets] = useState<GameItem[]>([])
 
   const hat = useBearEqu((store: any) => store.hat)
   const cloth = useBearEqu((store: any) => store.cloth)
   const car = useBearEqu((store: any) => store.car)
   const necklace = useBearEqu((store: any) => store.necklace)
-  const pet = useBearEqu((store: any) => store.pet)
-  const { setTransferItems } = useTransferItemsStore();
+  // const { setTransferItems } = useTransferItemsStore();
+
+  const getAllItems = async () => {
+    return {
+      code: 200,
+      data: CosmeticsList,
+    };
+  };
 
   const getItems = () => {
-    console.log("====round", round)
-    if (Number(round) < 0) {
-      return;
-    }
-
-    console.log("=====11111========")
     const promiseArray = [
-      get(`/api/beracave/items/${round}`),
-      get(`/api/beracave/items/${address || ''}/${round}`)
+      getAllItems(),
+      get("/api/go/beracave/user")
     ]
     Promise.all(promiseArray).then((result: any) => {
+      const [firstResponse, secondResponse] = result;
 
-      console.log("=======result=====", result)
-      const [firstResponse, secondResponse] = result
+      const allCosmetics = firstResponse.data || [];
+      const userCosmetics = secondResponse.data.cosmetic || [];
 
-      if (firstResponse.code === 0 || secondResponse.code === 0) {
-        const cars: GameItem[] = []
-        const clothes: GameItem[] = []
-        const necklaces: GameItem[] = []
-        const hats: GameItem[] = []
+      const cars: GameItem[] = []
+      const clothes: GameItem[] = []
+      const necklaces: GameItem[] = []
+      const hats: GameItem[] = []
 
-        const _transferItems: any[] = [];
-
-        const pets: GameItem[] = []
-        let necklacesIdx = 1;
-        firstResponse.data?.forEach((item: GameItem) => {
-          switch (item.category) {
-            case 'Hat':
-              hats.push({
-                ...item,
-                level: item.name === "Wool Hat" ? 5 : item.level,
-                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
-              })
-              break;
-            case 'Clothes':
-              clothes.push({
-                ...item,
-                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
-              })
-              break;
-            case 'Necklace':
-              necklaces.push({
-                ...item,
-                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
-              })
-              break;
-            case 'Vehicle':
-              cars.push({
-                ...item,
-                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
-              })
-              break;
-            case "Pet":
-              pets.push({
-                ...item,
-                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
-              })
-              break;
-
-          }
-          if (item.pc_item) {
-            switch (item.category) {
-              case 'Hat':
-                item.img = `/images/cave/hat/hat-${item.level}-${item.level}.png`;
-                break;
-              case 'Clothes':
-                item.img = `/images/cave/clothing/cloth-${item.level}-${item.level}.png`;
-                break;
-              case 'Necklace':
-                item.img = `/images/cave/neck/neck-${necklacesIdx}-${necklacesIdx}.png`;
-                necklacesIdx += 1;
-                break;
-              case 'Vehicle':
-                item.img = `/images/cave/key/key-${item.level}-${item.level}.png`;
-                break;
-              case 'Pet':
-                item.img = `/images/cave/pet/pet-${item.level}-${item.level}.png`;
-                break;
-            }
-            _transferItems.push(item);
-          }
-        });
-        setTransferItems(_transferItems.filter((it) => !it.transfer_to));
+      // const _transferItems: any[] = [];
+      // let necklacesIdx = 1;
+      allCosmetics.forEach((item: GameItem) => {
+        switch (item.category) {
+          case CosmeticCategory.Hats:
+            hats.push({
+              ...item,
+              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+            })
+            break;
+          case CosmeticCategory.Jackets:
+            clothes.push({
+              ...item,
+              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+            })
+            break;
+          case CosmeticCategory.Necklaces:
+            necklaces.push({
+              ...item,
+              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+            })
+            break;
+          case CosmeticCategory.Cars:
+            cars.push({
+              ...item,
+              pc_item: userCosmetics.findIndex((_item: any) => _item === item.name) > -1,
+            })
+            break;
+        }
+        // if (item.pc_item) {
+        //   switch (item.category) {
+        //     case CosmeticCategory.Hats:
+        //       item.img = `/images/cave/hat/hat-${item.level}-${item.level}.png`;
+        //       break;
+        //     case CosmeticCategory.Jackets:
+        //       item.img = `/images/cave/clothing/cloth-${item.level}-${item.level}.png`;
+        //       break;
+        //     case CosmeticCategory.Necklaces:
+        //       item.img = `/images/cave/neck/neck-${necklacesIdx}-${necklacesIdx}.png`;
+        //       necklacesIdx += 1;
+        //       break;
+        //     case CosmeticCategory.Cars:
+        //       item.img = `/images/cave/key/key-${item.level}-${item.level}.png`;
+        //       break;
+        //   }
+        // _transferItems.push(item);
+        // }
+      });
+      // setTransferItems(_transferItems.filter((it) => !it.transfer_to));
 
 
-        const _items = items?.map(item => {
-          return {
-            ...item,
-            christmas: true,
-            pc_item: secondResponse?.data?.findIndex((_item: any) => _item.category === item.category) > -1,
-          }
-        })
+      // const _items = items?.map(item => {
+      //   return {
+      //     ...item,
+      //     christmas: true,
+      //     pc_item: userCosmetics.findIndex((_item: any) => _item.category === item.category) > -1,
+      //   }
+      // })
 
-        const _nfts = secondResponse?.data?.nfts?.map((item: any) => {
-          return {
-            ...item,
-            pc_item: true,
-          }
-        })
+      // const _nfts = userCosmetics.nfts?.map((item: any) => {
+      //   return {
+      //     ...item,
+      //     pc_item: true,
+      //   }
+      // })
 
-        setCars(cars.sort((a: any, b: any) => a.level - b.level))
-        setClothes(clothes.sort((a: any, b: any) => a.level - b.level))
-        setNecklaces(necklaces.sort((a: any, b: any) => a.level - b.level))
-        setHats(hats.sort((a: any, b: any) => a.level - b.level))
-        setPets(pets.sort((a: any, b: any) => a.level - b.level))
+      setCars(cars.sort((a: any, b: any) => a.level - b.level))
+      setClothes(clothes.sort((a: any, b: any) => a.level - b.level))
+      setNecklaces(necklaces.sort((a: any, b: any) => a.level - b.level))
+      setHats(hats.sort((a: any, b: any) => a.level - b.level))
 
-        console.log('====pets1111', pets)
-        setItems(_items)
-        setNfts(_nfts)
-        setCollection({
-          cars,
-          clothes,
-          necklaces,
-          hats,
-          items: _items,
-          nfts: _nfts,
-          pets
-        })
-      }
-    }).catch(error => {
-      console.log("=====error=====", error)
+      // setItems(_items)
+      // setNfts(_nfts)
+      setCollection({
+        cars,
+        clothes,
+        necklaces,
+        hats,
+        // items: _items,
+        // nfts: _nfts,
+      })
     });
   };
 
   useEffect(() => {
+    if (!accountWithAk) {
+      return;
+    }
     getItems();
-  }, [address, round])
+  }, [accountWithAk])
 
 
-  const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace" | "pet") => {
-    console.log("=====type", type)
+  const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace") => {
     if (type) {
       const TypeMapping = {
         hat: hat_categories,
         cloth: cloth_cateogries,
         car: car_cateogries,
-        necklace: necklace_categories,
-        // pet: 
+        necklace: necklace_categories
       }
       const cateogries = TypeMapping[type] || necklace_categories
       cateogries.forEach(category => {
@@ -328,17 +313,12 @@ export default function useCollect({ address, round }: { address: string, round:
     }
   }, [necklace, collection, address])
 
-  useEffect(() => {
-    if (collection?.pets) {
-      initEqu(collection.pets, setPets, pet)
-    }
-    if (collection?.items) {
-      initEqu(collection.items, setItems, pet, "pet")
-    }
-  }, [pet, collection, address])
 
-
-
+  // useEffect(() => {
+  //     if (collection?.nfts) {
+  //         initEqu(collection.nfts, setNfts, nfts)
+  //     }
+  // }, [nfts, collection])
 
   return {
     collection,
@@ -348,14 +328,12 @@ export default function useCollect({ address, round }: { address: string, round:
     hats,
     items,
     nfts,
-    pets,
     setCars,
     setClothes,
     setHats,
     setNecklaces,
     setItems,
     setNfts,
-    setPets,
     getItems,
   }
 }
@@ -372,4 +350,7 @@ export type GameItem = {
   // if the address is yours, it means the funds are being received
   transfer_to?: string;
   img?: string;
+  img_not_owned?: string;
+  style?: React.CSSProperties;
+  styleNotOwned?: React.CSSProperties;
 }

@@ -29,6 +29,10 @@ export default function History({ onClose }: { onClose: () => void }) {
                     list.push('Spins');
                 }
 
+                if (record.reward_cosmetic) {
+                    list.push('Cosmetics');
+                }
+
                 return <div className="flex items-center gap-1">
                     {
                         list.join('/')
@@ -47,6 +51,9 @@ export default function History({ onClose }: { onClose: () => void }) {
                 }
                 if (record.reward_spin_amount > 0) {
                     list.push(`X ${record.reward_spin_amount}`);
+                }
+                if (record.reward_cosmetic) {
+                    list.push(`X ${record.reward_cosmetic.split(',').length}`);
                 }
                 return <div className="flex items-center gap-1">
                     {

@@ -12,6 +12,7 @@ export interface TreasureData {
     rewards: {
         Gem: number;
         Spin: number;
+        Cosmetics: number;
     };
 }
 
@@ -23,8 +24,6 @@ export const useTreasure = ({ show }: { show: boolean }) => {
     const { userInfo, getUserInfo } = useUser();
     const [openCheckInModal, setOpenCheckInModal] = useState(false);
     const [utcRemain, setUtcRemain] = useState<{ minutes: string, seconds: string, hours: string }>({ minutes: "00", seconds: "00", hours: "00" });
-
-    
 
     const hallStore: any = useHall()
     const inviteModalStore: any = useInviteModal();
