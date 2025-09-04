@@ -48,6 +48,7 @@ export default function InviteModal({ open, onClose, invitedUsers, totalRewards,
         }
         return inviteLink;
     }, [inviteLink, isLinkHover]);
+    
 
     return (
         <Modal
