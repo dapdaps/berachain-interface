@@ -13,6 +13,7 @@ import MemeTokensGrid from "./components/memeTokensGrid.tsx";
 import useTokenVolume from "./hooks/use-token-volume";
 import { usePrice7d } from '@/sections/marketplace/hooks/use-price-7d';
 import { useDebounce } from "ahooks";
+import { motion } from "framer-motion";
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -267,6 +268,41 @@ const MarketplaceView = () => {
           </div>
         </div>
       </div>
+      
+      <div className="fixed bottom-[10px] left-1/2 transform -translate-x-1/2 lg:w-[1200px] md:w-full z-30 h-[240px]">
+        <div className="w-[150px] h-[240px] absolute bottom-[0] right-[-100px]">
+          <img src="/images/market-place/henlo-body.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
+          <motion.img
+            src="/images/market-place/henlo-arm.png"
+            alt="cloud"
+            className="absolute w-[60px] h-[50px] left-[108px] top-[112px]"
+            style={{ transformOrigin: "left bottom" }}
+            animate={{ rotate: [0, 20, 0, 20, 0, 0] }}
+            transition={{
+              duration: 9,
+              times: [
+                0,
+                0.055,
+                0.111,
+                0.166,
+                0.221,
+                1
+              ],
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: [
+                "easeInOut",
+                "easeInOut",
+                "easeInOut",
+                "easeInOut",
+                "linear"
+              ]
+            }}
+          />
+          <img src="/images/market-place/henlo-cloth.png" alt="cloud" className="w-[101px] h-[62px] absolute top-[140px] left-[23px]" />
+        </div>
+      </div>
+      
       {selectedRecord && (
         <SwapModal
           defaultOutputCurrency={selectedRecord}
