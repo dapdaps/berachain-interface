@@ -51,7 +51,11 @@ const LuckyBeraResults = (props: any) => {
         const currentReward = SPIN_CATEGORIES[record.category as SpinCategory];
         if (!currentReward) {
           return (
-            <div className="opacity-30">0</div>
+            <img
+              src={SPIN_CATEGORIES[SpinCategory.Apple].icon}
+              alt=""
+              className="w-[25px] h-[25px] shrink-0 object-center object-contain"
+            />
           );
         }
         return (
