@@ -64,7 +64,6 @@ export function useInvite() {
     useEffect(() => {
         if (userInfo && userInfo.address) {
             getInvitedRewards();
-            getInvitedUsers();
         }
     }, [userInfo]);
 
