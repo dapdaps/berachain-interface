@@ -459,6 +459,7 @@ const User = (props: any) => {
           )}
         </Popover>
       </motion.div>
+      
       <InviteModal
         open={inviteModalStore.showInviteModal}
         invitedUsers={invitedUsers}
