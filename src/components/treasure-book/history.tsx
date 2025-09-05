@@ -33,9 +33,11 @@ export default function History({ onClose }: { onClose: () => void }) {
                     list.push('Cosmetics');
                 }
 
-                return <div className="flex items-center gap-1">
+                return <div className="">
                     {
-                        list.join('/')
+                        list.map((item, index) => (
+                            <div key={index}>{item}<br/></div>
+                        ))
                     }
                 </div>
             }
@@ -55,9 +57,11 @@ export default function History({ onClose }: { onClose: () => void }) {
                 if (record.reward_cosmetic) {
                     list.push(`X ${record.reward_cosmetic.split(',').length}`);
                 }
-                return <div className="flex items-center gap-1">
+                return <div className="">
                     {
-                        list.join('/')
+                        list.map((item, index) => (
+                            <div key={index}>{item}<br/></div>
+                        ))
                     }
                 </div>
             }
@@ -126,7 +130,7 @@ export default function History({ onClose }: { onClose: () => void }) {
             </div>
 
             <div className="relative pt-[80px]">
-                <div className="px-[40px]">
+                <div className="px-[40px] max-h-[540px] overflow-y-auto">
                     <FlexTable
                         columns={columns}
                         list={history}

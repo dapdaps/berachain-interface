@@ -124,10 +124,10 @@ const CheckInReward = (props: any) => {
                 if (item.type === RewardType.Cosmetic) {
                   return (
                     <motion.img
-                      src={item.cosmetic}
+                      src="/images/treasure-book/cosmetics.png"
                       alt=""
                       className={clsx(
-                        "w-[80px] h-[68px] object-center object-contain shrink-0",
+                        "h-[68px] object-center object-contain shrink-0",
                         (data.length > 1 && index > 0) && "translate-x-[-20px]",
                         (data.length > 1 && index === 0) && "translate-y-[-10px]",
                       )}

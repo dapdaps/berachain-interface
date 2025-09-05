@@ -48,14 +48,23 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
             if (res.data.reward_cosmetic) {
                 const cosmetics = res.data.reward_cosmetic;
                 if (cosmetics.length > 0) {
-                    const first = cosmetics[0];
-                    const firstCosmetic = CosmeticsList.find((cosmetic) => cosmetic.name.toLowerCase() === first.toLowerCase());
+                    // for (const cosmeticItem of cosmetics) {
+                    //     const firstCosmetic = CosmeticsList.find((cosmetic) => cosmetic.name.toLowerCase() === cosmetic.toLowerCase());
+                    //     rewards.push({
+                    //         type: RewardType.Cosmetic,
+                    //         amount: cosmetics.length,
+                    //         label: res.data.reward_cosmetic,
+                    //         cosmetic: firstCosmetic?.img,
+                    //     });
+                    // }
+
                     rewards.push({
                         type: RewardType.Cosmetic,
                         amount: cosmetics.length,
-                        label: res.data.reward_cosmetic,
-                        cosmetic: firstCosmetic?.img,
+                        label: cosmetics.length + ' Cosmetics',
+                        // cosmetic: firstCosmetic?.img,
                     });
+                    
                 }
             }
 
