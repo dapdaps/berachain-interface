@@ -46,7 +46,7 @@ export default function TotalCollected({ treasure, openBox }: { treasure: Treasu
             }
 
             if (res.data.reward_cosmetic) {
-                const cosmetics = res.data.reward_cosmetic.split(',');
+                const cosmetics = res.data.reward_cosmetic;
                 if (cosmetics.length > 0) {
                     const first = cosmetics[0];
                     const firstCosmetic = CosmeticsList.find((cosmetic) => cosmetic.name.toLowerCase() === first.toLowerCase());
