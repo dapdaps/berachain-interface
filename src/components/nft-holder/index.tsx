@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import Modal from '@/components/modal';
 import Loading from '../loading';
 import useUser from '@/hooks/use-user';
-import { useNft } from './use-nft';
+import { useNft, NFT_ADDRESSES } from './use-nft';
 
 interface NFTHolderPerksModalProps {
     open: boolean;
@@ -49,12 +49,14 @@ export default function NFTHolderPerksModal({
                 </div>
 
                 <div className="flex justify-center gap-[20px] mb-[30px]">
-                    <div className="w-[120px] h-[120px] rounded-[15px] overflow-hidden shadow-lg">
+                    <div className="w-[120px] h-[120px] rounded-[15px] shadow-lg relative">
                         <img src="/images/nft-holder/nft-1.png" className="w-full h-full" alt="nft" />
+                        {nft[NFT_ADDRESSES[0]] && <CheckIcon />}
                     </div>
 
-                    <div className="w-[120px] h-[120px] rounded-[15px] overflow-hidden shadow-lg">
+                    <div className="w-[120px] h-[120px] rounded-[15px] shadow-lg relative">
                         <img src="/images/nft-holder/nft-2.png" className="w-full h-full" alt="nft" />
+                        {nft[NFT_ADDRESSES[1]] && <CheckIcon />}
                     </div>
                 </div>
 
@@ -85,5 +87,14 @@ export default function NFTHolderPerksModal({
                 </div>
             </div>
         </Modal>
+    );
+}
+
+
+const CheckIcon = () => {
+    return (
+        <div className="w-[22px] h-[22px] absolute right-[-10px] bottom-[-10px]">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="10.5" fill="#78FEFF" stroke="black"></circle><path d="M5 11.0435L9.33333 15L17 8" stroke="black" stroke-width="2"></path></svg>
+        </div>
     );
 }
