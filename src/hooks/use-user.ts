@@ -101,7 +101,6 @@ export function useUser() {
       invite_code: window.localStorage.getItem('referral_code') ?? '',
     });
 
-    console.log('loginRes', loginRes)
 
     // const res = await post('/api/auth/access-token', {
     //   address: currentAddress,

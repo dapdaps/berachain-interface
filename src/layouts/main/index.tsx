@@ -20,6 +20,7 @@ import { useActivityStore } from "@/stores/useActivityStore";
 import NavigationMenu from "@/sections/home-earth/components/menu";
 import Downtime from "@/components/downtime";
 import TreasureBook from "@/components/treasure-book";
+import NFTHolderPerksModal from "@/components/nft-holder";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
@@ -303,6 +304,7 @@ const MainLayout = (props: Props) => {
       </div>
       <MapModal />
       <GuidingTutorial />
+      <NFTHolderPerksModal open={true} onClose={() => {}} />
       {
         !isSystemMaintenanceDowntime && (
           <>
