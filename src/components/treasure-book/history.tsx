@@ -7,7 +7,7 @@ import { formatEnglishDate, formatSimpleDate } from '@/utils/date';
 import clsx from 'clsx';
 
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 1;
 
 export default function History({ onClose }: { onClose: () => void }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -86,7 +86,7 @@ export default function History({ onClose }: { onClose: () => void }) {
 
     useEffect(() => {
         getList();
-    }, []);
+    }, [currentPage]);
 
     const getList = () => {
         setLoading(true);
@@ -146,8 +146,9 @@ export default function History({ onClose }: { onClose: () => void }) {
                                     totalPage={maxPage}
                                     page={currentPage}
                                     onPageChange={(page: number) => {
+                                        console.log('page', page);
                                         setCurrentPage(page);
-                                        getList();
+                                        // getList();
                                     }}
                                     isFirst={true}
                                     isLast={true}
