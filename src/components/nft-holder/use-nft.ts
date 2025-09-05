@@ -7,9 +7,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import useToast from "@/hooks/use-toast";
 import { useRpcStore } from "@/stores/rpc";
 
-const NFT_ADDRESSES = [
+export const NFT_ADDRESSES = [
+    '0x886d2176d899796cd1affa07eff07b9b2b80f1be',
     '0x88888888a9361f15aadbaca355a6b2938c6a674e',
-    '0x886d2176d899796cd1affa07eff07b9b2b80f1be'
 ]
 export const useNft = () => {
     const [nft, setNft] = useState<any>({
