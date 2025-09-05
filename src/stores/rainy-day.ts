@@ -29,7 +29,7 @@ export const RAINY_DAY: Scene = {
   api: '',
   bg: '#647783',
   bgPathname: 'ALL',
-  excludePathname: ['/cave', '/vaults', '/belong'],
+  excludePathname: ['/cave', '/vaults', '/belong', '/marketplace'],
 };
 
 export const useRainyDayStore = create(
