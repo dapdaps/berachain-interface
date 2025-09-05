@@ -184,8 +184,8 @@ export const CosmeticsList: Cosmetic[] = [
   {
     level: 3,
     category: CosmeticCategory.Jackets,
-    name: "coat1",
-    label: "",
+    name: "VintageJacket",
+    label: "Vintage Jacket",
     img: "/images/cave/clothing/cloth-3-3.png",
     img_not_owned: "/images/cave/clothing/cloth-3.png",
     style: {
@@ -195,8 +195,8 @@ export const CosmeticsList: Cosmetic[] = [
   {
     level: 4,
     category: CosmeticCategory.Jackets,
-    name: "coat2",
-    label: "",
+    name: "Windcheater",
+    label: "Windcheater",
     img: "/images/cave/clothing/cloth-4-4.png",
     img_not_owned: "/images/cave/clothing/cloth-4.png",
     style: {
