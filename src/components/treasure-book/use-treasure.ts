@@ -12,7 +12,7 @@ export interface TreasureData {
     rewards: {
         Gem: number;
         Spin: number;
-        Cosmetics: number;
+        Cosmetic: number;
     };
 }
 
