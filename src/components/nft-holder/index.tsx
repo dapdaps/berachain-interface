@@ -48,7 +48,7 @@ export default function NFTHolderPerksModal({
                     </p>
                 </div>
 
-                <div className="flex justify-center gap-[20px] mb-[30px]">
+                <div className="flex justify-center gap-[40px] mb-[30px]">
                     <div className="w-[120px] h-[120px] rounded-[15px] shadow-lg relative">
                         <img src="/images/nft-holder/nft-1.png" className="w-full h-full" alt="nft" />
                         {nft[NFT_ADDRESSES[0]] && <CheckIcon />}
