@@ -24,8 +24,8 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
 
     const cosmeticNum = useMemo(() => {
         try {
-            if (treasure?.rewards?.Cosmetics) {
-                return treasure?.rewards?.Cosmetics
+            if (treasure?.rewards?.Cosmetic) {
+                return treasure?.rewards?.Cosmetic
             }
         } catch (error) {
             console.log('error:  ', error);
