@@ -6,8 +6,6 @@ import clsx from "clsx";
 export default function YourRewords({ treasure }: { treasure: TreasureData | null }) {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
-    console.log('treasure:  ', treasure);
-
     const gemNum = useMemo(() => {
         if (treasure?.rewards?.Gem && treasure?.rewards?.Gem > 0) {
             return treasure?.rewards?.Gem;
@@ -71,7 +69,7 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
                 <img src={`/images/treasure-book/cosmetics.png`} className={clsx("h-[60px] opacity-10", cosmeticNum > 0 ? "opacity-100" : "opacity-10")} alt="item" />
                 <div className={clsx("opacity-10 mt-[-20px]", cosmeticNum > 0 ? "opacity-100" : "opacity-10")}>COSMETICS</div>
                 {
-                    spinNum > 0 && (
+                    cosmeticNum > 0 && (
                         <div style={{
                             WebkitTextStroke: "2px #000000",
                         }} className="absolute bottom-[-35px] left-[50%] translate-x-[-50%] font-CherryBomb text-[#FDD54C] text-[20px]">X{cosmeticNum}</div>
