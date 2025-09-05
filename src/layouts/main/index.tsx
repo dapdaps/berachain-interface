@@ -21,6 +21,7 @@ import NavigationMenu from "@/sections/home-earth/components/menu";
 import Downtime from "@/components/downtime";
 import TreasureBook from "@/components/treasure-book";
 import NFTHolderPerksModal from "@/components/nft-holder";
+import { useNftReward } from "@/stores/use-nft-reward";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
@@ -36,6 +37,7 @@ const MainLayout = (props: Props) => {
   const currentScene = context.current;
   const { isRainyDay, rainyDay } = useRainyDay({ isLoadPrice: true });
   const { isDefaultTheme, themeConfig } = useActivityStore();
+  const nftRewardStore: any = useNftReward();
 
   useEffect(() => {
     handleReportNoCode();
@@ -304,7 +306,7 @@ const MainLayout = (props: Props) => {
       </div>
       <MapModal />
       <GuidingTutorial />
-      <NFTHolderPerksModal open={true} onClose={() => {}} />
+      <NFTHolderPerksModal open={nftRewardStore.showNftReward} onClose={() => { nftRewardStore.set({ showNftReward: false }) }} />
       {
         !isSystemMaintenanceDowntime && (
           <>

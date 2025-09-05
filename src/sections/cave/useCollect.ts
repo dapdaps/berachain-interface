@@ -1,5 +1,5 @@
 import { useBearEqu } from '@/stores/useBearEqu';
-import { get } from '@/utils/http';
+import { get, post } from '@/utils/http';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 import useCustomAccount from '@/hooks/use-account';
@@ -257,17 +257,20 @@ export default function useCollect({ address }: { address: string; }) {
   const [userHiddenRewardCosmeticModalOpen, setUserHiddenRewardCosmeticModalOpen] = useState(false);
   const { runAsync: onOpenHiddenRewardCosmetic, loading: onOpenHiddenRewardCosmeticLoading } = useRequest(async () => {
     // TODO
-    const mockReq = () => new Promise<any>((resolve) => {
-      const timer = setTimeout(() => {
-        resolve({
-          code: 200,
-          data: {},
-        });
-        clearTimeout(timer);
-      }, 1000);
-    });
-    const res = await mockReq();
-    if (res.code !== 200) {
+    // const mockReq = () => new Promise<any>((resolve) => {
+    //   const timer = setTimeout(() => {
+    //     resolve({
+    //       code: 200,
+    //       data: {},
+    //     });
+    //     clearTimeout(timer);
+    //   }, 1000);
+    // });
+
+    const res = await post('/api/go/treasure/draw/cosmetic')
+
+    // const res = await mockReq();
+    if (!res.data?.success) {
       return false;
     }
     setUserHiddenRewardCosmeticModalOpen(true);
