@@ -25,7 +25,7 @@ export const useNft = () => {
         RPC_LIST[rpcStore.selected]?.url,
         [rpcStore]);
 
-    const { userInfo } = useUser();
+    const { userInfo, getUserInfo } = useUser();
 
     const checkNFT = useCallback(async (nftAddress: string): Promise<boolean> => {
         if (!userInfo?.address) {
@@ -35,8 +35,6 @@ export const useNft = () => {
         setIsLoading(true);
         try {
             const provider = new ethers.providers.JsonRpcProvider(rpc);
-
-
 
             const nftContract = new ethers.Contract(
                 nftAddress,
@@ -73,6 +71,7 @@ export const useNft = () => {
                     description: 'You have claimed your NFT reward',
                 });
                 setClaimLoading(false);
+                getUserInfo();
             } else {
                 toast.fail({
                     title: 'Claim failed',
