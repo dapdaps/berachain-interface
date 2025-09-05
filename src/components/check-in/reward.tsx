@@ -2,13 +2,15 @@ import clsx from "clsx";
 import Modal from "../modal";
 import { motion } from "framer-motion";
 import { RewardType } from "./config";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
+import { useMemo } from "react";
 
 const CheckInReward = (props: any) => {
   const { open, onClose, data } = props;
 
   const router = useRouter();
+  const pathname = usePathname();
   const { setTreasureBookOpen } = useLootboxSeasonStore();
 
   return (
@@ -182,21 +184,9 @@ const CheckInReward = (props: any) => {
             {
               data?.length === 1 ? (
                 <>
-                  <RewardButton
-                    type="primary"
-                    onClick={() => {
-                      if (data[0].type === RewardType.Spin) {
-                        router.push("/carnival/lucky-bera?from=check-in");
-                        return;
-                      }
-                      onClose();
-                      setTreasureBookOpen(true);
-                    }}
-                  >
-                    {data[0].type === RewardType.Spin ? "Play Lucky 777" : "Check all Lootboxes"}
-                  </RewardButton>
+                  <SingleRewardButton data={data} onClose={onClose} />
                   {
-                    data[0].type === RewardType.Spin && (
+                    [RewardType.Spin, RewardType.Cosmetic].includes(data[0].type) && (
                       <RewardButton
                         onClick={() => {
                           onClose();
@@ -210,14 +200,38 @@ const CheckInReward = (props: any) => {
                 </>
               ) : (
                 <>
-                  <RewardButton
-                    type="primary"
-                    onClick={() => {
-                      router.push("/carnival/lucky-bera?from=check-in");
-                    }}
-                  >
-                    Play Lucky 777
-                  </RewardButton>
+                  {
+                    data?.some((item: any) => item.type === RewardType.Spin) && (
+                      <RewardButton
+                        type="primary"
+                        onClick={() => {
+                          if (!["/carnival/lucky-bera"].includes(pathname)) {
+                            router.push("/carnival/lucky-bera");
+                          }
+                          onClose();
+                          setTreasureBookOpen(false);
+                        }}
+                      >
+                        Play Lucky Bera
+                      </RewardButton>
+                    )
+                  }
+                  {
+                    data?.some((item: any) => item.type === RewardType.Cosmetic) && (
+                      <RewardButton
+                        type="primary"
+                        onClick={() => {
+                          if (!["/cave"].includes(pathname)) {
+                            router.push("/cave");
+                          }
+                          onClose();
+                          setTreasureBookOpen(false);
+                        }}
+                      >
+                        Go to Bera Cave
+                      </RewardButton>
+                    )
+                  }
                   <RewardButton
                     onClick={() => {
                       onClose();
@@ -261,5 +275,54 @@ const RewardButton = (props: any) => {
     >
       {children}
     </button>
+  );
+};
+
+const SingleRewardButton = (props: any) => {
+  const { data, onClose } = props;
+
+  const pathname = usePathname();
+  const router = useRouter();
+  const { setTreasureBookOpen } = useLootboxSeasonStore();
+
+  const buttonText = useMemo(() => {
+    if (data[0].type === RewardType.Spin) {
+      return "Play Lucky Bera";
+    }
+    if (data[0].type === RewardType.Cosmetic) {
+      return "Go to Bera Cave";
+    }
+    return "Check all Lootboxes";
+  }, [data]);
+
+  return (
+    <RewardButton
+      type="primary"
+      onClick={() => {
+        // Spin
+        if (data[0].type === RewardType.Spin) {
+          if (!["/carnival/lucky-bera"].includes(pathname)) {
+            router.push("/carnival/lucky-bera");
+          }
+          onClose();
+          setTreasureBookOpen(false);
+          return;
+        }
+        // Cosmetic
+        if (data[0].type === RewardType.Cosmetic) {
+          if (!["/cave"].includes(pathname)) {
+            router.push("/cave");
+          }
+          onClose();
+          setTreasureBookOpen(false);
+          return;
+        }
+        // Box & Gem
+        onClose();
+        setTreasureBookOpen(true);
+      }}
+    >
+      {buttonText}
+    </RewardButton>
   );
 };
