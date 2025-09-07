@@ -4,14 +4,20 @@ import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import { WheelUserData } from "../big-wheel/config";
+import { usePlaygroundStore } from "@/stores/use-playground";
 
 export function usePlayground() {
   const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");
 
   const { accountWithAk } = useCustomAccount();
+  const {
+    spinUserData,
+    setSpinUserData,
+    wheelUserData,
+    setWheelUserData,
+  } = usePlaygroundStore();
 
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
-  const [spinUserData, setSpinUserData] = useState<SpinUserData>();
 
   const checkSpinMultiplier = (_spinUserData?: SpinUserData) => {
     if (!_spinUserData?.spin_balance) {
@@ -39,7 +45,6 @@ export function usePlayground() {
     refreshDeps: [accountWithAk],
   });
 
-  const [wheelUserData, setWheelUserData] = useState<WheelUserData>();
   const { loading: wheelUserDataLoading, runAsync: getWheelUserData } = useRequest<WheelUserData, any>(async () => {
     if (!accountWithAk) {
       setWheelUserData(void 0);

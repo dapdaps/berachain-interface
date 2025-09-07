@@ -83,6 +83,7 @@ const BigWheel = () => {
     wheelUserDataLoading,
     getWheelUserData,
     setSpinUserData,
+    spinUserData,
   } = usePlaygroundContext();
   const { createCoinsExplosion } = useCoinExplosion();
 
@@ -176,11 +177,8 @@ const BigWheel = () => {
     const randomReward = currentReward[currentRewardIndex];
 
     // update wheel user data
-    setWheelUserData((prev: WheelUserData) => {
-      return {
-        ...prev,
-        wheel_balance: wheel_balance,
-      } as WheelUserData;
+    setWheelUserData({
+      wheel_balance: wheel_balance,
     });
 
     const { code } = randomReward;
@@ -198,11 +196,8 @@ const BigWheel = () => {
     });
 
     // update user spin data
-    setSpinUserData((prev: SpinUserData) => {
-      return {
-        ...prev,
-        spin_balance: Big(prev?.spin_balance || 0).plus(reward_spin_amount).toNumber(),
-      } as SpinUserData;
+    setSpinUserData({
+      spin_balance: Big(spinUserData?.spin_balance || 0).plus(reward_spin_amount).toNumber(),
     });
 
     startRewardExplosion(res.data);

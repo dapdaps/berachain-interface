@@ -1,6 +1,7 @@
 import useUser from "@/hooks/use-user";
 import { useHall } from "@/stores/hall";
 import { useInviteModal } from "@/stores/use-invite-modal";
+import { usePlaygroundStore } from "@/stores/use-playground";
 import { useUserStore } from "@/stores/user";
 import { get, post } from "@/utils/http";
 import Big from "big.js";
@@ -27,6 +28,7 @@ export const useTreasure = ({ show }: { show: boolean }) => {
 
     const hallStore: any = useHall()
     const inviteModalStore: any = useInviteModal();
+    const { spinUserData, setSpinUserData } = usePlaygroundStore();
 
     useEffect(() => {
         if (!userInfo || !userInfo.address) return;
@@ -40,6 +42,11 @@ export const useTreasure = ({ show }: { show: boolean }) => {
         });
         if (res.code === 200) {
             getUser();
+            if (res.data?.reward_spin_amount) {
+                setSpinUserData({
+                    spin_balance: Big(spinUserData?.spin_balance || 0).plus(res.data.reward_spin_amount).toNumber(),
+                });
+            }
             return res;
         }
 

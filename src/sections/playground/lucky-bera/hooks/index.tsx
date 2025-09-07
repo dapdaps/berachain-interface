@@ -41,30 +41,25 @@ export function useLuckyBera() {
   }, [chainId]);
 
   const { run: reloadSpinData } = useDebounceFn((_lastSpinResult: SpinResultData) => {
-    // getSpinUserData();
-    setSpinUserData((prev: SpinUserData) => {
-      const _spinUserData = {
-        ...prev,
-      };
-      _spinUserData.spin_balance = _lastSpinResult.spin_balance;
-      if (_lastSpinResult.draw_reward === SpinCategory.Gem) {
-        // update user total gem amount
-        setUserInfo({
-          user: {
-            ...userInfo,
-            gem: Big(userInfo.gem || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber()
-          }
-        });
-      }
-      if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _lastSpinResult.xp_balance) {
-        _spinUserData.xp_balance = _lastSpinResult.xp_balance;
-      }
-      if (_lastSpinResult.game_xp) {
-        // update level reward
-        _spinUserData.game_xp = _lastSpinResult.game_xp;
-      }
-      return _spinUserData as SpinUserData;
-    });
+    const _spinUserData: Partial<SpinUserData> = {};
+    _spinUserData.spin_balance = _lastSpinResult.spin_balance;
+    if (_lastSpinResult.draw_reward === SpinCategory.Gem) {
+      // update user total gem amount
+      setUserInfo({
+        user: {
+          ...userInfo,
+          gem: Big(userInfo.gem || 0).plus(_lastSpinResult.draw_reward_amount || 0).toNumber()
+        }
+      });
+    }
+    if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _lastSpinResult.xp_balance) {
+      _spinUserData.xp_balance = _lastSpinResult.xp_balance;
+    }
+    if (_lastSpinResult.game_xp) {
+      // update level reward
+      _spinUserData.game_xp = _lastSpinResult.game_xp;
+    }
+    setSpinUserData(_spinUserData);
     if (SPIN_CATEGORIES[_lastSpinResult?.draw_reward as SpinCategory]) {
       setLastSpinResult(_lastSpinResult);
     }
@@ -184,11 +179,8 @@ export function useLuckyBera() {
       // close buy spins modal
       setBuySpinsModalOpen(false);
       // update user spin data
-      setSpinUserData((prev: SpinUserData) => {
-        return {
-          ...prev,
-          spin_balance: Big(prev?.spin_balance || 0).plus(amount).toNumber(),
-        } as SpinUserData;
+      setSpinUserData({
+        spin_balance: Big(spinUserData?.spin_balance || 0).plus(amount).toNumber(),
       });
       // getSpinUserData();
     } catch (error: any) {
