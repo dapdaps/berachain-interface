@@ -12,7 +12,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useState } from "react";
 import ImportEquipments from "../ImportEquipments";
 import Module, { ModuleItem } from "./components/Module";
-import Welcome from "./components/Weclome";
 import { useGameItems } from "./hooks/useGameItems";
 import { useMasUser } from "./hooks/useMasUser";
 import { useWelcomeStore } from "./hooks/useWelcomeStore";
@@ -186,12 +185,12 @@ const Cave = () => {
         <MenuButton className='relative my-0 mx-auto z-20' contentClassName='text-2xl'>
           Bera Cave
         </MenuButton>
-        <div
+        {/* <div
           className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px] z-20" onClick={() => {
             welcomeStore.set({ show: true })
           }}
           data-bp="1020-001"
-        >Rules</div>
+        >Rules</div> */}
       </div>
       <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[240vw]')}>
         {/* <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
@@ -317,7 +316,6 @@ const Cave = () => {
       </div>
 
       {/* <TransferButton /> */}
-      <Welcome show={welcomeStore.show} onClose={() => welcomeStore.set({ show: false })} />
       <Popup />
 
       <NftModal
