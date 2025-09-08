@@ -52,7 +52,7 @@ export function useLuckyBera() {
         }
       });
     }
-    if (_lastSpinResult.draw_reward === SpinCategory.Rocket && _lastSpinResult.xp_balance) {
+    if (_lastSpinResult.draw_reward === SpinCategory.Rocket && typeof _lastSpinResult.xp_balance === "number") {
       _spinUserData.xp_balance = _lastSpinResult.xp_balance;
     }
     if (_lastSpinResult.game_xp) {
