@@ -1,4 +1,5 @@
-export const BUY_SPINS_CONTRACT_ADDRESS = "0x75F89c147E9Aa9C2C878E9D3065A5D4245672201";
+// https://api.beratown.app is production api
+export const BUY_SPINS_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_API === "https://api.beratown.app" ? "0x07D5f8f2024E24A2183c6722f3aA0d8349d19d9c" : "0x75F89c147E9Aa9C2C878E9D3065A5D4245672201";
 export const BUY_SPINS_EXCHANGE_RATE_BERA_TO_SPINS = 0.1;
 
 export enum SpinCategory {
