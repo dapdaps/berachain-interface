@@ -18,6 +18,7 @@ export function usePlayground() {
   } = usePlaygroundStore();
 
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
   const checkSpinMultiplier = (_spinUserData?: SpinUserData) => {
     if (!_spinUserData?.spin_balance) {
@@ -73,5 +74,7 @@ export function usePlayground() {
     setWheelUserData,
     wheelUserDataLoading,
     getWheelUserData,
+    showRulesModal,
+    setShowRulesModal,
   };
 }
