@@ -25,8 +25,10 @@ import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
 import McBeraView from '@/sections/home-earth/mc-bera';
+import Kirov from "./components/kirov";
 
 const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
+const MenuV2 = dynamic(() => import('./components/menu/v2'), { ssr: false });
 
 // seconds per lap
 const SPEED = 200;
@@ -203,6 +205,7 @@ const HomeEarth = (props: any) => {
             <Follower />
             <Signpost />
             <HomeEarthTop />
+            <MenuV2 className="mt-[22px]" />
             {/* <Airship /> */}
             <motion.div
               className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center shrink-0"
@@ -319,6 +322,7 @@ const HomeEarth = (props: any) => {
             <McBeraEntry />
           </div>
           <McBeraView topRef={contentRef} />
+          <Kirov />
         </div>
       </McBeraProvider>
     </HomeEarthContext.Provider>
