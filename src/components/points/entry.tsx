@@ -75,7 +75,7 @@ const PointsEntry = (props: any) => {
       </div>
 
       <AnimatePresence>
-        {isHovered && (
+        {isHovered && !isGuide && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
