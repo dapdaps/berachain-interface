@@ -15,12 +15,17 @@ import { useMemo, useState } from "react";
 const Laptop = ({ params, router, dapp, children, isPool, isStake }: any) => {
   const dappList = useMemo(() => {
     return Object.values(dapps).filter((_dapp) => {
+      if (isStake) {
+        return _dapp.name === "Bex" && _dapp.name !== dapp.name;
+      }
+
       if (isPool) {
         return _dapp.name !== "Ooga Booga" && _dapp.name !== dapp.name;
       }
       return _dapp.name !== dapp.name;
     });
-  }, [dapp, isPool]);
+  }, [dapp, isPool, isStake]);
+
 
   const tabs = useMemo(() => {  
     if (dapp.name === "Bex") {
@@ -151,6 +156,8 @@ export default function DexLayout({
   const params = useParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  console.log("pathname", pathname);
   const isMobile = useIsMobile();
   const urlParams = useParams();
   const dapp = dapps[urlParams.dapp as string] || dapps[DEFAULT_SWAP_DAPP];

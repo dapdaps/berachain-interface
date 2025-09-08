@@ -71,6 +71,7 @@ export default function useBridge({
   const inputValue = useDebounce(sendAmount, { wait: 500 });
 
   const { addAction } = useAddAction("bridge");
+  const { addAction: addSwapAction } = useAddAction("swap");
   const { fail, success } = useToast();
   const [quoteReques, setQuoteRequest] = useState<QuoteRequest | null>(null);
 
@@ -195,48 +196,69 @@ export default function useBridge({
           return { isSuccess: false };
         }
 
-        const actionParams = {
-          hash: txHash,
-          link: getChainScan(fromChain.chainId),
-          duration: selectedRoute.duration,
-          fromChainId: fromChain.chainId,
-          fromChainName: fromChain.chainName,
-          fromChainLogo: fromChain.icon,
-          fromTokenLogo: fromToken?.icon,
-          fromAmount: inputValue,
-          fromTokenSymbol: fromToken?.symbol,
-          toChainId: toChain.chainId,
-          toChainName: toChain.chainName,
-          toChainLogo: toChain.icon,
-          toTokenLogo: toToken?.icon,
-          toAmout: reciveAmount,
-          toTokenSymbol: toToken?.symbol,
-          time: Date.now(),
-          tool: selectedRoute.bridgeName,
-          bridgeType: selectedRoute.bridgeType,
-          fromAddress: account,
-          toAddress: account,
-          status: 3
-        };
-
-        // saveTransaction(actionParams);
-
-        addAction({
-          type: "Bridge",
-          fromChainId: fromChain.chainId,
-          toChainId: toChain.chainId,
-          token: fromToken,
-          amount: inputValue,
-          template: selectedRoute.bridgeType,
-          add: false,
-          status: 1,
-          transactionHash: txHash,
-          extra_data: actionParams
-        });
+        if (tool === 'superSwap') {
+          addSwapAction({
+            type: "Swap",
+            inputCurrency: fromToken,
+            outputCurrency: toToken,
+            template: 'Superswap',
+            transactionHash: txHash,
+            inputCurrencyAmount: parseFloat(inputValue),
+            outputCurrencyAmount: parseFloat(reciveAmount),
+            status: 1,
+            token_in_currency: fromToken,
+            token_out_currency: toToken,
+            sub_type: 'swap',
+            chainId: fromChain.chainId,
+            account_id: account,
+          });
+        } else {
+          const actionParams = {
+            hash: txHash,
+            link: getChainScan(fromChain.chainId),
+            duration: selectedRoute.duration,
+            fromChainId: fromChain.chainId,
+            fromChainName: fromChain.chainName,
+            fromChainLogo: fromChain.icon,
+            fromTokenLogo: fromToken?.icon,
+            fromAmount: inputValue,
+            fromTokenSymbol: fromToken?.symbol,
+            toChainId: toChain.chainId,
+            toChainName: toChain.chainName,
+            toChainLogo: toChain.icon,
+            toTokenLogo: toToken?.icon,
+            toAmout: reciveAmount,
+            toTokenSymbol: toToken?.symbol,
+            time: Date.now(),
+            tool: selectedRoute.bridgeName,
+            bridgeType: selectedRoute.bridgeType,
+            fromAddress: account,
+            toAddress: account,
+            status: 3
+          };
+  
+          // saveTransaction(actionParams);
+  
+          addAction({
+            type: "Bridge",
+            fromChainId: fromChain.chainId,
+            toChainId: toChain.chainId,
+            token: fromToken,
+            amount: inputValue,
+            template: selectedRoute.bridgeType,
+            add: false,
+            status: 1,
+            transactionHash: txHash,
+            extra_data: actionParams
+          });
+        }
+        
 
         success({
           title: "Transaction success",
-          text: ""
+          text: "",
+          chainId: fromChain.chainId,
+          tx: txHash
         });
 
         setIsSending(false);

@@ -13,7 +13,7 @@ export default function SwapPage() {
   const dappConfig = useMemo(
     () => ({
       ...dapp,
-    }),
+    }), 
     [dapp]
   );
 

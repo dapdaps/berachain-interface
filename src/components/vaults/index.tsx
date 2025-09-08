@@ -5,6 +5,8 @@ const Vaults = (props: any) => {
   const router = useRouter();
   const { className, disabled } = props;
 
+  return null;
+
   return (
     <button
       type="button"

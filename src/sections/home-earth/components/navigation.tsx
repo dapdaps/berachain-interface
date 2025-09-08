@@ -254,6 +254,15 @@ export const ENTRIES: any = [
     y: -68
   },
   {
+    sort: 2.1,
+    name: "Playground",
+    disabled: false,
+    icon: "/images/home-earth/entry-playground.svg",
+    signpost: "/images/home-earth/signpost-playground.svg",
+    path: "/carnival/lucky-bera",
+    y: -40
+  },
+  {
     sort: 3,
     name: "Token Marketplace",
     disabled: false,
@@ -288,11 +297,10 @@ export const ENTRIES: any = [
     path: "/vaults",
     bp: "1022-001-003"
   },
-
   {
     sort: 7,
     name: "Cave",
-    disabled: true,
+    disabled: false,
     disabledIcon: "/images/home-earth/cave-lock.svg",
     icon: "/images/home-earth/entry-cave.svg",
     signpost: "/images/home-earth/signpost-cave.svg",
@@ -319,6 +327,15 @@ export const BADDIES_ENTRIES: any = [
     icon: "/images/home-earth/baddies/baddies-dapp.svg",
     signpost: "/images/home-earth/signpost-dapp.svg",
     path: "/dapps",
+    y: -30
+  },
+  {
+    sort: 2.1,
+    name: "Playground",
+    disabled: false,
+    icon: "/images/home-earth/baddies/baddies-playground.svg",
+    signpost: "/images/home-earth/signpost-playground.svg",
+    path: "/carnival/lucky-bera",
     y: -30
   },
   {
@@ -362,7 +379,7 @@ export const BADDIES_ENTRIES: any = [
   {
     sort: 7,
     name: "Cave",
-    disabled: true,
+    disabled: false,
     icon: "/images/home-earth/baddies/baddies-cave.svg",
     disabledIcon: "/images/home-earth/baddies/baddies-cave-lock.svg",
     signpost: "/images/home-earth/signpost-cave.svg",

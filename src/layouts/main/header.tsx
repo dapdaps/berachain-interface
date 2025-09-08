@@ -20,6 +20,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
+import CheckInEntry from "@/components/check-in/entry";
+import PointsEntry from "@/components/points/entry";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -42,13 +44,13 @@ const MainLayoutHeader = (props: Props) => {
       <div className="w-full h-full px-[40px] flex justify-between items-center">
         <div className="flex items-center gap-x-[40px]">
           <Logo />
-          <div
+          {/* <div
             data-bp="1010-001"
             onClick={() => store.setOpen(true)}
             className="ml-[-20px] hover:scale-[1.1] ease-in-out duration-300 cursor-pointer"
           >
             <IconMap />
-          </div>
+          </div> */}
           <button
             onClick={goHome}
             className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:bottom-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[25px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
@@ -63,8 +65,11 @@ const MainLayoutHeader = (props: Props) => {
             <img src="/images/mint-honey.png" alt="mint" />
           </div> */}
 
+          <CheckInEntry />
 
-          <motion.div
+          <PointsEntry />
+
+          {/* <motion.div
             className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
               router.push("/kingdomly")
@@ -73,9 +78,9 @@ const MainLayoutHeader = (props: Props) => {
             transition={{ duration: 0.2 }}
           >
             <img src="/images/icon-nft.png" alt="icon-nft" />
-          </motion.div>
+          </motion.div> */}
 
-          <MintStable />
+          {/* <MintStable /> */}
 
 
           {/* <div className="relative">

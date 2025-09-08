@@ -215,6 +215,7 @@ export const bera: { [key: string]: Token } = {
     address: "0x4186BFC76E2E237523CBC30FD220FE055156b41F",
     decimals: 18,
     symbol: "rsETH",
+    name: "rsETH",
     icon: "/assets/tokens/rseth.svg"
   },
   rsweth: {
@@ -222,6 +223,7 @@ export const bera: { [key: string]: Token } = {
     address: "0x850CDF416668210ED0c36bfFF5d21921C7adA3b8",
     decimals: 18,
     symbol: "rswETH",
+    name: "rswETH",
     icon: "/assets/tokens/rsweth.png"
   },
   solvbtc: {
@@ -277,6 +279,7 @@ export const bera: { [key: string]: Token } = {
     address: "0x7DCC39B4d1C53CB31e1aBc0e358b43987FEF80f7",
     decimals: 18,
     symbol: "weETH",
+    name: "weETH",
     icon: "/assets/tokens/weeth.png"
   },
   yeet: {
@@ -319,6 +322,7 @@ export const bera: { [key: string]: Token } = {
     address: "0x85468a0CB26B5Fc1F2B7B7BA3aee07F073dff709",
     decimals: 18,
     symbol: "GODL",
+    name: "GodL",
     icon: "https://ichi-images.s3.us-east-1.amazonaws.com/tokens/logo_256_godl.svg"
   },
 
@@ -670,7 +674,7 @@ export const bera: { [key: string]: Token } = {
   swbera: {
     chainId: CHAIN_ID,
     address: "0x118D2cEeE9785eaf70C15Cd74CD84c9f8c3EeC9a",
-    symbol: "SWBERA",
+    symbol: "sWBERA",
     name: "Staked WBERA",
     decimals: 18,
     icon: "/assets/tokens/swbera.png",

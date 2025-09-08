@@ -13,6 +13,8 @@ import { tokenPairs } from "./lib/bridges/stargate/config";
 import useBridge from "./Hooks/useBridge";
 import type { Token, Chain } from "@/types";
 import useBridgeType from "./Hooks/useBridgeType";
+import useToast from "@/hooks/use-toast";
+import { balanceFormated } from "@/utils/balance";
 
 const ComingSoon = false;
 const chainList = Object.values(chains).filter((chain) =>
@@ -22,8 +24,11 @@ const chainList = Object.values(chains).filter((chain) =>
 );
 
 export default function BridgeContent({
+  type,
   defaultFromToken,
   defaultToToken,
+  defaultFromChain = 1,
+  defaultToChain = 80094,
   isShowConfirm = true,
   onCallback,
   onShowHistory,
@@ -35,6 +40,10 @@ export default function BridgeContent({
 
   const { bridgeType } = useBridgeType();
   const allTokens = useAllToken();
+  const { success } = useToast();
+  const [banlanceIndex, setBanlanceIndex] = useState(0);
+  const [isReverse, setIsReverse] = useState(false);
+
 
   const {
     fromChain,
@@ -60,11 +69,11 @@ export default function BridgeContent({
     routes,
     executeRoute
   } = useBridge({
-    originFromChain: chains[1],
-    originToChain: chains[80094],
+    originFromChain: chains[defaultFromChain],
+    originToChain: chains[defaultToChain],
     derection: 1,
     account: address,
-    defaultBridgeText: "Bridge",
+    defaultBridgeText: type === 'super-swap' ? "SuperSwap" : "Bridge",
     tool: showRoute ? undefined : bridgeType
   });
 
@@ -120,8 +129,8 @@ export default function BridgeContent({
   }, [fromChain, fromToken, bridgeType, allTokens]);
 
   useEffect(() => {
-    const fromTokens = allTokens[1];
-    const toTokens = allTokens[80094];
+    const fromTokens = allTokens[defaultFromChain];
+    const toTokens = allTokens[defaultToChain];
     if (defaultFromToken && defaultToToken) {
       setFromToken(
         fromTokens.find(
@@ -147,13 +156,14 @@ export default function BridgeContent({
     }
   }, [defaultFromToken, defaultToToken, allTokens]);
 
+
   return (
     <>
       <Card>
         <TokenAmout
           isDest={false}
           allTokens={allTokens}
-          limitBera={limitBera === 1}
+          limitBera={type === "kodiak" ? true : limitBera === 1}
           chain={fromChain}
           token={fromToken ?? null}
           amount={sendAmount}
@@ -168,6 +178,7 @@ export default function BridgeContent({
             setFromToken(token);
           }}
           comingSoon={ComingSoon}
+          updateRef={banlanceIndex}
         />
         <div
           className="h-[8px] md:h-4 flex justify-center items-center"
@@ -210,7 +221,7 @@ export default function BridgeContent({
         <TokenAmout
           allTokens={_allTokens}
           isDest={true}
-          limitBera={limitBera === 0}
+          limitBera={type === "kodiak" ? true : limitBera === 0}
           amount={reciveAmount ?? ""}
           chainList={chainList}
           chain={toChain}
@@ -223,27 +234,33 @@ export default function BridgeContent({
             setToToken(token);
           }}
           comingSoon={ComingSoon}
+          updateRef={banlanceIndex}
         />
-        <div className="flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]">
-          <div>Receive address</div>
-          <div className="flex items-center gap-2">
-            <div>{formatLongText(address, 6, 6)}</div>
-            {/* <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
-            <svg
-              width='11'
-              height='12'
-              viewBox='0 0 11 12'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='M10.1551 10.8038C10.3057 10.8038 10.4502 10.8668 10.5567 10.979C10.6632 11.0912 10.7231 11.2433 10.7231 11.4019C10.7231 11.5605 10.6632 11.7127 10.5567 11.8248C10.4502 11.937 10.3057 12 10.1551 12H0.567984C0.417345 12 0.272876 11.937 0.166359 11.8248C0.059841 11.7127 6.9936e-09 11.5605 6.9936e-09 11.4019V8.47481C-1.19545e-05 8.39455 0.0153198 8.3151 0.0450819 8.2412C0.0748439 8.16731 0.118427 8.10048 0.173235 8.04469L7.61997 0.46701C7.90401 0.167985 8.28921 0 8.69086 0C9.09251 0 9.47771 0.167985 9.76175 0.46701L10.5569 1.30432C10.6976 1.45261 10.8091 1.62862 10.8851 1.8223C10.9611 2.01598 11.0002 2.22354 11 2.43311C10.9998 2.64269 10.9604 2.85017 10.8841 3.04371C10.8077 3.23725 10.6959 3.41306 10.555 3.56108L4.42317 9.96952C4.37021 10.0249 4.30742 10.0687 4.23839 10.0985C4.16935 10.1282 4.09541 10.1434 4.02081 10.1431C3.9462 10.1428 3.87238 10.127 3.80356 10.0967C3.73474 10.0664 3.67227 10.022 3.61971 9.96628C3.56716 9.91051 3.52555 9.84439 3.49726 9.7717C3.46898 9.699 3.45456 9.62115 3.45485 9.54259C3.45513 9.46403 3.47011 9.38629 3.49893 9.31383C3.52774 9.24136 3.56983 9.17558 3.62279 9.12024L9.75323 2.7138C9.78843 2.67677 9.81636 2.6328 9.83542 2.58439C9.85447 2.53599 9.86428 2.4841 9.86428 2.4317C9.86428 2.37931 9.85447 2.32742 9.83542 2.27902C9.81636 2.23061 9.78843 2.18664 9.75323 2.14961L8.95852 1.3128C8.92261 1.27546 8.88001 1.246 8.8332 1.22614C8.78638 1.20628 8.73629 1.19641 8.68583 1.19711C8.63536 1.19781 8.58553 1.20905 8.53923 1.23019C8.49292 1.25134 8.45107 1.28196 8.4161 1.32027L1.13597 8.7285V10.8043H10.1551V10.8038Z'
-                fill='black'
-              />
-            </svg>
-          </div> */}
+
+        {
+          bridgeType === 'superSwap' && selectedRoute && (
+            <div className="flex items-center justify-start gap-2 pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]">
+              {
+                isReverse ? (
+                  <div>1 {toToken?.symbol} = {balanceFormated(1 / Number(selectedRoute?.toexchangeRate), 4)} {fromToken?.symbol}</div>
+                ) : (
+                  <div>1 {fromToken?.symbol} = {balanceFormated(Number(selectedRoute?.toexchangeRate), 4)} {toToken?.symbol}</div>
+                )
+              }
+              <svg onClick={() => setIsReverse(!isReverse)} className="cursor-pointer" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.01514 6.11148C0.887128 4.95763 1.55283 3.03456 3.70343 3.03456C5.85402 3.03456 10.9999 3.03456 10.9999 3.03456M10.9999 3.03456L9.01977 1M10.9999 3.03456L9.01977 5" stroke="black"></path><path d="M10.9849 5.88071C11.1129 7.03456 10.4472 8.95763 8.29657 8.95763C6.14598 8.95763 1.00006 8.95763 1.00006 8.95763M1.00006 8.95763L3.01978 11M1.00006 8.95763L3.01978 7" stroke="black"></path></svg>
+            </div>
+          )
+        }
+
+        {
+          bridgeType !== 'superSwap' && <div className="flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]">
+            <div>Receive address</div>
+            <div className="flex items-center gap-2">
+              <div>{formatLongText(address, 6, 6)}</div>
+            </div>
           </div>
-        </div>
+        }
+
 
         {routes && routes.length > 0 && toToken && (
           <Routes
@@ -256,6 +273,7 @@ export default function BridgeContent({
         )}
 
         <SubmitBtn
+          text={type === "super-swap" ? "SuperSwap" : "Bridge"}
           fromChainId={fromChain.chainId}
           isLoading={quoteLoading || sendLoading}
           disabled={sendDisabled || !selectedRoute}
@@ -269,8 +287,14 @@ export default function BridgeContent({
               outputCurrency: toToken,
               template: selectedRoute?.bridgeName
             });
+            setBanlanceIndex(banlanceIndex + 1);
             if (result?.isSuccess && isShowConfirm) {
-              setConfirmShow(true);
+              if (type === 'super-swap') {
+
+              } else {
+                setConfirmShow(true);
+              }
+
             }
           }}
           comingSoon={ComingSoon}

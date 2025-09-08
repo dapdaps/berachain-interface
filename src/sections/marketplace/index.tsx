@@ -12,6 +12,8 @@ import { useEffect, useMemo, useState } from "react";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
 import useTokenVolume from "./hooks/use-token-volume";
 import { usePrice7d } from '@/sections/marketplace/hooks/use-price-7d';
+import { useDebounce } from "ahooks";
+import { AnimatePresence, motion } from "framer-motion";
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -26,13 +28,13 @@ const splitArray = (list: Record<string, any>[]) => {
 };
 const MemeTokens: any = [
   bera.yeet,
-  bera.bonga,
+  // bera.bonga,
   bera.bblast,
   bera.bm,
   bera.henlo,
   // bera.lbgt,
-  bera.azt,
-  bera.artio,
+  // bera.azt,
+  // bera.artio,
   bera.bitcoin
 ];
 
@@ -67,10 +69,12 @@ const MarketplaceView = () => {
   );
   const isMobile = useIsMobile();
   const { voulmes } = useTokenVolume();
-
+  const [searchVal, setSearchVal] = useState("");
+  const [showHenloBubble, setShowHenloBubble] = useState(false);
   const TOKENS_PER_PAGE = 9;
   const [displayCount, setDisplayCount] = useState(TOKENS_PER_PAGE);
 
+  const inputSearchVal = useDebounce(searchVal, { wait: 500 });
   const onFooterMore = () => {
     router.push("/marketplace/tokens");
   };
@@ -95,14 +99,25 @@ const MarketplaceView = () => {
           return;
         }
         if (!hasTokens[token.symbol]) {
-          _tokens.push(token);
-          hasTokens[token.symbol] = true;
+          if (inputSearchVal) {
+            if (token.symbol.toLowerCase().includes(inputSearchVal.toLowerCase())
+              || token.name.toLowerCase().includes(inputSearchVal.toLowerCase())
+              || token.address.toLowerCase().includes(inputSearchVal.toLowerCase())
+            ) {
+              _tokens.push(token);
+              hasTokens[token.symbol] = true;
+            }
+          } else {
+            _tokens.push(token);
+            hasTokens[token.symbol] = true;
+          }
+
         }
       });
     });
 
     return [_protocols, splitArray(swapPosition(_tokens)), _tokens.length];
-  }, [dexs]);
+  }, [dexs, inputSearchVal]);
 
   function swapPosition(_tokens: any) {
     let i = -1
@@ -168,7 +183,7 @@ const MarketplaceView = () => {
   }, [openFrom]);
 
   return (
-    <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]">
+    <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]" onClick={() => setShowHenloBubble(false)}>
       {!isMobile && (
         <>
           <PageBack className="absolute left-[40px] top-[31px]" />
@@ -183,7 +198,19 @@ const MarketplaceView = () => {
         alt=""
       />
 
-      <div className="relative z-[10] mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
+      {
+        !isMobile && <div className="flex justify-end lg:w-[1200px] md:w-full mx-auto">
+          <div className="flex items-center rounded-[10px] border overflow-hidden border-black/50 bg-white px-2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="7" stroke="#3D4159" strokeWidth="2" opacity="0.4" fill="white" />
+              <line x1="16.2" y1="16.2" x2="21" y2="21" stroke="#3D4159" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+            </svg>
+            <input className="w-[200px] h-[40px] px-2 text-black text-[14px]" placeholder="Search token" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
+          </div>
+        </div>
+      }
+
+      <div className="relative z-[10] mt-[20px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
         <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
           Hot Tokens
         </div>
@@ -241,6 +268,60 @@ const MarketplaceView = () => {
           </div>
         </div>
       </div>
+
+      <div className="fixed bottom-[10px] left-1/2 transform -translate-x-1/2 lg:w-[1200px] md:w-full z-30 h-[240px]">
+        <div className="w-[150px] h-[240px] absolute bottom-[0] right-[-100px]" onClick={(e) => {
+          e.stopPropagation();
+          setShowHenloBubble(true);
+        }}>
+          <AnimatePresence>
+            {showHenloBubble && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
+                animate={{ scale: 1, opacity: 1, originX: 1, originY: 1 }}
+                exit={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="w-[124px] h-[101px] absolute top-[-105px] left-[-40px]"
+              >
+                <img src="/images/market-place/pao.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
+                <div className="w-full h-full absolute top-0 left-0 font-CherryBomb text-[18px] text-center leading-[90%] pt-[10px]">
+                  Henlo!<br /> I heard you liked <br />$HENLO
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <img src="/images/market-place/henlo-body.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
+          <motion.img
+            src="/images/market-place/henlo-arm.png"
+            alt="cloud"
+            className="absolute w-[60px] h-[50px] left-[108px] top-[112px]"
+            style={{ transformOrigin: "left bottom" }}
+            animate={{ rotate: [0, 20, 0, 20, 0, 0] }}
+            transition={{
+              duration: 9,
+              times: [
+                0,
+                0.055,
+                0.111,
+                0.166,
+                0.221,
+                1
+              ],
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: [
+                "easeInOut",
+                "easeInOut",
+                "easeInOut",
+                "easeInOut",
+                "linear"
+              ]
+            }}
+          />
+          <img src="/images/market-place/henlo-cloth.png" alt="cloud" className="w-[101px] h-[62px] absolute top-[140px] left-[23px]" />
+        </div>
+      </div>
+
       {selectedRecord && (
         <SwapModal
           defaultOutputCurrency={selectedRecord}

@@ -223,7 +223,7 @@ export default function Stake({
                   </svg>
                   <div>
                     <div className="text-[#3D8AFF] text-[15px] font-medium mb-0.5">
-                      <span className="">SWBERA is the liquid receipt token</span>
+                      <span className="">sWBERA is the liquid receipt token</span>
                     </div>
                     <div className="text-[#7A869A] text-[14px]">
                       It can always be redeemed for BERA.
