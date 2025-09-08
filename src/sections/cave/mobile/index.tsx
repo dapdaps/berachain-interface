@@ -21,7 +21,6 @@ import TransferButton from "./components/TransferButton";
 import { useAirdrop } from "../useAirdrop";
 
 
-
 const TipsPopover = ({
   tips,
   currentSceneInfoValid
@@ -43,7 +42,7 @@ const TipsPopover = ({
           opacity: tips?.btnText === 'Delegate' ? 0.5 : 1
         }}
         onClick={() => {
-          if (!currentSceneInfoValid) return; 
+          if (!currentSceneInfoValid) return;
           if (tips?.btnText === 'Delegate') {
             return
           }
@@ -62,7 +61,7 @@ const TipsPopover = ({
 }
 const Cave = () => {
 
-  const { account } = useCustomAccount()
+  const { account, accountWithAk } = useCustomAccount()
   const { currentSceneInfoValid } = useContext(SceneContext);
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
@@ -75,7 +74,7 @@ const Cave = () => {
     console.log("Selected item:", item);
   };
 
-  const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
+  const { airDropRound, airDropPrize, airDropHistory } = useAirdrop();
   const { cars, hats, clothes, necklaces, getItems } = useCollect({
     address: account as string,
     round: airDropRound?.round || -1,
@@ -192,7 +191,7 @@ const Cave = () => {
           data-bp="1020-001"
         >Rules</div> */}
       </div>
-      <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[240vw]')}>
+      <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[200vw]')}>
         {/* <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
             storePhotoList?.photoList?.map((photo: any, index: any) => (
@@ -266,14 +265,42 @@ const Cave = () => {
               alt=''
             />
 
-            <Module
+            <div className="absolute flex items-center w-[96.417vw] -top-[17.435vw]">
+              {
+                hats.map((it) => (
+                  <div className="relative w-[24.358vw] h-[19.23vw]">
+                    <img
+                      src={it.pc_item ? it.img : it.img_not_owned}
+                      alt=""
+                      className="w-full h-full object-center object-contain"
+                    />
+                  </div>
+                ))
+              }
+            </div>
+
+            <div className="absolute flex items-center w-[96.417vw] top-[9.23vw]">
+              {
+                clothes.map((it) => (
+                  <div className="relative w-[24.358vw] h-[42.051vw]">
+                    <img
+                      src={it.pc_item ? it.img : it.img_not_owned}
+                      alt=""
+                      className="w-full h-full object-center object-contain"
+                    />
+                  </div>
+                ))
+              }
+            </div>
+
+            {/* <Module
               config={{
                 ...moduleConfigs.hats,
                 onItemClick: handleItemClick,
               }}
-            />
+            /> */}
 
-            <Module config={moduleConfigs.jackets} />
+            {/* <Module config={moduleConfigs.jackets} /> */}
 
             <img
               src='/images/mobile/cave/backStripe.png'
@@ -282,7 +309,7 @@ const Cave = () => {
             />
 
             {/* Jewelry Modules */}
-            <div
+            {/* <div
               className='absolute top-[73vw] left-2'
               style={{
                 backgroundImage: `url('/images/mobile/cave/cupboard-1.png')`,
@@ -294,21 +321,34 @@ const Cave = () => {
               }}
             >
               <Module config={moduleConfigs.necklaces} />
-            </div>
+            </div> */}
 
             {/* Key Modules */}
             <div
-              className='absolute top-[123.43vw] left-2'
+              className='absolute top-[83.43vw] left-2'
               style={{
                 backgroundImage: `url('/images/mobile/cave/cupboard-2.png')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 height: '38.974vw',
-                width: '98.461vw'
+                width: '100%'
               }}
             >
-              <Module config={moduleConfigs.cars} />
+              <div className="absolute flex items-center justify-between px-[5vw] pt-[4vw] w-[96.417vw]">
+                {
+                  cars.map((it) => (
+                    <div className="relative w-[15vw] h-[30vw]">
+                      <img
+                        src={it.pc_item ? it.img : it.img_not_owned}
+                        alt=""
+                        className="w-full h-full object-center object-contain"
+                      />
+                    </div>
+                  ))
+                }
+              </div>
+              {/* <Module config={moduleConfigs.cars} /> */}
             </div>
           </div>
         </div>
