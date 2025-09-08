@@ -9,6 +9,7 @@ import { useDebounceFn, useRequest } from 'ahooks';
 import clsx from 'clsx';
 import LuckyBeraRecordsModal from './records/modal';
 import { useCoinExplosion } from '../../hooks/use-coin-explosion';
+import { usePlaygroundContext } from '../../context';
 
 const WHEEL_SIZE = 500;
 const WHEEL_AREA = 120;
@@ -43,6 +44,7 @@ export default memo(function Tiger(props: any) {
 
   const toast = useToast();
   const { createCoinsExplosion } = useCoinExplosion();
+  const { setShowRulesModal } = usePlaygroundContext();
 
   const [leftWheel, leftWheelAnimate] = useAnimate();
   const leftWheelRotation = useMotionValue(SpinCategoryRotation);
@@ -263,7 +265,7 @@ export default memo(function Tiger(props: any) {
   return (
     <div className="w-full min-h-[100dvh] flex items-end justify-center">
       <div className="relative flex flex-col items-center justify-center scale-90 origin-bottom z-[2]">
-        <div className="relative z-[3] w-[608px] h-[506px] max-w-full bg-[url('/images/playground/lucky-bera/bear-top.png')] bg-center bg-contain">
+        <div className="relative z-[6] w-[608px] h-[506px] max-w-full bg-[url('/images/playground/lucky-bera/bear-top.png')] bg-center bg-contain">
           <div className="flex justify-center items-start absolute z-[2] w-full top-[20px] pointer-events-none">
             <img
               src="/images/playground/lucky-bera/title.png"
@@ -488,7 +490,7 @@ export default memo(function Tiger(props: any) {
             <img src="/images/playground/lucky-bera/icon-flash.png" alt="" className="w-[16px] shrink-0 h-[25px] object-center object-contain bg-no-repeat" />
           </LightingButton> */}
         </div>
-        <div className="relative z-[2] flex justify-center w-full h-[276px] translate-y-[-15px] overflow-hidden">
+        <div className="relative z-[5] flex justify-center w-full h-[276px] translate-y-[-15px] overflow-hidden [clip-path:polygon(0_0,87%_0,90%_30%,95%_55%,100%_100%,0_100%)]">
           <div className="relative z-[2] flex flex-col items-center w-[616px] max-w-full h-full bg-[url('/images/playground/lucky-bera/bear-bottom.png')] bg-top bg-contain bg-no-repeat">
             <motion.button
               ref={spinRef}
@@ -540,10 +542,17 @@ export default memo(function Tiger(props: any) {
           alt=""
           className="absolute translate-x-[270px] bottom-[170px] z-[1] w-[240px] h-[197px] object-center object-contain pointer-events-none"
         />
-         <img
+        <img
           src="/images/playground/lucky-bera/lucky-guy.png"
           alt=""
           className="absolute translate-x-[315px] bottom-[130px] z-[3] w-[202px] h-[408px] object-center object-contain pointer-events-none"
+        />
+        <button
+          type="button"
+          className="absolute z-[4] translate-x-[305px] hover:translate-x-[315px] transition-all duration-150 bottom-[130px] w-[140px] h-[50px] bg-[url('/images/playground/lucky-bera/btn-rules.png')] bg-no-repeat bg-center bg-contain"
+          onClick={() => {
+            setShowRulesModal(true);
+          }}
         />
         <button
           type="button"

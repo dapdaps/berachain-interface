@@ -9,15 +9,12 @@ import { PlaygroundProvider } from "./context";
 import { usePlayground } from "./hooks";
 import { numberFormatter } from "@/utils/number-formatter";
 import PlaygroundRulesModal from "./components/rules";
-import { useState } from "react";
 
 const PlaygroundLayout = (props: any) => {
   const { children } = props;
 
   const pathname = usePathname();
   const playground = usePlayground();
-
-  const [showRulesModal, setShowRulesModal] = useState(false);
 
   return (
     <PlaygroundProvider value={playground}>
@@ -27,7 +24,7 @@ const PlaygroundLayout = (props: any) => {
           <div className="text-[60px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
             Carnival
           </div>
-          <button
+          {/* <button
             type="button"
             className="text-black text-center font-CherryBomb text-[16px] font-[400] leading-[90%] w-[55px] h-[30px] rotate-[-8.017deg] translate-y-[5px] flex-shrink-0 rounded-[12px] border border-black bg-[linear-gradient(180deg,_#FFCE78_0%,_#9E762F_100%)]"
             onClick={() => {
@@ -35,7 +32,7 @@ const PlaygroundLayout = (props: any) => {
             }}
           >
             Rules
-          </button>
+          </button> */}
         </div>
         <div className="absolute left-0 top-0 w-full h-[430px] pointer-events-none overflow-hidden bg-[url('/images/playground/lights-long.png')] bg-[length:100%_auto] bg-bottom bg-no-repeat">
           <Lights className="!absolute left-0 top-0" delay={0} />
@@ -88,9 +85,9 @@ const PlaygroundLayout = (props: any) => {
           }
         </div>
         <PlaygroundRulesModal
-          open={showRulesModal}
+          open={playground.showRulesModal}
           onClose={() => {
-            setShowRulesModal(false);
+            playground.setShowRulesModal(false);
           }}
         />
       </div>
