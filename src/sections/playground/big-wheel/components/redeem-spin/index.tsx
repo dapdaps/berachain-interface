@@ -103,7 +103,7 @@ const RedeemSpin = (props: any) => {
             alt=""
             className="w-[16px] h-[14px] shrink-0 object-center object-contain"
           />
-          <div className="">-{numberFormatter(costGem, 0, true, { isShort: true, isShortUppercase: true })}</div>
+          <div className="">-{numberFormatter(costGem, 2, true, { isShort: false, isShortUppercase: true })}</div>
         </div>
       </div>
       <div className="w-full mt-[23px] flex justify-center items-center">
