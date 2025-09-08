@@ -14,7 +14,6 @@ import CheckBox from "./CheckBox";
 import ImportEquipments from "./ImportEquipments";
 import NftModal from "./NftModal";
 import Tips from "./Tip";
-import Welcome from "./Welcome";
 import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 import AirDropTime from "./AirDropTime";
@@ -708,11 +707,6 @@ export default function Cave() {
           clothes={clothes}
           necklaces={necklaces}
           items={items}
-        />
-        <Welcome
-          show={store.welcomeShow} onClose={() => {
-            store.set({ welcomeShow: false })
-          }}
         />
         {
           tipShow && (
