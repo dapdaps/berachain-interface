@@ -95,7 +95,7 @@ const RedeemSpin = (props: any) => {
       </div>
       <div className="w-full mt-[7px] flex justify-between items-center text-[14px]">
         <div className="">
-          Your PTS: {numberFormatter(userInfo.gem, 2, true, { isShort: true, isShortUppercase: true })}
+          Your PTS: {numberFormatter(userInfo.gem, 2, true, { isShort: false, isShortUppercase: true })}
         </div>
         <div className="flex justify-end items-center gap-[3px]">
           <img
