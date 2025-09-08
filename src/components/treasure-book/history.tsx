@@ -7,7 +7,7 @@ import { formatEnglishDate, formatSimpleDate } from '@/utils/date';
 import clsx from 'clsx';
 
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 10;
 
 export default function History({ onClose }: { onClose: () => void }) {
     const [currentPage, setCurrentPage] = useState(1);
