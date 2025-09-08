@@ -87,7 +87,7 @@ const PointsEntry = (props: any) => {
               <div className="w-[222px] rounded-[10px] bg-[#FFF1C7]  px-[18px] py-[16px] flex flex-col items-center relative">
                 <div className="text-[14px] font-Montserrat font-[500] text-center leading-[1.2] mb-[6px]">
                   First Round<br />
-                  <span className="font-[600]">{`‘Incentivize Everything’`}</span>
+                  <span className="font-[600]">{`‘Incentivise Everything’`}</span>
                 </div>
                 <div className="w-full flex flex-col items-center text-[16px]">
                   <div className="w-full bg-[#FDD54C] rounded-full h-[40px] flex items-center justify-center mb-[8px]">
