@@ -56,7 +56,7 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
             </div>
             <div className="w-[86px] h-[86px] relative flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
                 <img src={`/images/treasure-book/spin.png`} className={clsx("w-[80px] opacity-10", spinNum > 0 ? "opacity-100" : "opacity-10")} alt="item" />
-                <div className={clsx("opacity-10 mt-[-20px]", spinNum > 0 ? "opacity-100" : "opacity-10")}>SPIN</div>
+                <div className={clsx("opacity-10 mt-[-20px]", spinNum > 0 ? "opacity-100" : "opacity-10")}>SPINS</div>
                 {
                     spinNum > 0 && (
                         <div style={{
@@ -76,12 +76,13 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
                     )
                 }
             </div>
-            <div className="w-[86px] h-[86px] flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
-                <div className="opacity-10 text-[42px]">？</div>
-            </div>
-            <div className="w-[86px] h-[86px] flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
-                <div className="opacity-10 text-[42px]">？</div>
-            </div>
+            {
+                [1,2].map((item) => (
+                    <div className="w-[86px] h-[86px] flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
+                        <div className="opacity-10 text-[42px] leading-[38px]">？</div>
+                    </div>
+                ))
+            }
         </div>
         {isHistoryOpen && <History onClose={() => setIsHistoryOpen(false)} />}
     </div>;
