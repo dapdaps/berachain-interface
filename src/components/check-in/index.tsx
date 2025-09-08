@@ -2,6 +2,7 @@ import clsx from "clsx";
 import LightButton from "./button";
 import { numberFormatter } from "@/utils/number-formatter";
 import Skeleton from "react-loading-skeleton";
+import { CheckInDay, CheckInReward } from "@/stores/use-check-in";
 
 const CheckIn = (props: any) => {
   const { className, data, loading, onCheckIn, checkInPending } = props;
@@ -110,17 +111,6 @@ const CheckIn = (props: any) => {
 };
 
 export default CheckIn;
-
-export enum CheckInReward {
-  Lootbox = "lootbox",
-  Points = "points",
-}
-
-export interface CheckInDay {
-  day: number;
-  checked: boolean;
-  reward: CheckInReward;
-}
 
 export const CheckInDays: CheckInDay[] = [...new Array(7).fill(0)].map((_, index) => {
   const item: any = {

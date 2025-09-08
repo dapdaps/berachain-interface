@@ -8,23 +8,27 @@ import { get, post } from "@/utils/http";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useUserStore } from "@/stores/user";
 import Big from "big.js";
+import { useCheckInStore } from "@/stores/use-check-in";
 
 export const useCheckIn = () => {
   const { accountWithAk } = useCustomAccount();
   const checkInRef = useRef<any>();
   const userInfo = useUserStore((store: any) => store.user);
   const setUserInfo = useUserStore((store: any) => store.set);
+  const { checkInData, setCheckInData } = useCheckInStore();
 
   const [openReward, setOpenReward] = useState<boolean>(false);
   const [rewardData, setRewardData] = useState<Reward[]>();
 
-  const { data: checkInData, loading: checkInDataLoading, runAsync: getCheckInData } = useRequest(async () => {
+  const { loading: checkInDataLoading, runAsync: getCheckInData } = useRequest(async () => {
     if (!accountWithAk) {
+      setCheckInData(void 0);
       return;
     }
     const checkInDays = cloneDeep(CheckInDays);
     const res = await get("/api/go/checkin");
     if (res.code !== 200 || !res.data) {
+      setCheckInData(void 0);
       return;
     }
     const { consecutive_check_in = 0 } = res.data;
@@ -37,6 +41,7 @@ export const useCheckIn = () => {
       ...res.data,
       days: checkInDays,
     };
+    setCheckInData(_checkInData);
     return _checkInData;
   }, {
     refreshDeps: [accountWithAk]
