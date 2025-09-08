@@ -71,7 +71,7 @@ const PointsEntry = (props: any) => {
         </motion.div>
       </motion.div>
       <div className="w-full h-full pl-[40px] pr-[14px] font-CherryBomb text-[16px] font-[400] leading-[22px] text-white [letter-spacing:0.8px] [text-shadow:0_2px_0_#4B371F] border-[2px] border-[#855B5B] bg-[#FFBABB] rounded-[16px]">
-        {numberFormatter(userInfo?.gem, 2, true, { isShort: true, isShortUppercase: true })}
+        {numberFormatter(userInfo?.gem, 2, true, { isShort: false, isShortUppercase: true })}
       </div>
 
       <AnimatePresence>
