@@ -37,7 +37,7 @@ export const useRainyDayStore = create(
     (set) => ({
       rainyDay: RAINY_DAY,
       beraPrice: {},
-      isWeatherOpen: true,
+      isWeatherOpen: false,
       setRainyDay: (scene) => {
         set((state) => ({ ...state, rainyDay: scene }));
       },
@@ -53,7 +53,7 @@ export const useRainyDayStore = create(
     }),
     {
       name: "_rainyDay",
-      version: 0.2,
+      version: 0.3,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         rainyDay: state.rainyDay,
