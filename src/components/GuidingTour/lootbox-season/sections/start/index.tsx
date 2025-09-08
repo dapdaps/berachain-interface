@@ -21,7 +21,7 @@ const LootboxSeasonStart = (props: any) => {
     <div className="w-full">
       <div className="relative w-full h-[378px] bg-[url('/images/guiding-tour/lootbox-season/bg2@2x.png')] bg-no-repeat bg-top bg-cover pt-[32px]">
         <LootboxSeasonTitle>
-          Lootbox Season
+          Incentivise Everything
         </LootboxSeasonTitle>
         <motion.img
           src="/images/guiding-tour/lootbox-season/book2@2x.png"
@@ -64,7 +64,7 @@ const LootboxSeasonStart = (props: any) => {
         />
       </div>
       <div className="w-full mt-[4px] font-Montserrat text-[16px] leading-[150%] text-black font-[500] px-[26px]">
-        <div className="text-[24px font-[900] leading-[120%]">
+        <div className="text-[24px] font-[900] leading-[120%]">
           Beratown ‘Incentivise Everything’ Begins!
         </div>
         <div className="mt-[11px]">

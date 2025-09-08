@@ -15,6 +15,7 @@ import { RewardType } from "@/components/check-in/config";
 import { usePlaygroundContext } from "../context";
 import { SpinUserData } from "../lucky-bera/config";
 import { useCoinExplosion } from "../hooks/use-coin-explosion";
+import "./index.css";
 
 const WheelList = [
   {
@@ -230,7 +231,7 @@ const BigWheel = () => {
   });
 
   return (
-    <div className="w-full min-h-[100dvh] flex items-end justify-center pb-[100px]">
+    <div className="w-full min-h-[100dvh] flex items-end justify-center big-wheel-pb">
       <div className="relative flex flex-col items-center z-[2] w-[588px] h-[700px] bg-[url('/images/playground/big-wheel/bg.png')] bg-no-repeat bg-center bg-contain">
         <div className="relative w-[430px] h-[430px] mt-[170px] ml-[20px] flex justify-center items-center">
           <motion.div
