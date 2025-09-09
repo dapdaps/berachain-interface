@@ -97,13 +97,20 @@ export default function TreasureBook() {
                     }
                 </div>
 
-                <div className="absolute  right-0 bottom-[-132px] pt-[30px] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+                <div className="absolute right-0 top-[80px] pt-[30px] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
                     <div
                         onClick={e => e.stopPropagation()}
                         className="w-[235px] relative gradient-border-box py-[10px] px-[20px] rounded-[16px] bg-[#FFF1C7] font-Montserrat text-[14px] font-[700]"
                     >
                         {
-                            qoutionProgress === 3 && <>
+                            !userInfo?.address && (
+                                <div className="text-center">
+                                    Finish your daily missions to collect beratown points
+                                </div>
+                            )
+                        }
+                        {
+                            userInfo?.address && qoutionProgress === 3 && <>
                                 <div className="text-center">
                                     Your next lootbox is being prepared.
                                     Come back then to claim it.
@@ -111,9 +118,9 @@ export default function TreasureBook() {
                             </>
                         }
                         {
-                            qoutionProgress < 3 && <>
+                            userInfo?.address && qoutionProgress < 3 && <>
                                 <div className="text-center">
-                                    <div>Finish the daily missions to get {unCompleteQuestion?.reward_box_amount > 0 ? unCompleteQuestion?.reward_box_amount + ' lootbox' : unCompleteQuestion?.reward_gem_amount + ' gem'} </div>
+                                    <div>Finish your daily missions to receive {unCompleteQuestion?.reward_box_amount > 0 ? unCompleteQuestion?.reward_box_amount + ' lootbox' : unCompleteQuestion?.reward_gem_amount + ' gem'} </div>
                                     <button onClick={() => handleQuestionComplete(unCompleteQuestion)} className="bg-[#FFDC50] text-[12px] mt-[5px] rounded-[10px] font-[700] leading-[1] text-black px-[20px] whitespace-nowrap truncate h-[30px] w-full border border-black">{QUEST_CONFIG[unCompleteQuestion?.id]}</button>
                                 </div>
                             </>
