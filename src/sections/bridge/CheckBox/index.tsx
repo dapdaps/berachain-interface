@@ -1,18 +1,21 @@
 'use client';
 
+import clsx from "clsx";
+
 interface Props {
   checked: boolean;
   onChange: (isChecked: boolean) => void;
+  className?: string;
 }
 
-export default function CheckBox({ checked, onChange }: Props) {
+export default function CheckBox({ checked, onChange, className }: Props) {
   if (checked) {
     return (
       <div
         onClick={() => {
           onChange(!checked);
         }}
-        className='w-[20px] h-[20px] cursor-pointer flex items-center justify-center'
+        className={clsx('w-[20px] h-[20px] cursor-pointer flex items-center justify-center', className)}
       >
         <svg
           width='22'
