@@ -7,12 +7,12 @@ const LootboxSeasonRadioSelector = (props: any) => {
     <button
       type="button"
       className={clsx(
-        "w-full pl-[17px] pr-[19px] whitespace-nowrap flex justify-between items-center gap-[10px] h-[60px] flex-shrink-0 rounded-[12px] bg-[#EFEDD8] text-[#000] text-right font-Montserrat text-[16px] font-medium leading-[150%]",
+        "w-full pl-[17px] pr-[19px] whitespace-nowrap flex md:flex-col md:items-start md:py-[10px] justify-between items-center gap-[10px] h-[60px] md:h-[80px] flex-shrink-0 rounded-[12px] bg-[#EFEDD8] text-[#000] text-right font-Montserrat text-[16px] font-medium leading-[150%]",
         className,
       )}
       onClick={onClick}
     >
-      <div className="flex items-center gap-[10px] flex-1 w-0 font-CherryBomb text-[20px] font-[400] leading-[120%]">
+      <div className="flex items-center gap-[10px] flex-1 w-0 md:w-[unset] font-CherryBomb text-[20px] font-[400] leading-[120%]">
         <div className="w-[26px] h-[26px] p-[3px] shrink-0 bg-white rounded-full overflow-hidden border border-black">
           {
             selected && (
@@ -20,7 +20,7 @@ const LootboxSeasonRadioSelector = (props: any) => {
             )
           }
         </div>
-        <div className="flex-1 w-0 overflow-hidden text-ellipsis text-left">
+        <div className="flex-1 w-0 md:w-[unset] overflow-hidden text-ellipsis text-left">
           {children}
         </div>
       </div>

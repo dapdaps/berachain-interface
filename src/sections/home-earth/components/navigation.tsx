@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m, motion } from "framer-motion";
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
@@ -268,7 +268,8 @@ export const ENTRIES: any = [
     icon: "/images/home-earth/entry-playground.svg",
     signpost: "/images/home-earth/signpost-playground.svg",
     path: "/carnival/lucky-bera",
-    y: -40
+    y: -40,
+    bp: "1010-025",
   },
   {
     sort: 3,
@@ -313,7 +314,8 @@ export const ENTRIES: any = [
     signpost: "/images/home-earth/signpost-cave.svg",
     path: "/cave",
     y: 40,
-    width: "280px"
+    width: "280px",
+    bp: "1010-010",
   }
 ];
 
@@ -343,7 +345,8 @@ export const BADDIES_ENTRIES: any = [
     icon: "/images/home-earth/baddies/baddies-playground.svg",
     signpost: "/images/home-earth/signpost-playground.svg",
     path: "/carnival/lucky-bera",
-    y: -30
+    y: -30,
+    bp: "1010-025",
   },
   {
     sort: 3,
@@ -391,6 +394,7 @@ export const BADDIES_ENTRIES: any = [
     disabledIcon: "/images/home-earth/baddies/baddies-cave-lock.svg",
     signpost: "/images/home-earth/signpost-cave.svg",
     path: "/cave",
-    y: -20
+    y: -20,
+    bp: "1010-010",
   }
 ];

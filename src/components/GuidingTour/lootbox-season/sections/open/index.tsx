@@ -20,7 +20,7 @@ const LootboxSeasonOpen = (props: any) => {
         <img
           src="/images/guiding-tour/lootbox-season/arrow@2x.png"
           alt=""
-          className="w-[75px] h-[47px] shrink-0 object-center object-contain absolute bottom-[-20px] right-[100px] scale-x-[-1] rotate-[-30deg]"
+          className="w-[75px] h-[47px] shrink-0 object-center object-contain absolute bottom-[-20px] md:bottom-[-40px] right-[100px] md:right-[0] scale-x-[-1] rotate-[-30deg]"
         />
       </div>
       <div className="w-full mt-[58px] flex flex-col items-stretch gap-[12px] px-[26px]">
@@ -48,7 +48,7 @@ const LootboxSeasonOpen = (props: any) => {
           ))
         }
       </div>
-      <div className="w-full mt-[37px] flex justify-center pb-[30px]">
+      <div className="w-full mt-[37px] flex justify-center pb-[30px] md:pl-[40px]">
         <LootboxSeasonButton
           className="!px-[100px]"
           onClick={onNext}

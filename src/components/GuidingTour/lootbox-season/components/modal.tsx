@@ -1,8 +1,11 @@
 import Modal from "@/components/modal";
+import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
 
 const LootboxSeasonModal = (props: any) => {
   const { className, open, onClose, children } = props;
+
+  const isMobile = useIsMobile();
 
   return (
     <Modal
@@ -16,9 +19,9 @@ const LootboxSeasonModal = (props: any) => {
         />
       )}
       closeIconClassName="!right-[12px] !top-[12px]"
-      isMaskClose={false}
+      isMaskClose={isMobile ? true : false}
     >
-      <div className={clsx("w-[680px] md:w-full overflow-hidden rounded-[20px] border border-[#333648] bg-[#FFFDEB] shadow-[0_0_4px_0_rgba(0,0,0,0.25)]", className)}>
+      <div className={clsx("w-[680px] md:w-full md:h-[85dvh] md:overflow-y-auto md:rounded-b-[0] overflow-hidden rounded-[20px] border border-[#333648] bg-[#FFFDEB] shadow-[0_0_4px_0_rgba(0,0,0,0.25)]", className)}>
         {children}
       </div>
     </Modal>

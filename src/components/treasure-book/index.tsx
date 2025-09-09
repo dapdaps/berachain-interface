@@ -49,6 +49,7 @@ export default function TreasureBook() {
                     setTreasureBookOpen(true)
                 }}
                 className="fixed z-[51] right-[10px] top-[560px] cursor-pointer group"
+                data-bp="1010-024"
             >
                 <img
                     id="lootboxSeasonTreasureBookEntry"
