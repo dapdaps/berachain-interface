@@ -2,7 +2,7 @@
 
 import useTokenPrice from "@/hooks/use-token-price";
 import MainLayoutHeader from "@/layouts/main/header";
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import MapModal from "@/sections/home/map-modal";
 import useUser from "@/hooks/use-user";
@@ -10,7 +10,7 @@ import { useAccount } from "wagmi";
 import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
-import GuidingTutorial from "@/components/GuidingTour/mainnet";
+import GuidingTutorial from "@/components/GuidingTour/lootbox-season";
 import { SceneContext } from "@/context/scene";
 import { SceneStatus } from "@/configs/scene";
 import RainyDay from "@/components/rainy-day";
@@ -18,6 +18,9 @@ import { useRainyDay } from "@/hooks/use-rainy-day";
 import { AnimatePresence, motion } from "framer-motion";
 import { useActivityStore } from "@/stores/useActivityStore";
 import Downtime from "@/components/downtime";
+import TreasureBook from "@/components/treasure-book";
+import NFTHolderPerksModal from "@/components/nft-holder";
+import { useNftReward } from "@/stores/use-nft-reward";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
@@ -33,6 +36,7 @@ const MainLayout = (props: Props) => {
   const currentScene = context.current;
   const { isRainyDay, rainyDay } = useRainyDay({ isLoadPrice: true });
   const { isDefaultTheme, themeConfig } = useActivityStore();
+  const nftRewardStore: any = useNftReward();
 
   useEffect(() => {
     handleReportNoCode();
@@ -128,7 +132,9 @@ const MainLayout = (props: Props) => {
     themeConfig.primaryColor
   ]);
 
-  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong"];
+  const [showGuide, setShowGuide] = useState(true);
+
+  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/carnival/lucky-bera", "/carnival/big-wheel"];
 
   return (
     <div
@@ -299,6 +305,7 @@ const MainLayout = (props: Props) => {
       </div>
       <MapModal />
       <GuidingTutorial />
+      <NFTHolderPerksModal open={nftRewardStore.showNftReward} onClose={() => { nftRewardStore.set({ showNftReward: false }) }} />
       {
         !isSystemMaintenanceDowntime && (
           <>
@@ -325,6 +332,7 @@ const MainLayout = (props: Props) => {
                   </motion.div>
                 )}
             </AnimatePresence>
+            <TreasureBook />
           </>
         )
       }

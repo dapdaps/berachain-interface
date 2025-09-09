@@ -1,4 +1,4 @@
-export type engineType = 'axelar' | 'bunnyFi' | 'jumper' | 'lifi' | 'meson' | 'miniBridge' | 'orbiter' | 'owlto' | 'rubic' | 'swing' | 'wormhole' | 'bungee' | 'rango' | 'stargate' | 'xy' | 'official' | 'across' | 'router'
+export type engineType = 'axelar' | 'bunnyFi' | 'jumper' | 'lifi' | 'meson' | 'miniBridge' | 'orbiter' | 'owlto' | 'rubic' | 'swing' | 'wormhole' | 'bungee' | 'rango' | 'stargate' | 'xy' | 'official' | 'across' | 'router' | 'kodiak' | 'superSwap'
 export type bridgeEngineType = 'connext' | 'across' | 'celer'
 
 export interface QuoteRequest {
@@ -36,6 +36,7 @@ export interface QuoteResponse {
     feeType: FeeType;
     gasType: FeeType;
     identification?: string | number;
+    toexchangeRate?: string;
 }
 
 export interface ExecuteRequest {

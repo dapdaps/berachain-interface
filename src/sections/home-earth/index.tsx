@@ -263,7 +263,7 @@ const HomeEarth = (props: any) => {
                         : "/images/theme-default.png"
                     }
                     className={clsx(
-                      "relative z-[4]",
+                      "relative z-[4] top-[-40px]",
                       isDefaultTheme()
                         ? "w-[103px] h-[95px]"
                         : "w-[136px] h-[108px]"

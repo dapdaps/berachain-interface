@@ -50,7 +50,7 @@ const AnimatedLogo = () => {
   ];
 
   return (
-    <div className="w-[420px] h-[214px] flex justify-center items-center relative">
+    <div className="w-[420px] h-[214px] flex justify-center items-center relative pointer-events-none">
       {hearts.map((heart, index) => (
         <RisingHeart 
           key={index} 

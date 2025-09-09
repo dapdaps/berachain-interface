@@ -13,7 +13,7 @@ import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
-import GuidingTutorial from "@/components/GuidingTour/mainnet";
+import GuidingTutorial from "@/components/GuidingTour/lootbox-season";
 import useTokenPrice from "@/hooks/use-token-price";
 import Downtime from "@/components/downtime";
 

@@ -1,0 +1,46 @@
+"use client";
+
+import BuySpinsModal from "./components/buy-spins/modal";
+import Tiger from "./components/tiger";
+import { useLuckyBera } from "./hooks";
+
+const LuckyBera = () => {
+  const {
+    spinMultiplier,
+    toggleSpinMultiplier,
+    spinUserData,
+    lastSpinResult,
+    handleSpinResult,
+    buySpinsModalOpen,
+    setBuySpinsModalOpen,
+    onBuySpins,
+    buyingSpins,
+    buySpinsAmount,
+    setBuySpinsAmount,
+    isChainSupported,
+  } = useLuckyBera();
+
+  return (
+    <>
+      <Tiger
+        spinMultiplier={spinMultiplier}
+        toggleSpinMultiplier={toggleSpinMultiplier}
+        spinUserData={spinUserData}
+        lastSpinResult={lastSpinResult}
+        handleSpinResult={handleSpinResult}
+        openBuySpinsModal={() => setBuySpinsModalOpen(true)}
+      />
+      <BuySpinsModal
+        open={buySpinsModalOpen}
+        onClose={() => setBuySpinsModalOpen(false)}
+        onBuySpins={onBuySpins}
+        buyingSpins={buyingSpins}
+        buySpinsAmount={buySpinsAmount}
+        setBuySpinsAmount={setBuySpinsAmount}
+        isChainSupported={isChainSupported}
+      />
+    </>
+  );
+};
+
+export default LuckyBera;

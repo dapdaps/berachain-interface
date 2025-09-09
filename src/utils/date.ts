@@ -28,6 +28,18 @@ export function getUTCDatetime(datetime?: any) {
   return `${d.getUTCFullYear()}-${M}-${D}T${H}:${m}:${s}Z`;
 }
 
+export function formatSimpleDate(date: Date | string | number) {
+  if (!date) return '';
+  const d = new Date(date);
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  const hour = d.getUTCHours();
+  const minute = d.getUTCMinutes();
+  return `${year}/${month}/${day} ${hour}:${minute < 10 ? '0' + minute : minute}`;
+}
+
+
 export function getRemainingDatetime(start: Date, end: Date) {
   const lastSeconds = dateFns.differenceInSeconds(new Date(end), new Date(start));
   const daySeconds = 86400;

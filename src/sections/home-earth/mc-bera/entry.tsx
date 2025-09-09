@@ -33,6 +33,8 @@ const McBeraEntryContent = (props: any) => {
     });
   };
 
+  return null;
+
   return (
     <motion.button
       type="button"

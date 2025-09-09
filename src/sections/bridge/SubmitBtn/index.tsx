@@ -6,7 +6,7 @@ import { useAccount, useSwitchChain, useConnect } from "wagmi";
 const cls = 'w-full h-[60px] flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] font-[600] mt-[16px] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed'
 
 export default function SubmitBtn(props: any) {
-  const { comingSoon, onClick, isLoading, disabled, fromChainId } = props;
+  const { comingSoon, onClick, isLoading, disabled, fromChainId, text } = props;
   const { switchChain } = useSwitchChain()
   const { address, chainId } = useAccount()
   const { openConnectModal } = useConnectModal();
@@ -48,7 +48,7 @@ export default function SubmitBtn(props: any) {
         onClick()
       }}
     >
-        {comingSoon ? 'Coming soon...' : isLoading ? <Loading size={20}/> : chainId !== fromChainId ? 'Switch Chain' : 'Bridge'}
+        {comingSoon ? 'Coming soon...' : isLoading ? <Loading size={20}/> : chainId !== fromChainId ? 'Switch Chain' : text}
     </button>
   );
 }
