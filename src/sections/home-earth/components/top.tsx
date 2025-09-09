@@ -8,69 +8,27 @@ import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import { useContext } from "react";
 import LGBTLogo from "./lgbt-animated-logo";
 import clsx from "clsx";
-import { useNftReward } from "@/stores/use-nft-reward";
 
 const HomeEarthTop = (props: any) => {
   const { isLogo = true, isAirdrop = true, className } = props;
   const { isDefaultTheme } = useActivityStore();
   const { isRainyDay } = useContext(HomeEarthContext);
   const { scrollY } = useScroll();
-  const nftRewardStore: any = useNftReward();
 
   const logoY = useTransform(scrollY, (value) => {
     return -Math.max(0, value);
   });
 
   return (
-    <div className={clsx("relative w-full pt-[20px] flex justify-center shrink-0", className)}>
+    <div className={clsx("relative w-full pt-[0px] flex justify-center shrink-0", className)}>
       {
         isLogo && (
-          <motion.div className="mt-[40px] relative" style={{ y: logoY }}>
-            <motion.img
-              src="/images/nft-holder/nft-1-home.png"
-              alt="NFT 1"
-              onClick={() => {
-                nftRewardStore.set({
-                  showNftReward: true,
-                })
-              }}
-              className={clsx("w-[84px] absolute cursor-pointer", {
-                "right-[25px] top-[30px]": !isDefaultTheme(),
-                "right-[-45px] top-[80px]": isDefaultTheme(),
-              })}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.4, type: "spring" }}
-              whileHover={{ y: -4, transition: { duration: 0.1, delay: 0 } }}
-            />
-            <motion.img
-              src="/images/nft-holder/nft-2-home.png"
-              alt="NFT 2"
-              onClick={() => {
-                nftRewardStore.set({
-                  showNftReward: true,
-                })
-              }}
-              className={clsx("w-[94px] absolute cursor-pointer", {
-                "right-[65px] top-[-20px]": !isDefaultTheme(),
-                "right-[-20px] top-[30px]": isDefaultTheme(),
-              })}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.4, type: "spring" }}
-              whileHover={{
-                y: -4,
-                transition: {
-                  duration: 0.1,
-                  delay: 0
-                }
-              }}
-            />
+          <motion.div className="relative" style={{ y: logoY }}>
             {isDefaultTheme() ? (
               <motion.img
                 src="/images/home-earth/beratown-logo.png"
                 alt=""
-                className="w-[340px] h-[209px] relative z-10 pointer-events-none"
+                className="w-[244px] h-[150px] relative z-10 pointer-events-none object-center object-contain"
                 variants={{
                   visible: {
                     opacity: 1,

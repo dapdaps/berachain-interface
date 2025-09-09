@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
 
 const CloudCircle = (props: any) => {
-  const {} = props;
+  const { } = props;
 
   const {
     isRainyDay,
@@ -39,29 +39,37 @@ const CloudCircle = (props: any) => {
         {
           [...new Array(8)].map((_, i) => (
             isRainyDay ? (
-              <motion.img
+              <motion.div
                 key={i + 'down'}
-                src="/images/home-earth/cloud-earth-rainy.svg"
-                alt=""
-                className="absolute -top-[0px] w-[913px] h-[251px]"
-                {...VisibleAnimation}
+                className="absolute top-0 origin-bottom w-[913px] flex justify-center"
                 style={{
-                  transform: `rotate(${45 * i}deg) translateY(-150px)`,
-                  transformOrigin: `center ${size / 2}px`,
+                  height: size / 2,
+                  transform: `rotate(${45 * i}deg)`,
                 }}
-              />
+                {...VisibleAnimation}
+              >
+                <img
+                  src="/images/home-earth/cloud-earth-rainy.svg"
+                  alt=""
+                  className="w-full h-[251px]"
+                />
+              </motion.div>
             ) : (
-              <motion.img
+              <motion.div
                 key={i + 'up'}
-                src="/images/home-earth/cloud-earth.svg"
-                alt=""
-                className="absolute -top-[0px] w-[913px] h-[251px]"
-                {...VisibleAnimation}
+                className="absolute top-0 origin-bottom w-[913px] flex justify-center"
                 style={{
-                  transform: `rotate(${45 * i}deg) translateY(-150px)`,
-                  transformOrigin: `center ${size / 2}px`,
+                  height: size / 2,
+                  transform: `rotate(${45 * i}deg)`,
                 }}
-              />
+                {...VisibleAnimation}
+              >
+                <img
+                  src="/images/home-earth/cloud-earth.svg"
+                  alt=""
+                  className="w-full h-[251px] rotate-[0deg] translate-y-[-170px]"
+                />
+              </motion.div>
             )
           ))
         }

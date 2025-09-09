@@ -28,7 +28,7 @@ const MainLayoutHeader = (props: Props) => {
 
   const store: any = useMapModalStore();
 
-  const hallStore:any = useHall()
+  const hallStore: any = useHall()
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
 
