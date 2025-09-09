@@ -398,9 +398,9 @@ const Home = () => {
               </motion.div>
               <motion.div
                 className="relative w-[77.435vw] h-[51.794vw] -translate-y-[47vw] translate-x-[34.8vw]"
-                // whileTap="tap"
+                whileTap="tap"
                 onClick={() => {
-                  // router.push('/cave');
+                  router.push('/cave');
                   tapSound.play?.();
                   // handleReport('1015-008');
                 }}
@@ -410,22 +410,22 @@ const Home = () => {
                 <motion.img
                   src="/images/mobile/home/bg-cave.png"
                   alt=""
-                  className="w-full h-full opacity-50"
+                  className="w-full h-full"
                   variants={EntryAnimationBg}
                   transition={EntryAnimation}
                 />
                 <motion.img
                   src="/images/mobile/home/text-cave.png"
-                  className="absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw] opacity-50"
+                  className="absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw]"
                   alt=""
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
                 />
-                <img
+                {/* <img
                   src="/images/mobile/icon-lock.svg"
                   alt=""
                   className="w-[52px] h-[53px] absolute left-1/2 -translate-x-1/2 top-1/2 translate-y-[calc(-50%_-_26px)]"
-                />
+                /> */}
               </motion.div>
               <div className="absolute bottom-[40px] w-[113px] h-[176px]">
                 <Signpost className="scale-[0.6348] origin-bottom-left z-[2]" />
