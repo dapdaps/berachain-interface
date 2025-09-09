@@ -20,7 +20,7 @@ export default function Bridge({ type, defaultFromChain, defaultToChain, default
 
 
   return (
-    <div className="h-full overflow-auto">
+    <div className="h-full overflow-auto md:pb-[100px]">
       {!isMobile ? (
         <PageBack className="ml-[30px] absolute top-[20px] left-[30px] z-10" />
       ) : null}
@@ -123,7 +123,7 @@ const DappHeader: React.FC<{ type?: string }> = ({ type }) => {
   return (
     <>
       {isMobile ? (
-        <div className="relative left-[25%] mt-7 top-5">
+        <div className="relative flex justify-center mt-7 top-5">
           <MenuButton className="w-[51.282vw]">{name}</MenuButton>
         </div>
       ) : (
