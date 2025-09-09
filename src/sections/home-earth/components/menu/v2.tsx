@@ -194,7 +194,7 @@ const MENU_LIST = {
     {
       label: "Swap",
       bg: "linear-gradient(0deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.50) 100%), #FF9C81",
-      href: "/swap",
+      href: "/super-swap",
       sort: 1,
     },
     {
