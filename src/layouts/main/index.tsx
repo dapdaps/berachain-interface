@@ -17,14 +17,16 @@ import RainyDay from "@/components/rainy-day";
 import { useRainyDay } from "@/hooks/use-rainy-day";
 import { AnimatePresence, motion } from "framer-motion";
 import { useActivityStore } from "@/stores/useActivityStore";
-import NavigationMenu from "@/sections/home-earth/components/menu";
 import Downtime from "@/components/downtime";
 import TreasureBook from "@/components/treasure-book";
 import NFTHolderPerksModal from "@/components/nft-holder";
 import { useNftReward } from "@/stores/use-nft-reward";
+import dynamic from "next/dynamic";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
+
+const NavigationMenu = dynamic(() => import("@/sections/home-earth/components/menu"), { ssr: false });
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;

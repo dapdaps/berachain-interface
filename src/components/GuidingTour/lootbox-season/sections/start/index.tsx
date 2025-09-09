@@ -71,7 +71,7 @@ const LootboxSeasonStart = (props: any) => {
           Da town just received a glow-up. We are adding a new incentivise layer that rewards all your usual DeFi activity.<br /> And guess what? McBera left you a free lootbox just for showing up. No catch, just connect your wallet.
         </div>
       </div>
-      <div className="w-full mt-[29px] flex justify-center pb-[30px]">
+      <div className="w-full mt-[29px] flex justify-center pb-[30px] md:pl-[40px]">
         <LootboxSeasonButton
           className="!px-[100px]"
           onClick={onNext}
