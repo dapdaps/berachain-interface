@@ -82,8 +82,8 @@ const Kirov = (props: any) => {
         />
       </div>
       <KirovFlag>
-        <LabelValue label="Protocols intergrated">
-          {appStats?.total_transactions}
+        <LabelValue label="Protocols intergrated" isForceValue={true}>
+          16+
         </LabelValue>
         <LabelValue label="Users">
           {appStats?.total_users}
@@ -120,13 +120,19 @@ const KirovFlag = (props: any) => {
 };
 
 const LabelValue = (props: any) => {
-  const { label, children, labelClassName, valueClassName, className } = props;
+  const { label, children, labelClassName, valueClassName, className, isForceValue } = props;
 
   return (
     <div className={clsx("flex flex-col items-center gap-[5px] font-CherryBomb text-[16px] font-[400] text-black text-center", className)}>
       <div className={clsx("text-[32px] leading-[90%]", valueClassName)}>
-        {numberFormatter(children, 0, true, { isShort: true, isShortUppercase: false })}
-        {Big(children || 0).gt(1000) ? "+" : ""}
+        {
+          isForceValue ? children : (
+            <>
+              {numberFormatter(children, 0, true, { isShort: true, isShortUppercase: false })}
+              {Big(children || 0).gt(1000) ? "+" : ""}
+            </>
+          )
+        }
       </div>
       <div className={clsx("h-[30px] flex items-center leading-[90%]", labelClassName)}>
         {label}
