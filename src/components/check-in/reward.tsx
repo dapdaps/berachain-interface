@@ -169,7 +169,7 @@ const CheckInReward = (props: any) => {
             Henlo!
           </div>
           <div className="text-center mt-[20px]">
-            You’ve got
+            You’ve received
           </div>
           <div className="mt-[9px] flex flex-col items-center gap-[10px] text-[20px] font-[700] leading-[120%] text-center">
             {
