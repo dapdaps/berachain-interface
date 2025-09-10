@@ -18,8 +18,14 @@ import useTokenPrice from "@/hooks/use-token-price";
 import Downtime from "@/components/downtime";
 
 const menuItems = [
-  // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
+  { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
   { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
+  {
+    id: 2.1,
+    title: "Super Swap",
+    href: "/super-swap",
+    // dataBp: ""
+  },
   {
     id: 3,
     title: "Token Marketplace",
@@ -236,12 +242,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: "100%" }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-12 pb-24 z-[50]"
+                  className="fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-[8vw] pb-24 z-[50]"
                   style={{
                     overflowY: isDappsOpen ? "scroll" : "auto"
                   }}
                 >
-                  <div className="w-full max-w-md flex justify-center items-center flex-col gap-4">
+                  <div className="w-full max-w-md flex justify-center items-center flex-col gap-[1.03vw]">
                     {menuItems.map((item) => (
                       <div
                         key={item.id}
