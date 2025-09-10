@@ -25,8 +25,10 @@ import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
 import McBeraView from '@/sections/home-earth/mc-bera';
+import Kirov from "./components/kirov";
 
 const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
+const MenuV2 = dynamic(() => import('./components/menu/v2'), { ssr: false });
 
 // seconds per lap
 const SPEED = 200;
@@ -196,19 +198,18 @@ const HomeEarth = (props: any) => {
         <div className="w-full" ref={containerRef}>
           <div
             ref={contentRef}
-            className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
+            className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-x-hidden overflow-y-auto"
           >
             {/*<BerachainFixes />*/}
-            <BeraPrice />
-            <Follower />
-            <Signpost />
             <HomeEarthTop />
+            <div className="w-full min-h-[153px]">
+              <MenuV2 />
+            </div>
             {/* <Airship /> */}
             <motion.div
-              className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center shrink-0"
+              className="relative w-full overflow-hidden flex-1 h-[0] min-h-[535px] flex justify-center shrink-0"
               animate={{
                 y: earthY,
-                height: `calc(100% - 229px - ${earthY}px)`,
               }}
               transition={{
                 ease: "linear",
@@ -229,6 +230,7 @@ const HomeEarth = (props: any) => {
               <Navigation />
               {/*#endregion*/}
 
+              {/*#region theme toggle button*/}
               <Popover
                 trigger={PopoverTrigger.Hover}
                 placement={PopoverPlacement.Top}
@@ -246,8 +248,8 @@ const HomeEarth = (props: any) => {
                   />
                 }
                 triggerContainerClassName={clsx(
-                  "absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110",
-                  isDefaultTheme() ? "right-[150px]" : "right-[130px]"
+                  "absolute bottom-[0px] z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110 transition-all duration-150 origin-bottom",
+                  isDefaultTheme() ? "right-[160px]" : "right-[130px]"
                 )}
               >
                 <div className="w-full h-full relative">
@@ -260,7 +262,7 @@ const HomeEarth = (props: any) => {
                         : "/images/theme-default.png"
                     }
                     className={clsx(
-                      "relative z-[4] top-[-40px]",
+                      "relative z-[4]",
                       isDefaultTheme()
                         ? "w-[103px] h-[95px]"
                         : "w-[136px] h-[108px]"
@@ -280,6 +282,13 @@ const HomeEarth = (props: any) => {
                   )}
                 </div>
               </Popover>
+              {/*#endregion*/}
+
+              <BeraPrice />
+              <Follower />
+              <Signpost />
+
+              {/*#region biking bear*/}
               {isDefaultTheme() ? (
                 <img
                   ref={bearRef}
@@ -315,10 +324,12 @@ const HomeEarth = (props: any) => {
                   </div>
                 </div>
               )}
+              {/*#endregion*/}
             </motion.div>
             <McBeraEntry />
           </div>
-          <McBeraView topRef={contentRef} />
+          {/* <McBeraView topRef={contentRef} /> */}
+          <Kirov />
         </div>
       </McBeraProvider>
     </HomeEarthContext.Provider>

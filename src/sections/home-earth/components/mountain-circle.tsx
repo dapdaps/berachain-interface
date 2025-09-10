@@ -3,7 +3,7 @@ import { HomeEarthContext } from '../context';
 import { motion } from 'framer-motion';
 
 const MountainCircle = (props: any) => {
-  const {} = props;
+  const { } = props;
   const {
     mountainRef,
     speed,
@@ -34,16 +34,20 @@ const MountainCircle = (props: any) => {
     >
       {
         [...new Array(4)].map((_, i) => (
-          <img
-            key={i}
-            src="/images/home-earth/mountain.svg"
-            alt=""
-            className="absolute -top-[0px] w-[1888px] h-[588px]"
+          <div
+            className="absolute w-[1888px] origin-bottom top-0 flex justify-center"
             style={{
-              transform: `rotate(${90 * i}deg) translateY(-110px) translateX(190px)`,
-              transformOrigin: `center ${size / 2}px`,
+              height: size / 2,
+              transform: `rotate(${90 * i}deg)`,
             }}
-          />
+          >
+            <img
+              key={i}
+              src="/images/home-earth/mountain.svg"
+              alt=""
+              className="w-full h-[588px] rotate-[-8deg] translate-y-[-120px]"
+            />
+          </div>
         ))
       }
     </motion.div>

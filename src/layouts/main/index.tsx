@@ -335,7 +335,6 @@ const MainLayout = (props: Props) => {
                   </motion.div>
                 )}
             </AnimatePresence>
-            <NavigationMenu />
             <TreasureBook />
           </>
         )
