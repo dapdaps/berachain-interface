@@ -48,6 +48,7 @@ const MENU_LIST = [
     href: "/carnival/lucky-bera",
     sort: 7,
     isBlink: true,
+    bp: "1010-025",
   },
   {
     label: "Portfolio",
@@ -97,6 +98,7 @@ const NavigationMenu = (props: any) => {
               style={{
                 background: menu.bg,
               }}
+              data-bp={menu.bp}
             >
               {menu.label}
               {

@@ -1,4 +1,4 @@
-import { useDebounceFn } from "ahooks";
+import { useThrottleFn } from "ahooks";
 import useAccount from "./use-account";
 import { post } from "@/utils/http";
 
@@ -44,14 +44,8 @@ export default function useClickTracking() {
       content
     });
   };
-  const { run: handleReport } = useDebounceFn(
+  const { run: handleReport } = useThrottleFn(
     (code: string, content?: string) => {
-      console.log(
-        "%cfollowed: %s-%s",
-        "background:#FFF5A9;color:#000;",
-        account || "[none]",
-        code || "[none]"
-      );
       handleReportWithoutDebounce(code, content);
     },
     {
@@ -59,7 +53,7 @@ export default function useClickTracking() {
     }
   );
 
-  const { run: handleReportNoCode } = useDebounceFn(
+  const { run: handleReportNoCode } = useThrottleFn(
     () => {
       console.log(
         "%cfollowed: %s-%s",
