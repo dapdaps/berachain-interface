@@ -328,7 +328,7 @@ const HomeEarth = (props: any) => {
             </motion.div>
             <McBeraEntry />
           </div>
-          <McBeraView topRef={contentRef} />
+          {/* <McBeraView topRef={contentRef} /> */}
           <Kirov />
         </div>
       </McBeraProvider>
