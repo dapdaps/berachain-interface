@@ -159,7 +159,7 @@ export default function BridgeContent({
 
   return (
     <>
-      <Card>
+      <Card className="md:!rounded-[20px]">
         <TokenAmout
           isDest={false}
           allTokens={allTokens}

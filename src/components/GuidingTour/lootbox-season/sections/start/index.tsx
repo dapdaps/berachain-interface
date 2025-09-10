@@ -20,7 +20,7 @@ const LootboxSeasonStart = (props: any) => {
   return (
     <div className="w-full">
       <div className="relative w-full h-[378px] bg-[url('/images/guiding-tour/lootbox-season/bg2@2x.png')] bg-no-repeat bg-top bg-cover pt-[32px]">
-        <LootboxSeasonTitle>
+        <LootboxSeasonTitle className="md:text-[30px]">
           Incentivise Everything
         </LootboxSeasonTitle>
         <motion.img
