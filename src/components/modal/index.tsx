@@ -94,7 +94,7 @@ export const ModalContent = (props: ModalProps) => {
         {isShowCloseIcon && (closeIcon || onClose) ? (
           <button
             onClick={onClose}
-            className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
+            className={`absolute top-5 right-5 cursor-pointer z-[100] md:hidden ${closeIconClassName}`}
           >
             {
               closeIcon ? closeIcon : <IconClose />
