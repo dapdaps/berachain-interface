@@ -18,6 +18,7 @@ import { useCoinExplosion } from "../hooks/use-coin-explosion";
 import "./index.css";
 import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
+import useUser from "@/hooks/use-user";
 
 const WheelList = [
   {
@@ -90,6 +91,7 @@ const BigWheel = () => {
   } = usePlaygroundContext();
   const { createCoinsExplosion } = useCoinExplosion();
   const isMobile = useIsMobile();
+  const { getUserInfo } = useUser();
 
   const [wheelRef, wheelAnimate] = useAnimate();
   const wheelRotation = useMotionValue(0);
@@ -229,6 +231,8 @@ const BigWheel = () => {
     }
     getWheelUserData();
     setOpenRedeemSpin(false);
+    // refresh user total points
+    getUserInfo();
   }, {
     manual: true,
   });
