@@ -10,6 +10,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import { useState } from "react";
 import Pagination from "@/components/pager/pagination";
 import { useLuckyBeraRecordsStore } from "./store";
+import useIsMobile from "@/hooks/use-isMobile";
 
 dayjs.extend(utc);
 
@@ -23,6 +24,7 @@ const LuckyBeraResults = (props: any) => {
     resultsWinOnly: winOnly,
     setResultsWinOnly: setWinOnly,
   } = useLuckyBeraRecordsStore();
+  const isMobile = useIsMobile();
 
   const [pageSize] = useState(10);
   const [pageTotal, setPageTotal] = useState(1);
@@ -31,6 +33,7 @@ const LuckyBeraResults = (props: any) => {
     {
       title: "Date",
       dataIndex: "date",
+      width: isMobile ? 140 : void 0,
       render: (record: any, idx: number) => {
         return dayjs.utc(record.created_at).format("YYYY/M/D HH:mm");
       },
@@ -38,7 +41,7 @@ const LuckyBeraResults = (props: any) => {
     {
       title: "Consumption",
       dataIndex: "consumption",
-      width: 200,
+      width: isMobile ? 110 : 200,
       render: (record: any, idx: number) => {
         return `x${record.spin}`;
       },
@@ -46,7 +49,7 @@ const LuckyBeraResults = (props: any) => {
     {
       title: "Result",
       dataIndex: "result",
-      width: 100,
+      width: isMobile ? 80 : 100,
       render: (record: any, idx: number) => {
         const currentReward = SPIN_CATEGORIES[record.category as SpinCategory];
         if (!currentReward) {
@@ -130,7 +133,7 @@ const LuckyBeraResults = (props: any) => {
         columns={columns}
         data={data}
         loading={loading}
-        bodyClassName="min-h-[438px]"
+        bodyClassName="min-h-[438px] md:min-h-[47dvh]"
       />
       <Pagination
         className="justify-end pr-[25px] mt-[18px]"

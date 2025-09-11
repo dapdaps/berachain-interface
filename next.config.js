@@ -112,7 +112,7 @@ const nextConfig = {
     };
 
     config.optimization.emitOnErrors = true;
-    if (process.env.NEXT_PUBLIC_API === "https://dev-api.beratown.app") {
+    if (process.env.NEXT_PUBLIC_API === "https://api.beratown.app") {
       config.optimization.minimizer = [
         new TerserPlugin({
           terserOptions: {

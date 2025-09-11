@@ -194,7 +194,7 @@ const MarketplaceView = () => {
       )}
       <img
         src="/images/mobile/market-header.png"
-        className="w-full h-[30.769vw] absolute top-[0px] z-[1] hidden md:block"
+        className="w-full h-[30.769vw] absolute top-[0px] z-[11] hidden md:block"
         alt=""
       />
 
@@ -210,7 +210,7 @@ const MarketplaceView = () => {
         </div>
       }
 
-      <div className="relative z-[10] mt-[20px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
+      <div className="relative z-[10] mt-[20px] md:mt-[26vw] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
         <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
           Hot Tokens
         </div>
@@ -269,7 +269,7 @@ const MarketplaceView = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-[10px] left-1/2 transform -translate-x-1/2 lg:w-[1200px] md:w-full z-30 h-[240px]">
+      <div className="fixed bottom-[10px] left-1/2 transform -translate-x-1/2 lg:w-[1200px] md:w-full z-30 h-[240px] md:hidden">
         <div className="w-[150px] h-[240px] absolute bottom-[0] right-[-100px]" onClick={(e) => {
           e.stopPropagation();
           setShowHenloBubble(true);

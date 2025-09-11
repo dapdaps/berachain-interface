@@ -6,6 +6,9 @@ import Popover, { PopoverPlacement, PopoverTrigger } from "../popover";
 import CheckIn from ".";
 import CheckInRewardView from "./reward";
 import { useCheckIn } from "@/hooks/use-check-in";
+import useIsMobile from "@/hooks/use-isMobile";
+import CheckInModal from "./modal";
+import { useState } from "react";
 
 const CheckInEntry = (props: any) => {
   const { className } = props;
@@ -22,12 +25,15 @@ const CheckInEntry = (props: any) => {
     setOpenReward,
     setRewardData,
   } = useCheckIn();
+  const isMobile = useIsMobile();
+
+  const [checkInModalOpen, setCheckInModalOpen] = useState(false);
 
   return (
     <>
       <Popover
         ref={checkInRef}
-        content={(
+        content={isMobile ? null : (
           <CheckIn
             setOpenReward={setOpenReward}
             setRewardData={setRewardData}
@@ -57,6 +63,12 @@ const CheckInEntry = (props: any) => {
             duration: 0.3,
             ease: "easeInOut",
           }}
+          onClick={() => {
+            if (!isMobile) {
+              return;
+            }
+            setCheckInModalOpen(true);
+          }}
         />
       </Popover>
       <CheckInRewardView
@@ -66,6 +78,12 @@ const CheckInEntry = (props: any) => {
           setRewardData(void 0);
         }}
         data={rewardData}
+      />
+      <CheckInModal
+        open={checkInModalOpen}
+        onClose={() => {
+          setCheckInModalOpen(false);
+        }}
       />
     </>
   );

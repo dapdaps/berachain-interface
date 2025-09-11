@@ -10,13 +10,18 @@ import clsx from 'clsx';
 import LuckyBeraRecordsModal from './records/modal';
 import { useCoinExplosion } from '../../hooks/use-coin-explosion';
 import { usePlaygroundContext } from '../../context';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const WHEEL_SIZE = 500;
 const WHEEL_AREA = 120;
 const WHEEL_CENTER_OFFSET = 110;
+const WHEEL_CENTER_OFFSET_MOBILE = 70;
 const WHEEL_ICON_SIZE = 60;
+const WHEEL_ICON_SIZE_MOBILE = 40;
 const SPIN_PROGRESS_BASE = 10; // percent
 const EXPLOSION_COIN_SIZE = 100;
+const WHEEL_RADIUS = 0.7;
+const WHEEL_RADIUS_MOBILE = 0.5;
 
 const TOTAL_SPINS = 50;
 
@@ -43,6 +48,7 @@ export default memo(function Tiger(props: any) {
   } = props;
 
   const toast = useToast();
+  const isMobile = useIsMobile();
   const { createCoinsExplosion } = useCoinExplosion();
   const { setShowRulesModal } = usePlaygroundContext();
 
@@ -98,7 +104,7 @@ export default memo(function Tiger(props: any) {
         const startXpRewardY = xpRewardRect.top + xpRewardRect.height / 2 - EXPLOSION_COIN_SIZE;
         const xpRewardIcon = SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon;
         createCoinsExplosion(startXpRewardX, startXpRewardY, xpRewardIcon, {
-          size: EXPLOSION_COIN_SIZE / 3 * 2,
+          size: isMobile ? EXPLOSION_COIN_SIZE / 2 : EXPLOSION_COIN_SIZE / 3 * 2,
           customPosition: {
             x: window.innerWidth / 2,
             y: -100,
@@ -263,24 +269,24 @@ export default memo(function Tiger(props: any) {
   }, []);
 
   return (
-    <div className="w-full min-h-[100dvh] flex items-end justify-center">
-      <div className="relative flex flex-col items-center justify-center scale-90 origin-bottom z-[2]">
-        <div className="relative z-[6] w-[608px] h-[506px] max-w-full bg-[url('/images/playground/lucky-bera/bear-top.png')] bg-center bg-contain">
+    <div className="w-full min-h-[100dvh] flex items-end justify-center md:pb-[30vw]">
+      <div className="relative flex flex-col items-center justify-center scale-90 md:scale-100 origin-bottom z-[2]">
+        <div className="relative z-[6] w-[608px] md:w-[100vw] h-[506px] md:h-[83.22vw] max-w-full bg-[url('/images/playground/lucky-bera/bear-top.png')] bg-no-repeat bg-center bg-contain">
           <div className="flex justify-center items-start absolute z-[2] w-full top-[20px] pointer-events-none">
             <img
               src="/images/playground/lucky-bera/title.png"
               alt="title"
-              className="w-[480px] h-[145px] object-center object-contain"
+              className="w-[480px] h-[145px] object-center object-contain md:w-[78.93vw] md:h-[23.85vw]"
             />
           </div>
-          <div className="absolute z-[1] top-[140px] left-0 right-0 flex flex-col items-center">
-            <div className="flex items-center justify-center gap-[4px] w-[301px] h-[43px] bg-[url('/images/playground/lucky-bera/amount-bg.svg')] bg-no-repeat bg-center bg-contain">
+          <div className="absolute z-[1] top-[140px] md:top-[25vw] left-0 right-0 flex flex-col items-center">
+            <div className="flex items-center justify-center gap-[4px] w-[301px] h-[43px] md:w-[49.51vw] md:h-[7.07vw] bg-[url('/images/playground/lucky-bera/amount-bg.svg')] bg-no-repeat bg-center bg-contain">
               {
                 !!lastSpinResult?.draw_reward_amount && (
                   <>
                     {
                       !!SPIN_CATEGORIES[lastSpinResult.draw_reward as SpinCategory] && (
-                        <div className="w-[22px]">
+                        <div className="w-[22px] md:w-[20px]">
                           <img
                             src={SPIN_CATEGORIES[lastSpinResult.draw_reward as SpinCategory].icon}
                             alt={SPIN_CATEGORIES[lastSpinResult.draw_reward as SpinCategory].value}
@@ -289,18 +295,18 @@ export default memo(function Tiger(props: any) {
                         </div>
                       )
                     }
-                    <div className="text-[#FFF4C2] text-stroke-2 text-[24px] font-CherryBomb">
+                    <div className="text-[#FFF4C2] text-stroke-2 text-[24px] md:text-[20px] font-CherryBomb">
                       {numberFormatter(lastSpinResult.draw_reward_amount, 2, true)}
                     </div>
                   </>
                 )
               }
             </div>
-            <div ref={spinXpRef} className="m-[14px_0_18px] relative pl-[4px] w-[200px] h-[25px] flex items-center  rounded-[10px] border-2 border-[#E49F63] bg-[#582911]">
+            <div ref={spinXpRef} className="m-[14px_0_18px] relative pl-[4px] w-[200px] h-[25px] md:w-[48vw] md:h-[6vw] flex items-center  rounded-[10px] border-2 border-[#E49F63] bg-[#582911]">
               <img
                 src="/images/playground/lucky-bera/icon-rocket.png"
                 alt="theme"
-                className="w-[50px] h-[50px] object-center object-contain shrink-0 absolute -left-[15px]"
+                className="w-[50px] h-[50px] md:w-[10.67vw] md:h-[10.67vw] object-center object-contain shrink-0 absolute -left-[15px]"
               />
               <motion.div
                 className="h-[18px] rounded-[6px] border-2 border-[#F8C200] bg-[#FFE380] shadow-[0px_4px_0px_0px_rgba(255, 255, 255, 0.50)_inset]"
@@ -320,21 +326,21 @@ export default memo(function Tiger(props: any) {
                       ref={spinXpRewardRef}
                       src={SPIN_XP_REWARD_CATEGORIES[spinUserData?.game_xp?.reward as SpinXpRewardCategory]?.icon}
                       alt=""
-                      className="w-[55px] h-[46px] object-center object-contain shrink-0"
+                      className="w-[55px] h-[46px] md:w-[13.33vw] md:h-[11.15vw] object-center object-contain shrink-0"
                     />
-                    <div className="absolute whitespace-nowrap left-1/2 -translate-x-1/2 bottom-[4px] font-CherryBomb text-[16px] text-[#FFE7A5] [text-shadow:0_2px_0_rgba(0,0,0,0.5)] [-webkit-text-stroke:1px_#4B371F] leading-none">
+                    <div className="absolute whitespace-nowrap left-1/2 -translate-x-1/2 bottom-[4px] font-CherryBomb text-[16px] md:text-[14px] text-[#FFE7A5] [text-shadow:0_2px_0_rgba(0,0,0,0.5)] [-webkit-text-stroke:1px_#4B371F] leading-none">
                       {spinUserData?.game_xp?.rewardAmount}{spinUserData?.game_xp?.reward}
                     </div>
                   </div>
                 )
               }
             </div>
-            <div className="relative flex items-center w-[353px] h-[188px] bg-[url('/images/playground/lucky-bera/turntable_bg.svg')] bg-center bg-contain bg-no-repeat">
-              <div className="absolute top-1/2 translate-x-[-40px] -translate-y-1/2">
+            <div className="relative flex items-center w-[353px] h-[188px] md:w-[53.33vw] md:h-[28.40vw] bg-[url('/images/playground/lucky-bera/turntable_bg.svg')] bg-center bg-contain bg-no-repeat">
+              <div className="absolute top-1/2 translate-x-[-40px] md:translate-x-[-6vw] -translate-y-1/2">
                 <motion.img
                   src="/images/playground/lucky-bera/pointer.svg"
                   alt="pointer"
-                  className="w-[57px] h-[43px] object-center object-contain"
+                  className="w-[57px] h-[43px] md:w-[10.67vw] md:h-[8.05vw] object-center object-contain"
                   animate={spinning ? {
                     rotate: [0, -30, 30, 0],
                   } : {
@@ -347,11 +353,11 @@ export default memo(function Tiger(props: any) {
                   }}
                 />
               </div>
-              <div className="absolute rotate-180 -right-[2px] top-1/2 translate-x-[35px] -translate-y-1/2">
+              <div className="absolute rotate-180 -right-[2px] top-1/2 translate-x-[35px] md:translate-x-[6vw] -translate-y-1/2">
                 <motion.img
                   src="/images/playground/lucky-bera/pointer.svg"
                   alt="pointer"
-                  className="w-[57px] h-[43px] object-center object-contain"
+                  className="w-[57px] h-[43px] md:w-[10.67vw] md:h-[8.05vw] object-center object-contain"
                   animate={spinning ? {
                     rotate: [0, -30, 30, 0],
                   } : {
@@ -370,7 +376,7 @@ export default memo(function Tiger(props: any) {
                 <motion.div
                   className="absolute left-1/2 top-1/2"
                   style={{
-                    transform: `translateX(calc(-50% - ${WHEEL_CENTER_OFFSET}px)) translateY(-50%) perspective(1000px)`,
+                    transform: `translateX(calc(-50% - ${isMobile ? WHEEL_CENTER_OFFSET_MOBILE : WHEEL_CENTER_OFFSET}px)) translateY(-50%) perspective(1000px)`,
                     width: WHEEL_SIZE,
                     height: WHEEL_SIZE,
                   }}
@@ -386,14 +392,18 @@ export default memo(function Tiger(props: any) {
                       new Array(360 / WHEEL_AREA).fill(null).map((_, index) => SpinCategories.map((item, idx) => (
                         <div
                           key={`${index}-${idx}`}
-                          className="absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -mt-[30px] -ml-[30px] [backface-visibility:hidden]"
+                          className="flex justify-center items-center absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -ml-[30px] md:-ml-[10px] [backface-visibility:hidden]"
                           style={{
-                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * 0.7 / 2}px) translateY(${item.centerY}px)`,
-                            width: WHEEL_ICON_SIZE * item.centerScale,
-                            height: WHEEL_ICON_SIZE * item.centerScale,
+                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * (isMobile ? WHEEL_RADIUS_MOBILE : WHEEL_RADIUS) / 2}px)`,
+                            top: `calc(50% - ${(isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale / 2}px)`,
+                            width: (isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale,
+                            height: (isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale,
                           }}
                         >
                           <img src={item.icon} alt="" className="w-full" />
+                          {/* <div className="absolute text-[18px] font-[900]">
+                            {idx} - {item.code}
+                          </div> */}
                         </div>
                       )))
                     }
@@ -420,14 +430,18 @@ export default memo(function Tiger(props: any) {
                       new Array(360 / WHEEL_AREA).fill(null).map((_, index) => SpinCategories.map((item, idx) => (
                         <div
                           key={`${index}-${idx}`}
-                          className="absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -mt-[30px] -ml-[30px] [backface-visibility:hidden]"
+                          className="flex justify-center items-center absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -ml-[30px] md:-ml-[18px] [backface-visibility:hidden]"
                           style={{
-                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * 0.7 / 2}px) translateY(${item.centerY}px)`,
-                            width: WHEEL_ICON_SIZE * item.centerScale,
-                            height: WHEEL_ICON_SIZE * item.centerScale,
+                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * (isMobile ? WHEEL_RADIUS_MOBILE : WHEEL_RADIUS) / 2}px)`,
+                            top: `calc(50% - ${(isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale / 2}px)`,
+                            width: (isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale,
+                            height: (isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale,
                           }}
                         >
                           <img src={item.icon} alt="" className="w-full" />
+                          {/* <div className="absolute text-[18px] font-[900]">
+                            {idx} - {item.code}
+                          </div> */}
                         </div>
                       )))
                     }
@@ -438,7 +452,7 @@ export default memo(function Tiger(props: any) {
                 <motion.div
                   className="absolute left-1/2 top-1/2"
                   style={{
-                    transform: `translateX(calc(-50% + ${WHEEL_CENTER_OFFSET}px)) translateY(-50%) perspective(1000px)`,
+                    transform: `translateX(calc(-50% + ${isMobile ? WHEEL_CENTER_OFFSET_MOBILE : WHEEL_CENTER_OFFSET}px)) translateY(-50%) perspective(1000px)`,
                     width: WHEEL_SIZE,
                     height: WHEEL_SIZE,
                   }}
@@ -454,14 +468,18 @@ export default memo(function Tiger(props: any) {
                       new Array(360 / WHEEL_AREA).fill(null).map((_, index) => SpinCategories.map((item, idx) => (
                         <div
                           key={`${index}-${idx}`}
-                          className="absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -mt-[30px] -ml-[30px] [backface-visibility:hidden]"
+                          className="flex justify-center items-center absolute rounded-full top-1/2 left-1/2 origin-center opacity-100 -ml-[30px] [backface-visibility:hidden]"
                           style={{
-                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * 0.7 / 2}px) translateY(${item.centerY}px)`,
-                            width: WHEEL_ICON_SIZE * item.centerScale,
-                            height: WHEEL_ICON_SIZE * item.centerScale,
+                            transform: `rotateX(${index * WHEEL_AREA + idx * SpinCategoryRotation}deg) translateZ(${WHEEL_SIZE * (isMobile ? WHEEL_RADIUS_MOBILE : WHEEL_RADIUS) / 2}px)`,
+                            top: `calc(50% - ${(isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale / 2}px)`,
+                            width: (isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale,
+                            height: (isMobile ? WHEEL_ICON_SIZE_MOBILE : WHEEL_ICON_SIZE) * item.centerScale,
                           }}
                         >
                           <img src={item.icon} alt="" className="w-full" />
+                          {/* <div className="absolute text-[18px] font-[900]">
+                            {idx} - {item.code}
+                          </div> */}
                         </div>
                       )))
                     }
@@ -470,7 +488,7 @@ export default memo(function Tiger(props: any) {
                 {/*#endregion*/}
               </div>
 
-              <div className="absolute left-[4.25px] top-[4px] right-[5.11px] bottom-[5px] z-10 bg-[url('/images/playground/lucky-bera/turntable_masker.svg')] bg-no-repeat bg-cover bg-center">
+              <div className="absolute flex justify-center items-center pointer-events-none left-[4.25px] top-[4px] right-[5.11px] bottom-[5px] z-10 bg-[url('/images/playground/lucky-bera/turntable_masker.svg')] bg-no-repeat bg-cover bg-center">
                 {/* <img
                 src="/images/playground/lucky-bera/turntable_masker.svg"
                 alt="turntable_masker"
@@ -490,32 +508,32 @@ export default memo(function Tiger(props: any) {
             <img src="/images/playground/lucky-bera/icon-flash.png" alt="" className="w-[16px] shrink-0 h-[25px] object-center object-contain bg-no-repeat" />
           </LightingButton> */}
         </div>
-        <div className="relative z-[5] flex justify-center w-full h-[276px] translate-y-[-15px] overflow-hidden [clip-path:polygon(0_0,87%_0,90%_30%,95%_55%,100%_100%,0_100%)]">
-          <div className="relative z-[2] flex flex-col items-center w-[616px] max-w-full h-full bg-[url('/images/playground/lucky-bera/bear-bottom.png')] bg-top bg-contain bg-no-repeat">
+        <div className="relative z-[5] flex justify-center w-full h-[276px] md:h-[44.81vw] translate-y-[-15px] overflow-hidden [clip-path:polygon(0_0,87%_0,90%_30%,95%_55%,100%_100%,0_100%)] md:[clip-path:unset]">
+          <div className="relative z-[2] flex flex-col items-center w-[616px] md:w-[100.00vw] max-w-full h-full bg-[url('/images/playground/lucky-bera/bear-bottom.png')] bg-top bg-contain bg-no-repeat">
             <motion.button
               ref={spinRef}
               type="button"
               disabled={spinning}
-              className="w-[185px] h-[93px] bg-[url('/images/playground/lucky-bera/spin-button.svg')] bg-no-repeat bg-center bg-contain disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-[185px] h-[93px] md:w-[32.00vw] md:h-[16.09vw] bg-[url('/images/playground/lucky-bera/spin-button.svg')] bg-no-repeat bg-center bg-contain disabled:opacity-50 disabled:cursor-not-allowed"
               whileTap={spinning ? {} : {
                 scaleY: 0.9,
               }}
               style={{
                 transformOrigin: "center bottom",
-                y: 25,
+                y: isMobile ? 15 : 25,
               }}
               onClick={handleSpin}
             />
-            <div className="absolute bottom-[45px] flex items-center justify-center gap-[10px]">
-              <div className="relative flex items-center gap-[15px] h-[50px]">
-                <div className="text-[#B76F39] font-CherryBomb font-[400] text-[16px] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]">
+            <div className="absolute bottom-[45px] md:bottom-[6vw] flex items-center justify-center gap-[10px]">
+              <div className="relative flex items-center gap-[15px] md:gap-[5px] h-[50px] md:h-[10.00vw]">
+                <div className="md:hidden text-[#B76F39] font-CherryBomb font-[400] text-[16px] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]">
                   Spin Tickets
                 </div>
-                <div className="w-[200px] flex justify-between items-center pr-[14px] text-[#FFF4C2] text-[24px] font-CherryBomb [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] font-[400] h-full border-[2px] border-[#AD885E] rounded-[10px] bg-[#322C2C] shadow-[2px_7px_0_0_rgba(0,_0,_0,_0.25)_inset]">
+                <div className="w-[200px] md:w-[48.00vw] flex justify-between items-center pr-[14px] text-[#FFF4C2] text-[24px] font-CherryBomb [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] font-[400] h-full border-[2px] border-[#AD885E] rounded-[10px] bg-[#322C2C] shadow-[2px_7px_0_0_rgba(0,_0,_0,_0.25)_inset]">
                   <img
                     src="/images/playground/lucky-bera/ticket-spin.png"
                     alt=""
-                    className="w-[70px] h-[56px] object-center object-contain translate-y-[2px]"
+                    className="w-[70px] h-[56px] md:w-[16.00vw] md:h-[12.80vw] object-center object-contain translate-y-[2px]"
                   />
                   <div className="">
                     {numberFormatter(spinUserData?.spin_balance, 0, true)}
@@ -523,8 +541,8 @@ export default memo(function Tiger(props: any) {
                 </div>
               </div>
               <LightingButton
-                outerClassName="!h-[47px]"
-                className="!px-[29px]"
+                outerClassName="!h-[47px] md:!h-[10vw] md:rounded-[12px]"
+                className="!px-[29px] md:rounded-[10px]"
                 onClick={openBuySpinsModal}
               >
                 BUY
@@ -535,28 +553,28 @@ export default memo(function Tiger(props: any) {
         <img
           src="/images/playground/lucky-bera/bear-bottom-coins-left.svg"
           alt=""
-          className="absolute translate-x-[-230px] bottom-[170px] z-[1] w-[164px] h-[165px] object-center object-contain pointer-events-none"
+          className="absolute translate-x-[-230px] md:translate-x-[-150px] bottom-[170px] md:bottom-[30vw] z-[1] w-[164px] h-[165px] md:w-[32.00vw] md:h-[32.20vw] object-center object-contain pointer-events-none"
         />
         <img
           src="/images/playground/lucky-bera/bear-bottom-coins-right.svg"
           alt=""
-          className="absolute translate-x-[270px] bottom-[170px] z-[1] w-[240px] h-[197px] object-center object-contain pointer-events-none"
+          className="absolute translate-x-[270px] md:translate-x-[150px] bottom-[170px] md:bottom-[30vw] z-[1] w-[240px] h-[197px] md:w-[45.33vw] md:h-[37.21vw] object-center object-contain pointer-events-none"
         />
         <img
           src="/images/playground/lucky-bera/lucky-guy.png"
           alt=""
-          className="absolute translate-x-[315px] bottom-[130px] z-[3] w-[202px] h-[408px] object-center object-contain pointer-events-none"
+          className="absolute translate-x-[315px] md:translate-x-[40vw] bottom-[130px] md:bottom-[50vw] z-[3] md:z-[6] w-[202px] h-[408px] md:w-[21.33vw] md:h-[43.09vw] object-center object-contain pointer-events-none"
         />
         <button
           type="button"
-          className="absolute z-[4] translate-x-[305px] hover:translate-x-[315px] transition-all duration-150 bottom-[130px] w-[140px] h-[50px] bg-[url('/images/playground/lucky-bera/btn-rules.png')] bg-no-repeat bg-center bg-contain"
+          className="absolute z-[4] translate-x-[305px] md:translate-x-[-7.5vw] hover:translate-x-[315px] md:hover:translate-x-[-7.5vw] transition-all duration-150 bottom-[130px] md:bottom-[0] md:translate-y-[-78dvh] md:left-[0] w-[140px] h-[50px] md:w-[32.00vw] md:h-[11.43vw] bg-[url('/images/playground/lucky-bera/btn-rules.png')] bg-no-repeat bg-center bg-contain"
           onClick={() => {
             setShowRulesModal(true);
           }}
         />
         <button
           type="button"
-          className="absolute z-[1] translate-x-[310px] hover:translate-x-[320px] transition-all duration-150 bottom-[70px] w-[125px] h-[50px] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
+          className="absolute z-[1] translate-x-[310px] md:translate-x-[-5vw] hover:translate-x-[320px] md:hover:translate-x-[-5vw] transition-all duration-150 bottom-[70px] md:bottom-[0] md:translate-y-[-71dvh] md:left-[0] w-[125px] h-[50px] md:w-[28.80vw] md:h-[11.52vw] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
           onClick={() => {
             setOpenRecordsModal(true);
           }}
