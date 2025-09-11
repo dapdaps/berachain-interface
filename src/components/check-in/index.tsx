@@ -10,7 +10,7 @@ const CheckIn = (props: any) => {
   return (
     <div
       className={clsx(
-        "w-[386px] p-[12px_7px_10px_8px] shrink-0 rounded-[10px] border-[2px] border-[#E5C375] bg-[#FFF1C7] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black font-Montserrat text-[14px] font-medium leading-[14px]",
+        "w-[386px] md:w-full p-[12px_7px_10px_8px] md:p-[24px_5px_30px_5px] shrink-0 rounded-[10px] md:rounded-b-[0] border-[2px] border-[#E5C375] bg-[#FFF1C7] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black font-Montserrat text-[14px] font-medium leading-[14px]",
         className
       )}
     >

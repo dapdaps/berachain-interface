@@ -226,7 +226,7 @@ const Home = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "top",
                 backgroundRepeat: "no-repeat",
-                height: "calc(280vw + 64px)",
+                height: "calc(320vw + 64px)",
                 minHeight: "100dvh"
               }}
             >
@@ -234,7 +234,7 @@ const Home = () => {
 
               {/*#region Hall*/}
               <motion.div
-                className="w-[52.308vw] h-[38.205vw] translate-y-[30vw] translate-x-[3vw]"
+                className="w-[52.308vw] h-[38.205vw] translate-y-[25vw] translate-x-[3vw]"
                 // data-bp="1015-011"
                 onClick={() => {
                   hallStore.set({
@@ -258,12 +258,11 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
               </motion.div>
-
-
               {/*#endregion*/}
 
+              {/*#region Bridge*/}
               <motion.div
-                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[40vw] translate-x-[10.256vw]"
+                className="w-[48.53vw] h-[25.128vw] mt-[10vw] translate-y-[28vw] translate-x-[10.256vw]"
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {
@@ -285,8 +284,37 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
               </motion.div>
+              {/*#endregion*/}
+
+              {/*#region Carnival*/}
               <motion.div
-                className="w-[65.64vw] h-[47.43vw] translate-y-[40vw] translate-x-[40.256vw]"
+                className="w-[42.67vw] h-[36.89vw] mt-[5vw] translate-y-[20vw] translate-x-[53vw]"
+                whileTap="tap"
+                data-bp="1010-025"
+                onClick={() => {
+                  router.push("/carnival/lucky-bera");
+                  tapSound.play?.();
+                }}
+              >
+                <motion.img
+                  src="/images/home-earth/entry-playground.svg"
+                  alt=""
+                  className="w-full h-full"
+                  variants={EntryAnimationBg}
+                  transition={EntryAnimation}
+                />
+                <motion.img
+                  src="/images/mobile/home/text-carnival.png"
+                  className="absolute left-7 top-10 w-[25.87vw] h-[11.05vw]"
+                  variants={EntryAnimationSignpost}
+                  transition={EntryAnimation}
+                />
+              </motion.div>
+              {/*#endregion*/}
+
+              {/*#region Marketplace*/}
+              <motion.div
+                className="w-[65.64vw] h-[47.43vw] translate-y-[15vw] -translate-x-[5.256vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/marketplace");
@@ -316,8 +344,11 @@ const Home = () => {
                  transition={EntryAnimation}
                  />*/}
               </motion.div>
+              {/*#endregion*/}
+
+              {/*#region dApps*/}
               <motion.div
-                className="w-[63.076vw] h-[56.153vw] translate-y-[16vw] -translate-x-[10.256vw]"
+                className="w-[55vw] h-[48.96vw] translate-y-[6vw] translate-x-[50.256vw]"
                 whileTap="tap"
                 data-bp="1015-005"
                 onClick={() => {
@@ -342,8 +373,11 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
               </motion.div>
+              {/*#endregion*/}
+
+              {/*#region Portfolio*/}
               <motion.div
-                className="w-[77.435vw] h-[54.684vw] -translate-y-[16vw] translate-x-[34.8vw]"
+                className="w-[65vw] h-[45.902vw] -translate-y-[16vw] -translate-x-[4.8vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/portfolio");
@@ -369,8 +403,11 @@ const Home = () => {
                  transition={EntryAnimation}
                  />*/}
               </motion.div>
+              {/*#endregion*/}
+
+              {/*#region Vaults*/}
               <motion.div
-                className="w-[73.846vw] h-[47.692vw] -translate-y-[30vw] -translate-x-[17.948vw]"
+                className="w-[73.846vw] h-[47.692vw] -translate-y-[25vw] translate-x-[30vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/vaults");
@@ -396,8 +433,11 @@ const Home = () => {
                   Vaults
                 </EntryCard>
               </motion.div>
+              {/*#endregion*/}
+
+              {/*#region Cave*/}
               <motion.div
-                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[47vw] translate-x-[34.8vw]"
+                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[25vw] translate-x-[34.8vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push('/cave');
@@ -427,6 +467,8 @@ const Home = () => {
                   className="w-[52px] h-[53px] absolute left-1/2 -translate-x-1/2 top-1/2 translate-y-[calc(-50%_-_26px)]"
                 /> */}
               </motion.div>
+              {/*#endregion*/}
+
               <div className="absolute bottom-[40px] w-[113px] h-[176px]">
                 <Signpost className="scale-[0.6348] origin-bottom-left z-[2]" />
                 <img

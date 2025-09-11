@@ -5,9 +5,9 @@ const PlaygroundRulesModal = ({ open, onClose }: { open: boolean, onClose: () =>
     <Modal
       open={open}
       onClose={onClose}
-      closeIconClassName="!right-[10px] !top-[10px]"
+      closeIconClassName="!right-[10px] !top-[10px] md:hidden"
     >
-      <div className="w-[540px] relative bg-[#FFF1C7] rounded-[16px] border-[2px] border-[#E5C375] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] p-[20px_20px]">
+      <div className="w-[540px] md:h-[80dvh] md:overflow-y-auto md:w-full relative bg-[#FFF1C7] rounded-[16px] md:rounded-b-[0] border-[2px] border-[#E5C375] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] p-[20px_20px] md:p-[10px_5px]">
         <div className="text-[#FDD54C] text-center [text-shadow:0_4px_0_#000] font-CherryBomb text-[30px] font-[400] leading-normal capitalize [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#000]">
           Lucky Bera - Game Rules
         </div>
