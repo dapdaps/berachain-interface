@@ -69,7 +69,7 @@ const NavigationMenu = (props: any) => {
 
   const pathname = usePathname();
   const isSmall = ["/bintent"].includes(pathname);
-  const isHide = ["/belong"].includes(pathname);
+  const isHide = ["/belong", "/"].includes(pathname);
 
   if (isHide) {
     return null;
