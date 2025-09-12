@@ -29,6 +29,7 @@ export function useLuckyBera() {
     setSpinUserData,
     getSpinUserData,
     spinUserDataLoading,
+    playAudio,
   } = usePlaygroundContext();
   const userInfo = useUserStore((store: any) => store.user);
   const setUserInfo = useUserStore((store: any) => store.set);

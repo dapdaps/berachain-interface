@@ -11,6 +11,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import PlaygroundRulesModal from "./components/rules";
 import useIsMobile from "@/hooks/use-isMobile";
 import PageBack from "@/components/back";
+import { AUDIO_CONFIG } from "./config";
 
 const PlaygroundLayout = (props: any) => {
   const { children } = props;
@@ -71,6 +72,7 @@ const PlaygroundLayout = (props: any) => {
             playground.setShowRulesModal(false);
           }}
         />
+        <PlayAudio audioRefs={playground.audioRefs} />
       </PlaygroundProvider>
     );
   }
@@ -150,6 +152,7 @@ const PlaygroundLayout = (props: any) => {
           }}
         />
       </div>
+      <PlayAudio audioRefs={playground.audioRefs} />
     </PlaygroundProvider>
   );
 };
@@ -162,6 +165,35 @@ const Signpost = (props: any) => {
   return (
     <div className={clsx("w-[100px] h-[50px] md:w-[13dvh] md:h-[6.00dvh] translate-y-[12px] flex justify-center items-center gap-[2px] text-[20px] pb-[4px] font-[400] leading-[100%] font-CherryBomb text-white [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F] [text-shadow:0_3px_0_#4B371F] bg-[url('/images/playground/spin-signpost.png')] bg-no-repeat bg-center bg-[length:100%_100%] absolute", className)}>
       {children}
+    </div>
+  );
+};
+
+const PlayAudio = (props: any) => {
+  const { audioRefs } = props;
+
+  return (
+    <div className="w-0 h-0 absolute z-[-100] opacity-0 left-0 bottom-0">
+      {
+        AUDIO_CONFIG.map((audio) => (
+          <audio
+            key={audio.type}
+            ref={(node) => {
+              const map = audioRefs.current;
+              map.set(audio.type, node);
+              return () => {
+                map.delete(audio.type);
+              };
+            }}
+            controls={false}
+            autoPlay={false}
+            loop={audio.loop}
+            preload="auto"
+          >
+            <source src={audio.src} type={audio.audioType} />
+          </audio>
+        ))
+      }
     </div>
   );
 };
