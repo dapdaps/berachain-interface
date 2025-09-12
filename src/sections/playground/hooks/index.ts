@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SpinMultiplier, SpinUserData } from "../lucky-bera/config";
 import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import { WheelUserData } from "../big-wheel/config";
 import { usePlaygroundStore } from "@/stores/use-playground";
+import { AUDIO_CONFIG } from "../config";
 
 export function usePlayground() {
   const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");
@@ -17,6 +18,8 @@ export function usePlayground() {
     setWheelUserData,
   } = usePlaygroundStore();
 
+  const audioRefs = useRef<Map<string, HTMLAudioElement | null>>(new Map());
+  const audioTimerRefs = useRef<Map<string, any>>(new Map(AUDIO_CONFIG.map(audio => [audio.type, 0])));
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
   const [showRulesModal, setShowRulesModal] = useState(false);
 
@@ -62,6 +65,58 @@ export function usePlayground() {
     refreshDeps: [accountWithAk],
   });
 
+  const playAudio = (preload: { type: string; action?: "play" | "pause"; delay?: number; }) => {
+    let { type, action, delay } = preload;
+    action = action || "play";
+
+    const audioRef = audioRefs.current.get(type);
+    if (!audioRef) {
+      return;
+    }
+
+    const _play = () => {
+      const audioConfig = AUDIO_CONFIG.find(config => config.type === type);
+      if (audioConfig?.playbackRate) {
+        audioRef.playbackRate = audioConfig.playbackRate;
+      }
+
+      switch (action) {
+        case "play":
+          audioRef.currentTime = 0;
+          audioRef.play();
+          break;
+        case "pause":
+          audioRef.pause();
+          break;
+        default:
+          break;
+      }
+    };
+
+    if (delay) {
+      const timerMap = audioTimerRefs.current;
+      const timer = setTimeout(() => {
+        clearTimeout(timer);
+        _play();
+      }, preload.delay);
+      clearTimeout(timerMap.get(type));
+      timerMap.delete(type);
+      timerMap.set(type, timer);
+      return;
+    }
+
+    _play();
+  };
+
+  useEffect(() => {
+    return () => {
+      audioTimerRefs.current.forEach((timer) => {
+        clearTimeout(timer);
+      });
+      audioTimerRefs.current.clear();
+    };
+  }, []);
+
   return {
     multipliers,
     spinMultiplier,
@@ -76,5 +131,7 @@ export function usePlayground() {
     getWheelUserData,
     showRulesModal,
     setShowRulesModal,
+    audioRefs,
+    playAudio,
   };
 }

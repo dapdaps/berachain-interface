@@ -88,6 +88,7 @@ const BigWheel = () => {
     getWheelUserData,
     setSpinUserData,
     spinUserData,
+    playAudio,
   } = usePlaygroundContext();
   const { createCoinsExplosion } = useCoinExplosion();
   const isMobile = useIsMobile();
@@ -149,9 +150,12 @@ const BigWheel = () => {
     }
     if (Big(wheelUserData?.wheel_balance || 0).lte(0)) {
       setOpenRedeemSpin(true);
+      playAudio({ type: "failed" });
       return;
     }
 
+    playAudio({ type: "start" });
+    playAudio({ type: "wheel", delay: 150 });
     wheelAnimation.current?.stop();
     wheelAnimation.current = wheelAnimate(wheelRef.current, {
       rotate: [wheelRotation.get(), wheelRotation.get() - 360 * 2],
@@ -166,6 +170,8 @@ const BigWheel = () => {
       toast.fail({
         title: res.message,
       });
+      playAudio({ type: "wheel", action: "pause" });
+      playAudio({ type: "failed" });
       return;
     }
     const { reward_spin_amount, wheel_balance } = res.data as WheelResultData;
@@ -176,6 +182,8 @@ const BigWheel = () => {
       toast.fail({
         title: "No corresponding reward found",
       });
+      playAudio({ type: "wheel", action: "pause" });
+      playAudio({ type: "failed" });
       return;
     }
 
@@ -200,6 +208,9 @@ const BigWheel = () => {
       duration: 7,
       ease: [0, 1, 0.2, 1],
     });
+
+    playAudio({ type: "wheel", action: "pause" });
+    playAudio({ type: "win" });
 
     // update user spin data
     setSpinUserData({
