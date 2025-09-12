@@ -37,14 +37,14 @@ export const SPIN_CATEGORIES: Record<SpinCategory, any> = {
     icon: "/images/playground/lucky-bera/icon-reward/rocket.svg",
     value: SpinCategory.Rocket,
     centerScale: 0.85,
-    centerY: -2,
+    centerY: 0,
   },
   [SpinCategory.Apple]: {
     code: 5,
     icon: "/images/playground/lucky-bera/icon-reward/apple.svg",
     value: SpinCategory.Apple,
     centerScale: 0.85,
-    centerY: 2,
+    centerY: -2,
   },
 };
 

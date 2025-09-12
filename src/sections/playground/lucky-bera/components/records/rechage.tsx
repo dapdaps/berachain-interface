@@ -9,6 +9,7 @@ import utc from "dayjs/plugin/utc";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLuckyBeraRecordsStore } from "./store";
+import useIsMobile from "@/hooks/use-isMobile";
 
 dayjs.extend(utc);
 
@@ -20,6 +21,7 @@ const LuckyBeraRechage = (props: any) => {
     rechargePage: page,
     setRechargePage: setPage,
   } = useLuckyBeraRecordsStore();
+  const isMobile = useIsMobile();
 
   const [pageSize, setPageSize] = useState(10);
   const [pageTotal, setPageTotal] = useState(1);
@@ -28,6 +30,7 @@ const LuckyBeraRechage = (props: any) => {
     {
       title: "Date",
       dataIndex: "date",
+      width: isMobile ? 140 : void 0,
       render: (record: any, idx: number) => {
         return dayjs.utc(record.created_at).format("YYYY/M/D HH:mm");
       },
@@ -35,7 +38,7 @@ const LuckyBeraRechage = (props: any) => {
     {
       title: "Rechaged",
       dataIndex: "rchaged",
-      width: 200,
+      width: isMobile ? 100 : 200,
       render: (record: any, idx: number) => {
         return `${record.amount} Bera`;
       },
@@ -43,7 +46,7 @@ const LuckyBeraRechage = (props: any) => {
     {
       title: "Result",
       dataIndex: "result",
-      width: 100,
+      width: isMobile ? 60 : 100,
       render: (record: any, idx: number) => {
         return (
           <div className="flex items-center gap-[10px]">
@@ -101,7 +104,7 @@ const LuckyBeraRechage = (props: any) => {
         columns={columns}
         data={data}
         loading={loading}
-        bodyClassName="min-h-[438px]"
+        bodyClassName="min-h-[438px] md:min-h-[47dvh]"
       />
       <Pagination
         className="justify-end pr-[25px] mt-[18px]"

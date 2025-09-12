@@ -15,7 +15,7 @@ const LootboxSeasonModal = (props: any) => {
           className="w-[26px] min-w-[26px] h-[26px] min-h-[26px] shrink-0 object-center object-contain"
         />
       )}
-      closeIconClassName="!right-[12px] !top-[12px] md:!top-[16dvh]"
+      closeIconClassName="!right-[12px] !top-[12px] md:!block md:!top-[16dvh]"
       innerClassName="md:static"
       isMaskClose={false}
     >

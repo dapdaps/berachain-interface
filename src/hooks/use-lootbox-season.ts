@@ -8,6 +8,7 @@ import { post } from "@/utils/http";
 import { useUserStore } from "@/stores/user";
 import useUser from "./use-user";
 import Big from "big.js";
+import useIsMobile from "./use-isMobile";
 
 export function useLootboxSeason(props?: any) {
   const { } = props ?? {};
@@ -25,6 +26,7 @@ export function useLootboxSeason(props?: any) {
   const pathname = usePathname();
   const userInfo = useUserStore((store: any) => store.user);
   const { getUserInfo } = useUser();
+  const isMobile = useIsMobile();
 
   const [open, setOpen] = useState<Record<LootboxSeasonGuides, boolean>>({
     [LootboxSeasonGuides.Start]: false,
@@ -159,7 +161,7 @@ export function useLootboxSeason(props?: any) {
   useEffect(() => {
     setGuideVisibleCancel();
 
-    if (pathname !== '/') return
+    if (pathname !== '/' || isMobile) return
 
     const _visited = visited[account || 'DEFAULT'];
 
@@ -175,7 +177,7 @@ export function useLootboxSeason(props?: any) {
     }
 
     setGuideVisibleDelay();
-  }, [visited, guideVisited, account, pathname, treasureBookOpen]);
+  }, [visited, guideVisited, account, pathname, treasureBookOpen, isMobile]);
 
   useEffect(() => {
     if (hadUserCategory) {

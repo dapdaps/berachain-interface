@@ -16,6 +16,9 @@ import { usePlaygroundContext } from "../context";
 import { SpinUserData } from "../lucky-bera/config";
 import { useCoinExplosion } from "../hooks/use-coin-explosion";
 import "./index.css";
+import clsx from "clsx";
+import useIsMobile from "@/hooks/use-isMobile";
+import useUser from "@/hooks/use-user";
 
 const WheelList = [
   {
@@ -87,6 +90,8 @@ const BigWheel = () => {
     spinUserData,
   } = usePlaygroundContext();
   const { createCoinsExplosion } = useCoinExplosion();
+  const isMobile = useIsMobile();
+  const { getUserInfo } = useUser();
 
   const [wheelRef, wheelAnimate] = useAnimate();
   const wheelRotation = useMotionValue(0);
@@ -226,14 +231,16 @@ const BigWheel = () => {
     }
     getWheelUserData();
     setOpenRedeemSpin(false);
+    // refresh user total points
+    getUserInfo();
   }, {
     manual: true,
   });
 
   return (
-    <div className="w-full min-h-[100dvh] flex items-end justify-center big-wheel-pb">
-      <div className="relative flex flex-col items-center z-[2] w-[588px] h-[700px] bg-[url('/images/playground/big-wheel/bg.png')] bg-no-repeat bg-center bg-contain">
-        <div className="relative w-[430px] h-[430px] mt-[170px] ml-[20px] flex justify-center items-center">
+    <div className={clsx("w-full min-h-[100dvh] flex items-end justify-center  md:pb-[30vw]", isMobile ? "" : "big-wheel-pb")}>
+      <div className="relative flex flex-col items-center z-[2] w-[588px] h-[700px] md:w-[100.00vw] md:h-[119.05vw] bg-[url('/images/playground/big-wheel/bg.png')] bg-no-repeat bg-center bg-contain">
+        <div className="relative w-[430px] h-[430px] md:w-[80.00vw] md:h-[80.00vw] mt-[170px] md:mt-[25vw] ml-[20px] md:ml-[3.5vw] flex justify-center items-center">
           <motion.div
             ref={wheelRef}
             className="relative will-change-transform flex justify-center items-center shrink-0 w-full h-full object-center object-contain bg-[url('/images/playground/big-wheel/wheel.png')] bg-no-repeat bg-center bg-contain"
@@ -259,7 +266,7 @@ const BigWheel = () => {
           <motion.button
             ref={wheelButtonRef}
             type="button"
-            className="flex justify-center items-center shrink-0 absolute z-[2] w-[100px] h-[100px] bg-[url('/images/playground/big-wheel/btn-spin.png')] bg-no-repeat bg-center bg-contain"
+            className="flex justify-center items-center shrink-0 absolute z-[2] w-[100px] h-[100px] md:w-[21.33vw] md:h-[21.33vw] bg-[url('/images/playground/big-wheel/btn-spin.png')] bg-no-repeat bg-center bg-contain"
             disabled={spinning || wheelUserDataLoading}
             onClick={onSpin}
             whileTap={!(spinning || wheelUserDataLoading) ? {
@@ -275,23 +282,23 @@ const BigWheel = () => {
           <motion.img
             src="/images/playground/big-wheel/arrow.png"
             alt=""
-            className="shrink-0 absolute z-[1] translate-y-[-60px] w-[84px] h-[66px] object-center object-contain"
+            className="shrink-0 absolute z-[1] translate-y-[-60px] md:translate-y-[-13vw] w-[84px] h-[66px] md:w-[18.67vw] md:h-[14.67vw] object-center object-contain"
           />
         </div>
-        <div className="w-[275px] h-[72px] pl-[21px] pr-[30px] flex justify-between items-center absolute bottom-[15px] bg-[url('/images/playground/big-wheel/foot.png')] bg-no-repeat bg-center bg-contain">
+        <div className="w-[275px] h-[72px] md:w-[53.33vw] md:h-[13.96vw] pl-[21px] md:pl-[4vw] pr-[30px] md:pr-[5vw] flex justify-between items-center absolute bottom-[15px] md:bottom-[2vw] bg-[url('/images/playground/big-wheel/foot.png')] bg-no-repeat bg-center bg-contain">
           <div className="flex items-center gap-[5px]">
             <img
               src="/images/check-in/spin.png"
               alt=""
-              className="w-[44px] h-[44px] shrink-0 object-center object-contain"
+              className="w-[44px] h-[44px] md:w-[9.33vw] md:h-[9.33vw] shrink-0 object-center object-contain"
             />
-            <div className="text-[26px] text-white font-CherryBomb [text-shadow:0_3px_0_#4B371F] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]">
+            <div className="text-[26px] md:text-[5.33vw] text-white font-CherryBomb [text-shadow:0_3px_0_#4B371F] [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#4B371F]">
               x{numberFormatter(wheelUserData?.wheel_balance, 2, true, { isShort: true, isShortUppercase: true })}
             </div>
           </div>
           <motion.button
             type="button"
-            className="w-[36px] h-[36px] shrink-0 bg-[url('/images/playground/big-wheel/icon-plus.png')] bg-no-repeat bg-center bg-contain"
+            className="w-[36px] h-[36px] md:w-[8.00vw] md:h-[8.00vw] shrink-0 bg-[url('/images/playground/big-wheel/icon-plus.png')] bg-no-repeat bg-center bg-contain"
             whileTap={{
               scale: 0.9,
             }}

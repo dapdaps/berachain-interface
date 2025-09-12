@@ -87,14 +87,14 @@ const GridTable = (props: Props, ref: any) => {
   return (
     <div
       className={clsx(
-        "w-full text-[#532] font-[Montserrat] text-[14px] font-normal leading-[100%]",
+        "w-full md:overflow-x-auto text-[#532] font-[Montserrat] text-[14px] font-normal leading-[100%] border-b border-[rgba(0,0,0,0.2)]",
         className
       )}
     >
-      <div ref={headerRef} className={clsx("max-md:min-w-fit overflow-hidden border-b border-[rgba(0,0,0,0.2)]", headerClassName)}>
+      <div ref={headerRef} className={clsx("max-md:min-w-fit", headerClassName)}>
         <div
           className={clsx(
-            "grid gap-x-[10px] px-[25px] min-w-full",
+            "grid gap-x-[10px] px-[25px] md:px-[15px] min-w-full border-b border-[rgba(0,0,0,0.2)]",
             rowClassName,
             headerRowClassName
           )}
@@ -164,7 +164,7 @@ const GridTable = (props: Props, ref: any) => {
           }
         </div>
       </div>
-      <div ref={bodyRef} className={clsx("max-md:min-w-fit text-[16px] font-[600] px-[20px] border-b border-[rgba(0,0,0,0.2)]", bodyClassName)}>
+      <div ref={bodyRef} className={clsx("max-md:min-w-fit text-[16px] font-[600] px-[20px] md:px-[10px]", bodyClassName)}>
         {
           loading ? (
             <div className="flex justify-center items-center min-h-[150px]">

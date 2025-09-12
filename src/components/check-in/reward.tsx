@@ -21,7 +21,7 @@ const CheckInReward = (props: any) => {
     >
       <div
         className={clsx(
-          "w-[340px] pb-[24px] min-h-[400px] relative shrink-0 rounded-[16px] border-[2px] border-[#E5C375] bg-[#FFF1C7] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black text-center font-Montserrat text-[16px] font-medium leading-[120%]"
+          "w-[340px] pb-[24px] min-h-[400px] md:w-full md:rounded-b-[0] relative shrink-0 rounded-[16px] border-[2px] border-[#E5C375] bg-[#FFF1C7] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] text-black text-center font-Montserrat text-[16px] font-medium leading-[120%]"
         )}
       >
         <div className="w-full h-[400px] overflow-hidden absolute z-[1] rounded-[16px] left-0 top-0 flex justify-center items-start">

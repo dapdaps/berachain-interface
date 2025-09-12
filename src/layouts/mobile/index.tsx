@@ -22,6 +22,12 @@ const menuItems = [
   { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
   {
     id: 2.1,
+    title: "Carnival",
+    href: "/carnival/lucky-bera",
+    // dataBp: ""
+  },
+  {
+    id: 2.2,
     title: "Super Swap",
     href: "/super-swap",
     // dataBp: ""

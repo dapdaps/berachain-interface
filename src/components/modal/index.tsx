@@ -78,40 +78,48 @@ export const ModalContent = (props: ModalProps) => {
   }, [open]);
 
   return (
-    <AnimatePresence mode="wait">
+    <div
+      className={clsx(
+        "fixed inset-0 bg-black bg-opacity-50 lg:items-center lg:justify-center z-[100]",
+        className,
+        isStyleHide ? (open ? "flex" : "hidden") : "flex"
+      )}
+      style={style}
+      onClick={handleBackdropClick}
+    >
       <div
-        className={clsx(
-          "fixed inset-0 bg-black bg-opacity-50 lg:items-center lg:justify-center z-[100]",
-          className,
-          isStyleHide ? (open ? "flex" : "hidden") : "flex"
-        )}
-        style={style}
-        onClick={handleBackdropClick}
+        className={`rounded-lg relative ${innerClassName}`}
+        style={innerStyle}
       >
-        <div
-          className={`rounded-lg relative ${innerClassName}`}
-          style={innerStyle}
-        >
-          {isShowCloseIcon && (closeIcon || onClose) ? (
-            <button
-              onClick={onClose}
-              className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
-            >
-              {
-                closeIcon ? closeIcon : <IconClose />
-              }
-            </button>
-          ) : null}
+        {isShowCloseIcon && (closeIcon || onClose) ? (
+          <button
+            onClick={onClose}
+            className={`absolute top-5 right-5 cursor-pointer z-[100] md:hidden ${closeIconClassName}`}
+          >
+            {
+              closeIcon ? closeIcon : <IconClose />
+            }
+          </button>
+        ) : null}
+        <AnimatePresence mode="wait">
           {isMobile && !isForceNormal ? (
             <motion.div
+              key="mobile-modal"
+              initial={{
+                opacity: 0,
+                y: 100,
+              }}
               animate={{
-                y: [100, 0],
-                transition: {
-                  duration: 0.3
-                }
+                opacity: 1,
+                y: 0,
               }}
               exit={{
-                y: [0, 100]
+                opacity: 0,
+                y: 100,
+              }}
+              transition={{
+                duration: 0.15,
+                ease: "easeInOut",
               }}
               className="w-screen absolute bottom-0 left-0 rounded-t-[20px]"
               onClick={(e) => {
@@ -121,10 +129,28 @@ export const ModalContent = (props: ModalProps) => {
               {children}
             </motion.div>
           ) : (
-            children
+            <motion.div
+              key="pc-modal"
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.15,
+                ease: "easeInOut",
+              }}
+              className=""
+            >
+              {children}
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
-    </AnimatePresence>
+    </div>
   );
 };

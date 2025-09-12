@@ -12,11 +12,11 @@ const CheckInModal = (props: any) => {
       <Modal
         open={open}
         onClose={onClose}
-        closeIconClassName="!right-[-14px] !top-[-8px]"
+        closeIconClassName="!right-[-14px] !top-[-8px] md:hidden"
       >
         <div
           className={clsx(
-            "w-[386px] md:w-fullrounded-[16px] border-2 border-[#E5C375] bg-[#FFF1C7] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)]",
+            "w-[386px] md:w-full  shadow-[6px_6px_0_0_rgba(0,0,0,0.25)]",
             className
           )}
         >
