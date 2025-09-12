@@ -269,7 +269,7 @@ export default memo(function Tiger(props: any) {
   }, []);
 
   return (
-    <div className="w-full min-h-[100dvh] flex items-end justify-center md:pb-[30vw]">
+    <div className="w-full min-h-[100dvh] flex items-end justify-center md:pb-[22vw]">
       <div className="relative flex flex-col items-center justify-center scale-90 md:scale-100 origin-bottom z-[2]">
         <div className="relative z-[6] w-[608px] md:w-[100vw] h-[506px] md:h-[83.22vw] max-w-full bg-[url('/images/playground/lucky-bera/bear-top.png')] bg-no-repeat bg-center bg-contain">
           <div className="flex justify-center items-start absolute z-[2] w-full top-[20px] pointer-events-none">
@@ -567,14 +567,14 @@ export default memo(function Tiger(props: any) {
         />
         <button
           type="button"
-          className="absolute z-[4] translate-x-[305px] md:translate-x-[-7.5vw] hover:translate-x-[315px] md:hover:translate-x-[-7.5vw] transition-all duration-150 bottom-[130px] md:bottom-[0] md:translate-y-[-78dvh] md:left-[0] w-[140px] h-[50px] md:w-[32.00vw] md:h-[11.43vw] bg-[url('/images/playground/lucky-bera/btn-rules.png')] bg-no-repeat bg-center bg-contain"
+          className="absolute z-[4] translate-x-[305px] md:translate-x-[-7.5vw] hover:translate-x-[315px] md:hover:translate-x-[-7.5vw] transition-all duration-150 bottom-[130px] md:bottom-[0] md:translate-y-[-80dvh] md:left-[0] w-[140px] h-[50px] md:w-[32.00vw] md:h-[11.43vw] bg-[url('/images/playground/lucky-bera/btn-rules.png')] bg-no-repeat bg-center bg-contain"
           onClick={() => {
             setShowRulesModal(true);
           }}
         />
         <button
           type="button"
-          className="absolute z-[1] translate-x-[310px] md:translate-x-[-5vw] hover:translate-x-[320px] md:hover:translate-x-[-5vw] transition-all duration-150 bottom-[70px] md:bottom-[0] md:translate-y-[-71dvh] md:left-[0] w-[125px] h-[50px] md:w-[28.80vw] md:h-[11.52vw] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
+          className="absolute z-[1] translate-x-[310px] md:translate-x-[-5vw] hover:translate-x-[320px] md:hover:translate-x-[-5vw] transition-all duration-150 bottom-[70px] md:bottom-[0] md:translate-y-[-73dvh] md:left-[0] w-[125px] h-[50px] md:w-[28.80vw] md:h-[11.52vw] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
           onClick={() => {
             setOpenRecordsModal(true);
           }}

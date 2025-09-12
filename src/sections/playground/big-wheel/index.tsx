@@ -238,7 +238,7 @@ const BigWheel = () => {
   });
 
   return (
-    <div className={clsx("w-full min-h-[100dvh] flex items-end justify-center  md:pb-[30vw]", isMobile ? "" : "big-wheel-pb")}>
+    <div className={clsx("w-full min-h-[100dvh] flex items-end justify-center  md:pb-[22vw]", isMobile ? "" : "big-wheel-pb")}>
       <div className="relative flex flex-col items-center z-[2] w-[588px] h-[700px] md:w-[100.00vw] md:h-[119.05vw] bg-[url('/images/playground/big-wheel/bg.png')] bg-no-repeat bg-center bg-contain">
         <div className="relative w-[430px] h-[430px] md:w-[80.00vw] md:h-[80.00vw] mt-[170px] md:mt-[25vw] ml-[20px] md:ml-[3.5vw] flex justify-center items-center">
           <motion.div
