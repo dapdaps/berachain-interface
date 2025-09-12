@@ -51,13 +51,13 @@ const PlaygroundLayout = (props: any) => {
             <Link
               href="/carnival/lucky-bera"
               prefetch
-              className="flex justify-center items-end absolute w-[210px] h-[258px] md:w-[17.99dvh] md:h-[22.10dvh] top-[40px] right-[10px] z-[1] bg-[url('/images/playground/lucky-bera.png')] bg-no-repeat bg-center bg-contain"
+              className="flex justify-center items-end absolute w-[210px] h-[258px] md:w-[16.8dvh] md:h-[20.64dvh] top-[40px] right-[10px] z-[1] bg-[url('/images/playground/lucky-bera.png')] bg-no-repeat bg-center bg-contain"
             >
               <Signpost className="!top-[unset] bottom-[-10px] md:!w-[15dvh]">
                 <img
                   src="/images/playground/lucky-bera/ticket-spin.png"
                   alt=""
-                  className="w-[50px] h-[46px] shrink-0 object-center object-contain"
+                  className="w-[50px] h-[46px] md:w-[6.74dvh] md:h-[6.20dvh] shrink-0 object-center object-contain"
                 />
                 <div>x{numberFormatter(playground?.spinUserData?.spin_balance, 2, true, { isShort: true, isShortUppercase: true })}</div>
               </Signpost>
