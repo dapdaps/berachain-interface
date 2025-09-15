@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { SpinMultiplier, SpinUserData } from "../lucky-bera/config";
 import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
@@ -19,7 +19,6 @@ export function usePlayground() {
   } = usePlaygroundStore();
 
   const audioRefs = useRef<Map<string, HTMLAudioElement | null>>(new Map());
-  const audioTimerRefs = useRef<Map<string, any>>(new Map(AUDIO_CONFIG.map(audio => [audio.type, 0])));
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
   const [showRulesModal, setShowRulesModal] = useState(false);
 
@@ -65,8 +64,8 @@ export function usePlayground() {
     refreshDeps: [accountWithAk],
   });
 
-  const playAudio = (preload: { type: string; action?: "play" | "pause"; delay?: number; }) => {
-    let { type, action, delay } = preload;
+  const playAudio = (preload: { type: string; action?: "play" | "pause"; }) => {
+    let { type, action } = preload;
     action = action || "play";
 
     const audioRef = audioRefs.current.get(type);
@@ -74,48 +73,46 @@ export function usePlayground() {
       return;
     }
 
-    const _play = () => {
-      const audioConfig = AUDIO_CONFIG.find(config => config.type === type);
-      if (audioConfig?.playbackRate) {
-        audioRef.playbackRate = audioConfig.playbackRate;
-      }
+    const _play = async () => {
+      try {
+        const audioConfig = AUDIO_CONFIG.find(config => config.type === type);
+        if (audioConfig?.playbackRate) {
+          audioRef.playbackRate = audioConfig.playbackRate;
+        }
 
-      switch (action) {
-        case "play":
-          audioRef.currentTime = 0;
-          audioRef.play();
-          break;
-        case "pause":
-          audioRef.pause();
-          break;
-        default:
-          break;
+        switch (action) {
+          case "play":
+            audioRef.currentTime = 0;
+            // iOS Safari/Chrome requires user interaction to play audio
+            const playPromise = audioRef.play();
+            if (playPromise !== undefined) {
+              try {
+                await playPromise;
+              } catch (playError) {
+                console.warn(`Failed to play audio ${type}:`, playError);
+                // Try to load the audio first if play failed
+                audioRef.load();
+                try {
+                  await audioRef.play();
+                } catch (retryError) {
+                  console.warn(`Retry play failed for audio ${type}:`, retryError);
+                }
+              }
+            }
+            break;
+          case "pause":
+            audioRef.pause();
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.warn(`Error in playAudio for ${type}:`, error);
       }
     };
-
-    if (delay) {
-      const timerMap = audioTimerRefs.current;
-      const timer = setTimeout(() => {
-        clearTimeout(timer);
-        _play();
-      }, preload.delay);
-      clearTimeout(timerMap.get(type));
-      timerMap.delete(type);
-      timerMap.set(type, timer);
-      return;
-    }
 
     _play();
   };
-
-  useEffect(() => {
-    return () => {
-      audioTimerRefs.current.forEach((timer) => {
-        clearTimeout(timer);
-      });
-      audioTimerRefs.current.clear();
-    };
-  }, []);
 
   return {
     multipliers,

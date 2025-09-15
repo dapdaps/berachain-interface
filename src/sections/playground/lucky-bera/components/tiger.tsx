@@ -247,7 +247,7 @@ export default memo(function Tiger(props: any) {
 
     cancelStartSlowScrollDebounce();
     playAudio({ type: "start" });
-    playAudio({ type: "spin", delay: 150 });
+    playAudio({ type: "spin" });
 
     // start wheel scroll
     const animations = await startInfinityScroll();
