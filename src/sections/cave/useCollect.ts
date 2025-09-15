@@ -92,42 +92,42 @@ export default function useCollect({ address }: { address: string; }) {
   const [hats, setHats] = useState<GameItem[]>([])
 
   const [items, setItems] = useState<GameItem[]>([
-    {
-      category: 'elf_hat',
-      name: 'Elf’s Hat',
-      level: 1,
-    },
-    {
-      category: 'santa_hat',
-      name: 'Santa Hat',
-      level: 1,
-    },
-    {
-      category: 'elf_jacket',
-      name: 'Elf’s Jacket',
-      level: 1,
-    },
-    {
-      category: 'santa_coat',
-      name: 'Santa Coat',
-      level: 1,
-    },
-    {
-      category: 'scarf',
-      name: 'Scarf',
-      level: 1,
+    // {
+    //   category: 'elf_hat',
+    //   name: 'Elf’s Hat',
+    //   level: 1,
+    // },
+    // {
+    //   category: 'santa_hat',
+    //   name: 'Santa Hat',
+    //   level: 1,
+    // },
+    // {
+    //   category: 'elf_jacket',
+    //   name: 'Elf’s Jacket',
+    //   level: 1,
+    // },
+    // {
+    //   category: 'santa_coat',
+    //   name: 'Santa Coat',
+    //   level: 1,
+    // },
+    // {
+    //   category: 'scarf',
+    //   name: 'Scarf',
+    //   level: 1,
 
-    },
-    {
-      category: 'sleigh',
-      name: 'Sleigh',
-      level: 1,
-    },
-    {
-      category: 'snowboard',
-      name: 'Snowboard',
-      level: 1,
-    },
+    // },
+    // {
+    //   category: 'sleigh',
+    //   name: 'Sleigh',
+    //   level: 1,
+    // },
+    // {
+    //   category: 'snowboard',
+    //   name: 'Snowboard',
+    //   level: 1,
+    // },
   ])
   const [nfts, setNfts] = useState<GameItem[]>([])
 
