@@ -29,6 +29,7 @@ import { useBintent } from '@/stores/bintent';
 import { useActivityStore } from '@/stores/useActivityStore';
 import { useRouter } from 'next/navigation';
 import { useEventEnded } from '../bintent-countDown';
+import HomeEarthBear from '@/sections/home-earth/components/bear';
 
 const LeftTree = function () {
   return (
@@ -773,9 +774,14 @@ const RightTree = function () {
 };
 
 const HatBear = function (props: any) {
+  const { className, contentClassName } = props;
   return (
-    <div {...{ ...props }}>
-      <img src='/images/background/bear.gif' />
+    <div className={className}>
+      <HomeEarthBear
+        className={clsx("!relative !bottom-[unset] !origin-top !top-[unset]", contentClassName)}
+        animationDirection="Left"
+      />
+      {/* <img src='/images/background/bear.gif' /> */}
 
       {/* <motion.svg
         animate={{
@@ -1033,7 +1039,7 @@ export default memo(function BearBackground({ type, children, style }: PropsType
           {
             isDefaultTheme() ? (
               <>
-                <HatBear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-[8]' />
+                <HatBear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-[8]' contentClassName="!z-[8]" />
                 <BridgeGround className='z-[7]' isRainyDay={isRainyDay} />
               </>
             ) : (
@@ -1057,7 +1063,7 @@ export default memo(function BearBackground({ type, children, style }: PropsType
             isDefaultTheme() && (
               <>
                 <Flowers />
-                <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
+                <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' contentClassName="!z-20" />
               </>
             )
           }
