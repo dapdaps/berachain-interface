@@ -155,7 +155,7 @@ const BigWheel = () => {
     }
 
     playAudio({ type: "start" });
-    playAudio({ type: "wheel", delay: 150 });
+    playAudio({ type: "wheel" });
     wheelAnimation.current?.stop();
     wheelAnimation.current = wheelAnimate(wheelRef.current, {
       rotate: [wheelRotation.get(), wheelRotation.get() - 360 * 2],
