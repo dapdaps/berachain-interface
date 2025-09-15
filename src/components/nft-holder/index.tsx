@@ -27,6 +27,7 @@ export default function NFTHolderPerksModal({
         }
         return false;
     }, [nft]);
+    
 
     return (
         <Modal
@@ -44,7 +45,7 @@ export default function NFTHolderPerksModal({
 
                 <div className="text-center mb-[30px] font-Montserrat">
                     <p className="text-black text-[16px] font-[600] leading-relaxed">
-                        Holding Steady Teddy or Honey Comb gives you an extra 10% points
+                        Holding Steady Teddy or Honey Comb gives you an extra 20% points
                     </p>
                 </div>
 
