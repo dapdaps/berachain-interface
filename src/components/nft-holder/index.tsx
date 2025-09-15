@@ -27,6 +27,7 @@ export default function NFTHolderPerksModal({
         }
         return false;
     }, [nft]);
+    
 
     return (
         <Modal
