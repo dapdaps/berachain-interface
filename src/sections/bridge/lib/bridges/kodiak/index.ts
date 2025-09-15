@@ -8,10 +8,12 @@ import { QuoteRequest, QuoteResponse, ExecuteRequest, StatusParams, Token } from
 import { FeeType } from '../../type/index'
 import { Chain, createWalletClient, custom } from 'viem';
 import { http } from 'viem';
-import { mainnet, berachain, polygon, arbitrum, optimism, scroll, polygonZkEvm ,metis, bsc, manta, mode, base, mantle, avalanche, fantom, gnosis, linea, zksync } from 'viem/chains';
+import { mainnet, berachain, polygon, arbitrum, optimism, scroll, polygonZkEvm, metis, bsc, manta, mode, base, mantle, avalanche, fantom, gnosis, linea, zksync } from 'viem/chains';
 import { approve } from '../../util/approve';
+import weth from '@/configs/contract/weth';
+import getWrapOrUnwrapTx from '@/sections/swap/getWrapOrUnwrapTx';
 
-const chains = [arbitrum, mainnet, optimism, polygon, scroll, metis,berachain, polygonZkEvm, manta, mode, bsc, base, mantle, avalanche, fantom, gnosis, linea, zksync]
+const chains = [arbitrum, mainnet, optimism, polygon, scroll, metis, berachain, polygonZkEvm, manta, mode, bsc, base, mantle, avalanche, fantom, gnosis, linea, zksync]
 
 export async function getQuote(
     quoteRequest: QuoteRequest, signer: Signer
@@ -21,6 +23,28 @@ export async function getQuote(
 
     if (!chainConfig[numFromChainId] || !chainConfig[numToChainId]) {
         return null
+    }
+
+    const wethAddress = weth[quoteRequest.fromChainId as any];
+
+    const wrapType =
+        quoteRequest.fromToken.address.toLowerCase() === '0x0000000000000000000000000000000000000000' &&
+            quoteRequest.toToken.address.toLowerCase() === wethAddress.toLowerCase()
+            ? 1
+            : quoteRequest.fromToken.address.toLowerCase() === wethAddress.toLowerCase() &&
+                quoteRequest.toToken.address.toLowerCase() === '0x0000000000000000000000000000000000000000'
+                ? 2
+                : 0;
+
+    const routes: any = []
+
+    if (wrapType) {
+        await createRoute(null, routes, quoteRequest, wrapType, signer)
+        if (routes.length > 0) {
+            return routes
+        } else {
+            return null
+        }
     }
 
     const routesRequest: any = {
@@ -46,26 +70,23 @@ export async function getQuote(
         recipient: routesRequest.recipient,
         slippageTolerance: routesRequest.slippageTolerance.toString()
     })
-    
+
     const response = await fetch(`https://backend.kodiak.finance/quote?${queryParams}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         }
     })
-    
+
     if (!response.ok) {
         throw new Error(`Kodiak API request failed: ${response.status}`)
     }
-    
+
     const result = await response.json()
 
-    console.log(result, 'result')
-
-    const routes: any = []
-    createRoute(result, routes, quoteRequest)
+    await createRoute(result, routes, quoteRequest, wrapType, signer)
     if (result.otherQuote) {
-        createRoute(result.otherQuote, routes, quoteRequest)
+        await createRoute(result.otherQuote, routes, quoteRequest, wrapType, signer)
     }
 
     if (routes.length > 0) {
@@ -77,9 +98,10 @@ export async function getQuote(
 
 export async function execute(request: ExecuteRequest, signer: Signer): Promise<string | null> {
 
-    console.log(request, 'request')
+    const { route, isNative, amount, fromToken, isWrap } = getQuoteInfo(request.uuid)
+    const account = await signer.getAddress()
+    let transactionResponse: any
 
-    const { route, isNative, amount, fromToken } = getQuoteInfo(request.uuid)
 
     if (!isNative) {
         const isApprove = await approve(fromToken.address, amount, route.to, signer)
@@ -88,18 +110,23 @@ export async function execute(request: ExecuteRequest, signer: Signer): Promise<
         }
     }
 
-    const account = await signer.getAddress()
+    if (isWrap) {
+        transactionResponse = await signer.sendTransaction({
+            ...route,
+            from: account,
+        });
+    } else {
+        transactionResponse = await signer.sendTransaction({
+            from: account,
+            to: route.to,
+            data: route.calldata,
+            value: route.value,
+        });
+    }
 
-    const transactionResponse = await signer.sendTransaction({
-        from: account,
-        to: route.to,
-        data: route.calldata,
-        value: route.value,
-      });
+    await transactionResponse.wait()
 
-      await transactionResponse.wait
-
-      return transactionResponse.hash ? transactionResponse.hash : null
+    return transactionResponse.hash ? transactionResponse.hash : null
 }
 
 export async function getStatus(params: StatusParams) {
@@ -117,7 +144,7 @@ function computeFee(result: any, fromToken: Token) {
     return '0'
 }
 
-function createRoute(result: any, routes: any, quoteRequest: QuoteRequest) {
+async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest, wrapType: number, signer: Signer) {
     if (result && result.methodParameters) {
         const uuid = setQuote({
             route: {
@@ -126,8 +153,9 @@ function createRoute(result: any, routes: any, quoteRequest: QuoteRequest) {
             fromToken: quoteRequest.fromToken,
             toToken: quoteRequest.toToken,
             amount: quoteRequest.amount,
-            isNative: quoteRequest.fromToken.symbol.toLowerCase() === 'eth' || quoteRequest.fromToken.symbol.toLowerCase() === 'bera',
+            isNative: quoteRequest.fromToken.symbol.toLowerCase() === 'bera',
             bridgeType: 'Kodiak',
+            isWrap: false,
         })
 
         let icon = ''
@@ -150,6 +178,43 @@ function createRoute(result: any, routes: any, quoteRequest: QuoteRequest) {
             gasType: FeeType.origin,
             identification: quoteRequest.identification,
             toexchangeRate: new Big(result.quoteDecimals).div(quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals)).toString()
+        }
+
+        routes.push(route)
+    } else {
+        const { txn, gasLimit } = await getWrapOrUnwrapTx({
+            signer,
+            wethAddress: weth[quoteRequest.fromChainId as any],
+            type: wrapType,
+            amount: quoteRequest.amount.toString()
+          });
+
+          const uuid = setQuote({
+            route: {
+                ...txn,
+                gasLimit: gasLimit ? gasLimit.toString() : undefined
+            },
+            fromToken: quoteRequest.fromToken,
+            toToken: quoteRequest.toToken,
+            amount: quoteRequest.amount,
+            isNative: true,
+            bridgeType: 'Kodiak',
+            isWrap: true,
+        })
+
+        const route: any = {
+            uuid,
+            icon: '/images/dapps/kodiak.svg',
+            bridgeName: 'Kodiak',
+            bridgeType: 'Kodiak',
+            fee: '0',
+            receiveAmount: quoteRequest.amount,
+            gas: '0',
+            duration: 1,
+            feeType: FeeType.usd,
+            gasType: FeeType.origin,
+            identification: quoteRequest.identification,
+            toexchangeRate: '1'
         }
 
         routes.push(route)
