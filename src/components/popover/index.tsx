@@ -32,8 +32,10 @@ const Popover = forwardRef((props: Props, ref: any) => {
     contentClassName,
     triggerContainerStyle,
     triggerContainerClassName,
+    onClickBefore,
     closeDelayDuration = 300,
-    onClickBefore
+    onMouseEnter,
+    onMouseLeave,
   } = props;
 
   const isMobile = useIsMobile();
@@ -85,14 +87,16 @@ const Popover = forwardRef((props: Props, ref: any) => {
           }
           setVisible(true);
         }}
-        onMouseEnter={() => {
+        onMouseEnter={(e) => {
           if (_trigger === PopoverTrigger.Click) return;
           closeCancel();
           setVisible(true);
+          onMouseEnter?.(e);
         }}
-        onMouseLeave={() => {
+        onMouseLeave={(e) => {
           if (_trigger === PopoverTrigger.Click) return;
           closeDelay();
+          onMouseLeave?.(e);
         }}
       >
         {children}
@@ -244,6 +248,8 @@ interface Props {
   closeDelayDuration?: number;
 
   onClickBefore?(e: any, onContinue: () => void): Promise<boolean> | boolean;
+  onMouseEnter?(e: any): void;
+  onMouseLeave?(e: any): void;
 }
 
 const Card = (props: CardProps) => {
