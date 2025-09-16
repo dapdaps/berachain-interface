@@ -8,13 +8,11 @@ import { QuoteRequest, QuoteResponse, ExecuteRequest, StatusParams, Token } from
 import { FeeType } from '../../type/index'
 import { Chain, createWalletClient, custom } from 'viem';
 import { http } from 'viem';
-import { mainnet, berachain, polygon, arbitrum, optimism, scroll, polygonZkEvm, metis, bsc, manta, mode, base, mantle, avalanche, fantom, gnosis, linea, zksync } from 'viem/chains';
 import { approve } from '../../util/approve';
 import weth from '@/configs/contract/weth';
 import getWrapOrUnwrapTx from '@/sections/swap/getWrapOrUnwrapTx';
 
-const chains = [arbitrum, mainnet, optimism, polygon, scroll, metis, berachain, polygonZkEvm, manta, mode, bsc, base, mantle, avalanche, fantom, gnosis, linea, zksync]
-
+const nativeAddress = '0x0000000000000000000000000000000000000000'
 export async function getQuote(
     quoteRequest: QuoteRequest, signer: Signer
 ): Promise<QuoteResponse[] | null> {
@@ -23,6 +21,14 @@ export async function getQuote(
 
     if (!chainConfig[numFromChainId] || !chainConfig[numToChainId]) {
         return null
+    }
+
+    if (quoteRequest.fromToken.address === 'native') {
+        quoteRequest.fromToken.address = nativeAddress
+    }
+
+    if (quoteRequest.toToken.address === 'native') {
+        quoteRequest.toToken.address = nativeAddress
     }
 
     const wethAddress = weth[quoteRequest.fromChainId as any];
