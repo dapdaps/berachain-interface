@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Range from "@/components/range";
 
 import useTokenBalance from '@/hooks/use-token-balance';
@@ -20,6 +20,8 @@ import Big from 'big.js';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import chains from '@/configs/chains';
 import { useAccount } from 'wagmi';
+import { useImportTokensStore } from '@/stores/import-tokens';
+import { uniqBy } from 'lodash';
 
 interface Props {
   chain: Chain;
@@ -54,6 +56,7 @@ export default function TokenAmout({
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
   const { address: account } = useAccount();
+  const { importTokens, addImportToken }: any = useImportTokensStore();
 
   const { tokenBalance, isError, isLoading, update } = useTokenBalance(
     token ? (token.isNative ? 'native' : token.address) : '', token?.decimals ?? 0, token?.chainId ?? 0
@@ -79,6 +82,19 @@ export default function TokenAmout({
           .replace(/[.]?0+$/, "")
       );
   };
+
+  const tokens = useMemo(() => {
+    return uniqBy(
+      [
+        ...allTokens[DEFAULT_CHAIN_ID],
+        ...(importTokens[DEFAULT_CHAIN_ID] || [])
+      ].map((token: any) => ({
+        ...token,
+        address: token.address.toLowerCase()
+      })),
+      "address"
+    );
+  }, [importTokens, allTokens]);
 
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
@@ -152,7 +168,7 @@ export default function TokenAmout({
         <div className={"flex items-center cursor-pointer"} onClick={() => {
           onAmountChange?.(tokenBalance)
         }}>balance: {isLoading ? <Loading size={12} /> : <span className={(disabledInput ? '' : ' underline')}>{balanceFormated(tokenBalance, 4)}</span>}</div>
-        <div >${(token && tokenBalance) ? balanceFormated(prices[token.symbol.toUpperCase()] * (amount as any), 4) : '~'}</div>
+        <div >${(token && tokenBalance) ? balanceFormated((prices[(token as any).priceKey] || prices[token.symbol.toUpperCase()] || prices[token.address.toLowerCase()]) * (amount as any), 4) : '~'}</div>
       </div>
 
 
@@ -219,12 +235,13 @@ export default function TokenAmout({
           chainIdNotSupport={chain.chainId !== DEFAULT_CHAIN_ID}
           selectedTokenAddress={token?.address}
           chainId={DEFAULT_CHAIN_ID}
-          tokens={allTokens[chain.chainId]}
+          tokens={tokens}
           account={account}
           explor={chains[DEFAULT_CHAIN_ID].blockExplorers.default.url}
           onClose={() => {
             setTokenSelectorShow(false);
           }}
+          onImport={addImportToken}
           onSelect={onTokenChange as any}
         />
       }
