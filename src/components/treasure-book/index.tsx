@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BookModal from "./book-modal";
 import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
 import { AnimatePresence } from "framer-motion";
@@ -9,6 +9,9 @@ import { QUEST_CONFIG } from "./config";
 import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
 import Popover, { PopoverPlacement, PopoverTrigger } from "../popover";
+import { useSearchParams, useRouter } from "next/navigation";
+
+const TREASURE_BOOK_SEARCH_PARAMS = "treasure-book";
 
 export default function TreasureBook(props: any) {
     const { className } = props;
@@ -18,6 +21,9 @@ export default function TreasureBook(props: any) {
         treasureBookOpen,
         setTreasureBookOpen,
     } = useLootboxSeasonStore();
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const treasureBookSearchParams = searchParams.get(TREASURE_BOOK_SEARCH_PARAMS);
     const { userInfo } = useUser();
     const [isHovered, setIsHovered] = useState(false);
     const {
@@ -40,6 +46,14 @@ export default function TreasureBook(props: any) {
     } = useTreasure({
         show: treasureBookOpen
     });
+
+    useMemo(() => {
+        const _defaultOpen = treasureBookSearchParams === '1';
+        if (_defaultOpen) {
+            setTreasureBookOpen(true);
+        }
+        return _defaultOpen;
+    }, [treasureBookSearchParams]);
 
     return (
         <Popover
@@ -154,7 +168,15 @@ export default function TreasureBook(props: any) {
                     treasure={treasure}
                     question={question}
                     completeViewQuest={completeViewQuest}
-                    onClose={() => setTreasureBookOpen(false)}
+                    onClose={() => {
+                        setTreasureBookOpen(false);
+                        const newSearchParams = new URLSearchParams(searchParams.toString());
+                        newSearchParams.delete(TREASURE_BOOK_SEARCH_PARAMS);
+                        const newUrl = newSearchParams.toString() 
+                            ? `${window.location.pathname}?${newSearchParams.toString()}`
+                            : window.location.pathname;
+                        router.replace(newUrl);
+                    }}
                     openBox={openBox}
                     questionLoading={questionLoading}
                     userLoading={userLoading}
