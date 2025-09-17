@@ -11,6 +11,9 @@ import LuckyBeraRecordsModal from './records/modal';
 import { useCoinExplosion } from '../../hooks/use-coin-explosion';
 import { usePlaygroundContext } from '../../context';
 import useIsMobile from '@/hooks/use-isMobile';
+import { hasDuplicate } from '../utils';
+import useCustomAccount from '@/hooks/use-account';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 const WHEEL_SIZE = 500;
 const WHEEL_AREA = 120;
@@ -47,10 +50,12 @@ export default memo(function Tiger(props: any) {
     openBuySpinsModal,
   } = props;
 
+  const { account } = useCustomAccount();
+  const connectModal = useConnectModal();
   const toast = useToast();
   const isMobile = useIsMobile();
   const { createCoinsExplosion } = useCoinExplosion();
-  const { setShowRulesModal } = usePlaygroundContext();
+  const { setShowRulesModal, playAudio } = usePlaygroundContext();
 
   const [leftWheel, leftWheelAnimate] = useAnimate();
   const leftWheelRotation = useMotionValue(SpinCategoryRotation);
@@ -68,11 +73,18 @@ export default memo(function Tiger(props: any) {
   const [openRecordsModal, setOpenRecordsModal] = useState(false);
 
   const startCoinExplosion = (params: SpinResultData) => {
-    const { draw_reward, draw_reward_amount, currentSpinUserData } = params;
+    const { draw_reward, draw_reward_amount, currentSpinUserData, draw_codes } = params;
 
     let currCategory = SPIN_CATEGORIES[draw_reward as SpinCategory];
     if (!draw_reward) {
       currCategory = SPIN_CATEGORIES[SpinCategory.Apple];
+    }
+
+    const isDuplicate = hasDuplicate(draw_codes, { exclude: [SPIN_CATEGORIES[SpinCategory.Apple].code] });
+    if (isDuplicate) {
+      playAudio({ type: "win" });
+    } else {
+      playAudio({ type: "failed" });
     }
 
     if (!spinRef.current || !currCategory) {
@@ -223,12 +235,19 @@ export default memo(function Tiger(props: any) {
   });
 
   const { run: handleSpin, loading: spinning } = useRequest<any, any>(async () => {
+    if (!account) {
+      connectModal?.openConnectModal?.();
+      return;
+    }
     if (!spinUserData?.spin_balance) {
       openBuySpinsModal();
+      playAudio({ type: "failed" });
       return;
     }
 
     cancelStartSlowScrollDebounce();
+    playAudio({ type: "start" });
+    playAudio({ type: "spin" });
 
     // start wheel scroll
     const animations = await startInfinityScroll();
@@ -240,6 +259,8 @@ export default memo(function Tiger(props: any) {
       // animations.centerWheelAnimation.pause();
       // animations.rightWheelAnimation.pause();
       startSlowScroll();
+      playAudio({ type: "spin", action: "pause" });
+      playAudio({ type: "failed" });
       return;
     }
 
@@ -248,6 +269,7 @@ export default memo(function Tiger(props: any) {
       data: res,
     });
 
+    playAudio({ type: "spin", action: "pause" });
     startCoinExplosion(res);
   }, {
     manual: true,
@@ -576,6 +598,10 @@ export default memo(function Tiger(props: any) {
           type="button"
           className="absolute z-[1] translate-x-[310px] md:translate-x-[-5vw] hover:translate-x-[320px] md:hover:translate-x-[-5vw] transition-all duration-150 bottom-[70px] md:bottom-[0] md:translate-y-[-73dvh] md:left-[0] w-[125px] h-[50px] md:w-[28.80vw] md:h-[11.52vw] bg-[url('/images/playground/lucky-bera/btn-history.png')] bg-no-repeat bg-center bg-contain"
           onClick={() => {
+            if (!account) {
+              connectModal?.openConnectModal?.();
+              return;
+            }
             setOpenRecordsModal(true);
           }}
         />

@@ -8,14 +8,20 @@ interface Props {
   clothes: GameItem[];
   necklaces: GameItem[];
   items: GameItem[];
+  className?: string;
 }
 
 export default function Bear({
-  cars, hats, clothes, necklaces, items
+  cars,
+  hats,
+  clothes,
+  necklaces,
+  items,
+  className,
 }: Props) {
   const { isChristmas } = useChristmas();
   const hasCars = useMemo(() => {
-    if (items[5].checked || items[6].checked) {
+    if (items[5]?.checked || items[6]?.checked) {
       return true
     }
     if (cars) {
@@ -26,7 +32,7 @@ export default function Bear({
   }, [cars, items])
 
   return (
-    <div className="origin-bottom scale-75 pointer-events-none absolute bottom-[5%] left-[50%] translate-x-[-50%] w-[395px] h-[359px] z-10">
+    <div className={clsx("origin-bottom scale-75 pointer-events-none absolute bottom-[5%] left-[50%] translate-x-[-50%] w-[395px] h-[359px] z-10", className)}>
       {!hasCars && <img src="/images/cave/bear/bear-empty.png" className="absolute left-0 top-[0px] max-w-[395px]" />}
 
       {!!cars.length && cars[0].checked && <img src="/images/cave/bear/car/car-1.png" className=" absolute left-0 top-[0px] max-w-[395px]" />}
@@ -56,7 +62,7 @@ export default function Bear({
 
       {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-1.png" className="absolute left-[-170px] bottom-0 max-w-[757px]" />}
       {
-        (items[5].checked || items[6].checked) && (
+        (items[5]?.checked || items[6]?.checked) && (
           <div className='absolute w-full h-full left-[102px] top-[25px] scale-[1.15]'>
             <div className='absolute left-0 top-0 z-0'>
               <img src="/images/cave/christmas/bear/bear.svg" alt="bear" />
@@ -64,7 +70,7 @@ export default function Bear({
           </div>
         )
       }
-      <div className={clsx('absolute w-full h-full left-[102px] top-[25px] scale-[1.15]', items[5].checked ? 'z-20' : 'z-10')}>
+      <div className={clsx('absolute w-full h-full left-[102px] top-[25px] scale-[1.15]', items[5]?.checked ? 'z-20' : 'z-10')}>
         {
           !!items.length && items[1].checked && (
             <div className='absolute left-[102px] top-[-42px] z-[1]'>

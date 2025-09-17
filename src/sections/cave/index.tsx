@@ -706,7 +706,7 @@ export default function Cave() {
           hats={hats}
           clothes={clothes}
           necklaces={necklaces}
-          items={items}
+          items={[]}
         />
         {
           tipShow && (

@@ -26,6 +26,7 @@ import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
 import McBeraView from '@/sections/home-earth/mc-bera';
 import Kirov from "./components/kirov";
+import HomeEarthBear from "./components/bear";
 
 const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 const MenuV2 = dynamic(() => import('./components/menu/v2'), { ssr: false });
@@ -290,12 +291,7 @@ const HomeEarth = (props: any) => {
 
               {/*#region biking bear*/}
               {isDefaultTheme() ? (
-                <img
-                  ref={bearRef}
-                  src="/images/background/bear.gif"
-                  alt=""
-                  className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
-                />
+                <HomeEarthBear bearRef={bearRef} />
               ) : (
                 <div
                   className="absolute z-[4] top-[32.4dvh] pointer-events-none"

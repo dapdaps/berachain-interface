@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SpinMultiplier, SpinUserData } from "../lucky-bera/config";
 import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import { WheelUserData } from "../big-wheel/config";
 import { usePlaygroundStore } from "@/stores/use-playground";
+import { AUDIO_CONFIG } from "../config";
 
 export function usePlayground() {
   const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");
@@ -17,6 +18,7 @@ export function usePlayground() {
     setWheelUserData,
   } = usePlaygroundStore();
 
+  const audioRefs = useRef<Map<string, HTMLAudioElement | null>>(new Map());
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
   const [showRulesModal, setShowRulesModal] = useState(false);
 
@@ -62,6 +64,56 @@ export function usePlayground() {
     refreshDeps: [accountWithAk],
   });
 
+  const playAudio = (preload: { type: string; action?: "play" | "pause"; }) => {
+    let { type, action } = preload;
+    action = action || "play";
+
+    const audioRef = audioRefs.current.get(type);
+    if (!audioRef) {
+      return;
+    }
+
+    const _play = async () => {
+      try {
+        const audioConfig = AUDIO_CONFIG.find(config => config.type === type);
+        if (audioConfig?.playbackRate) {
+          audioRef.playbackRate = audioConfig.playbackRate;
+        }
+
+        switch (action) {
+          case "play":
+            audioRef.currentTime = 0;
+            // iOS Safari/Chrome requires user interaction to play audio
+            const playPromise = audioRef.play();
+            if (playPromise !== undefined) {
+              try {
+                await playPromise;
+              } catch (playError) {
+                console.warn(`Failed to play audio ${type}:`, playError);
+                // Try to load the audio first if play failed
+                audioRef.load();
+                try {
+                  await audioRef.play();
+                } catch (retryError) {
+                  console.warn(`Retry play failed for audio ${type}:`, retryError);
+                }
+              }
+            }
+            break;
+          case "pause":
+            audioRef.pause();
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.warn(`Error in playAudio for ${type}:`, error);
+      }
+    };
+
+    _play();
+  };
+
   return {
     multipliers,
     spinMultiplier,
@@ -76,5 +128,7 @@ export function usePlayground() {
     getWheelUserData,
     showRulesModal,
     setShowRulesModal,
+    audioRefs,
+    playAudio,
   };
 }

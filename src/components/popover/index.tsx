@@ -25,6 +25,8 @@ const Popover = forwardRef((props: Props, ref: any) => {
     triggerContainerClassName,
     onClickBefore,
     closeDelayDuration = 300,
+    onMouseEnter,
+    onMouseLeave,
   } = props;
 
   const isMobile = useIsMobile();
@@ -73,14 +75,16 @@ const Popover = forwardRef((props: Props, ref: any) => {
           }
           setVisible(true);
         }}
-        onMouseEnter={() => {
+        onMouseEnter={(e) => {
           if (_trigger === PopoverTrigger.Click) return;
           closeCancel();
           setVisible(true);
+          onMouseEnter?.(e);
         }}
-        onMouseLeave={() => {
+        onMouseLeave={(e) => {
           if (_trigger === PopoverTrigger.Click) return;
           closeDelay();
+          onMouseLeave?.(e);
         }}
       >
         {children}
@@ -92,7 +96,7 @@ const Popover = forwardRef((props: Props, ref: any) => {
             y={y}
             onLoaded={(elTooltip) => {
               const triggerEl = triggerRef.current;
-              
+
               const { width: triggerW, height: triggerH, x: triggerX, y: triggerY } = triggerEl.getBoundingClientRect();
 
               const { width: w, height: h } = elTooltip.getBoundingClientRect();
@@ -226,6 +230,8 @@ interface Props {
   closeDelayDuration?: number;
 
   onClickBefore?(e: any, onContinue: () => void): Promise<boolean> | boolean;
+  onMouseEnter?(e: any): void;
+  onMouseLeave?(e: any): void;
 }
 
 const Card = (props: CardProps) => {

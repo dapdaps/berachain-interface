@@ -1,6 +1,7 @@
 import CheckInEntry from "@/components/check-in/entry";
 import ConnectWallet from "@/components/connect-wallet";
 import PointsEntry from "@/components/points/entry";
+import TreasureBook from "@/components/treasure-book";
 import useCustomAccount from "@/hooks/use-account";
 import { useBgtCount } from "@/hooks/use-bgt-count";
 import useIsMobile from "@/hooks/use-isMobile";
@@ -28,6 +29,11 @@ const MobileHeader = () => {
         )}
         {!!accountWithAk && (
           <CheckInEntry />
+        )}
+        {!!accountWithAk && (
+          <TreasureBook
+            className="!relative !top-[unset] !right-[unset]"
+          />
         )}
       </div>
       <div className="flex h-[10.77vw]">
