@@ -73,7 +73,7 @@ export default function TreasureBook(props: any) {
                         {
                             userInfo?.address && qoutionProgress === 3 && <>
                                 <div className="text-center">
-                                    Your next set of missions are being prepared. Come back later to earn more rewards.
+                                    Your next lootbox is being prepared. Come back then to claim it.
                                 </div>
                             </>
                         }
