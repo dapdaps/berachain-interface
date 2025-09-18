@@ -236,7 +236,7 @@ const MENU_LIST = {
       sort: 1,
     },
     {
-      label: "Track my Protfolio",
+      label: "Track my Portfolio",
       bg: "#AFFF83",
       href: "/portfolio",
       sort: 2,
