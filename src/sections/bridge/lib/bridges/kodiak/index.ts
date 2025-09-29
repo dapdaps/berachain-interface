@@ -65,8 +65,6 @@ export async function getQuote(
         slippageTolerance: 1
     }
 
-    console.log('routesRequest', routesRequest)
-
     const queryParams = new URLSearchParams({
         protocols: routesRequest.protocols,
         tokenInAddress: routesRequest.tokenInAddress,
