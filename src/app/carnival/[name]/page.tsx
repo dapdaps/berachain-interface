@@ -2,20 +2,29 @@
 
 import LuckyBera from "@/sections/playground/lucky-bera";
 import BigWheel from "@/sections/playground/big-wheel";
+import Magician from "@/sections/playground/magician";
 import { useParams } from "next/navigation";
+import { Games } from "@/configs/playground";
+import { camelToKebab } from "@/utils/utils";
 
 const PlaygroundGame = () => {
   const { name } = useParams();
 
-  if (name === "lucky-bera") {
+  if (name === camelToKebab(Games.LuckyBera.name)) {
     return (
       <LuckyBera />
     );
   }
 
-  if (name === "big-wheel") {
+  if (name === camelToKebab(Games.BigWheel.name)) {
     return (
       <BigWheel />
+    );
+  }
+
+  if (name === camelToKebab(Games.Magician.name)) {
+    return (
+      <Magician />
     );
   }
 

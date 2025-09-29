@@ -12,6 +12,7 @@ import PlaygroundRulesModal from "./components/rules";
 import useIsMobile from "@/hooks/use-isMobile";
 import PageBack from "@/components/back";
 import { AUDIO_CONFIG } from "./config";
+import { Games } from "@/configs/playground";
 
 const PlaygroundLayout = (props: any) => {
   const { children } = props;
@@ -25,12 +26,16 @@ const PlaygroundLayout = (props: any) => {
       <PlaygroundProvider value={playground}>
         <div className="relative w-full flex justify-center items-center h-[60px]">
           <PageBack className="absolute left-[12px] z-[10]" />
-          <div className="translate-y-[-2px] text-[30px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
-            Carnival
-          </div>
+          {
+            ![Games.Magician.path].includes(pathname) && (
+              <div className="translate-y-[-2px] text-[30px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
+                Carnival
+              </div>
+            )
+          }
         </div>
         {
-          ["/carnival/lucky-bera"].includes(pathname) && (
+          [Games.LuckyBera.path].includes(pathname) && (
             <Link
               href="/carnival/big-wheel"
               prefetch
@@ -48,7 +53,7 @@ const PlaygroundLayout = (props: any) => {
           )
         }
         {
-          ["/carnival/big-wheel"].includes(pathname) && (
+          [Games.BigWheel.path].includes(pathname) && (
             <Link
               href="/carnival/lucky-bera"
               prefetch
@@ -81,10 +86,19 @@ const PlaygroundLayout = (props: any) => {
     <PlaygroundProvider value={playground}>
       <div className="w-full">
         <HomeEarthTop isLogo={false} isAirdrop={false} className="!pt-[0]" />
+        {
+          [Games.Magician.path].includes(pathname) && (
+            <PageBack className="absolute left-[36px] z-[10] !text-white" />
+          )
+        }
         <div className="absolute w-full top-[80px] flex justify-center items-center gap-[4px] z-[2]">
-          <div className="text-[60px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
-            Carnival
-          </div>
+          {
+            ![Games.Magician.path].includes(pathname) && (
+              <div className="text-[60px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
+                Carnival
+              </div>
+            )
+          }
           {/* <button
             type="button"
             className="text-black text-center font-CherryBomb text-[16px] font-[400] leading-[90%] w-[55px] h-[30px] rotate-[-8.017deg] translate-y-[5px] flex-shrink-0 rounded-[12px] border border-black bg-[linear-gradient(180deg,_#FFCE78_0%,_#9E762F_100%)]"
@@ -104,11 +118,11 @@ const PlaygroundLayout = (props: any) => {
         <div
           className="w-full min-h-[100dvh] bg-[length:100%_auto] bg-bottom bg-no-repeat relative z-[1]"
           style={{
-            backgroundImage: ["/carnival/lucky-bera"].includes(pathname) ? "url('/images/playground/bg-ground.png')" : "url('/images/playground/bg-ground2.png')",
+            backgroundImage: [Games.LuckyBera.path, Games.Magician.path].includes(pathname) ? "url('/images/playground/bg-ground.png')" : "url('/images/playground/bg-ground2.png')",
           }}
         >
           {
-            ["/carnival/lucky-bera"].includes(pathname) && (
+            [Games.LuckyBera.path].includes(pathname) && (
               <Link
                 href="/carnival/big-wheel"
                 prefetch
@@ -127,7 +141,7 @@ const PlaygroundLayout = (props: any) => {
           }
           {children}
           {
-            ["/carnival/big-wheel"].includes(pathname) && (
+            [Games.BigWheel.path].includes(pathname) && (
               <Link
                 href="/carnival/lucky-bera"
                 prefetch
