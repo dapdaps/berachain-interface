@@ -59,7 +59,7 @@ export async function getQuote(
         tokenInChainId: numFromChainId,
         tokenOutAddress: quoteRequest.toToken.address,
         tokenOutChainId: numToChainId,
-        amount: quoteRequest.amount.toString(),
+        amount: quoteRequest.amount.toFixed(0),
         type: 'exactIn',
         recipient: quoteRequest.destAddress,
         slippageTolerance: 1
