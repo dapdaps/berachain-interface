@@ -12,7 +12,9 @@ import infraredVaultAbi from "@/sections/staking/abi/infrared-vault";
 import useTokenInfo from "@/hooks/use-token-info";
 
 export function useDetail(props: any) {
-  const { id, name, data, defaultIndex } = props;
+  const { id, name, data, defaultIndex, referenceFrom } = props;
+
+  // console.log("%cDetail hook referenceFrom:  %o", "", referenceFrom);
 
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
@@ -548,7 +550,7 @@ export function useDetail(props: any) {
 
     updateLPBalance();
     updateBalance();
-  }, [sender, data, updater, provider]);
+  }, [sender, data, updater, provider, contractAddr]);
 
   useEffect(() => {
     if (!data?.vaultAddress || !provider) return;
@@ -588,6 +590,7 @@ export function useDetail(props: any) {
       }
       queryToken({
         address: stakeTokenAddress,
+        chainId,
         callback: (res: any) => {
           setStakeToken({
             name: res[0][0],

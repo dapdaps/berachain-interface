@@ -65,7 +65,8 @@ export default memo(function Detail(props: any) {
     id,
     name,
     data,
-    defaultIndex
+    defaultIndex,
+    referenceFrom: "/staking/Bridge/Detail/index",
   });
   const {
     // isDeposit,

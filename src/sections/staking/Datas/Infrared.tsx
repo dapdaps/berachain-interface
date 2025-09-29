@@ -268,7 +268,7 @@ export default function useInfraredData(props: any) {
         initialData: item,
         type: "Staking",
         vaultAddress: item.address,
-        rewardSymbol: item?.rewardTokens?.[0]?.symbol,
+        rewardSymbol: item?.rewards?.[0]?.symbol,
         platform: "infrared",
         protocol,
         protocolType: ["bex", "kodiak"].includes(protocol)
