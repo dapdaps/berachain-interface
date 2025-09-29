@@ -45,7 +45,9 @@ export async function getQuote(
     const routes: any = []
 
     if (wrapType) {
+        console.log('wrapType', wrapType)
         await createRoute(null, routes, quoteRequest, wrapType, signer)
+        console.log('routes', routes)
         if (routes.length > 0) {
             return routes
         } else {
@@ -188,17 +190,20 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
 
         routes.push(route)
     } else {
+
+        console.log('wrapType', wrapType)
+
         const { txn, gasLimit } = await getWrapOrUnwrapTx({
             signer,
             wethAddress: weth[quoteRequest.fromChainId as any],
             type: wrapType,
-            amount: quoteRequest.amount.toString()
-          });
+            amount: quoteRequest.amount.toFixed(0)
+        });
 
-          const uuid = setQuote({
+        const uuid = setQuote({
             route: {
                 ...txn,
-                gasLimit: gasLimit ? gasLimit.toString() : undefined
+                gasLimit: gasLimit ? gasLimit.toFixed(0) : undefined
             },
             fromToken: quoteRequest.fromToken,
             toToken: quoteRequest.toToken,
@@ -222,6 +227,7 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             identification: quoteRequest.identification,
             toexchangeRate: '1'
         }
+
 
         routes.push(route)
     }
