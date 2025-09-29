@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import WaitingHat from "../components/waiting-hat";
 
 const Join = (props: any) => {
   const {
@@ -36,6 +37,9 @@ const Join = (props: any) => {
             join.onClose();
           }}
         />
+        <div className="w-[144px] h-[136px] shrink-0 flex flex-col items-center justify-center absolute translate-x-[40px] bottom-[260px]">
+          <WaitingHat />
+        </div>
       </div>
     </motion.div>
   );
