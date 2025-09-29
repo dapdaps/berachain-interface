@@ -198,7 +198,7 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
         const uuid = setQuote({
             route: {
                 ...txn,
-                gasLimit: gasLimit ? gasLimit.toFixed(0) : undefined
+                gasLimit: gasLimit ? gasLimit.toString() : undefined
             },
             fromToken: quoteRequest.fromToken,
             toToken: quoteRequest.toToken,
