@@ -287,6 +287,7 @@ export default function useInfraredData(props: any) {
       decimals1: 18,
       LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
       vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
+      rewardSymbol: ibgt?.rewardTokens?.[0]?.symbol,
       tvl: Big(ibgt?.tvl || 0).toFixed(),
       apy: Big(ibgt?.apr || 0)
         .times(100)
