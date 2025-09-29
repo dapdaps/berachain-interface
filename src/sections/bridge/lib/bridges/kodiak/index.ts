@@ -207,6 +207,7 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             bridgeType: 'Kodiak',
             isWrap: true,
         })
+        
 
         const route: any = {
             uuid,
