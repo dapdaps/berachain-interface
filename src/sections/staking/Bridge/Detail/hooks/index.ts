@@ -423,7 +423,7 @@ export function useDetail(props: any) {
         const { status, transactionHash } = receipt ?? {};
         const rewardToken = data?.initialData?.rewardTokens.find(
           (token: any) => token.symbol === data?.rewardSymbol
-        );
+        ) ?? {};
         addAction?.({
           type: "Staking",
           action: "Claim",
