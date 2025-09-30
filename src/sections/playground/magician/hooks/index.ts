@@ -3,12 +3,15 @@ import useCustomAccount from "@/hooks/use-account";
 import { get } from "@/utils/http";
 import { useDebounceFn, useRequest } from "ahooks";
 import { useState } from "react";
-import { EmptyPlayer, PlayerAvatars, Room } from "../config";
+import { EmptyPlayer, PlayerAvatars, Room, Status } from "../config";
 import { Contract, utils } from "ethers";
 import { RPS_CONTRACT_ADDRESS, RPS_CONTRACT_ADDRESS_ABI } from "../contract";
 import { cloneDeep } from "lodash";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { multicall, multicallAddresses } from "@/utils/multicall";
+import Big from "big.js";
+import dayjs from "dayjs";
 
 export function useMagician() {
   const [betToken] = useState(bera["bera"]);
@@ -72,13 +75,38 @@ export function useMagician() {
     if (!provider) {
       return;
     }
-    const _result = { minBetAmount: "1" };
-    const contract = new Contract(RPS_CONTRACT_ADDRESS, RPS_CONTRACT_ADDRESS_ABI, provider);
+    const _result = {
+      minBetAmount: "1",
+      // hours
+      timeoutDuration: "86400",
+    };
+    const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
+    const calls = [
+      {
+        address: RPS_CONTRACT_ADDRESS,
+        name: "minBetAmount",
+        params: [],
+      },
+      {
+        address: RPS_CONTRACT_ADDRESS,
+        name: "timeoutDuration",
+        params: [],
+      },
+    ];
     try {
-      const res = await contract.minBetAmount();
-      const minBetAmount = utils.formatUnits(res, betToken.decimals);
+      const _gameConfig = await multicall({
+        abi: RPS_CONTRACT_ADDRESS_ABI,
+        options: {},
+        calls,
+        multicallAddress,
+        provider
+      });
+      const [[_minBetAmount], [_timeoutDuration]] = _gameConfig ?? [];
+      const minBetAmount = utils.formatUnits(_minBetAmount, betToken.decimals);
+      const timeoutDuration = utils.formatUnits(_timeoutDuration, 0);
       _result.minBetAmount = minBetAmount;
-      console.log("game config: %o", _result);
+      _result.timeoutDuration = timeoutDuration;
+      console.log("%cGame config: %o", "background:#696FC7;color:#fff;", _result);
     } catch (error) {
       console.log("get game config failed: %o", error);
     }
@@ -130,7 +158,7 @@ export function useMagician() {
   });
 
   const { runAsync: getUserList, loading: userListLoading } = useRequest(async (params?: any) => {
-    if (!accountWithAk) {
+    if (!accountWithAk || !gameConfig) {
       return;
     }
 
@@ -148,13 +176,19 @@ export function useMagician() {
       if (res.code !== 200) {
         return;
       }
+      const now = dayjs().utc();
       setUserList((prev) => {
         const _userList = { ...prev };
         _userList.data = res.data.data || [];
         _userList.data.forEach((item: any) => {
-          // item.isOwn = item.address.toLowerCase() === account.toLowerCase();
+          item.isOwn = item.address.toLowerCase() === account.toLowerCase();
+          item.canClaim =
+            item.players[0]?.address?.toLowerCase() === account.toLowerCase()
+            && [Status.Ongoing, Status.Joined].includes(item.status)
+            && dayjs(item.create_time * 1000).add(Big(gameConfig.timeoutDuration).div(3600).toNumber(), "hours").utc().isBefore(now);
           setPlayersAvatar(item.players);
         });
+        console.log("_userList: %o", _userList);
         if (_page === 1) {
           _userList.pageTotal = res.data.total_page;
           _userList.total = res.data.total;
@@ -165,9 +199,20 @@ export function useMagician() {
       console.log("get user list failed: %o", error);
     }
   }, {
-    refreshDeps: [accountWithAk],
-    manual: true,
+    refreshDeps: [accountWithAk, gameConfig],
   });
+
+  const onUserListClaimed = (record: Room) => {
+    setUserList((prev) => {
+      const _useList = { ...prev };
+      const currRecord: any = _useList.data.find((item: any) => item.room_id === record.room_id);
+      if (!currRecord) {
+        return _useList;
+      }
+      currRecord.status = Status.Canceled;
+      return _useList;
+    });
+  };
 
   const { run: getListDelay } = useDebounceFn(() => {
     getList();
@@ -306,5 +351,6 @@ export function useMagician() {
     onUserListSort,
     historyOpen,
     setHistoryOpen,
+    onUserListClaimed,
   };
 }

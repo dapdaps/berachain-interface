@@ -131,3 +131,6 @@ export const HistoryActionMap: Record<HistoryAction, { name: string; isIncome?: 
     isIncome: true,
   },
 };
+
+// -10%
+export const ClaimRefundFee = 0.1;

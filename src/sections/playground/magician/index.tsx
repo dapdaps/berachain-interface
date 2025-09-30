@@ -6,11 +6,14 @@ import List from "./sections/list";
 import Join from "./sections/join";
 import HistoryModal from "./sections/history";
 import Notify from "./sections/notify";
+import ClaimModal from "./sections/claim";
+import { useClaim } from "./hooks/use-claim";
 
 const Magician = () => {
   const magician = useMagician();
   const create = useCreate(magician);
   const join = useJoin(magician);
+  const claim = useClaim(magician);
 
   return (
     <>
@@ -21,12 +24,14 @@ const Magician = () => {
               magician={magician}
               create={create}
               join={join}
+              claim={claim}
             />
           ) : (
             <List
               magician={magician}
               create={create}
               join={join}
+              claim={claim}
             />
           )
         }
@@ -39,6 +44,18 @@ const Magician = () => {
       />
       <Notify
         open={true}
+        setPlayersAvatar={magician.setPlayersAvatar}
+        betToken={magician.betToken}
+      />
+      <ClaimModal
+        account={magician.account}
+        open={claim.claimData.open}
+        room={claim.claimData.room}
+        onClose={() => {
+          claim.onClaimOpen(false);
+        }}
+        onClaim={claim.onClaim}
+        claiming={claim.claiming}
       />
     </>
   );

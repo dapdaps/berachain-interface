@@ -21,6 +21,7 @@ const List = (props: any) => {
     magician,
     create,
     join,
+    claim,
   } = props;
 
   const betAmounts = useMemo(() => {
@@ -157,7 +158,7 @@ const List = (props: any) => {
                 disabled: magician.loading || magician.userListLoading,
               },
               {
-                label: `Yours ${0 || ""}`,
+                label: `Yours ${magician.userList.total ? numberFormatter(magician.userList.total, 0, true, { isShort: true }) : ""}`,
                 value: "yours",
                 disabled: magician.loading || magician.userListLoading,
               },
@@ -222,6 +223,7 @@ const List = (props: any) => {
           {
             magician.listTab === "all" && (
               <motion.div
+                key="all"
                 className="w-full mt-[10px]"
                 initial={{
                   opacity: 0,
@@ -230,10 +232,6 @@ const List = (props: any) => {
                 animate={{
                   opacity: 1,
                   x: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  x: -200,
                 }}
               >
                 <GridTable
@@ -271,14 +269,17 @@ const List = (props: any) => {
                             <PlayerAvatar
                               avatar={record.players[0]?.avatar}
                               moves={record.players[0]?.moves}
+                              isMoveAvatar={false}
                             />
                             <PlayerAvatar
                               avatar={record.players[1]?.avatar}
                               moves={record.players[1]?.moves}
+                              isMoveAvatar={false}
                             />
                             <PlayerAvatar
                               avatar={record.players[2]?.avatar}
                               moves={record.players[2]?.moves}
+                              isMoveAvatar={false}
                             />
                           </div>
                         );
@@ -368,6 +369,7 @@ const List = (props: any) => {
           {
             magician.listTab === "yours" && (
               <motion.div
+                key="yours"
                 className="w-full mt-[10px]"
                 initial={{
                   opacity: 0,
@@ -376,10 +378,6 @@ const List = (props: any) => {
                 animate={{
                   opacity: 1,
                   x: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  x: 200,
                 }}
               >
                 <GridTable
@@ -409,7 +407,7 @@ const List = (props: any) => {
                     {
                       dataIndex: "player",
                       title: "Player",
-                      width: 200,
+                      width: 160,
                       sort: false,
                       render: (record: any) => {
                         return (
@@ -417,14 +415,17 @@ const List = (props: any) => {
                             <PlayerAvatar
                               avatar={record.players[0]?.avatar}
                               moves={record.players[0]?.moves}
+                              className="!w-[34px] !h-[34px] !rounded-[8px] translate-y-[8px]"
                             />
                             <PlayerAvatar
                               avatar={record.players[1]?.avatar}
                               moves={record.players[1]?.moves}
+                              className="!w-[34px] !h-[34px] !rounded-[8px] translate-y-[8px]"
                             />
                             <PlayerAvatar
                               avatar={record.players[2]?.avatar}
                               moves={record.players[2]?.moves}
+                              className="!w-[34px] !h-[34px] !rounded-[8px] translate-y-[8px]"
                             />
                           </div>
                         );
@@ -452,7 +453,6 @@ const List = (props: any) => {
                       dataIndex: "bet_amount",
                       title: "Bet Price",
                       width: 130,
-                      sort: true,
                       render: (record: any) => {
                         return (
                           <div className="flex items-center gap-[6px]">
@@ -471,17 +471,46 @@ const List = (props: any) => {
                     {
                       dataIndex: "status",
                       title: "Status",
-                      width: 120,
-                      align: GridTableAlign.Right,
+                      width: 180,
+                      align: GridTableAlign.Left,
                       render: (record: any) => {
-                        return (
+                        return record.status === Status.Won && record.winner_address ? (
+                          <div className="flex items-center gap-[5px]">
+                            <PlayerAvatar
+                              avatar={record.players?.find((player: any) => player.moves === record.winner_moves)?.avatar}
+                              moves={record.players?.find((player: any) => player.moves === record.winner_moves)?.moves}
+                              className="!w-[34px] !h-[34px] !rounded-[8px] translate-y-[8px]"
+                            />
+                            <div className="">
+                              <div className="">
+                                Winner
+                              </div>
+                              <div className="max-w-[70px] px-[2px] mt-[2px] overflow-hidden h-[20px] border border-black bg-[#FFDC50] rounded-[20px] flex justify-center items-center text-[10px] font-[700]">
+                                {numberFormatter(Big(record.bet_amount || 0).times(3), 2, true, { isShort: true })} {magician.betToken?.symbol}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
                           <div
-                            className=""
+                            className="flex items-center gap-[5px]"
                             style={{
                               color: StatusMap[record.status as Status].color,
                             }}
                           >
-                            {StatusMap[record.status as Status].name}
+                            <div className="shrink-0">{StatusMap[record.status as Status].name}</div>
+                            {
+                              record.canClaim && (
+                                <button
+                                  type="button"
+                                  className="w-[70px] h-[36px] shrink-0 rounded-[6px] border border-black bg-white text-[14px] text-black font-[600] flex justify-center items-center gap-[5px]"
+                                  onClick={() => {
+                                    claim.onClaimOpen(true, record);
+                                  }}
+                                >
+                                  <div>Close</div>
+                                </button>
+                              )
+                            }
                           </div>
                         );
                       },
