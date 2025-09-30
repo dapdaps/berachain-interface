@@ -9,7 +9,7 @@ import { QUEST_CONFIG } from "./config";
 import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
 import Popover, { PopoverPlacement, PopoverTrigger } from "../popover";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 const TREASURE_BOOK_SEARCH_PARAMS = "treasure-book";
 
@@ -21,6 +21,7 @@ export default function TreasureBook(props: any) {
         treasureBookOpen,
         setTreasureBookOpen,
     } = useLootboxSeasonStore();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
     const treasureBookSearchParams = searchParams.get(TREASURE_BOOK_SEARCH_PARAMS);
@@ -46,6 +47,8 @@ export default function TreasureBook(props: any) {
     } = useTreasure({
         show: treasureBookOpen
     });
+
+    const is2Top = ["/carnival/magician"].includes(pathname);
 
     useMemo(() => {
         const _defaultOpen = treasureBookSearchParams === '1';
@@ -99,7 +102,11 @@ export default function TreasureBook(props: any) {
                 )}
                 placement={PopoverPlacement.Bottom}
                 trigger={PopoverTrigger.Hover}
-                triggerContainerClassName={clsx("fixed z-[51] right-[10px] top-[560px] cursor-pointer group", className)}
+                triggerContainerClassName={clsx(
+                    "fixed z-[51] right-[10px] cursor-pointer group", 
+                    is2Top ? "top-[470px]" : "top-[560px]",
+                    className,
+                )}
                 onMouseEnter={() => {
                     if (isMobile) return;
                     setIsHovered(true);

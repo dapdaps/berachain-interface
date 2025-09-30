@@ -69,6 +69,7 @@ const NavigationMenu = (props: any) => {
 
   const pathname = usePathname();
   const isSmall = ["/bintent"].includes(pathname);
+  const is2Top = ["/carnival/magician"].includes(pathname);
   const isHide = ["/belong", "/"].includes(pathname);
 
   if (isHide) {
@@ -78,8 +79,9 @@ const NavigationMenu = (props: any) => {
   return (
     <div
       className={clsx(
-        "fixed z-[51] top-[150px] flex flex-col gap-[10px] items-end",
+        "fixed z-[51] flex flex-col gap-[10px] items-end",
         isSmall ? "right-[-20px]" : "right-0",
+        is2Top ? "top-[70px]" : "top-[150px]",
         className
       )}
     >
