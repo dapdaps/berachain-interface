@@ -3,7 +3,7 @@ import useCustomAccount from "@/hooks/use-account";
 import { get } from "@/utils/http";
 import { useDebounceFn, useRequest } from "ahooks";
 import { useState } from "react";
-import { EmptyPlayer, PlayerAvatars, Room, Status } from "../config";
+import { ContractStatus, ContractStatus2Status, EmptyPlayer, PlayerAvatars, Room, Status, WinnerStatus } from "../config";
 import { Contract, utils } from "ethers";
 import { RPS_CONTRACT_ADDRESS, RPS_CONTRACT_ADDRESS_ABI } from "../contract";
 import { cloneDeep } from "lodash";
@@ -216,7 +216,35 @@ export function useMagician() {
 
   const { run: getListDelay } = useDebounceFn(() => {
     getList();
-  }, { wait: 3000 });
+  }, { wait: 5000 });
+
+  const onChange2List = (type: any, room: Room) => {
+    if (type === "create") {
+      setList((prev: any) => {
+        const _list = { ...prev };
+        _list.data.unshift(room);
+        return _list;
+      });
+      return;
+    }
+    if (type === "join") {
+      setList((prev: any) => {
+        const _list = { ...prev };
+        const currRoom = _list.data.find((item: any) => item.room_id === room.room_id);
+        // first time join
+        if (!currRoom) {
+          return _list;
+        }
+        // existed
+        typeof room.players !== "undefined" && (currRoom.players = room.players);
+        typeof room.status !== "undefined" && (currRoom.status = room.status);
+        typeof room.winner_address !== "undefined" && (currRoom.winner_address = room.winner_address);
+        typeof room.winner_moves !== "undefined" && (currRoom.winner_moves = room.winner_moves);
+        return _list;
+      });
+      return;
+    }
+  };
 
   const onPageChange = (page: number) => {
     setList((prev) => {
@@ -279,6 +307,61 @@ export function useMagician() {
     });
   };
 
+  const formatRoomInfo = (currRoom: any, contractRoomInfo: any) => {
+    // numberA and data.playerA is always exist
+    if (contractRoomInfo.data.playerB !== EmptyPlayer) {
+      if (!currRoom.players[1]) {
+        currRoom.players[1] = {
+          address: contractRoomInfo.data.playerB,
+          moves: contractRoomInfo.numberB,
+          tx_hash: "",
+          tx_time: 0,
+        };
+      }
+    }
+    if (contractRoomInfo.data.playerC !== EmptyPlayer) {
+      if (!currRoom.players[2]) {
+        currRoom.players[2] = {
+          address: contractRoomInfo.data.playerC,
+          moves: contractRoomInfo.numberC,
+          tx_hash: "",
+          tx_time: 0,
+        };
+      }
+    }
+    currRoom.status = ContractStatus2Status[contractRoomInfo.status as ContractStatus];
+
+    if (contractRoomInfo.winnerStatus) {
+      // winnerStatus = 1: data.playerA won
+      // winnerStatus = 2: data.playerB won
+      // winnerStatus = 3: data.playerC won
+      const winnerMap: any = {
+        [WinnerStatus.WinnerPlayerA]: {
+          address: contractRoomInfo.data.playerA,
+          moves: contractRoomInfo.numberA,
+        },
+        [WinnerStatus.WinnerPlayerB]: {
+          address: contractRoomInfo.data.playerB,
+          moves: contractRoomInfo.numberB,
+        },
+        [WinnerStatus.WinnerPlayerC]: {
+          address: contractRoomInfo.data.playerC,
+          moves: contractRoomInfo.numberC,
+        },
+      };
+      if (contractRoomInfo.winnerStatus === WinnerStatus.UnusedRoomClosed) {
+        currRoom.status = Status.Canceled;
+      } else {
+        currRoom.winner_address = winnerMap[contractRoomInfo.winnerStatus as WinnerStatus].address;
+        currRoom.winner_moves = winnerMap[contractRoomInfo.winnerStatus as WinnerStatus].moves;
+      }
+    }
+
+    setPlayersAvatar(currRoom.players);
+
+    return currRoom;
+  };
+
   const { runAsync: getRoomInfo, loading: getRoomInfoLoading } = useRequest<Room, Room | any>(async (_room: Room) => {
     const _roomInfo = cloneDeep(_room);
     const contract = new Contract(RPS_CONTRACT_ADDRESS, RPS_CONTRACT_ADDRESS_ABI, provider);
@@ -288,38 +371,128 @@ export function useMagician() {
       const roomInfo = res[0];
       console.log("%cLatest roomInfo: %o", "background:#696FC7;color:#fff;", roomInfo);
       contractData = roomInfo;
-      // numberA and data.playerA is always exist
-      if (roomInfo.data.playerB !== EmptyPlayer) {
-        if (!_roomInfo.players[1]) {
-          _roomInfo.players[1] = {
-            address: roomInfo.data.playerB,
-            moves: roomInfo.numberB,
-            tx_hash: "",
-            tx_time: 0,
-          };
-        }
-      }
-      if (roomInfo.data.playerC !== EmptyPlayer) {
-        if (!_roomInfo.players[2]) {
-          _roomInfo.players[2] = {
-            address: roomInfo.data.playerC,
-            moves: roomInfo.numberC,
-            tx_hash: "",
-            tx_time: 0,
-          };
-        }
-      }
-      setPlayersAvatar(_roomInfo.players);
+      formatRoomInfo(_roomInfo, roomInfo);
     } catch (error) {
       console.log("join check failed: %o", error);
     }
     return {
       ..._roomInfo,
-      contractData: contractData,
+      contractData,
     };
   }, {
     manual: true,
   });
+
+  const [userLatest, setUserLatest] = useState([]);
+  const { loading: userLatestLoading, runAsync: getUserLatest } = useRequest(async () => {
+    if (!accountWithAk) {
+      setUserLatest([]);
+      return;
+    }
+    try {
+      const res = await get("/api/go/game/rps/user/latest");
+      if (res.code !== 200) {
+        setUserLatest([]);
+        return;
+      }
+      const _list = res.data || [];
+      _list.forEach((item: any) => {
+        setPlayersAvatar(item.players);
+      });
+      setUserLatest(_list);
+      return _list;
+    } catch (error) {
+      console.log("get user latest failed: %o", error);
+    }
+    setUserLatest([]);
+  }, {
+    refreshDeps: [accountWithAk],
+  });
+  const { } = useRequest(async () => {
+    if (!account || !provider) {
+      return;
+    }
+    const calls = userLatest
+      ?.filter((item: any) => !item.winner_address)
+      ?.map((item: any) => ({
+        address: RPS_CONTRACT_ADDRESS,
+        name: "getRoomsInfo",
+        params: [item.room_id, item.room_id],
+      }));
+    if (!calls?.length) {
+      return;
+    }
+    const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
+
+    try {
+      const roomInfos = await multicall({
+        abi: RPS_CONTRACT_ADDRESS_ABI,
+        options: {},
+        calls,
+        multicallAddress,
+        provider
+      });
+      setUserLatest((prev: any) => {
+        const _userLatest = prev.slice();
+        roomInfos.forEach((item: any) => {
+          const [[roomInfo]] = item;
+          const currRoom = _userLatest.find((item: any) => item.room_id === +roomInfo.data.roomId.toString());
+          if (!currRoom) {
+            return;
+          }
+          formatRoomInfo(currRoom, roomInfo);
+        });
+        console.log("%cLatest polling result: %o", "background:#E2A16F;color:#fff;", _userLatest);
+        return _userLatest;
+      });
+    } catch (error) {
+      console.log("polling latest contract room info failed: %o", error);
+    }
+  }, {
+    pollingInterval: 5000,
+  });
+  const onChange2UserLatest = (type: any, room: Room) => {
+    if (type === "create") {
+      setUserLatest((prev: any) => {
+        const _userLatest = prev.slice();
+        _userLatest.unshift(room);
+        return _userLatest;
+      });
+      return;
+    }
+    if (type === "join") {
+      setUserLatest((prev: any) => {
+        const _userLatest = prev.slice();
+        const currRoom = _userLatest.find((item: any) => item.room_id === room.room_id);
+        // first time join
+        if (!currRoom) {
+          _userLatest.unshift(room);
+        }
+        // existed
+        else {
+          typeof room.players !== "undefined" && (currRoom.players = room.players);
+          typeof room.status !== "undefined" && (currRoom.status = room.status);
+          typeof room.winner_address !== "undefined" && (currRoom.winner_address = room.winner_address);
+          typeof room.winner_moves !== "undefined" && (currRoom.winner_moves = room.winner_moves);
+        }
+        return _userLatest;
+      });
+      return;
+    }
+    if (type === "claim") {
+      setUserLatest((prev: any) => {
+        const _userLatest = prev.slice();
+        const currRoomIndex = _userLatest.findIndex((item: any) => item.room_id === room.room_id);
+        if (currRoomIndex < 0) {
+          return _userLatest;
+        }
+        // remove the closed room form user latest
+        _userLatest.splice(currRoomIndex, 1);
+        return _userLatest;
+      });
+      return;
+    }
+  };
 
   return {
     list,
@@ -352,5 +525,10 @@ export function useMagician() {
     historyOpen,
     setHistoryOpen,
     onUserListClaimed,
+    userLatest,
+    userLatestLoading,
+    getUserLatest,
+    onChange2UserLatest,
+    onChange2List,
   };
 }

@@ -1,11 +1,8 @@
-import useCustomAccount from "@/hooks/use-account";
-import { get } from "@/utils/http";
-import { useRequest } from "ahooks";
 import Big from "big.js";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Moves, Status, StatusMap } from "../config";
+import { Status, StatusMap } from "../config";
 import PlayerAvatar from "../components/player-avatar";
 import { numberFormatter } from "@/utils/number-formatter";
 
@@ -24,9 +21,7 @@ const Notify = (props: any) => {
 export default Notify;
 
 const NotifyContent = (props: any) => {
-  const { setPlayersAvatar, betToken } = props;
-
-  const { accountWithAk, account } = useCustomAccount();
+  const { betToken, userLatest, userLatestLoading, getUserLatest } = props;
 
   const [windowWidth, setWindowWidth] = useState(0);
 
@@ -42,36 +37,12 @@ const NotifyContent = (props: any) => {
     };
   }, []);
 
-  const { data: userLatest, loading: userLatestLoading, runAsync: getUserLatest } = useRequest(async () => {
-    if (!accountWithAk) {
-      return;
-    }
-    try {
-      const res = await get("/api/go/game/rps/user/latest");
-      if (res.code !== 200) {
-        return;
-      }
-      const _list = res.data || [];
-      _list.forEach((item: any) => {
-        setPlayersAvatar(item.players);
-      });
-      return _list;
-    } catch (error) {
-      console.log("get user latest failed: %o", error);
-    }
-    return;
-  }, {
-    refreshDeps: [accountWithAk],
-  });
-
-  console.log("userLatest: %o", userLatest);
-
   return (
     <motion.div
       className="w-[342px] h-[350px] pl-[36px] pr-[50px] pt-[78px] fixed z-[14] right-0 bottom-[13px] bg-[url('/images/playground/magician/bg-notify.png')] bg-right bg-no-repeat bg-contain"
       style={windowWidth < 1560 ? {
-        // x: 250,
-        x: 0,
+        x: 250,
+        // x: 0,
       } : {
         x: 0
       }}

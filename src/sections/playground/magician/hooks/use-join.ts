@@ -19,6 +19,8 @@ export function useJoin(props?: any) {
     setRoom,
     getRoomInfo,
     onRoomLoading,
+    onChange2List,
+    onChange2UserLatest,
   } = props ?? {};
 
   const { accountWithAk, account, chainId, provider } = useCustomAccount();
@@ -29,7 +31,7 @@ export function useJoin(props?: any) {
   const [open, setOpen] = useState<boolean>(false);
   const [moveSelectorOpen, setMoveSelectorOpen] = useState<boolean>(false);
   const [resultPending, setResultPending] = useState<boolean>(false);
-  const [result, setResult] = useState<{ address: string; move: EMove; }>();
+  const [result, setResult] = useState<{ address: string; moves: EMove; }>();
 
   const [lastMoves] = useMemo(() => {
     return [
@@ -47,30 +49,17 @@ export function useJoin(props?: any) {
     getBetTokenBalance();
     const newRoomInfo = await getRoomInfo(room);
     setRoom(newRoomInfo);
+    onChange2List("join", newRoomInfo);
+    onChange2UserLatest("join", newRoomInfo);
 
     const handleResult = (_newRoomInfo: any) => {
-      if (_newRoomInfo.contractData?.status === ContractStatus.Won) {
+      if (_newRoomInfo.winner_address) {
         clearInterval(getResultRef.current);
 
-        // setResultPending(false);
-        // winnerStatus = 1: data.playerA won
-        // winnerStatus = 2: data.playerB won
-        // winnerStatus = 3: data.playerC won
-        const ResultPlayers: any = {
-          "1": {
-            address: _newRoomInfo.contractData?.data?.playerA,
-            moves: _newRoomInfo.contractData?.numberA,
-          },
-          "2": {
-            address: _newRoomInfo.contractData?.data?.playerB,
-            moves: _newRoomInfo.contractData?.numberB,
-          },
-          "3": {
-            address: _newRoomInfo.contractData?.data?.playerC,
-            moves: _newRoomInfo.contractData?.numberC,
-          },
-        };
-        setResult(ResultPlayers[_newRoomInfo.contractData?.winnerStatus]);
+        setResult({
+          address: _newRoomInfo.winner_address,
+          moves: _newRoomInfo.winner_moves,
+        });
       }
     };
 
@@ -82,6 +71,8 @@ export function useJoin(props?: any) {
         getRoomInfo(room).then((_newRoomInfo: any) => {
           setRoom(_newRoomInfo);
           handleResult(_newRoomInfo);
+          onChange2List("join", _newRoomInfo);
+          onChange2UserLatest("join", _newRoomInfo);
         });
       }, 5000);
       return;
@@ -213,11 +204,6 @@ export function useJoin(props?: any) {
       method = "joinRoomDouble";
     }
 
-    console.log("join amount: %o", utils.formatUnits(parsedAmount, betToken.decimals));
-    console.log("join params: %o", params);
-    console.log("join method: %o", method);
-    console.log("join options: %o", options);
-
     try {
       const estimatedGas = await contract.estimateGas[method](...params, options);
       options.gasLimit = Math.floor(Number(estimatedGas) * 1.2);
@@ -279,7 +265,7 @@ export function useJoin(props?: any) {
     setResult(void 0);
     getBetTokenBalance();
 
-    getList();
+    clearInterval(getResultRef.current);
   };
 
   const onSelectMove = (move: EMove, index: number) => {
@@ -329,6 +315,12 @@ export function useJoin(props?: any) {
       clearInterval(getResultRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!open) {
+      clearInterval(getResultRef.current);
+    }
+  }, [open]);
 
   return {
     onJoin,

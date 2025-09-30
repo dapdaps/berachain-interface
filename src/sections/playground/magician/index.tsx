@@ -44,8 +44,10 @@ const Magician = () => {
       />
       <Notify
         open={true}
-        setPlayersAvatar={magician.setPlayersAvatar}
         betToken={magician.betToken}
+        userLatest={magician.userLatest}
+        userLatestLoading={magician.userLatestLoading}
+        getUserLatest={magician.getUserLatest}
       />
       <ClaimModal
         account={magician.account}
