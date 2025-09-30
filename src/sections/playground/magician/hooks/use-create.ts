@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { EMove } from "../config";
 import useCustomAccount from "@/hooks/use-account";
 import { useConnectWallet } from "@/hooks/use-connect-wallet";
@@ -166,6 +166,14 @@ export function useCreate(props?: any) {
     _result.disabled = false;
     return _result;
   }, [betAmount, betMove, creating, account, chainId, betTokenBalance, gameConfig]);
+
+  useEffect(() => {
+    if (!gameConfig?.minBetAmount) {
+      setBetAmount("1");
+      return;
+    }
+    setBetAmount(gameConfig.minBetAmount);
+  }, [gameConfig]);
 
   return {
     betMove,

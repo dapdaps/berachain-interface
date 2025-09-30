@@ -13,13 +13,14 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 export function useMagician() {
   const [betToken] = useState(bera["bera"]);
 
-  const { account, provider } = useCustomAccount();
+  const { account, provider, accountWithAk } = useCustomAccount();
   const {
     tokenBalance: nativeBalance,
     isLoading: nativeBalanceLoading,
     getTokenBalance: getNativeBalance,
   } = useTokenBalance(betToken.address, betToken.decimals, DEFAULT_CHAIN_ID);
 
+  const [listTab, setListTab] = useState("all");
   const [room, setRoom] = useState<Room>();
   const [list, setList] = useState({
     data: [],
@@ -33,6 +34,18 @@ export function useMagician() {
     order: "desc",
     joined: false,
   });
+  const [userList, setUserList] = useState({
+    data: [],
+    page: 1,
+    pageSize: 10,
+    pageTotal: 0,
+    total: 0,
+    // bet_amount | create_time
+    sort: "create_time",
+    // asc | desc
+    order: "desc",
+  });
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const setPlayersAvatar = (players: any) => {
     const palyerAvatars: Record<string, string> = {};
@@ -116,6 +129,46 @@ export function useMagician() {
     refreshDeps: [gameConfig],
   });
 
+  const { runAsync: getUserList, loading: userListLoading } = useRequest(async (params?: any) => {
+    if (!accountWithAk) {
+      return;
+    }
+
+    const _page = params?.page || userList.page;
+    const _sort = params?.sort || userList.sort;
+    const _order = params?.order || userList.order;
+
+    try {
+      const res = await get("/api/go/game/rps/user/list", {
+        page: _page,
+        sort: _sort,
+        order: _order,
+        page_size: list.pageSize,
+      });
+      if (res.code !== 200) {
+        return;
+      }
+      setUserList((prev) => {
+        const _userList = { ...prev };
+        _userList.data = res.data.data || [];
+        _userList.data.forEach((item: any) => {
+          // item.isOwn = item.address.toLowerCase() === account.toLowerCase();
+          setPlayersAvatar(item.players);
+        });
+        if (_page === 1) {
+          _userList.pageTotal = res.data.total_page;
+          _userList.total = res.data.total;
+        }
+        return _userList;
+      });
+    } catch (error) {
+      console.log("get user list failed: %o", error);
+    }
+  }, {
+    refreshDeps: [accountWithAk],
+    manual: true,
+  });
+
   const { run: getListDelay } = useDebounceFn(() => {
     getList();
   }, { wait: 3000 });
@@ -129,6 +182,15 @@ export function useMagician() {
     getList({ page });
   };
 
+  const onUserListPageChange = (page: number) => {
+    setUserList((prev) => {
+      const _list = { ...prev };
+      _list.page = page;
+      return _list;
+    });
+    getUserList({ page });
+  };
+
   const onSort = (sort: "bet_amount" | "create_time", order: "asc" | "desc") => {
     setList((prev) => {
       const _list = { ...prev };
@@ -138,6 +200,17 @@ export function useMagician() {
       return _list;
     });
     getList({ order, page: 1 });
+  };
+
+  const onUserListSort = (sort: "bet_amount" | "create_time", order: "asc" | "desc") => {
+    setUserList((prev) => {
+      const _list = { ...prev };
+      _list.page = 1;
+      _list.sort = sort;
+      _list.order = order;
+      return _list;
+    });
+    getUserList({ order, page: 1 });
   };
 
   const onJoined = (joined: boolean) => {
@@ -224,5 +297,14 @@ export function useMagician() {
     getRoomInfoLoading,
     setPlayersAvatar,
     gameConfig,
+    listTab,
+    setListTab,
+    userList,
+    getUserList,
+    userListLoading,
+    onUserListPageChange,
+    onUserListSort,
+    historyOpen,
+    setHistoryOpen,
   };
 }
