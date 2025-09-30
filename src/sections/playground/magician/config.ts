@@ -9,6 +9,7 @@ export interface IMove {
   avatar: string;
   imgWhite: string;
   imgYellow: string;
+  imgYellowY: number;
   value: EMove;
 }
 
@@ -18,6 +19,7 @@ export const Moves: Record<EMove, IMove> = {
     avatar: "/images/playground/magician/bear.png",
     imgWhite: "/images/playground/magician/bear-white-border.png",
     imgYellow: "/images/playground/magician/bear-yellow-border.png",
+    imgYellowY: -81,
     value: EMove.Bear,
   },
   [EMove.Rabbit]: {
@@ -25,6 +27,7 @@ export const Moves: Record<EMove, IMove> = {
     avatar: "/images/playground/magician/rabbit.png",
     imgWhite: "/images/playground/magician/rabbit-white-border.png",
     imgYellow: "/images/playground/magician/rabbit-yellow-border.png",
+    imgYellowY: -85,
     value: EMove.Rabbit,
   },
   [EMove.Panda]: {
@@ -32,11 +35,10 @@ export const Moves: Record<EMove, IMove> = {
     avatar: "/images/playground/magician/panda.png",
     imgWhite: "/images/playground/magician/panda-white-border.png",
     imgYellow: "/images/playground/magician/panda-yellow-border.png",
+    imgYellowY: -80,
     value: EMove.Panda,
   },
 };
-
-export const RPS_MIN_BET_AMOUNT = 1; // minBetAmount
 
 export interface Player {
   address: string;

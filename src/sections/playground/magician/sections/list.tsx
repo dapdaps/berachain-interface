@@ -266,7 +266,7 @@ const List = (props: any) => {
                     <Button
                       loading={record.loading}
                       disabled={record.loading}
-                      className="!pr-[10px]"
+                      className="!pr-[10px] group"
                       onClick={() => {
                         join.onOpen(record);
                       }}
@@ -277,7 +277,7 @@ const List = (props: any) => {
                       <img
                         src="/images/playground/magician/icon-triangle-right.png"
                         alt=""
-                        className="w-[12px] h-[16px] object-center object-contain shrink-0"
+                        className="w-[12px] h-[16px] object-center object-contain shrink-0 opacity-0 translate-x-[10px] group-hover:opacity-100  group-hover:translate-x-0 transition-all duration-300"
                       />
                     </Button>
                   </>

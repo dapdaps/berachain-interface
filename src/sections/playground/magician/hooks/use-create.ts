@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { EMove, RPS_MIN_BET_AMOUNT } from "../config";
+import { EMove } from "../config";
 import useCustomAccount from "@/hooks/use-account";
 import { useConnectWallet } from "@/hooks/use-connect-wallet";
 import useToast from "@/hooks/use-toast";
@@ -16,6 +16,7 @@ export function useCreate(props?: any) {
     getBetTokenBalance,
     getList,
     getListDelay,
+    gameConfig,
   } = props ?? {};
 
   const { accountWithAk, account, chainId, provider } = useCustomAccount();
@@ -154,8 +155,8 @@ export function useCreate(props?: any) {
       _result.text = "Insufficient balance";
       return _result;
     }
-    if (Big(betAmount || 0).lt(RPS_MIN_BET_AMOUNT)) {
-      _result.text = `Minimum amount is ${RPS_MIN_BET_AMOUNT}`;
+    if (Big(betAmount || 0).lt(gameConfig?.minBetAmount || 1)) {
+      _result.text = `Minimum amount is ${gameConfig?.minBetAmount || 1}`;
       return _result;
     }
     if (betMove.length < 1) {
@@ -164,7 +165,7 @@ export function useCreate(props?: any) {
     }
     _result.disabled = false;
     return _result;
-  }, [betAmount, betMove, creating, account, chainId, betTokenBalance]);
+  }, [betAmount, betMove, creating, account, chainId, betTokenBalance, gameConfig]);
 
   return {
     betMove,

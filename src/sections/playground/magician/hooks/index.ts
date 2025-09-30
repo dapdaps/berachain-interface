@@ -4,7 +4,7 @@ import { get } from "@/utils/http";
 import { useDebounceFn, useRequest } from "ahooks";
 import { useState } from "react";
 import { EmptyPlayer, PlayerAvatars, Room } from "../config";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import { RPS_CONTRACT_ADDRESS, RPS_CONTRACT_ADDRESS_ABI } from "../contract";
 import { cloneDeep } from "lodash";
 import useTokenBalance from "@/hooks/use-token-balance";
@@ -55,235 +55,44 @@ export function useMagician() {
     });
   };
 
+  const { loading: gameConfigLoading, data: gameConfig } = useRequest(async () => {
+    if (!provider) {
+      return;
+    }
+    const _result = { minBetAmount: "1" };
+    const contract = new Contract(RPS_CONTRACT_ADDRESS, RPS_CONTRACT_ADDRESS_ABI, provider);
+    try {
+      const res = await contract.minBetAmount();
+      const minBetAmount = utils.formatUnits(res, betToken.decimals);
+      _result.minBetAmount = minBetAmount;
+      console.log("game config: %o", _result);
+    } catch (error) {
+      console.log("get game config failed: %o", error);
+    }
+
+    return _result;
+  }, {
+    refreshDeps: [provider],
+  });
+
   const { runAsync: getList, loading } = useRequest(async (params?: any) => {
+    if (!gameConfig) {
+      return;
+    }
+
     const _page = params?.page || list.page;
     const _sort = params?.sort || list.sort;
     const _order = params?.order || list.order;
     const _joined = typeof params?.joined === "boolean" ? params?.joined : list.joined;
 
     try {
-      // const res = await get("/game/rps/list", {
-      //   page: _page,
-      //   sort: _sort,
-      //   order: _order,
-      //   address: _joined ? account : "",
-      //   page_size: list.pageSize,
-      // });
-      // FIXME
-      const res: any = {
-        code: 200,
-        data: {
-          "total": 5,
-          "total_page": 2,
-          "data": [
-            {
-              "address": "0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef",
-              "room_id": 12,
-              "bet_amount": "1",
-              "create_tx_hash": "0xa09f185b72fbf0fba322e1a4971550e8de895470ae2fc6a81de0528660ddadc2",
-              "end_tx_hash": "",
-              "create_time": 1759127516,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef",
-                  "moves": 1,
-                  "tx_hash": "0xa09f185b72fbf0fba322e1a4971550e8de895470ae2fc6a81de0528660ddadc2",
-                  "tx_time": 1759127516
-                },
-                {
-                  "address": "0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef",
-                  "moves": 2,
-                  "tx_hash": "0xa09f185b72fbf0fba322e1a4971550e8de895470ae2fc6a81de0528660ddadc2",
-                  "tx_time": 1759127516
-                }
-              ]
-            },
-            {
-              "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-              "room_id": 11,
-              "bet_amount": "5",
-              "create_tx_hash": "0xf2c25bd87b3d9630c30fba1ca4c121a8cc919da555641714723fd6a8703f1715",
-              "end_tx_hash": "",
-              "create_time": 1759114284,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-                  "moves": 1,
-                  "tx_hash": "0xf2c25bd87b3d9630c30fba1ca4c121a8cc919da555641714723fd6a8703f1715",
-                  "tx_time": 1759114284
-                }
-              ]
-            },
-            {
-              "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-              "room_id": 10,
-              "bet_amount": "10",
-              "create_tx_hash": "0x52f61ad7a971cb3d33adb89646a86954b9d6796ddcd6b7f4c82fbbbcd5da5068",
-              "end_tx_hash": "",
-              "create_time": 1759114238,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-                  "moves": 1,
-                  "tx_hash": "0x52f61ad7a971cb3d33adb89646a86954b9d6796ddcd6b7f4c82fbbbcd5da5068",
-                  "tx_time": 1759114238
-                },
-                {
-                  "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-                  "moves": 2,
-                  "tx_hash": "0x52f61ad7a971cb3d33adb89646a86954b9d6796ddcd6b7f4c82fbbbcd5da5068",
-                  "tx_time": 1759114238
-                }
-              ]
-            },
-            {
-              "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-              "room_id": 9,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8019045fb963de083f546394e9974625980f6fcf98f5a5242ba8283c2662152e",
-              "end_tx_hash": "",
-              "create_time": 1759114195,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x05ef7067ba8fea1d609ff02dd3b9e8e48762eff9",
-                  "moves": 0,
-                  "tx_hash": "0x8019045fb963de083f546394e9974625980f6fcf98f5a5242ba8283c2662152e",
-                  "tx_time": 1759114195
-                }
-              ]
-            },
-            {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            },
-            {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            }, {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            }, {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            }, {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            }, {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            }, {
-              "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-              "room_id": 8,
-              "bet_amount": "1",
-              "create_tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-              "end_tx_hash": "",
-              "create_time": 1759069068,
-              "status": 1,
-              "winner_address": "",
-              "players": [
-                {
-                  "address": "0x635fa4477c7f9681a4ac88fa6147f441114e8655",
-                  "moves": 0,
-                  "tx_hash": "0x8cc6c0075b50c33132b3d6688130fe5c92ae776be19f951fcb32feeab5d84bc4",
-                  "tx_time": 1759069068
-                }
-              ]
-            },
-          ]
-        }
-      };
+      const res = await get("/api/go/game/rps/list", {
+        page: _page,
+        sort: _sort,
+        order: _order,
+        address: _joined ? account : "",
+        page_size: list.pageSize,
+      });
       if (res.code !== 200) {
         return;
       }
@@ -304,7 +113,7 @@ export function useMagician() {
       console.log("get rps list failed: %o", error);
     }
   }, {
-    refreshDeps: [],
+    refreshDeps: [gameConfig],
   });
 
   const { run: getListDelay } = useDebounceFn(() => {
@@ -398,7 +207,8 @@ export function useMagician() {
     list,
     getList,
     getListDelay,
-    loading,
+    loading: loading,
+    gameConfigLoading: gameConfigLoading,
     betToken,
     betTokenBalance: nativeBalance,
     betTokenBalanceLoading: nativeBalanceLoading,
@@ -413,5 +223,6 @@ export function useMagician() {
     getRoomInfo,
     getRoomInfoLoading,
     setPlayersAvatar,
+    gameConfig,
   };
 }

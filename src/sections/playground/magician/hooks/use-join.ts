@@ -27,6 +27,7 @@ export function useJoin(props?: any) {
 
   const [betMove, setBetMove] = useState<EMove[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const [moveSelectorOpen, setMoveSelectorOpen] = useState<boolean>(false);
   const [resultPending, setResultPending] = useState<boolean>(false);
   const [result, setResult] = useState<{ address: string; move: EMove; }>();
 
@@ -37,6 +38,59 @@ export function useJoin(props?: any) {
   }, [room]);
 
   const getResultRef = useRef<any>();
+
+  const { runAsync: onJoinSuccess } = useRequest(async () => {
+    // reload list
+    setBetMove([]);
+    setMoveSelectorOpen(false);
+
+    getBetTokenBalance();
+    const newRoomInfo = await getRoomInfo(room);
+    setRoom(newRoomInfo);
+
+    const handleResult = (_newRoomInfo: any) => {
+      if (_newRoomInfo.contractData?.status === ContractStatus.Won) {
+        clearInterval(getResultRef.current);
+
+        // setResultPending(false);
+        // winnerStatus = 1: data.playerA won
+        // winnerStatus = 2: data.playerB won
+        // winnerStatus = 3: data.playerC won
+        const ResultPlayers: any = {
+          "1": {
+            address: _newRoomInfo.contractData?.data?.playerA,
+            moves: _newRoomInfo.contractData?.numberA,
+          },
+          "2": {
+            address: _newRoomInfo.contractData?.data?.playerB,
+            moves: _newRoomInfo.contractData?.numberB,
+          },
+          "3": {
+            address: _newRoomInfo.contractData?.data?.playerC,
+            moves: _newRoomInfo.contractData?.numberC,
+          },
+        };
+        setResult(ResultPlayers[_newRoomInfo.contractData?.winnerStatus]);
+      }
+    };
+
+    // check is Won
+    if (newRoomInfo.contractData?.status === ContractStatus.Pending) {
+      setResultPending(true);
+      // run loop per 5s
+      getResultRef.current = setInterval(() => {
+        getRoomInfo(room).then((_newRoomInfo: any) => {
+          setRoom(_newRoomInfo);
+          handleResult(_newRoomInfo);
+        });
+      }, 5000);
+      return;
+    }
+    handleResult(newRoomInfo);
+  }, {
+    manual: true,
+    debounceWait: 1000,
+  });
 
   const { runAsync: onJoinCheck, loading: checking } = useRequest(async (_room: Room, options?: { isReset?: boolean; }) => {
     const { isReset } = options ?? {};
@@ -88,9 +142,6 @@ export function useJoin(props?: any) {
       onRoomLoading(_room.room_id, false);
       return;
     }
-
-     // FIXME
-     return _room;
 
     // check room status
     const newRoomInfo = await getRoomInfo(_room);
@@ -199,52 +250,7 @@ export function useJoin(props?: any) {
         chainId,
       });
 
-      // reload list
-      setBetMove([]);
-
-      getBetTokenBalance();
-      const newRoomInfo = await getRoomInfo(room);
-      setRoom(newRoomInfo);
-
-      const handleResult = (_newRoomInfo: any) => {
-        if (_newRoomInfo.contractData?.status === ContractStatus.Won) {
-          clearInterval(getResultRef.current);
-
-          // setResultPending(false);
-          // winnerStatus = 1: data.playerA won
-          // winnerStatus = 2: data.playerB won
-          // winnerStatus = 3: data.playerC won
-          const ResultPlayers: any = {
-            "1": {
-              address: _newRoomInfo.contractData?.data?.playerA,
-              moves: _newRoomInfo.contractData?.numberA,
-            },
-            "2": {
-              address: _newRoomInfo.contractData?.data?.playerB,
-              moves: _newRoomInfo.contractData?.numberB,
-            },
-            "3": {
-              address: _newRoomInfo.contractData?.data?.playerC,
-              moves: _newRoomInfo.contractData?.numberC,
-            },
-          };
-          setResult(ResultPlayers[_newRoomInfo.contractData?.winnerStatus]);
-        }
-      };
-
-      // check is Won
-      if (newRoomInfo.contractData?.status === ContractStatus.Pending) {
-        setResultPending(true);
-        // run loop per 5s
-        getResultRef.current = setInterval(() => {
-          getRoomInfo(room).then((_newRoomInfo: any) => {
-            setRoom(_newRoomInfo);
-            handleResult(_newRoomInfo);
-          });
-        }, 5000);
-        return;
-      }
-      handleResult(newRoomInfo);
+      onJoinSuccess();
     } catch (error: any) {
       console.log("Join room failed: %o", error);
       toast.dismiss(toastId);
@@ -292,7 +298,7 @@ export function useJoin(props?: any) {
   };
 
   const buttonValid = useMemo(() => {
-    const _result = { disabled: true, text: "", loading: false };
+    const _result = { disabled: true, text: "confirm", loading: false };
     if (!account) {
       _result.text = "Connect Wallet";
       _result.disabled = false;
@@ -311,7 +317,7 @@ export function useJoin(props?: any) {
       return _result;
     }
     if (betMove.length < 1 && lastMoves?.length > 1) {
-      _result.text = "Select your seat";
+      _result.text = "Select your Guess";
       return _result;
     }
     _result.disabled = false;
@@ -338,6 +344,9 @@ export function useJoin(props?: any) {
     resultPending,
     setResultPending,
     result,
+    setResult,
     lastMoves,
+    moveSelectorOpen,
+    setMoveSelectorOpen,
   };
 };
