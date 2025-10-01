@@ -6,6 +6,7 @@ import LightingButton from "../../lucky-bera/components/lighting-button";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import Loading from "@/components/loading";
+import PlayerAvatar from "./player-avatar";
 
 const MoveSelector = (props: any) => {
   const { open, onClose } = props;
@@ -40,23 +41,36 @@ const MoveSelectorContent = (props: any) => {
           Object.values(Moves).map((move) => {
             const isLastMove = lastMoves?.some((it: any) => it.value === move.value);
             const isSelected = betMove.includes(move.value);
+            const selectedPalyer = room?.players?.find((it: any) => it.moves === move.value);
 
             return (
               <div
                 key={move.value}
-                className={clsx(
-                  "flex flex-col items-center",
-                  isLastMove ? "opacity-100" : "opacity-30",
-                )}
+                className="flex flex-col items-center"
               >
-                <motion.img
-                  src={move.imgWhite}
-                  alt=""
-                  className="w-[107px] h-[152px] object-center object-contain shrink-0"
+                <motion.div
+                  className="w-[107px] h-[152px] shrink-0 flex justify-center items-center"
                   animate={isSelected ? { y: [0, -5, 5, 0] } : { y: 0 }}
                   transition={isSelected ? { repeat: Infinity, duration: 5, ease: "linear" } : { ease: "linear", duration: 0 }}
-                />
-                <div className="flex justify-center items-center gap-[5px] mt-[5px]">
+                >
+                  <img
+                    src={move.imgWhite}
+                    alt=""
+                    className={clsx(
+                      "w-full h-full object-center object-contain shrink-0",
+                      isLastMove ? "opacity-100" : "opacity-50",
+                    )}
+                  />
+                  {
+                    selectedPalyer && (
+                      <PlayerAvatar
+                        className="translate-y-[40px] !absolute !w-[38px] !h-[38px] !rounded-[10px]"
+                        avatar={selectedPalyer.avatar}
+                      />
+                    )
+                  }
+                </motion.div>
+                <div className={clsx("flex justify-center items-center gap-[5px] mt-[5px]", isLastMove ? "opacity-100" : "opacity-50")}>
                   <img
                     src={betToken.icon}
                     alt=""
@@ -68,7 +82,7 @@ const MoveSelectorContent = (props: any) => {
                 </div>
                 <LightingButton
                   className="text-[20px] uppercase"
-                  outerClassName="mt-[10px]"
+                  outerClassName={clsx("mt-[10px]", isLastMove ? "opacity-100" : "opacity-50")}
                   disabled={!isLastMove || buttonValid.loading}
                   onClick={() => {
                     onSelectMove(move.value);
