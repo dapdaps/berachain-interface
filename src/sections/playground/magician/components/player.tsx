@@ -5,7 +5,7 @@ import { EMove, Moves } from "../config";
 import Big from "big.js";
 
 const Player = (props: any) => {
-  const { className, betToken, room, player, isWon, isLost, multipleAddresses } = props;
+  const { className, betToken, room, player, isWon, isLost } = props;
 
   return (
     <div className={clsx("w-[151px] h-[160px] flex flex-col items-center relative bg-[#FFF1C7] border border-[#E5C375] rounded-[12px] shadow-[0_4px_0_0_#603C20] p-[23px_10px_10px]", className)}>
@@ -36,26 +36,24 @@ const Player = (props: any) => {
         />
         <div className="font-[600] text-black">
           {
-            isLost ? "0" : (
-              isWon && multipleAddresses[0].moves !== player.moves
-                ? "0"
-                : numberFormatter(
-                  isWon
-                    ? Big(room?.bet_amount || 0).times(3)
-                    : room?.bet_amount,
-                  3,
-                  true,
-                  {
-                    isShort: true,
-                    isZeroPrecision: false
-                  }
-                )
-            )
+            isLost
+              ? "0"
+              : numberFormatter(
+                isWon
+                  ? Big(room?.bet_amount || 0).times(3)
+                  : room?.bet_amount,
+                3,
+                true,
+                {
+                  isShort: true,
+                  isZeroPrecision: false
+                }
+              )
           }
         </div>
       </div>
       {
-        isWon && multipleAddresses[0].moves === player.moves && (
+        isWon && (
           <div className="w-[108px] h-[32px] absolute bottom-[-17px] shrink-0 rounded-[10px] border border-black bg-[#FF729C] text-[14px] text-black font-bold flex justify-center items-center">
             x3 Winner
           </div>
