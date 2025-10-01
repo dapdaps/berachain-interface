@@ -90,21 +90,21 @@ const Join = (props: any) => {
             room={magician.room}
             player={magician.room.players[0]}
             isWon={!!join.result && magician.room.players[0] && join.result?.address?.toLowerCase() === magician.room.players[0].address.toLowerCase() && join.result?.moves === magician.room.players[0].moves}
-            isLost={!!join.result && magician.room.players[0] && join.result?.address?.toLowerCase() !== magician.room.players[0].address.toLowerCase()}
+            isLost={!!join.result && magician.room.players[0] && (join.result?.address?.toLowerCase() !== magician.room.players[0].address.toLowerCase() || join.result?.moves !== magician.room.players[0].moves)}
           />
           <Player
             betToken={magician.betToken}
             room={magician.room}
             player={magician.room.players[1]}
             isWon={!!join.result && magician.room.players[1] && join.result?.address?.toLowerCase() === magician.room.players[1].address.toLowerCase() && join.result?.moves === magician.room.players[1].moves}
-            isLost={!!join.result && magician.room.players[1] && join.result?.address?.toLowerCase() !== magician.room.players[1].address.toLowerCase()}
+            isLost={!!join.result && magician.room.players[1] && (join.result?.address?.toLowerCase() !== magician.room.players[1].address.toLowerCase() || join.result?.moves !== magician.room.players[1].moves)}
           />
           <Player
             betToken={magician.betToken}
             room={magician.room}
             player={magician.room.players[2]}
             isWon={!!join.result && magician.room.players[2] && join.result?.address?.toLowerCase() === magician.room.players[2].address.toLowerCase() && join.result?.moves === magician.room.players[2].moves}
-            isLost={!!join.result && magician.room.players[2] && join.result?.address?.toLowerCase() !== magician.room.players[2].address.toLowerCase()}
+            isLost={!!join.result && magician.room.players[2] && (join.result?.address?.toLowerCase() !== magician.room.players[2].address.toLowerCase() || join.result?.moves !== magician.room.players[2].moves)}
           />
         </div>
       </div>
