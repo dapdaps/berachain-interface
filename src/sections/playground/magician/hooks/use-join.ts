@@ -21,6 +21,7 @@ export function useJoin(props?: any) {
     onRoomLoading,
     onChange2List,
     onChange2UserLatest,
+    playAudio,
   } = props ?? {};
 
   const { accountWithAk, account, chainId, provider } = useCustomAccount();
@@ -60,6 +61,12 @@ export function useJoin(props?: any) {
           address: _newRoomInfo.winner_address,
           moves: _newRoomInfo.winner_moves,
         });
+
+        if (_newRoomInfo.winner_address?.toLowerCase() === account?.toLowerCase()) {
+          playAudio({ type: "win", action: "play" });
+          return;
+        }
+        playAudio({ type: "failed", action: "play" });
       }
     };
 
@@ -163,8 +170,11 @@ export function useJoin(props?: any) {
   }, { manual: true });
 
   const { runAsync: onJoin, loading: joining } = useRequest(async () => {
+    playAudio({ type: "click", action: "play" });
+
     const _roomInfo = await onJoinCheck(room);
     if (!_roomInfo) {
+      playAudio({ type: "error", action: "play" });
       return;
     }
 
@@ -235,6 +245,7 @@ export function useJoin(props?: any) {
         tx: transactionHash,
         chainId,
       });
+      playAudio({ type: "success", action: "play" });
 
       onJoinSuccess();
     } catch (error: any) {
@@ -244,14 +255,17 @@ export function useJoin(props?: any) {
         title: "Join failed",
         text: error?.message?.includes("user rejected transaction") ? "User rejected transaction" : "",
       });
+      playAudio({ type: "error", action: "play" });
     }
   }, {
     manual: true,
   });
 
   const onOpen = async (_room: Room) => {
+    playAudio({ type: "click", action: "play" });
     const _roomInfo = await onJoinCheck(_room, { isReset: true });
     if (!_roomInfo) {
+      playAudio({ type: "error", action: "play" });
       return;
     }
     setOpen(true);
@@ -269,6 +283,7 @@ export function useJoin(props?: any) {
   };
 
   const onSelectMove = (move: EMove, index: number) => {
+    playAudio({ type: "choose", action: "play" });
     const _moves = betMove.slice();
     if (_moves.includes(move)) {
       _moves.splice(_moves.indexOf(move), 1);

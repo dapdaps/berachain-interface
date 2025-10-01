@@ -19,6 +19,7 @@ export function useCreate(props?: any) {
     onChange2List,
     onChange2UserLatest,
     setPlayersAvatar,
+    playAudio,
   } = props ?? {};
 
   const { accountWithAk, account, chainId, provider } = useCustomAccount();
@@ -41,9 +42,12 @@ export function useCreate(props?: any) {
       }
       return _betMonster;
     });
+    playAudio({ type: "choose", action: "play" });
   };
 
   const { runAsync: onCreate, loading: creating } = useRequest(async () => {
+    playAudio({ type: "click", action: "play" });
+
     if (!account) {
       onConnect();
       return;
@@ -105,6 +109,7 @@ export function useCreate(props?: any) {
           tx: transactionHash,
           chainId,
         });
+        playAudio({ type: "error", action: "play" });
         return;
       }
 
@@ -113,6 +118,7 @@ export function useCreate(props?: any) {
         tx: transactionHash,
         chainId,
       });
+      playAudio({ type: "success", action: "play" });
 
       // block crawling
       let isCrawlingRoomEvent = false;
@@ -179,6 +185,7 @@ export function useCreate(props?: any) {
         title: "Create failed",
         text: error?.message?.includes("user rejected transaction") ? "User rejected transaction" : "",
       });
+      playAudio({ type: "error", action: "play" });
     }
   }, {
     manual: true,
