@@ -12,6 +12,7 @@ export function useClaim(props?: any) {
   const {
     getBetTokenBalance,
     onUserListClaimed,
+    playAudio,
   } = props ?? {};
 
   const { accountWithAk, account, chainId, provider } = useCustomAccount();
@@ -30,6 +31,7 @@ export function useClaim(props?: any) {
   }, { wait: 1000 });
 
   const onClaimOpen = (open?: boolean, room?: Room) => {
+    playAudio({ type: "click", action: "play" });
     setClaimData((prev) => {
       const _claim = { ...prev };
       _claim.open = open ?? false;
@@ -39,6 +41,7 @@ export function useClaim(props?: any) {
   };
 
   const { runAsync: onClaim, loading: claiming } = useRequest(async () => {
+    playAudio({ type: "click", action: "play" });
     if (!claimData.room) {
       return;
     }
@@ -77,6 +80,7 @@ export function useClaim(props?: any) {
         title: "Claim failed",
         text: error.message,
       });
+      playAudio({ type: "error", action: "play" });
       return;
     }
 
@@ -111,6 +115,7 @@ export function useClaim(props?: any) {
         title: "Claim failed",
         text: error.message,
       });
+      playAudio({ type: "error", action: "play" });
     }
   }, { manual: true });
 

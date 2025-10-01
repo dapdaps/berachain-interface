@@ -5,12 +5,17 @@ import Player from "../components/player";
 import MoveSelector from "../components/move-selector";
 import ResultHat from "../components/result-hat";
 import Exploding from "../components/exploding";
+import { useEffect } from "react";
 
 const Join = (props: any) => {
   const {
     magician,
     join,
   } = props;
+
+  useEffect(() => {
+    magician.playAudio({ type: "magician", action: "play" });
+  }, []);
 
   return (
     <motion.div
@@ -38,6 +43,8 @@ const Join = (props: any) => {
           type="button"
           className="w-[144px] h-[40px] border-[1px] rounded-l-[12px] absolute left-[52px] top-[226px] opacity-0 hover:opacity-30 bg-white/50 transition-all duration-300"
           onClick={() => {
+            magician.playAudio({ type: "click", action: "play" });
+            magician.playAudio({ type: "magician", action: "pause" });
             join.onClose();
           }}
         />
@@ -70,6 +77,7 @@ const Join = (props: any) => {
                       outerClassName="mt-[7px]"
                       onClick={() => {
                         join.setMoveSelectorOpen(true);
+                        magician.playAudio({ type: "click", action: "play" });
                         // join.setResult({
                         //   address: "0x635FA4477c7f9681A4Ac88fA6147F441114E8655",
                         //   moves: 0,

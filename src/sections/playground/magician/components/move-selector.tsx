@@ -29,8 +29,6 @@ export default MoveSelector;
 const MoveSelectorContent = (props: any) => {
   const { betToken, room, lastMoves, onSelectMove, betMove, buttonValid, onJoin } = props;
 
-  console.log("lastMoves: %o", lastMoves);
-
   return (
     <div className="w-full text-black font-[600]">
       <div className="text-[18px] text-center">

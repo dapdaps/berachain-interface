@@ -8,6 +8,7 @@ import HistoryModal from "./sections/history";
 import Notify from "./sections/notify";
 import ClaimModal from "./sections/claim";
 import { useClaim } from "./hooks/use-claim";
+import Audios from "./sections/audios";
 
 const Magician = () => {
   const magician = useMagician();
@@ -59,6 +60,7 @@ const Magician = () => {
         onClaim={claim.onClaim}
         claiming={claim.claiming}
       />
+      <Audios audioRefs={magician.audioRefs} />
     </>
   );
 };

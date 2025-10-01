@@ -86,6 +86,7 @@ const List = (props: any) => {
                 ] : []}
                 onChange={(val) => {
                   create.setBetAmount(val);
+                  magician.playAudio({ type: "click", action: "play" });
                 }}
                 current={create.betAmount}
                 className="w-[242px] shrink-0"
@@ -165,6 +166,7 @@ const List = (props: any) => {
             ]}
             onChange={(val) => {
               magician.setListTab(val);
+              magician.playAudio({ type: "click", action: "play" });
               if (val === "yours") {
                 magician.onUserListPageChange(1);
                 return;
@@ -177,6 +179,7 @@ const List = (props: any) => {
           <Button
             onClick={() => {
               magician.setHistoryOpen(true);
+              magician.playAudio({ type: "click", action: "play" });
             }}
             className="absolute right-[120px]"
           >
@@ -187,6 +190,7 @@ const List = (props: any) => {
           <Button
             disabled={magician.loading || magician.userListLoading}
             onClick={() => {
+              magician.playAudio({ type: "click", action: "play" });
               if (magician.listTab === "yours") {
                 magician.getUserList();
                 return;
