@@ -272,7 +272,7 @@ export function useMagician() {
       _list.order = order;
       return _list;
     });
-    getList({ order, page: 1 });
+    getList({ order, sort, page: 1 });
   };
 
   const onUserListSort = (sort: "bet_amount" | "create_time", order: "asc" | "desc") => {
@@ -283,7 +283,7 @@ export function useMagician() {
       _list.order = order;
       return _list;
     });
-    getUserList({ order, page: 1 });
+    getUserList({ order, sort, page: 1 });
   };
 
   const onJoined = (joined: boolean) => {
