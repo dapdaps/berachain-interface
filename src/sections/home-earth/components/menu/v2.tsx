@@ -218,7 +218,7 @@ const MENU_LIST = {
     {
       label: "Game",
       bg: "#FF96D0",
-      href: "/carnival/lucky-bera",
+      href: "/carnival",
       sort: 5,
     },
     {

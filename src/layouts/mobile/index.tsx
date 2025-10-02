@@ -23,7 +23,7 @@ const menuItems = [
   {
     id: 2.1,
     title: "Carnival",
-    href: "/carnival/lucky-bera",
+    href: "/carnival",
     // dataBp: ""
   },
   {

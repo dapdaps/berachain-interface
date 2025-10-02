@@ -1,6 +1,6 @@
 import Checkbox from "../components/checkbox";
 import { Moves, Status, StatusMap } from "../config";
-import LightingButton from "../../lucky-bera/components/lighting-button";
+import LightingButton from '@/components/button/lighting-button';
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
 import Big from "big.js";
 import clsx from "clsx";

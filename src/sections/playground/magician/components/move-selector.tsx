@@ -2,7 +2,7 @@ import Card from "@/components/card";
 import Modal from "@/components/modal";
 import { Moves } from "../config";
 import { numberFormatter } from "@/utils/number-formatter";
-import LightingButton from "../../lucky-bera/components/lighting-button";
+import LightingButton from '@/components/button/lighting-button';
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import Loading from "@/components/loading";
