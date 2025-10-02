@@ -76,7 +76,7 @@ const Claim = (props: any) => {
           <div>Close</div>
         </button>
       </div>
-      <div className="mt-[10px] text-[14px] text-[#FF4372] font-[500] flex justify-between items-center gap-[5px]">
+      {/* <div className="mt-[10px] text-[14px] text-[#FF4372] font-[500] flex justify-between items-center gap-[5px]">
         <img
           src="/images/playground/magician/icon-alert.png"
           alt=""
@@ -85,7 +85,7 @@ const Claim = (props: any) => {
         <div className="">
           {numberRemoveEndZero(Big(ClaimRefundFee).times(100).toFixed(2))}% platform fee will be charged if you cancelled this game
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
