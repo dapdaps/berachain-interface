@@ -45,7 +45,7 @@ const MENU_LIST = [
   {
     label: "Carnival",
     bg: "#FF8284",
-    href: "/carnival/lucky-bera",
+    href: "/carnival",
     sort: 7,
     isBlink: true,
     bp: "1010-025",

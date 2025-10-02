@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import WaitingHat from "../components/waiting-hat";
-import LightingButton from "../../lucky-bera/components/lighting-button";
+import LightingButton from '@/components/button/lighting-button';
 import Player from "../components/player";
 import MoveSelector from "../components/move-selector";
 import ResultHat from "../components/result-hat";

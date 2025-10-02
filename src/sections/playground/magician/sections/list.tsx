@@ -1,6 +1,6 @@
 import Checkbox from "../components/checkbox";
 import { Moves, Status, StatusMap } from "../config";
-import LightingButton from "../../lucky-bera/components/lighting-button";
+import LightingButton from '@/components/button/lighting-button';
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
 import Big from "big.js";
 import clsx from "clsx";
@@ -15,6 +15,7 @@ import Pagination from "@/components/pager/pagination";
 import SwitchTabs from "@/components/switch-tabs";
 import { useMemo } from "react";
 import TimeAgo from "../components/time-ago";
+import InputNumber from "@/components/input-number";
 
 const List = (props: any) => {
   const {
@@ -56,7 +57,7 @@ const List = (props: any) => {
         damping: 15,
       }}
     >
-      <div className="w-[837px] relative flex justify-between gap-[30px] p-[50px_30px_14px_20px] bg-[#BC9549] border border-[#000] shadow-[4px_4px_0_0_#4B371F] rounded-[10px]">
+      <div className="w-[837px] relative flex justify-between gap-[30px] p-[50px_14px_14px_20px] bg-[#BC9549] border border-[#000] shadow-[4px_4px_0_0_#4B371F] rounded-[10px]">
         <img
           src="/images/playground/magician/header.png"
           alt=""
@@ -78,22 +79,35 @@ const List = (props: any) => {
                   Bet
                 </div>
               </div>
-              <SwitchTabs
-                tabs={betAmounts ? [
-                  { label: betAmounts[0], value: betAmounts[0], disabled: magician.gameConfigLoading },
-                  { label: betAmounts[1], value: betAmounts[1], disabled: magician.gameConfigLoading },
-                  { label: betAmounts[2], value: betAmounts[2], disabled: magician.gameConfigLoading },
-                ] : []}
-                onChange={(val) => {
-                  create.setBetAmount(val);
-                  magician.playAudio({ type: "click", action: "play" });
-                }}
-                current={create.betAmount}
-                className="w-[242px] shrink-0"
+              <InputNumber
+                className="w-[134px] h-[50px] px-[13px] border border-black rounded-[8px] bg-white font-[600]"
+                value={create.betAmount}
+                onNumberChange={create.setBetAmount}
+                decimals={1}
               />
+              <div className="flex items-center gap-[5px]">
+                {
+                  ["0.1", "1", "5", "10"].map((_amount) => (
+                    <button
+                      key={_amount}
+                      type="button"
+                      className={clsx(
+                        "w-[38px] h-[38px] hover:bg-[#FFDC50] border border-[#471C1C] rounded-[8px] flex justify-center items-center transition-all duration-300",
+                        create.betAmount === _amount ? "bg-[#FFDC50]" : "bg-white",
+                      )}
+                      onClick={() => {
+                        create.setBetAmount(_amount);
+                        magician.playAudio({ type: "click", action: "play" });
+                      }}
+                    >
+                      {_amount}
+                    </button>
+                  ))
+                }
+              </div>
             </div>
 
-            <div className="flex gap-[30px] absolute left-1/2 -translate-x-[15%] top-[-40px]">
+            <div className="flex gap-[30px] absolute left-1/2 -translate-x-[0%] top-[-40px]">
               {
                 Object.values(Moves).map((move) => (
                   <button

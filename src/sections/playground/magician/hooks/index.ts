@@ -210,6 +210,7 @@ export function useMagician() {
         return _useList;
       }
       currRecord.status = Status.Canceled;
+      currRecord.canClaim = false;
       return _useList;
     });
   };

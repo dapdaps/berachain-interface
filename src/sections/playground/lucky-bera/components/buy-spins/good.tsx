@@ -1,5 +1,5 @@
 import { numberFormatter } from "@/utils/number-formatter";
-import LightingButton from "../lighting-button";
+import LightingButton from '@/components/button/lighting-button';
 import Big from "big.js";
 import clsx from "clsx";
 

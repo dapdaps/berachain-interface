@@ -86,11 +86,12 @@ const PlaygroundLayout = (props: any) => {
     <PlaygroundProvider value={playground}>
       <div className="w-full">
         <HomeEarthTop isLogo={false} isAirdrop={false} className="!pt-[0]" />
-        {
-          [Games.Magician.path].includes(pathname) && (
-            <PageBack className="absolute left-[36px] z-[10] !text-white" />
-          )
-        }
+        <PageBack
+          className={clsx(
+            "absolute left-[36px] z-[10] !text-white",
+            [Games.Magician.path].includes(pathname) ? "" : "top-[70px]",
+          )}
+        />
         <div className="absolute w-full top-[80px] flex justify-center items-center gap-[4px] z-[2]">
           {
             ![Games.Magician.path].includes(pathname) && (
@@ -118,7 +119,7 @@ const PlaygroundLayout = (props: any) => {
         <div
           className="w-full min-h-[100dvh] bg-[length:100%_auto] bg-bottom bg-no-repeat relative z-[1]"
           style={{
-            backgroundImage: [Games.LuckyBera.path, Games.Magician.path].includes(pathname) ? "url('/images/playground/bg-ground.png')" : "url('/images/playground/bg-ground2.png')",
+            backgroundImage: ![Games.BigWheel.path].includes(pathname) ? "url('/images/playground/bg-ground.png')" : "url('/images/playground/bg-ground2.png')",
           }}
         >
           {

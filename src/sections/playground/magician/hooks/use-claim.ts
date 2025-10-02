@@ -113,7 +113,7 @@ export function useClaim(props?: any) {
       console.log("claim failed: %o", error);
       toast.fail({
         title: "Claim failed",
-        text: error.message,
+        text: error?.message?.includes("user rejected transaction") ? "User rejected transaction" : "",
       });
       playAudio({ type: "error", action: "play" });
     }
