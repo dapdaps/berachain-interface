@@ -76,7 +76,7 @@ export function useMagician() {
       return;
     }
     const _result = {
-      minBetAmount: "1",
+      minBetAmount: "0.1",
       // hours
       timeoutDuration: "86400",
     };
