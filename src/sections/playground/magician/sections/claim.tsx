@@ -55,9 +55,9 @@ const Claim = (props: any) => {
         <Item label="You Bet">
           {numberFormatter(yourBet, 2, true, { isShort: true, isZeroPrecision: false })}
         </Item>
-        <Item label="Est. Refunds">
+        {/* <Item label="Est. Refunds">
           {numberFormatter(refund, 2, true, { isShort: true, isZeroPrecision: false })}
-        </Item>
+        </Item> */}
       </div>
       <div className="mt-[30px]">
         <button
