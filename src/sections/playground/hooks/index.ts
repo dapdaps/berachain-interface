@@ -6,6 +6,7 @@ import useCustomAccount from "@/hooks/use-account";
 import { WheelUserData } from "../big-wheel/config";
 import { usePlaygroundStore } from "@/stores/use-playground";
 import { AUDIO_CONFIG } from "../config";
+import { useAudioStore } from "@/stores/use-audio";
 
 export function usePlayground() {
   const multipliers = Object.values(SpinMultiplier).filter(multiplier => typeof multiplier === "number");
@@ -17,6 +18,7 @@ export function usePlayground() {
     wheelUserData,
     setWheelUserData,
   } = usePlaygroundStore();
+  const audioStore: any = useAudioStore();
 
   const audioRefs = useRef<Map<string, HTMLAudioElement | null>>(new Map());
   const [spinMultiplier, setSpinMultiplier] = useState<SpinMultiplier>(SpinMultiplier.X1);
@@ -65,6 +67,10 @@ export function usePlayground() {
   });
 
   const playAudio = (preload: { type: string; action?: "play" | "pause"; }) => {
+    if (!audioStore.open) {
+      return;
+    }
+
     let { type, action } = preload;
     action = action || "play";
 

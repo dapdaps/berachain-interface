@@ -12,6 +12,7 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { multicall, multicallAddresses } from "@/utils/multicall";
 import Big from "big.js";
 import dayjs from "dayjs";
+import { useAudioStore } from "@/stores/use-audio";
 
 export function useMagician() {
   const [betToken] = useState(bera["bera"]);
@@ -22,6 +23,7 @@ export function useMagician() {
     isLoading: nativeBalanceLoading,
     getTokenBalance: getNativeBalance,
   } = useTokenBalance(betToken.address, betToken.decimals, DEFAULT_CHAIN_ID);
+  const audioStore: any = useAudioStore();
 
   const [listTab, setListTab] = useState("all");
   const [room, setRoom] = useState<Room>();
@@ -49,6 +51,7 @@ export function useMagician() {
     order: "desc",
   });
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   const setPlayersAvatar = (players: any) => {
     const palyerAvatars: Record<string, string> = {};
@@ -502,6 +505,10 @@ export function useMagician() {
 
   const audioRefs = useRef<Map<string, HTMLAudioElement | null>>(new Map());
   const playAudio = (preload: { type: string; action?: "play" | "pause"; }) => {
+    if (!audioStore.open) {
+      return;
+    }
+
     let { type, action } = preload;
     action = action || "play";
 
@@ -584,5 +591,7 @@ export function useMagician() {
     onChange2List,
     audioRefs,
     playAudio,
+    rulesOpen,
+    setRulesOpen,
   };
 }

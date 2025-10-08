@@ -9,6 +9,7 @@ import Notify from "./sections/notify";
 import ClaimModal from "./sections/claim";
 import { useClaim } from "./hooks/use-claim";
 import Audios from "./sections/audios";
+import MagicianRulesModal from "./sections/rules";
 
 const Magician = () => {
   const magician = useMagician();
@@ -61,6 +62,12 @@ const Magician = () => {
         claiming={claim.claiming}
       />
       <Audios audioRefs={magician.audioRefs} />
+      <MagicianRulesModal
+        open={magician.rulesOpen}
+        onClose={() => {
+          magician.setRulesOpen(false);
+        }}
+      />
     </>
   );
 };
