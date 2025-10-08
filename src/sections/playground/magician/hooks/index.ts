@@ -51,6 +51,7 @@ export function useMagician() {
     order: "desc",
   });
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   const setPlayersAvatar = (players: any) => {
     const palyerAvatars: Record<string, string> = {};
@@ -590,5 +591,7 @@ export function useMagician() {
     onChange2List,
     audioRefs,
     playAudio,
+    rulesOpen,
+    setRulesOpen,
   };
 }
