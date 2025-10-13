@@ -52,6 +52,11 @@ export default function useInfraredList(updater?: number, name?: string) {
     IBGT_ADDRESS,
     IBGT_VAULT_ADDRESS,
     onLoad: (data: any) => {
+      const ibgt = data.dataList.filter((item: any) => item.id === "iBGT" && !item.protocol);
+      if (ibgt && ibgt.length > 0) {
+        ibgt[0].protocol = "infrared";
+      }
+
       setDataList([...data.dataList]);
       setFullDataList([...data.fullDataList]);
       setLoading(false);
