@@ -91,7 +91,7 @@ export async function getQuote(
     const result = await response.json()
 
     await createRoute(result, routes, quoteRequest, wrapType, signer)
-    if (result.otherQuote) {
+    if (result.otherQuote && result.otherQuote.quoteId !== result.quoteId) {
         await createRoute(result.otherQuote, routes, quoteRequest, wrapType, signer)
     }
 
