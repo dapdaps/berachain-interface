@@ -22,7 +22,7 @@ const PlaygroundGame = () => {
     );
   }
 
-  if (name === camelToKebab(Games.Magician.name)) {
+  if (name === camelToKebab(Games.GuessWho.name)) {
     return (
       <Magician />
     );

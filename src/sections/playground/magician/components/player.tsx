@@ -20,7 +20,7 @@ const Player = (props: any) => {
             <img
               src={Moves[player.moves as EMove].avatar}
               alt=""
-              className="w-[52px] h-[47px] absolute top-[-40px] object-center object-contain shrink-0"
+              className="w-[52px] h-[47px] absolute top-[-20px] left-[-20px] object-center object-contain shrink-0"
             />
           )
         }

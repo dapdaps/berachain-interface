@@ -9,14 +9,14 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
     >
       <div className="w-[540px] md:h-[80dvh] md:overflow-y-auto md:w-full relative bg-[#FFF1C7] rounded-[16px] md:rounded-b-[0] border-[2px] border-[#E5C375] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] p-[20px_20px] md:p-[10px_5px]">
         <div className="text-[#FDD54C] text-center [text-shadow:0_4px_0_#000] font-CherryBomb text-[30px] font-[400] leading-normal capitalize [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#000]">
-          ✨ Magician — Game Rules
+          ✨ GuessWho — Game Rules
         </div>
         <div className="mt-[20px]">
           <ul className="list-none">
             <li className="mb-[10px] relative pl-[20px]">
               <div className="absolute left-0 top-[8px] w-[6px] h-[6px] bg-[#FFDC50] rounded-full"></div>
               <p className="">
-                Step into the world of <strong>Magician 🎩✨</strong>
+                Step into the world of <strong>GuessWho 🎩✨</strong>
               </p>
               <ul className="pl-[20px] list-disc">
                 <li className="mb-[0px]">

@@ -87,35 +87,55 @@ const List = (props: any) => {
               />
               <div className="flex items-center gap-[5px]">
                 {
-                  ["0.1", "1", "5", "10"].map((_amount) => (
-                    <button
-                      key={_amount}
-                      type="button"
-                      className={clsx(
-                        "w-[38px] h-[38px] hover:bg-[#FFDC50] border border-[#471C1C] rounded-[8px] flex justify-center items-center transition-all duration-300",
-                        create.betAmount === _amount ? "bg-[#FFDC50]" : "bg-white",
-                      )}
-                      onClick={() => {
-                        create.setBetAmount(_amount);
-                        magician.playAudio({ type: "click", action: "play" });
-                      }}
+                  ["1", "2.5", "10"].map((_amount, _index) => (
+                    <Popover
+                      content={_index > 0 ? (
+                        <Card className="!rounded-[12px] w-[356px] !p-[14px_13px] bg-[#FFFDEB] text-[14px] leading-[110%] font-[600] flex justify-center items-center gap-[12px]">
+                          <img
+                            src="/images/playground/magician/icon-lootbox.png"
+                            alt=""
+                            className="w-[23px] h-[20px] object-center object-contain shrink-0"
+                          />
+                          <div className="">
+                            If you create more than 2.5 Bera games and failed, you will get a Lootbox.
+                          </div>
+                        </Card>
+                      ) : null}
+                      trigger={PopoverTrigger.Hover}
+                      placement={PopoverPlacement.Top}
+                      closeDelayDuration={0}
+                      offset={10}
                     >
-                      {_amount}
-                    </button>
+                      <button
+                        key={_amount}
+                        type="button"
+                        className={clsx(
+                          "w-[38px] h-[38px] hover:bg-[#FFDC50] border border-[#471C1C] rounded-[8px] font-[600] text-black text-[16px] flex justify-center items-center transition-all duration-300",
+                          create.betAmount === _amount ? "bg-[#FFDC50]" : "bg-white",
+                          _index > 0 && "bg-[url('/images/playground/magician/icon-lootbox-opacity.png')] bg-no-repeat bg-center bg-[length:23px_20px]",
+                        )}
+                        onClick={() => {
+                          create.setBetAmount(_amount);
+                          magician.playAudio({ type: "click", action: "play" });
+                        }}
+                      >
+                        {_amount}
+                      </button>
+                    </Popover>
                   ))
                 }
               </div>
             </div>
 
-            <div className="flex gap-[30px] absolute left-1/2 -translate-x-[0%] top-[-40px]">
+            <div className="flex gap-[20px] absolute left-1/2 -translate-x-[0%] top-[-10px]">
               {
                 Object.values(Moves).map((move) => (
                   <button
                     key={move.value}
                     type="button"
                     className={clsx(
-                      "relative w-[74px] h-[100px] bg-top bg-no-repeat bg-contain shrink-0 transition-all duration-300",
-                      create.betMove?.includes(move.value) ? "opacity-100" : "opacity-50",
+                      "relative w-[74px] h-[70px] bg-top bg-no-repeat bg-contain shrink-0 transition-all duration-300",
+                      // create.betMove?.includes(move.value) ? "opacity-100" : "opacity-50",
                     )}
                     style={{
                       backgroundImage: `url("${move.imgWhite}")`,

@@ -48,7 +48,7 @@ export default function TreasureBook(props: any) {
         show: treasureBookOpen
     });
 
-    const is2Top = ["/carnival/magician"].includes(pathname);
+    const is2Top = ["/carnival/guess-who"].includes(pathname);
 
     useMemo(() => {
         const _defaultOpen = treasureBookSearchParams === '1';
