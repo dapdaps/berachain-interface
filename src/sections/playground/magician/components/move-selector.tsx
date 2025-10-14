@@ -51,24 +51,34 @@ const MoveSelectorContent = (props: any) => {
                   animate={isSelected ? { y: [0, -5, 5, 0] } : { y: 0 }}
                   transition={isSelected ? { repeat: Infinity, duration: 5, ease: "linear" } : { ease: "linear", duration: 0 }}
                 >
-                  <img
-                    src={move.imgWhite}
-                    alt=""
-                    className={clsx(
-                      "w-full h-full object-center object-contain shrink-0",
-                      isLastMove ? "opacity-100" : "opacity-50",
-                    )}
-                  />
+                  <div className="w-full h-full shrink-0">
+                    <img
+                      src={move.imgHands}
+                      alt=""
+                      className={clsx(
+                        "w-full h-[73px] object-center object-contain shrink-0 relative z-[2] translate-x-[-4px]",
+                        isLastMove ? "opacity-100" : "opacity-30",
+                      )}
+                    />
+                    <img
+                      src="/images/playground/magician/hat-up.png"
+                      alt=""
+                      className={clsx(
+                        "w-full h-[77px] object-top object-contain shrink-0 translate-y-[-10px]",
+                        isLastMove ? "opacity-100" : "opacity-30",
+                      )}
+                    />
+                  </div>
                   {
                     selectedPalyer && (
                       <PlayerAvatar
-                        className="translate-y-[40px] !absolute !w-[38px] !h-[38px] !rounded-[10px]"
+                        className="translate-y-[30px] !absolute !w-[38px] !h-[38px] !rounded-[10px]"
                         avatar={selectedPalyer.avatar}
                       />
                     )
                   }
                 </motion.div>
-                <div className={clsx("flex justify-center items-center gap-[5px] mt-[5px]", isLastMove ? "opacity-100" : "opacity-50")}>
+                <div className={clsx("flex justify-center items-center gap-[5px] mt-[5px]", isLastMove ? "opacity-100" : "opacity-30")}>
                   <img
                     src={betToken.icon}
                     alt=""
@@ -80,7 +90,7 @@ const MoveSelectorContent = (props: any) => {
                 </div>
                 <LightingButton
                   className="text-[20px] uppercase"
-                  outerClassName={clsx("mt-[10px]", isLastMove ? "opacity-100" : "opacity-50")}
+                  outerClassName={clsx("mt-[10px]", isLastMove ? "opacity-100" : "opacity-30")}
                   disabled={!isLastMove || buttonValid.loading}
                   onClick={() => {
                     onSelectMove(move.value);

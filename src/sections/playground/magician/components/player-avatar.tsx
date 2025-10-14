@@ -20,7 +20,7 @@ const PlayerAvatar = (props: any) => {
           <img
             src={Moves[moves as EMove]?.avatar}
             alt=""
-            className={clsx("w-[30px] h-[29px] object-center object-contain shrink-0 absolute top-[-20px]", avatarClassName)}
+            className={clsx("w-[21px] h-[20px] object-center object-contain shrink-0 absolute top-[-10px] left-[-8px]", avatarClassName)}
           />
         )
       }

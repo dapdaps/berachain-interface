@@ -6,7 +6,7 @@ const ResultHat = (props: any) => {
   const { className, result, room } = props;
 
   return (
-    <div className={clsx("w-[171px] h-[127px] shrink-0 absolute translate-x-[40px] bottom-[260px] flex justify-center", className)}>
+    <div className={clsx("w-[160px] h-[120px] shrink-0 absolute translate-x-[40px] bottom-[260px] flex justify-center", className)}>
       <motion.img
         src="/images/playground/magician/hat-invert.png"
         alt=""
@@ -24,9 +24,9 @@ const ResultHat = (props: any) => {
         }}
       />
       <div
-        className="w-[116px] h-[110px] absolute z-[3] overflow-hidden [clip-path:polygon(0_0,100%_0,100%_91%,75%_92.5%,50%_93%,25%_92.5%,0_91%)]"
+        className="w-[116px] h-[110px] absolute z-[3] overflow-hidden [clip-path:polygon(0_0,100%_0,100%_100%,0%_100%)]"
         style={{
-          transform: `translateY(${Moves[result.moves as EMove].imgYellowY}px)`,
+          transform: `translateY(${Moves[result.moves as EMove].imgYellowY}px) rotate(${Moves[result.moves as EMove].imgYellowRotate}deg)`,
         }}
       >
         <motion.img

@@ -6,7 +6,7 @@ interface Game {
 enum GameName {
   LuckyBera = "LuckyBera",
   BigWheel = "BigWheel",
-  Magician = "Magician",
+  GuessWho = "GuessWho",
 }
 
 export const Games: Record<GameName, Game> = {
@@ -18,8 +18,8 @@ export const Games: Record<GameName, Game> = {
     name: "BigWheel",
     path: "/carnival/big-wheel",
   },
-  [GameName.Magician]: {
-    name: "Magician",
-    path: "/carnival/magician",
+  [GameName.GuessWho]: {
+    name: "GuessWho",
+    path: "/carnival/guess-who",
   },
 };

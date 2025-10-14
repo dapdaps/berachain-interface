@@ -27,7 +27,7 @@ const PlaygroundLayout = (props: any) => {
         <div className="relative w-full flex justify-center items-center h-[60px]">
           <PageBack className="absolute left-[12px] z-[10]" />
           {
-            ![Games.Magician.path].includes(pathname) && (
+            ![Games.GuessWho.path].includes(pathname) && (
               <div className="translate-y-[-2px] text-[30px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
                 Carnival
               </div>
@@ -89,12 +89,12 @@ const PlaygroundLayout = (props: any) => {
         <PageBack
           className={clsx(
             "absolute left-[36px] z-[10] !text-white",
-            [Games.Magician.path].includes(pathname) ? "" : "top-[70px]",
+            [Games.GuessWho.path].includes(pathname) ? "" : "top-[70px]",
           )}
         />
         <div className="absolute w-full top-[80px] flex justify-center items-center gap-[4px] z-[2]">
           {
-            ![Games.Magician.path].includes(pathname) && (
+            ![Games.GuessWho.path].includes(pathname) && (
               <div className="text-[60px] font-CherryBomb [text-shadow:_0_4px_0_#4B371F] leading-[90%] text-white font-[400]">
                 Carnival
               </div>

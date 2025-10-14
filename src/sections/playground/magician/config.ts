@@ -9,33 +9,41 @@ export interface IMove {
   avatar: string;
   imgWhite: string;
   imgYellow: string;
+  imgHands: string;
   imgYellowY: number;
+  imgYellowRotate: number;
   value: EMove;
 }
 
 export const Moves: Record<EMove, IMove> = {
   [EMove.Bear]: {
     name: "Bear",
-    avatar: "/images/playground/magician/bear.png",
-    imgWhite: "/images/playground/magician/bear-white-border.png",
-    imgYellow: "/images/playground/magician/bear-yellow-border.png",
-    imgYellowY: -81,
+    avatar: "/images/playground/magician/guess-1-white-border.png",
+    imgWhite: "/images/playground/magician/guess-1-white-border.png",
+    imgYellow: "/images/playground/magician/guess-1-yellow-border.png",
+    imgHands: "/images/playground/magician/guess-1-hands.png",
+    imgYellowY: -91,
+    imgYellowRotate: 0,
     value: EMove.Bear,
   },
   [EMove.Rabbit]: {
     name: "Rabbit",
-    avatar: "/images/playground/magician/rabbit.png",
-    imgWhite: "/images/playground/magician/rabbit-white-border.png",
-    imgYellow: "/images/playground/magician/rabbit-yellow-border.png",
-    imgYellowY: -85,
+    avatar: "/images/playground/magician/guess-2-white-border.png",
+    imgWhite: "/images/playground/magician/guess-2-white-border.png",
+    imgYellow: "/images/playground/magician/guess-2-yellow-border.png",
+    imgHands: "/images/playground/magician/guess-2-hands.png",
+    imgYellowY: -90,
+    imgYellowRotate: 1,
     value: EMove.Rabbit,
   },
   [EMove.Panda]: {
     name: "Panda",
-    avatar: "/images/playground/magician/panda.png",
-    imgWhite: "/images/playground/magician/panda-white-border.png",
-    imgYellow: "/images/playground/magician/panda-yellow-border.png",
-    imgYellowY: -80,
+    avatar: "/images/playground/magician/guess-3-white-border.png",
+    imgWhite: "/images/playground/magician/guess-3-white-border.png",
+    imgYellow: "/images/playground/magician/guess-3-yellow-border.png",
+    imgHands: "/images/playground/magician/guess-3-hands.png",
+    imgYellowY: -89.5,
+    imgYellowRotate: 0,
     value: EMove.Panda,
   },
 };
