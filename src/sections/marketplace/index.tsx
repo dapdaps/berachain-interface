@@ -14,6 +14,9 @@ import useTokenVolume from "./hooks/use-token-volume";
 import { usePrice7d } from '@/sections/marketplace/hooks/use-price-7d';
 import { useDebounce } from "ahooks";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLootbox } from "./hooks/use-lootbox";
+import Lootbox from "./components/lootbox";
+import BuyModal from "./components/lootbox/buy";
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -69,6 +72,22 @@ const MarketplaceView = () => {
   );
   const isMobile = useIsMobile();
   const { voulmes } = useTokenVolume();
+  const {
+    flatBoxList,
+    boxListLoading,
+    onBuyOpen,
+    buyOpening,
+    buyModalOpen,
+    setBuyModalOpen,
+    buyBox,
+    buyBoxAmount,
+    setBuyBoxAmount,
+    onBuy,
+    buying,
+    buttonStatus,
+    onBuyClose,
+  } = useLootbox();
+
   const [searchVal, setSearchVal] = useState("");
   const [showHenloBubble, setShowHenloBubble] = useState(false);
   const TOKENS_PER_PAGE = 9;
@@ -136,12 +155,12 @@ const MarketplaceView = () => {
     }
     return _tokens
   }
-  const visibleTokens = useMemo(() => {
-    const groupsToShow = Math.ceil(displayCount / 3);
-    return allTokens.slice(0, groupsToShow);
-  }, [allTokens, displayCount]);
+  // const visibleTokens = useMemo(() => {
+  //   const groupsToShow = Math.ceil(displayCount / 3);
+  //   return allTokens.slice(0, groupsToShow);
+  // }, [allTokens, displayCount]);
 
-  const { data: price7dData, fullData: price7dFullData } = usePrice7d({ visibleTokens });
+  // const { data: price7dData, fullData: price7dFullData } = usePrice7d({ visibleTokens });
 
   const onMore = () => {
     setDisplayCount((prev) => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
@@ -149,22 +168,22 @@ const MarketplaceView = () => {
 
   const showMoreButton = displayCount < totalTokens;
 
-  const getAnimationName = (idx: number) => {
-    if (hoveredIndex === null) {
-      return "default";
-    }
-    if (hoveredIndex === idx) {
-      return "hover";
-    }
-    if (hoveredIndex > 0 && hoveredIndex - 1 === idx) {
-      return "prev";
-    }
-    if (hoveredIndex < 11 && hoveredIndex + 1 === idx) {
-      return "next";
-    }
+  // const getAnimationName = (idx: number) => {
+  //   if (hoveredIndex === null) {
+  //     return "default";
+  //   }
+  //   if (hoveredIndex === idx) {
+  //     return "hover";
+  //   }
+  //   if (hoveredIndex > 0 && hoveredIndex - 1 === idx) {
+  //     return "prev";
+  //   }
+  //   if (hoveredIndex < 11 && hoveredIndex + 1 === idx) {
+  //     return "next";
+  //   }
 
-    return "default";
-  };
+  //   return "default";
+  // };
 
   const onSwap = (item: any) => {
     let _defaultInput = bera.bera;
@@ -198,7 +217,7 @@ const MarketplaceView = () => {
         alt=""
       />
 
-      {
+      {/* {
         !isMobile && <div className="flex justify-end lg:w-[1200px] md:w-full mx-auto">
           <div className="flex items-center rounded-[10px] border overflow-hidden border-black/50 bg-white px-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -208,52 +227,72 @@ const MarketplaceView = () => {
             <input className="w-[200px] h-[40px] px-2 text-black text-[14px]" placeholder="Search token" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
           </div>
         </div>
-      }
+      } */}
 
       <div className="relative z-[10] mt-[20px] md:mt-[26vw] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
         <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
-          Hot Tokens
+          Bera Syndicate Box
         </div>
         <div
           style={{ boxShadow: "inset 10px 10px rgba(0,0,0,0.25)" }}
           className="rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]"
         >
-          {visibleTokens.map((item, index) => (
+          {flatBoxList.map((item: any, index: number) => (
             <div
               key={"pots" + index}
               className="overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
             >
               <div className="pt-[36px] px-[22px] md:pl-0 flex flex-nowrap">
                 {item.length > 0 &&
-                  item.map((it: any, idx) => (
+                  item.map((it: any, idx: number) => (
                     <div className="basis-1/3" key={"pot" + idx}>
-                      <HoneypotCard
-                        name={it.symbol}
-                        color={it.color}
-                        icon={it.icon}
+                      <Lootbox
                         {...it}
-                        onSwap={() => onSwap(it)}
-                        voulmes={voulmes}
-                        priceData={price7dData[it.symbol]}
-                        priceFullData={price7dFullData[it.symbol]}
+                        onBuy={() => onBuyOpen(it)}
+                        buyBox={buyBox}
+                        loading={buyOpening}
                       />
                     </div>
                   ))}
               </div>
-              {(isMobile ||
-                (index !== visibleTokens.length - 1 && !isMobile)) && (
-                  <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
-                )}
+              <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
             </div>
           ))}
+          {
+            flatBoxList?.length < 3 && (
+              [...new Array(3 - flatBoxList?.length || 0).fill(0)].map((_, index) => (
+                <div
+                  key={"empty" + index}
+                  className="overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
+                >
+                  <div className="pt-[36px] px-[22px] md:pl-0 flex flex-nowrap">
+                    <div className="w-full h-[129px]">
+                      {
+                        index === 0 && (
+                          <div className="font-CherryBomb text-white text-[30px] text-center translate-y-[20px]">
+                            More lootboxes await listing
+                          </div>
+                        )
+                      }
+                    </div>
+                  </div>
+                  {
+                    index + 1 !== 3 - flatBoxList?.length && (
+                      <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
+                    )
+                  }
+                </div>
+              ))
+            )
+          }
         </div>
         {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
-        {showMoreButton && (
+        {/* {showMoreButton && (
           <MoreButton
             classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
             onClick={onMore}
           />
-        )}
+        )} */}
       </div>
       <div className="relative md:px-4 w-full bg-[#7990F4] pb-[40px]">
         <div className="lg:mx-auto lg:w-[1200px] md:w-full relative md:top-3 pb-[40px]">
@@ -335,6 +374,17 @@ const MarketplaceView = () => {
           from="marketplace"
         />
       )}
+
+      <BuyModal
+        open={buyModalOpen}
+        onClose={onBuyClose}
+        box={buyBox}
+        amount={buyBoxAmount}
+        onAmountChange={setBuyBoxAmount}
+        onBuy={onBuy}
+        buying={buying}
+        buttonStatus={buttonStatus}
+      />
     </div>
   );
 };
