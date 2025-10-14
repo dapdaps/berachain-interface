@@ -7,7 +7,7 @@ import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
 import { useMemo } from "react";
 
 const CheckInReward = (props: any) => {
-  const { open, onClose, data } = props;
+  const { open, onClose, data, boxClassName, boxStyle } = props;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -39,7 +39,13 @@ const CheckInReward = (props: any) => {
             }}
           />
         </div>
-        <div className="absolute z-[2] flex justify-center items-center left-1/2 -translate-x-1/2 top-[-104px] w-[255px] h-[242px] bg-[url('/images/check-in/box-open.png')] bg-no-repeat bg-center bg-contain">
+        <div
+          className={clsx(
+            "absolute z-[2] flex justify-center items-center left-1/2 -translate-x-1/2 top-[-104px] w-[255px] h-[242px] bg-[url('/images/check-in/box-open.png')] bg-no-repeat bg-center bg-contain",
+            boxClassName,
+          )}
+          style={boxStyle}
+        >
           <motion.div
             className="flex justify-center items-center"
             initial={{
@@ -143,6 +149,28 @@ const CheckInReward = (props: any) => {
                       }}
                     />
                   );
+                }
+
+                if (item.type === RewardType.NFT) {
+                  return typeof item.img === "string" ? (
+                    <motion.img
+                      src={item.img}
+                      alt=""
+                      className={clsx(
+                        "h-[68px] object-center object-contain shrink-0",
+                        (data.length > 1 && index > 0) && "translate-x-[-20px]",
+                        (data.length > 1 && index === 0) && "translate-y-[-10px]",
+                      )}
+                      animate={{
+                        transform: [`translateY(0px)`, `translateY(-10px)`, `translateY(0)`],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                    />
+                  ) : item.img;
                 }
               })
             }

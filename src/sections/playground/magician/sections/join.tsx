@@ -6,6 +6,7 @@ import MoveSelector from "../components/move-selector";
 import ResultHat from "../components/result-hat";
 import Exploding from "../components/exploding";
 import { useEffect } from "react";
+import Lootbox from "./lootbox";
 
 const Join = (props: any) => {
   const {
@@ -137,6 +138,10 @@ const Join = (props: any) => {
         betMove={join.betMove}
         buttonValid={join.buttonValid}
         onJoin={join.onJoin}
+      />
+      <Lootbox
+        join={join}
+        magician={magician}
       />
     </motion.div>
   );

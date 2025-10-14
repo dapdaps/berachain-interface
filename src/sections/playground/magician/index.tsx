@@ -26,6 +26,7 @@ const Magician = () => {
               magician={magician}
               create={create}
               join={join}
+              // join={{ ...join, result: { address: "0x91543e6369bC96868A4A5C2A0e76DDfA4336C823", moves: 0 } }}
               claim={claim}
             />
           ) : (
