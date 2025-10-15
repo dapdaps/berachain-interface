@@ -344,7 +344,7 @@ const MainLayout = (props: Props) => {
       }
       {
         [/^\/carnival/].some((reg) => reg.test(pathname)) && (
-          <div className="fixed bottom-[8px] right-[100px] z-[13] flex items-center gap-[6px]">
+          <div className="fixed bottom-[8px] right-[100px] z-[15] flex items-center gap-[6px]">
             <motion.button
               type="button"
               className="w-[20px] h-[20px] bg-no-repeat bg-center bg-contain shrink-0"
