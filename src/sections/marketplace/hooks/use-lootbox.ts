@@ -12,15 +12,23 @@ import { LOOTBOX_CONTRACT_ABI } from "../components/lootbox/abi";
 import useToast from "@/hooks/use-toast";
 import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
+import { GameLootbox } from "@/configs/playground";
+import useTokenBalance from "@/hooks/use-token-balance";
 
 export const useLootbox = (props?: any) => {
   const { } = props ?? {};
 
+  const costToken = bera["bera"];
   const isMobile = useIsMobile();
   const { accountWithAk, account, provider, chainId } = useCustomAccount();
   const { isPending: switching, switchChain } = useSwitchChain();
   const connectModal = useConnectModal();
   const toast = useToast();
+  const {
+    tokenBalance: costTokenBalance,
+    isLoading: costTokenBalanceLoading,
+    getTokenBalance: getCostTokenBalance,
+  } = useTokenBalance(costToken.address, costToken.decimals, costToken.chainId);
 
   const { data: boxList, loading: boxListLoading } = useRequest(async () => {
     try {
@@ -29,6 +37,15 @@ export const useLootbox = (props?: any) => {
         return [];
       }
       const _list = res.data;
+      _list.forEach((item: any) => {
+        const _curr = GameLootbox[item.category];
+        if (_curr) {
+          item.img = _curr.img;
+          item.imgBox = _curr.imgBox;
+          item.imgBoxOpen = _curr.imgBoxOpen;
+          item.name = _curr.name;
+        }
+      });
       return _list;
     } catch (error) {
       console.log("get boxes failed: %o", error);
@@ -38,7 +55,7 @@ export const useLootbox = (props?: any) => {
   const flatBoxList = useMemo(() => {
     if (!Array.isArray(boxList)) return [];
     const result: any[] = [];
-    const splitCount = isMobile ? 1 : 3;
+    const splitCount = isMobile ? 1 : 2;
     for (let i = 0; i < boxList.length; i += splitCount) {
       result.push(boxList.slice(i, i + splitCount));
     }
@@ -101,6 +118,7 @@ export const useLootbox = (props?: any) => {
       setBuyBox(void 0);
       return;
     }
+    getCostTokenBalance();
     setBuyModalOpen(true);
 
   }, { manual: true });
@@ -131,7 +149,7 @@ export const useLootbox = (props?: any) => {
       buyBoxAmount
     ];
     const options: any = {
-      value: utils.parseUnits(Big(buyBox.price).times(buyBoxAmount).toFixed(bera["bera"].decimals), bera["bera"].decimals),
+      value: utils.parseUnits(Big(buyBox.price).times(buyBoxAmount).toFixed(costToken.decimals), costToken.decimals),
     };
 
     try {
@@ -200,6 +218,11 @@ export const useLootbox = (props?: any) => {
       _status.text = "Enter an amount";
       return _status;
     }
+    if (Big(buyBox.price).times(buyBoxAmount).gt(costTokenBalance || 0)) {
+      _status.disabled = true;
+      _status.text = "Insufficient balance";
+      return _status;
+    }
 
     return _status;
   }, [
@@ -208,6 +231,7 @@ export const useLootbox = (props?: any) => {
     buyBoxAmount,
     account,
     chainId,
+    costTokenBalance,
   ]);
 
   return {
@@ -225,5 +249,9 @@ export const useLootbox = (props?: any) => {
     buying,
     buttonStatus,
     onBuyClose,
+    costToken,
+    costTokenBalance,
+    costTokenBalanceLoading,
+    getCostTokenBalance,
   };
 };

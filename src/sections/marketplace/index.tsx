@@ -86,6 +86,9 @@ const MarketplaceView = () => {
     buying,
     buttonStatus,
     onBuyClose,
+    costToken,
+    costTokenBalance,
+    costTokenBalanceLoading,
   } = useLootbox();
 
   const [searchVal, setSearchVal] = useState("");
@@ -229,23 +232,30 @@ const MarketplaceView = () => {
         </div>
       } */}
 
-      <div className="relative z-[10] mt-[20px] md:mt-[26vw] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
-        <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
-          Bera Syndicate Box
+      <div className="relative z-[10] mt-[20px] md:mt-[26vw] lg:w-[1200px] lg:h-[576px] md:w-full mx-auto rounded-[16px] lg:mb-[100px] md:mb-[50px] p-[76px_12px_12px] md:pt-[56px] bg-[url('/images/market-place/bg-wood.png')] bg-no-repeat bg-top bg-contain md:bg-cover">
+        <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#B2E946] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
+          Bera Lootbox
         </div>
-        <div
-          style={{ boxShadow: "inset 10px 10px rgba(0,0,0,0.25)" }}
-          className="rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]"
-        >
+        <div className="absolute right-[25px] md:right-[10px] top-[29px] z-[1] text-white font-Montserrat font-[700] text-[14px] md:text-[10px] leading-[100%] flex items-center gap-[6px]">
+          <img
+            src="/images/market-place/icon-info.png"
+            alt=""
+            className="w-[16px] h-[16px] md:w-[12px] md:h-[12px] shrink-0 object-center object-contain"
+          />
+          <div className="">
+            0.5% NFT winning probability
+          </div>
+        </div>
+        <div className="rounded-[20px] border-[2px] border-[#6A4C17] bg-[#695d5d] overflow-visible md:pb-[40px] shadow-[inset_10px_2px_rgba(0,0,0,0.5)]">
           {flatBoxList.map((item: any, index: number) => (
             <div
               key={"pots" + index}
-              className="overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
+              className="pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
             >
-              <div className="pt-[36px] px-[22px] md:pl-0 flex flex-nowrap">
+              <div className="pt-[64px] md:pt-[30px] px-[22px] md:pl-0 flex flex-nowrap">
                 {item.length > 0 &&
                   item.map((it: any, idx: number) => (
-                    <div className="basis-1/3" key={"pot" + idx}>
+                    <div className="basis-1/2 md:basis-full" key={"pot" + idx}>
                       <Lootbox
                         {...it}
                         onBuy={() => onBuyOpen(it)}
@@ -255,36 +265,13 @@ const MarketplaceView = () => {
                     </div>
                   ))}
               </div>
-              <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
+              {
+                index + 1 < flatBoxList?.length && (
+                  <div className="w-[calc(100%_+_4px)] h-[15px] relative top-[-2px] left-[-2px] rounded-[10px] border-black border-[1px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
+                )
+              }
             </div>
           ))}
-          {
-            flatBoxList?.length < 3 && (
-              [...new Array(3 - flatBoxList?.length || 0).fill(0)].map((_, index) => (
-                <div
-                  key={"empty" + index}
-                  className="overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
-                >
-                  <div className="pt-[36px] px-[22px] md:pl-0 flex flex-nowrap">
-                    <div className="w-full h-[129px]">
-                      {
-                        index === 0 && (
-                          <div className="font-CherryBomb text-white text-[30px] text-center translate-y-[20px]">
-                            More lootboxes await listing
-                          </div>
-                        )
-                      }
-                    </div>
-                  </div>
-                  {
-                    index + 1 !== 3 - flatBoxList?.length && (
-                      <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
-                    )
-                  }
-                </div>
-              ))
-            )
-          }
         </div>
         {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
         {/* {showMoreButton && (
@@ -308,57 +295,58 @@ const MarketplaceView = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-[10px] left-1/2 transform -translate-x-1/2 lg:w-[1200px] md:w-full z-30 h-[240px] md:hidden">
-        <div className="w-[150px] h-[240px] absolute bottom-[0] right-[-100px]" onClick={(e) => {
+      <div
+        className="w-[150px] h-[240px] fixed bottom-[10px] right-[40px] z-[11] md:hidden"
+        onClick={(e) => {
           e.stopPropagation();
           setShowHenloBubble(true);
-        }}>
-          <AnimatePresence>
-            {showHenloBubble && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
-                animate={{ scale: 1, opacity: 1, originX: 1, originY: 1 }}
-                exit={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-[124px] h-[101px] absolute top-[-105px] left-[-40px]"
-              >
-                <img src="/images/market-place/pao.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
-                <div className="w-full h-full absolute top-0 left-0 font-CherryBomb text-[18px] text-center leading-[90%] pt-[10px]">
-                  Henlo!<br /> I heard you liked <br />$HENLO
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <img src="/images/market-place/henlo-body.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
-          <motion.img
-            src="/images/market-place/henlo-arm.png"
-            alt="cloud"
-            className="absolute w-[60px] h-[50px] left-[108px] top-[112px]"
-            style={{ transformOrigin: "left bottom" }}
-            animate={{ rotate: [0, 20, 0, 20, 0, 0] }}
-            transition={{
-              duration: 9,
-              times: [
-                0,
-                0.055,
-                0.111,
-                0.166,
-                0.221,
-                1
-              ],
-              repeat: Infinity,
-              repeatType: "loop",
-              ease: [
-                "easeInOut",
-                "easeInOut",
-                "easeInOut",
-                "easeInOut",
-                "linear"
-              ]
-            }}
-          />
-          <img src="/images/market-place/henlo-cloth.png" alt="cloud" className="w-[101px] h-[62px] absolute top-[140px] left-[23px]" />
-        </div>
+        }}
+      >
+        <AnimatePresence>
+          {showHenloBubble && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
+              animate={{ scale: 1, opacity: 1, originX: 1, originY: 1 }}
+              exit={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="w-[124px] h-[101px] absolute top-[-105px] left-[-40px]"
+            >
+              <img src="/images/market-place/pao.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
+              <div className="w-full h-full absolute top-0 left-0 font-CherryBomb text-[18px] text-center leading-[90%] pt-[10px]">
+                Henlo!<br /> I heard you liked <br />$HENLO
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <img src="/images/market-place/henlo-body.png" alt="cloud" className="w-full h-full absolute top-0 left-0" />
+        <motion.img
+          src="/images/market-place/henlo-arm.png"
+          alt="cloud"
+          className="absolute w-[60px] h-[50px] left-[108px] top-[112px]"
+          style={{ transformOrigin: "left bottom" }}
+          animate={{ rotate: [0, 20, 0, 20, 0, 0] }}
+          transition={{
+            duration: 9,
+            times: [
+              0,
+              0.055,
+              0.111,
+              0.166,
+              0.221,
+              1
+            ],
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: [
+              "easeInOut",
+              "easeInOut",
+              "easeInOut",
+              "easeInOut",
+              "linear"
+            ]
+          }}
+        />
+        <img src="/images/market-place/henlo-cloth.png" alt="cloud" className="w-[101px] h-[62px] absolute top-[140px] left-[23px]" />
       </div>
 
       {selectedRecord && (
@@ -384,6 +372,9 @@ const MarketplaceView = () => {
         onBuy={onBuy}
         buying={buying}
         buttonStatus={buttonStatus}
+        costToken={costToken}
+        costTokenBalance={costTokenBalance}
+        costTokenBalanceLoading={costTokenBalanceLoading}
       />
     </div>
   );
