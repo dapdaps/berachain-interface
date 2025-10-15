@@ -14,6 +14,7 @@ const Lootbox = (props: any) => {
 
   const isRewardLootbox = useMemo(() => {
     if (!join.result
+      // || join.result.view === true
       || !magician.account
       || join.result.address.toLowerCase() === magician.account.toLowerCase()
       || !magician.room?.room_id
@@ -58,6 +59,7 @@ const Lootbox = (props: any) => {
 
   useEffect(() => {
     return () => {
+      console.log("%cStop polling lootbox...", "background:#8C00FF;color:#fff;");
       cancelGetRewardLootbox();
       setRewardLootboxData(void 0);
     };
@@ -65,7 +67,7 @@ const Lootbox = (props: any) => {
 
   // console.log("magician: %o", magician);
   // console.log("join: %o", join);
-  console.log("rewardLootboxData: %o", rewardLootboxData);
+  // console.log("rewardLootboxData: %o", rewardLootboxData);
 
   if (!document || !isRewardLootbox || !rewardLootboxData) {
     return null;

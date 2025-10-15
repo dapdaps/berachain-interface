@@ -421,9 +421,18 @@ const List = (props: any) => {
                 <GridTable
                   className="!border-b-[0] !text-black"
                   headerRowClassName="!px-0 !gap-x-[0px] text-[#FFF1C7] !border-b-[0]"
-                  bodyRowClassName="odd:bg-[#FFF1C7] !px-0 !gap-x-[0px] bg-[#FFF1C7] rounded-[12px] !border !border-[#E5C375] mb-[3px]"
+                  bodyRowClassName="odd:bg-[#FFF1C7] !px-0 !gap-x-[0px] bg-[#FFF1C7] rounded-[12px] !border !border-[#E5C375] mb-[3px] hover:bg-[radial-gradient(rgba(255,220,80,0.5),rgba(255,255,255,0))]"
+                  bodyRowStyle={(record: any) => {
+                    if (record.status === Status.Won && record.winner_address) {
+                      return {
+                        backgroundColor: "#f2dfae",
+                      };
+                    }
+                    return {};
+                  }}
                   bodyClassName="!px-0"
                   colClassName="!py-[10px] !px-[13px]"
+                  bodyColClassName="cursor-pointer"
                   columns={[
                     {
                       dataIndex: "room_id",
@@ -561,6 +570,13 @@ const List = (props: any) => {
                   sortDataIndex={magician.userList.sort}
                   onSort={(dataIndex: any, nextDirection: any) => {
                     magician.onUserListSort(dataIndex, nextDirection);
+                  }}
+                  onRow={(record: any) => {
+                    console.log("record: %o", record);
+                    if (join.viewing) {
+                      return;
+                    }
+                    join.onView(record);
                   }}
                 />
                 <div className="flex justify-end items-center pt-[10px]">

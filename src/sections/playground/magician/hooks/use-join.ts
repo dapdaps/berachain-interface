@@ -32,7 +32,7 @@ export function useJoin(props?: any) {
   const [open, setOpen] = useState<boolean>(false);
   const [moveSelectorOpen, setMoveSelectorOpen] = useState<boolean>(false);
   const [resultPending, setResultPending] = useState<boolean>(false);
-  const [result, setResult] = useState<{ address: string; moves: EMove; }>();
+  const [result, setResult] = useState<{ address: string; moves: EMove; view?: boolean; }>();
 
   const [lastMoves] = useMemo(() => {
     return [
@@ -261,6 +261,23 @@ export function useJoin(props?: any) {
     manual: true,
   });
 
+  const { runAsync: onView, loading: viewing } = useRequest(async (_room: Room) => {
+    playAudio({ type: "click", action: "play" });
+    const newRoomInfo = await getRoomInfo(_room);
+    console.log("newRoomInfo: %o", newRoomInfo);
+    setRoom(newRoomInfo);
+    if (newRoomInfo.status === Status.Won && newRoomInfo.winner_address) {
+      setResult({
+        address: newRoomInfo.winner_address,
+        moves: newRoomInfo.winner_moves,
+        view: true,
+      });
+    }
+    setOpen(true);
+  }, {
+    manual: true,
+  });
+
   const onOpen = async (_room: Room) => {
     playAudio({ type: "click", action: "play" });
     const _roomInfo = await onJoinCheck(_room, { isReset: true });
@@ -355,5 +372,7 @@ export function useJoin(props?: any) {
     lastMoves,
     moveSelectorOpen,
     setMoveSelectorOpen,
+    onView,
+    viewing,
   };
 };
