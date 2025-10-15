@@ -226,48 +226,50 @@ export default function useInfraredData(props: any) {
     );
   }
   async function getDataList() {
+
     allData?.forEach((item) => {
       const [protocol, ...restSlug] = item?.slug?.split("-");
       const poolName = restSlug.join("-");
       if (!["kodiak", "dolomite", "bex"].includes(protocol)) return;
-      item?.rewardTokens?.forEach((it: any) => {
-        const curr = Object.values(bera).find(
-          (_it) => _it.address.toLowerCase() === it.address.toLowerCase()
-        );
-        if (!curr) return;
-        it.icon = curr.icon;
-      });
-      let tokensInfo: any = {
-        tokens: [],
-        images: []
-      };
+      // item?.rewardTokens?.forEach((it: any) => {
+      //   const curr = Object.values(bera).find(
+      //     (_it) => _it.address.toLowerCase() === it.address.toLowerCase()
+      //   );
+      //   if (!curr) return;
+      //   it.icon = curr.icon;
+      // });
+      // let tokensInfo: any = {
+      //   tokens: [],
+      //   images: []
+      // };
 
-      if (item?.underlyingTokens?.length > 1) {
-        item.underlyingTokens
-          ?.filter((token) => !!token)
-          ?.forEach((slip: any, i: number) => {
-            tokensInfo[`decimals${i}`] = slip.decimals;
-            tokensInfo.tokens.push(slip.name);
-            tokensInfo.images.push(slip.image);
-          });
-      } else {
-        tokensInfo.tokens.push(item?.underlyingTokens?.[0]?.name);
-        tokensInfo.images.push(item?.underlyingTokens?.[0]?.image);
-      }
+      // if (item?.underlyingTokens?.length > 1) {
+      //   item.underlyingTokens
+      //     ?.filter((token) => !!token)
+      //     ?.forEach((slip: any, i: number) => {
+      //       tokensInfo[`decimals${i}`] = slip.decimals;
+      //       tokensInfo.tokens.push(slip.name);
+      //       tokensInfo.images.push(slip.image);
+      //     });
+      // } else {
+      //   tokensInfo.tokens.push(item?.underlyingTokens?.[0]?.name);
+      //   tokensInfo.images.push(item?.underlyingTokens?.[0]?.image);
+      // }
 
       const _data = {
         id: item.name,
         strategy: "Dynamic",
         strategy2: "",
-        ...tokensInfo,
+        images: item.images,
+        tokens: item.tokens,
         tvl: Big(item?.tvl || 0).toFixed(),
-        poolName,
-        apy: Big(item?.apr || 0)
+        poolName: item.name,
+        apy: Big(item?.apy || 0)
           .times(100)
           .toFixed(),
-        initialData: item,
+        initialData: item.initialData,
         type: "Staking",
-        vaultAddress: item.address,
+        vaultAddress: item.vaultAddress,
         rewardSymbol: item?.rewards?.[0]?.symbol,
         platform: "infrared",
         protocol,
@@ -277,31 +279,31 @@ export default function useInfraredData(props: any) {
       };
       dataList.push(_data);
     });
-    const ibgt = await getIbgtData();
-    const _ibgtRewardTokens = ibgt?.rewardTokens?.filter?.((_token: any) => _token.address.toLowerCase() !== bera["ibgt"].address.toLowerCase());
-    dataList.unshift({
-      id: "iBGT",
-      tokens: ["iBGT"],
-      images: ["/images/dapps/infrared/ibgt.svg"],
-      decimals: 18,
-      decimals0: 18,
-      decimals1: 18,
-      LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
-      vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
-      rewardSymbol: _ibgtRewardTokens?.[0]?.symbol,
-      tvl: Big(ibgt?.tvl || 0).toFixed(),
-      apy: Big(ibgt?.apr || 0)
-        .times(100)
-        .toFixed(),
-      initialData: {
-        ...ibgt,
-        rewardTokens: _ibgtRewardTokens,
-        stakeTokenPrice: ibgt.depositTokenPrice,
-      },
-      type: "Staking",
-      platform: "infrared",
-      protocolType: "-"
-    });
+    // const ibgt = await getIbgtData();
+    // const _ibgtRewardTokens = ibgt?.rewardTokens?.filter?.((_token: any) => _token.address.toLowerCase() !== bera["ibgt"].address.toLowerCase());
+    // dataList.unshift({
+    //   id: "iBGT",
+    //   tokens: ["iBGT"],
+    //   images: ["/images/dapps/infrared/ibgt.svg"],
+    //   decimals: 18,
+    //   decimals0: 18,
+    //   decimals1: 18,
+    //   LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+    //   vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
+    //   rewardSymbol: _ibgtRewardTokens?.[0]?.symbol,
+    //   tvl: Big(ibgt?.tvl || 0).toFixed(),
+    //   apy: Big(ibgt?.apr || 0)
+    //     .times(100)
+    //     .toFixed(),
+    //   initialData: {
+    //     ...ibgt,
+    //     rewardTokens: _ibgtRewardTokens,
+    //     stakeTokenPrice: ibgt.depositTokenPrice,
+    //   },
+    //   type: "Staking",
+    //   platform: "infrared",
+    //   protocolType: "-"
+    // });
 
     formatedData("dataList");
   }
@@ -322,6 +324,7 @@ export default function useInfraredData(props: any) {
       multicallAddress,
       provider
     });
+
     for (let i = 0; i < dataList.length; i++) {
       const element = dataList[i];
       dataList[i].depositAmount = Big(
