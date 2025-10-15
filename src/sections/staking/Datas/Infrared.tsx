@@ -3,7 +3,7 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { bera } from "@/configs/tokens/bera";
-import { asyncFetch } from "@/utils/http";
+import { asyncFetch, post } from "@/utils/http";
 import { multicall } from "@/utils/multicall";
 
 export default function useInfraredData(props: any) {
@@ -221,9 +221,41 @@ export default function useInfraredData(props: any) {
   }
 
   async function getIbgtData() {
-    return await asyncFetch(
-      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fbackend-vaults%2Finfrared-ibgt&params=chainId%3D80094`
-    );
+    // return await asyncFetch(
+    //   `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fbackend-vaults%2Finfrared-ibgt&params=chainId%3D80094`
+    // );
+
+    const addresses = ['0x75f3be06b02e235f6d0e7ef2d462b29739168301'];
+
+    const pricesRes = await post(
+      `${process.env.NEXT_PUBLIC_API}/api/go/infrared`,
+      {
+        "params": {
+          addresses: addresses,
+          includeSevenDayPriceChange: false
+        },
+        "path": "/api/prices?chainId=80094"
+      }
+    )
+
+    const res = await post(
+      `${process.env.NEXT_PUBLIC_API}/api/go/infrared`,
+      {
+        "params": {
+          addresses: addresses,
+        },
+        "path": "/api/backend-vaults?chainId=80094"
+      }
+    )
+
+    const item = res[addresses[0]];
+
+    return {
+      tvl: item.tvlBreakdown.infrared,
+      apr: Object.values(item.aprBreakdown.infrared).reduce((acc, curr) => acc + curr.apr, 0),
+      depositTokenPrice: pricesRes[addresses[0]]?.price || 0,
+      pointsMultiplier: item.pointsMultiplier,
+    }
   }
   async function getDataList() {
 
@@ -279,31 +311,32 @@ export default function useInfraredData(props: any) {
       };
       dataList.push(_data);
     });
-    // const ibgt = await getIbgtData();
-    // const _ibgtRewardTokens = ibgt?.rewardTokens?.filter?.((_token: any) => _token.address.toLowerCase() !== bera["ibgt"].address.toLowerCase());
-    // dataList.unshift({
-    //   id: "iBGT",
-    //   tokens: ["iBGT"],
-    //   images: ["/images/dapps/infrared/ibgt.svg"],
-    //   decimals: 18,
-    //   decimals0: 18,
-    //   decimals1: 18,
-    //   LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
-    //   vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
-    //   rewardSymbol: _ibgtRewardTokens?.[0]?.symbol,
-    //   tvl: Big(ibgt?.tvl || 0).toFixed(),
-    //   apy: Big(ibgt?.apr || 0)
-    //     .times(100)
-    //     .toFixed(),
-    //   initialData: {
-    //     ...ibgt,
-    //     rewardTokens: _ibgtRewardTokens,
-    //     stakeTokenPrice: ibgt.depositTokenPrice,
-    //   },
-    //   type: "Staking",
-    //   platform: "infrared",
-    //   protocolType: "-"
-    // });
+    const ibgt = await getIbgtData();
+    const _ibgtRewardTokens = ibgt?.rewardTokens?.filter?.((_token: any) => _token.address.toLowerCase() !== bera["ibgt"].address.toLowerCase());
+    dataList.unshift({
+      id: "iBGT",
+      tokens: ["iBGT"],
+      images: ["/images/dapps/infrared/ibgt.svg"],
+      decimals: 18,
+      decimals0: 18,
+      decimals1: 18,
+      LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+      vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
+      rewardSymbol: _ibgtRewardTokens?.[0]?.symbol,
+      tvl: Big(ibgt?.tvl || 0).toFixed(),
+      apy: Big(ibgt?.apr || 0)
+        .times(100)
+        .toFixed(),
+      initialData: {
+        ...ibgt,
+        rewardTokens: _ibgtRewardTokens,
+        stakeTokenPrice: ibgt.depositTokenPrice,
+      },
+      type: "Staking",
+      platform: "infrared",
+      protocolType: "-",
+      protocol: "infrared"
+    });
 
     formatedData("dataList");
   }
