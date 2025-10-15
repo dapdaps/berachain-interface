@@ -13,6 +13,7 @@ const GridTable = (props: Props, ref: any) => {
     rowClassName,
     headerRowClassName,
     bodyRowClassName,
+    bodyRowStyle,
     colClassName,
     headerColClassName,
     bodyColClassName,
@@ -23,6 +24,7 @@ const GridTable = (props: Props, ref: any) => {
     onSort,
     loading,
     sortIconColor = ["#FBCA04", "white"],
+    onRow,
   } = props;
 
   const headerRef = useRef<any>(null);
@@ -184,6 +186,10 @@ const GridTable = (props: Props, ref: any) => {
                 style={{
                   gridTemplateColumns,
                   minWidth: 'max-content',
+                  ...(typeof bodyRowStyle === "function" ? bodyRowStyle(item, index) : bodyRowStyle)
+                }}
+                onClick={() => {
+                  onRow?.(item, index);
                 }}
               >
                 {
@@ -257,6 +263,7 @@ export interface Props {
   rowClassName?: string;
   headerRowClassName?: string;
   bodyRowClassName?: string;
+  bodyRowStyle?: React.CSSProperties | ((item: any, index: number) => React.CSSProperties);
   colClassName?: string;
   headerColClassName?: string;
   bodyColClassName?: string;
@@ -266,6 +273,7 @@ export interface Props {
   sortDirection?: GridTableSortDirection;
   sortIconColor?: string[];
   onSort?: (dataIndex: string, direction: GridTableSortDirection) => void;
+  onRow?: (item: any, index: number) => void;
 }
 
 export enum GridTableAlign {
