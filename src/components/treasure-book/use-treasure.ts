@@ -149,7 +149,7 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
             inviteModalStore.set({ showInviteModal: true });
         }
 
-         
+
     };
 
     function calcUtcRemain() {
@@ -201,6 +201,35 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
         getUserInfo();
     };
 
+    const yourRewardsList = useMemo(() => {
+        const gemNum = treasure?.rewards?.Gem || 0;
+        const spinNum = treasure?.rewards?.Spin || 0;
+        const cosmeticNum = treasure?.rewards?.Cosmetic || 0;
+
+        const _list = [
+            {
+                name: "POINTS",
+                icon: "/images/treasure-book/gem.png",
+                iconSize: [60, 64],
+                amount: gemNum,
+            },
+            {
+                name: "SPINS",
+                icon: "/images/treasure-book/spin.png",
+                iconSize: [80, 66],
+                amount: spinNum,
+            },
+            {
+                name: "COSMETICS",
+                icon: "/images/treasure-book/cosmetics.png",
+                iconSize: [40, 60],
+                amount: cosmeticNum,
+            },
+        ];
+
+        return _list;
+    }, [treasure]);
+
     return {
         treasure,
         openBox,
@@ -218,5 +247,6 @@ I’m already farming + spinning in Beratown — join me 👉 [${inviteLink}]`
         openCheckInModal,
         setOpenCheckInModal,
         refreshQuestion,
+        yourRewardsList,
     };
 };

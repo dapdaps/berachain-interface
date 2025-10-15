@@ -48,13 +48,14 @@ export default function TreasureBook(props: any) {
         openCheckInModal,
         setOpenCheckInModal,
         refreshQuestion,
+        yourRewardsList,
     } = useTreasure({
         show: treasureBookOpen,
         tab: treasureBookTab,
     });
     const {
         userBoxes,
-        getUserBoxes,
+        getUserBoxes: getUserPartnerBoxes,
         userBoxesLoading,
         userBoxesTotal,
         userBoxesTotalBalance,
@@ -64,6 +65,7 @@ export default function TreasureBook(props: any) {
         openRewardData: openPartnerRewardData,
         openRewardCategory: openPartnerRewardCategory,
         onCloseReward: onClosePartnerReward,
+        userBoxesRewardsList: userPartnerBoxesRewardsList,
     } = usePartner({
         show: treasureBookOpen,
         tab: treasureBookTab,
@@ -217,13 +219,16 @@ export default function TreasureBook(props: any) {
                     refreshQuestion={refreshQuestion}
                     treasureBookTab={treasureBookTab}
                     setTreasureBookTab={setTreasureBookTab}
+                    yourRewardsList={yourRewardsList}
 
                     userPartnerBoxes={userBoxes}
                     userPartnerBoxesLoading={userBoxesLoading}
+                    getUserPartnerBoxes={getUserPartnerBoxes}
                     userPartnerBoxesTotal={userBoxesTotal}
                     userPartnerBoxesTotalBalance={userBoxesTotalBalance}
                     openPartnerBox={openPartnerBox}
                     openingPartnerBox={openingPartnerBox}
+                    userPartnerBoxesRewardsList={userPartnerBoxesRewardsList}
                 />}
             </AnimatePresence>
             <CheckInModal open={openCheckInModal} onClose={() => setOpenCheckInModal(false)} />

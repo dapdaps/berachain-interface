@@ -25,6 +25,7 @@ export interface BookModalProps {
   refreshQuestion: () => void;
   treasureBookTab: string;
   setTreasureBookTab: (tab?: string) => void;
+  yourRewardsList: any;
 
   userPartnerBoxes: any;
   userPartnerBoxesLoading: boolean;
@@ -32,6 +33,8 @@ export interface BookModalProps {
   userPartnerBoxesTotalBalance: Big.Big;
   openPartnerBox: (params: { category: string; box?: number; }) => Promise<any>;
   openingPartnerBox: boolean;
+  userPartnerBoxesRewardsList: any;
+  getUserPartnerBoxes: () => Promise<any>;
 }
 export default function BookModal(props: BookModalProps) {
   const {
@@ -49,6 +52,7 @@ export default function BookModal(props: BookModalProps) {
     refreshQuestion,
     treasureBookTab,
     setTreasureBookTab,
+    yourRewardsList,
 
     userPartnerBoxes,
     userPartnerBoxesLoading,
@@ -56,6 +60,7 @@ export default function BookModal(props: BookModalProps) {
     userPartnerBoxesTotalBalance,
     openPartnerBox,
     openingPartnerBox,
+    userPartnerBoxesRewardsList,
   } = props;
 
   const [scale, setScale] = useState(1);
@@ -155,7 +160,7 @@ export default function BookModal(props: BookModalProps) {
                   >
                     <div className="flex-1 h-full mt-[20px]" onClick={(e) => e.stopPropagation()}>
                       <TotalCollected treasure={treasure} openBox={openBox} />
-                      <YourRewords treasure={treasure} />
+                      <YourRewords type={treasureBookTab} list={yourRewardsList} />
                     </div>
                     <div className="flex-1 h-full mr-[120px] mt-[40px]" onClick={(e) => e.stopPropagation()}>
                       <GetMore
@@ -197,6 +202,7 @@ export default function BookModal(props: BookModalProps) {
                       />
                     </div>
                     <div className="flex-1 h-full mr-[120px] mt-[40px]" onClick={(e) => e.stopPropagation()}>
+                      <YourRewords type={treasureBookTab} list={userPartnerBoxesRewardsList} />
                       <PartnersMore />
                     </div>
                   </motion.div>
