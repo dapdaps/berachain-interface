@@ -34,7 +34,7 @@ export default function YourRewords({ treasure }: { treasure: TreasureData | nul
 
 
     return <div className="px-[30px]" >
-        <div className=" mt-[40px] flex justify-between items-center">
+        <div className="mt-[40px] flex justify-between items-center">
             <div style={{
                 WebkitTextStroke: "2px #000000",
             }} className="text-[24px] text-[#FDD54C] font-CherryBomb">Your Rewards</div>

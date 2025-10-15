@@ -17,7 +17,7 @@ export interface TreasureData {
     };
 }
 
-export const useTreasure = ({ show }: { show: boolean }) => {
+export const useTreasure = ({ show, tab }: { show: boolean; tab: string; }) => {
     const [questionLoading, setQuestionLoading] = useState(false);
     const [userLoading, setUserLoading] = useState(false);
     const [treasure, setTreasure] = useState<TreasureData | null>(null);
