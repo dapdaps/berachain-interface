@@ -20,7 +20,7 @@ const Join = (props: any) => {
 
   return (
     <motion.div
-      className="w-full flex flex-col items-center pt-[50px]"
+      className="w-full h-[100dvh] pb-[6vw] flex flex-col justify-end items-center"
       initial={{
         x: 200,
         opacity: 0,

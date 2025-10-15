@@ -2,6 +2,7 @@ import Loading from "@/components/loading";
 import { numberFormatter } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { useMemo } from "react";
 
 dayjs.extend(utc);
 
@@ -19,12 +20,25 @@ const Lootbox = (props: any) => {
     buyBox,
   } = props;
 
+  const isSoldOut = useMemo(() => {
+    return reward_balance <= 0;
+  }, [reward_balance]);
+
   return (
     <div className="flex items-center justify-center">
       <div
         className="w-[206px] h-[164px] md:w-[100px] md:h-[80px] bg-no-repeat bg-center bg-contain shrink-0 translate-x-[10px] relative z-[2]"
         style={{ backgroundImage: `url("${imgBox}")` }}
       >
+        {
+          isSoldOut && (
+            <div className="w-full h-full flex justify-center items-center bg-[url('/images/playground/magician/lootbox/box-mask.png')] bg-no-repeat bg-center bg-contain">
+              <div className="w-[110px] h-[40px] leading-[40px] bg-white/50 backdrop-blur-sm rotate-[-15deg] font-Montserrat rounded-[10px] uppercase text-white font-[800] text-16px text-center">
+                SOLD OUT
+              </div>
+            </div>
+          )
+        }
       </div>
       <div className="w-[248px] p-[10px_10px_22px_15px] md:w-[200px] md:p-[5px_5px_11px_8px] md:rounded-[10px] rounded-[18px] border border-black bg-[#FFE5B8] shadow-shadow1 shrink-0 relative z-[1]">
         <div className="text-black font-[600] text-[20px] md:text-[14px] font-CherryBomb text-center mb-[7px] leading-[100%] whitespace-nowrap">
@@ -39,19 +53,23 @@ const Lootbox = (props: any) => {
         <LabelValue label="Expiring date">
           {dayjs(end_time * 1000).utc().format("YYYY-MM-DD")} UTC
         </LabelValue>
-        <button
-          type="button"
-          className="absolute flex items-center justify-center gap-[5px] disabled:bg-[#f5e9b3] disabled:!cursor-not-allowed bottom-[-27px] left-1/2 translate-x-[-50%] z-[2] hover:scale-[1.1] ease-in-out duration-300 border border-black bg-[#FFDC50] rounded-[10px] px-[39px] py-[12px] leading-none font-Montserrat font-[600] text-[#000] text-[16px]"
-          disabled={loading && buyBox?.product_id === product_id}
-          onClick={onBuy}
-        >
-          {
-            (loading && buyBox?.product_id === product_id) && (
-              <Loading size={16} />
-            )
-          }
-          <div>Buy</div>
-        </button>
+        {
+          !isSoldOut && (
+            <button
+              type="button"
+              className="absolute flex items-center justify-center gap-[5px] disabled:bg-[#f5e9b3] disabled:!cursor-not-allowed bottom-[-27px] left-1/2 translate-x-[-50%] z-[2] hover:scale-[1.1] ease-in-out duration-300 border border-black bg-[#FFDC50] rounded-[10px] px-[39px] py-[12px] leading-none font-Montserrat font-[600] text-[#000] text-[16px]"
+              disabled={loading && buyBox?.product_id === product_id}
+              onClick={onBuy}
+            >
+              {
+                (loading && buyBox?.product_id === product_id) && (
+                  <Loading size={16} />
+                )
+              }
+              <div>Buy</div>
+            </button>
+          )
+        }
       </div>
     </div>
   );
