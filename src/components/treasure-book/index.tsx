@@ -10,6 +10,8 @@ import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
 import Popover, { PopoverPlacement, PopoverTrigger } from "../popover";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { usePartner } from "./use-partner";
+import CheckInRewardModal from "../check-in/reward";
 
 const TREASURE_BOOK_SEARCH_PARAMS = "treasure-book";
 
@@ -20,6 +22,8 @@ export default function TreasureBook(props: any) {
     const {
         treasureBookOpen,
         setTreasureBookOpen,
+        treasureBookTab,
+        setTreasureBookTab,
     } = useLootboxSeasonStore();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -44,8 +48,27 @@ export default function TreasureBook(props: any) {
         openCheckInModal,
         setOpenCheckInModal,
         refreshQuestion,
+        yourRewardsList,
     } = useTreasure({
-        show: treasureBookOpen
+        show: treasureBookOpen,
+        tab: treasureBookTab,
+    });
+    const {
+        userBoxes,
+        getUserBoxes: getUserPartnerBoxes,
+        userBoxesLoading,
+        userBoxesTotal,
+        userBoxesTotalBalance,
+        openBox: openPartnerBox,
+        opening: openingPartnerBox,
+        openReward: openPartnerReward,
+        openRewardData: openPartnerRewardData,
+        openRewardCategory: openPartnerRewardCategory,
+        onCloseReward: onClosePartnerReward,
+        userBoxesRewardsList: userPartnerBoxesRewardsList,
+    } = usePartner({
+        show: treasureBookOpen,
+        tab: treasureBookTab,
     });
 
     const is2Top = ["/carnival/guess-who"].includes(pathname);
@@ -103,7 +126,7 @@ export default function TreasureBook(props: any) {
                 placement={PopoverPlacement.Bottom}
                 trigger={PopoverTrigger.Hover}
                 triggerContainerClassName={clsx(
-                    "fixed z-[51] right-[10px] cursor-pointer group", 
+                    "fixed z-[51] right-[10px] cursor-pointer group",
                     is2Top ? "top-[470px]" : "top-[560px]",
                     className,
                 )}
@@ -194,9 +217,29 @@ export default function TreasureBook(props: any) {
                     inviteLink={inviteLink}
                     handleShare={handleShare}
                     refreshQuestion={refreshQuestion}
+                    treasureBookTab={treasureBookTab}
+                    setTreasureBookTab={setTreasureBookTab}
+                    yourRewardsList={yourRewardsList}
+
+                    userPartnerBoxes={userBoxes}
+                    userPartnerBoxesLoading={userBoxesLoading}
+                    getUserPartnerBoxes={getUserPartnerBoxes}
+                    userPartnerBoxesTotal={userBoxesTotal}
+                    userPartnerBoxesTotalBalance={userBoxesTotalBalance}
+                    openPartnerBox={openPartnerBox}
+                    openingPartnerBox={openingPartnerBox}
+                    userPartnerBoxesRewardsList={userPartnerBoxesRewardsList}
                 />}
             </AnimatePresence>
             <CheckInModal open={openCheckInModal} onClose={() => setOpenCheckInModal(false)} />
+            <CheckInRewardModal
+                open={openPartnerReward}
+                data={openPartnerRewardData}
+                onClose={onClosePartnerReward}
+                boxStyle={{
+                    backgroundImage: `url("${openPartnerRewardCategory?.imgBoxOpen}")`,
+                }}
+            />
         </>
     );
 }

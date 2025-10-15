@@ -6,6 +6,8 @@ interface LootboxSeasonState {
   setVisited: (account?: string, visited?: boolean) => void;
   treasureBookOpen: boolean;
   setTreasureBookOpen: (open?: boolean) => void;
+  treasureBookTab: string;
+  setTreasureBookTab: (tab?: string) => void;
   guideVisited: Record<string, boolean>;
   setGuideVisited: (account?: string, visited?: boolean) => void;
 }
@@ -30,6 +32,8 @@ export const useLootboxSeasonStore = create(
       },
       treasureBookOpen: false,
       setTreasureBookOpen: (open) => set({ treasureBookOpen: !!open }),
+      treasureBookTab: "beratown",
+      setTreasureBookTab: (tab) => set({ treasureBookTab: tab }),
       guideVisited: {},
       setGuideVisited: (account, visited) => {
         set((state) => {

@@ -116,13 +116,6 @@ const Content = (props: any) => {
       }
       setOpenRewardModal(true);
       const _rewardData: any = [];
-      if (res.data.box_balance && res.data.box_balance > 0) {
-        _rewardData.push({
-          type: RewardType.Box,
-          amount: res.data.box_balance,
-          label: `${numberFormatter(res.data.box_balance, 0, true)} Lootbox${res.data.box_balance > 1 ? 'es' : ''}`,
-        });
-      }
       if (res.data.cosmetic && res.data.cosmetic.length > 0) {
         _rewardData.push({
           type: RewardType.Cosmetic,
