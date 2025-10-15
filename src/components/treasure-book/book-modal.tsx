@@ -203,7 +203,7 @@ export default function BookModal(props: BookModalProps) {
                     </div>
                     <div className="flex-1 h-full mr-[120px] mt-[40px]" onClick={(e) => e.stopPropagation()}>
                       <YourRewords type={treasureBookTab} list={userPartnerBoxesRewardsList} />
-                      <PartnersMore />
+                      <PartnersMore onClose={onClose} />
                     </div>
                   </motion.div>
                 )
