@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { bera } from "@/configs/tokens/bera";
 import { asyncFetch, post } from "@/utils/http";
 import { multicall } from "@/utils/multicall";
-
+import MATCHED_VAULTS from "../config/infrared/matchedVaults";
 export default function useInfraredData(props: any) {
   const {
     name,
@@ -20,6 +20,7 @@ export default function useInfraredData(props: any) {
   const dataList = [];
 
   const [reloadCount, setReloadCount] = useState(0);
+  
 
   const MULTICALL_ABI = [
     {
@@ -220,18 +221,22 @@ export default function useInfraredData(props: any) {
     });
   }
 
-  async function getIbgtData() {
+  async function getIbgtData(rewardTokens: any) {
     // return await asyncFetch(
     //   `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fbackend-vaults%2Finfrared-ibgt&params=chainId%3D80094`
     // );
 
     const addresses = ['0x75f3be06b02e235f6d0e7ef2d462b29739168301'];
+    const bera = [
+      '0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b',
+      ...rewardTokens?.map((token: any) => token.address).filter((token: any) => token.toLowerCase() !== '0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b'.toLowerCase()),
+    ]
 
     const pricesRes = await post(
       `${process.env.NEXT_PUBLIC_API}/api/go/infrared`,
       {
         "params": {
-          addresses: addresses,
+          addresses: bera,
           includeSevenDayPriceChange: false
         },
         "path": "/api/prices?chainId=80094"
@@ -253,8 +258,9 @@ export default function useInfraredData(props: any) {
     return {
       tvl: item.tvlBreakdown.infrared,
       apr: Object.values(item.aprBreakdown.infrared).reduce((acc, curr) => acc + curr.apr, 0),
-      depositTokenPrice: pricesRes[addresses[0]]?.price || 0,
+      depositTokenPrice: pricesRes[bera[0]]?.price || 0,
       pointsMultiplier: item.pointsMultiplier,
+      tokenPrices: pricesRes
     }
   }
   async function getDataList() {
@@ -311,8 +317,12 @@ export default function useInfraredData(props: any) {
       };
       dataList.push(_data);
     });
-    const ibgt = await getIbgtData();
-    const _ibgtRewardTokens = ibgt?.rewardTokens?.filter?.((_token: any) => _token.address.toLowerCase() !== bera["ibgt"].address.toLowerCase());
+    
+    // const _ibgtRewardTokens = ibgt?.rewardTokens?.filter?.((_token: any) => _token.address.toLowerCase() !== bera["ibgt"].address.toLowerCase());
+    const ibgtVaultAddress = '0x75F3Be06b02E235f6d0E7EF2D462b29739168301'
+    const ibgtRewardTokens = MATCHED_VAULTS.find((item: any) => item.vaultsAddress.toLowerCase() === ibgtVaultAddress.toLowerCase())
+    const ibgt = await getIbgtData(ibgtRewardTokens?.rewardTokens);
+
     dataList.unshift({
       id: "iBGT",
       tokens: ["iBGT"],
@@ -321,15 +331,19 @@ export default function useInfraredData(props: any) {
       decimals0: 18,
       decimals1: 18,
       LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
-      vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
-      rewardSymbol: _ibgtRewardTokens?.[0]?.symbol,
+      vaultAddress: ibgtVaultAddress,
+      rewardSymbol: ibgtRewardTokens?.rewardTokens?.[0]?.symbol,
       tvl: Big(ibgt?.tvl || 0).toFixed(),
       apy: Big(ibgt?.apr || 0)
         .times(100)
         .toFixed(),
       initialData: {
         ...ibgt,
-        rewardTokens: _ibgtRewardTokens,
+        rewardTokens: ibgtRewardTokens?.rewardTokens.map((token: any) => ({
+          ...token,
+          image: 'https://infrared.finance' + token.image,
+          price: ibgt.tokenPrices[token.address.toLowerCase()]?.price
+        })),
         stakeTokenPrice: ibgt.depositTokenPrice,
       },
       type: "Staking",
