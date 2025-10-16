@@ -51,6 +51,14 @@ const Join = (props: any) => {
         />
         <button
           type="button"
+          className="w-[144px] h-[40px] border-[1px] rounded-l-[12px] absolute left-[52px] top-[283px] opacity-0 hover:opacity-30 bg-white/50 transition-all duration-300"
+          onClick={() => {
+            magician.playAudio({ type: "click", action: "play" });
+            magician.setRulesOpen(true);
+          }}
+        />
+        {/* <button
+          type="button"
           className="absolute top-[180px] right-[100px] w-[55px] h-[30px] border border-black rounded-[12px] bg-[linear-gradient(180deg,_#FFCE78_0%,_#9E762F_100%)] rotate-[-8.017deg] font-CherryBomb text-[16px] font-[400] leading-[90%]"
           onClick={() => {
             magician.playAudio({ type: "click", action: "play" });
@@ -58,7 +66,7 @@ const Join = (props: any) => {
           }}
         >
           Rules
-        </button>
+        </button> */}
         {
           !!join.result ? (
             <>

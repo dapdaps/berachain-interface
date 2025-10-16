@@ -42,7 +42,7 @@ export function usePartner(props?: any) {
       {
         name: "Bullas",
         icon: "/images/treasure-book/reward/nft-bullas.png",
-        iconSize: [60, 64],
+        iconSize: [50, 64],
         amount: 0,
       },
       {
