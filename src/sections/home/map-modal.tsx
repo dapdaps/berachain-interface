@@ -74,7 +74,7 @@ const PartList = [
     indicatorClass: "absolute left-[7%] bottom-[22%] z-10 flex items-center",
     buttonClass: "rotate-[-5deg] mr-[10px]",
     arrowClass: "relative top-[-20px]",
-    btnText: "Token Marketplace",
+    btnText: "Marketplace",
     link: "/marketplace",
     ArrowIcon: MarketPlaceArrowIcon
   },

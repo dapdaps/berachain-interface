@@ -273,7 +273,7 @@ export const ENTRIES: any = [
   },
   {
     sort: 3,
-    name: "Token Marketplace",
+    name: "Marketplace",
     disabled: false,
     icon: "/images/home-earth/entry-marketplace.svg",
     signpost: "/images/home-earth/signpost-marketplace.svg",
@@ -350,7 +350,7 @@ export const BADDIES_ENTRIES: any = [
   },
   {
     sort: 3,
-    name: "Token Marketplace",
+    name: "Marketplace",
     disabled: false,
     icon: "/images/home-earth/baddies/baddies-marketplace.svg",
     signpost: "/images/home-earth/signpost-marketplace.svg",
