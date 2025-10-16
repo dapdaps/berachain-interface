@@ -196,7 +196,7 @@ const List = (props: any) => {
       </div>
       <div className="w-[837px] relative mt-[10px] p-[13px_20px] bg-[#BC9549] border border-[#000] shadow-[4px_4px_0_0_#4B371F] rounded-[10px]">
         <div className="flex justify-center items-center relative">
-          <Button
+          {/* <Button
             onClick={() => {
               magician.playAudio({ type: "click", action: "play" });
               magician.setRulesOpen(true);
@@ -206,7 +206,7 @@ const List = (props: any) => {
             <div className="">
               Rules
             </div>
-          </Button>
+          </Button> */}
           <SwitchTabs
             tabs={[
               {
