@@ -97,7 +97,7 @@ const List = (props: any) => {
                             className="w-[23px] h-[20px] object-center object-contain shrink-0"
                           />
                           <div className="">
-                            If you create more than 2.5 Bera games and failed, you will get a Lootbox.
+                            If you wager more than 2.5 Bera games and failed, you will get a Lootbox.
                           </div>
                         </Card>
                       ) : null}
@@ -550,7 +550,8 @@ const List = (props: any) => {
                                 <button
                                   type="button"
                                   className="w-[70px] h-[36px] shrink-0 rounded-[6px] border border-black bg-white text-[14px] text-black font-[600] flex justify-center items-center gap-[5px]"
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     claim.onClaimOpen(true, record);
                                   }}
                                 >
@@ -572,7 +573,6 @@ const List = (props: any) => {
                     magician.onUserListSort(dataIndex, nextDirection);
                   }}
                   onRow={(record: any) => {
-                    console.log("record: %o", record);
                     if (join.viewing) {
                       return;
                     }
