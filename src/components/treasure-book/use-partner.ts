@@ -35,19 +35,19 @@ export function usePartner(props?: any) {
       },
       {
         name: "Steady Teddy",
-        icon: "/images/playground/magician/guess-1.png",
+        icon: "/images/treasure-book/reward/nft-steady-teddy.png",
         iconSize: [50, 64],
         amount: 0,
       },
       {
         name: "Bullas",
-        icon: "/images/playground/magician/guess-2.png",
+        icon: "/images/treasure-book/reward/nft-bullas.png",
         iconSize: [60, 64],
         amount: 0,
       },
       {
         name: "Mibera",
-        icon: "/images/playground/magician/guess-3.png",
+        icon: "/images/treasure-book/reward/nft-mibera.png",
         iconSize: [50, 64],
         amount: 0,
       },
@@ -164,7 +164,7 @@ export function usePartner(props?: any) {
         _rewardData.push({
           type: RewardType.NFT,
           amount: res.data.reward_amount,
-          img: currentBox?.img,
+          img: currentBox?.icon,
           label: `${numberFormatter(res.data.reward_amount, 0, true)} ${currentBox?.name}`,
         });
       }

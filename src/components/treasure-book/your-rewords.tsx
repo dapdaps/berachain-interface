@@ -1,6 +1,7 @@
 import { useState } from "react";
 import History from "./history";
 import clsx from "clsx";
+import { formatLongText } from "@/utils/utils";
 
 export default function YourRewords({ list, type = "beratown" }: { list: any; type?: "beratown" | "partners"; }) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -42,7 +43,7 @@ export default function YourRewords({ list, type = "beratown" }: { list: any; ty
                 }}
               />
               <div className={clsx("whitespace-nowrap opacity-10 mt-[-20px]", item.amount > 0 ? "opacity-100" : "opacity-10")}>
-                {item.name}
+                {formatLongText(item.name, 4, 3)}
               </div>
               {
                 item.amount > 0 && (

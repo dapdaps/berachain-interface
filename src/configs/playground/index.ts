@@ -24,10 +24,11 @@ export const Games: Record<GameName, Game> = {
   },
 };
 
-export const GameLootbox: Record<string, { category: string; name: string; imgBox: string; imgBoxOpen: string; img: string; }> = {
+export const GameLootbox: Record<string, { category: string; name: string; icon: string; imgBox: string; imgBoxOpen: string; img: string; }> = {
   "SteadyTeddy": {
     category: "SteadyTeddy",
     name: "Steady Teddy",
+    icon: "/images/treasure-book/reward/nft-steady-teddy.png",
     img: "/images/playground/magician/guess-1.png",
     imgBox: "/images/playground/magician/lootbox/box-steady-teddy.png",
     imgBoxOpen: "/images/playground/magician/lootbox/box-steady-teddy-open.png",
@@ -35,6 +36,7 @@ export const GameLootbox: Record<string, { category: string; name: string; imgBo
   "Bullas": {
     category: "Bullas",
     name: "Bullas",
+    icon: "/images/treasure-book/reward/nft-bullas.png",
     img: "/images/playground/magician/guess-2.png",
     imgBox: "/images/playground/magician/lootbox/box-bullas.png",
     imgBoxOpen: "/images/playground/magician/lootbox/box-bullas-open.png",
@@ -42,6 +44,7 @@ export const GameLootbox: Record<string, { category: string; name: string; imgBo
   "Mibera": {
     category: "Mibera",
     name: "Mibera",
+    icon: "/images/treasure-book/reward/nft-mibera.png",
     img: "/images/playground/magician/guess-3.png",
     imgBox: "/images/playground/magician/lootbox/box-mibera.png",
     imgBoxOpen: "/images/playground/magician/lootbox/box-mibera-open.png",
@@ -49,6 +52,7 @@ export const GameLootbox: Record<string, { category: string; name: string; imgBo
   "Henlo": {
     category: "Henlo",
     name: "Henlo",
+    icon: "/assets/tokens/henlo.png",
     img: "/images/playground/magician/nft-henlo.png",
     imgBox: "/images/playground/magician/lootbox/box-henlo.png",
     imgBoxOpen: "/images/playground/magician/lootbox/box-henlo-open.png",

@@ -130,11 +130,11 @@ const List = (props: any) => {
             <div className="flex gap-[20px] absolute left-1/2 -translate-x-[0%] top-[-10px]">
               {
                 Object.values(Moves).map((move) => (
-                  <button
+                  <motion.button
                     key={move.value}
                     type="button"
                     className={clsx(
-                      "relative w-[74px] h-[70px] bg-top bg-no-repeat bg-contain shrink-0 transition-all duration-300",
+                      "relative w-[74px] h-[70px] bg-top bg-no-repeat bg-contain shrink-0",
                       // create.betMove?.includes(move.value) ? "opacity-100" : "opacity-50",
                     )}
                     style={{
@@ -143,6 +143,17 @@ const List = (props: any) => {
                     onClick={() => {
                       create.onSelectMove(move.value);
                     }}
+                    variants={{
+                      rotate: {
+                        rotate: [1, 0, -1],
+                      },
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 10,
+                    }}
+                    whileHover="rotate"
                   >
                     <Checkbox
                       className="absolute bottom-[2px] right-0"
@@ -152,7 +163,7 @@ const List = (props: any) => {
                         create.onSelectMove(move.value);
                       }}
                     />
-                  </button>
+                  </motion.button>
                 ))
               }
             </div>
@@ -185,6 +196,17 @@ const List = (props: any) => {
       </div>
       <div className="w-[837px] relative mt-[10px] p-[13px_20px] bg-[#BC9549] border border-[#000] shadow-[4px_4px_0_0_#4B371F] rounded-[10px]">
         <div className="flex justify-center items-center relative">
+          <Button
+            onClick={() => {
+              magician.playAudio({ type: "click", action: "play" });
+              magician.setRulesOpen(true);
+            }}
+            className="absolute left-0"
+          >
+            <div className="">
+              Rules
+            </div>
+          </Button>
           <SwitchTabs
             tabs={[
               {

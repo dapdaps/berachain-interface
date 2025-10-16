@@ -36,7 +36,7 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
                 </li>
                 <li className="mb-[0px]">
                   <p className="">
-                    🎲 The <strong>smart contract will fairly and randomly reveal</strong> one animal.
+                    🎲 The <strong>smart contract will fairly and randomly reveal</strong> one mascot.
                   </p>
                 </li>
                 <li className="mb-[0px]">
@@ -64,12 +64,12 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
                 </li>
                 <li className="mb-[0px]">
                   <p className="">
-                    💸 All bets are fully refunded, with <strong>no platformfees deducted</strong>.
+                    💸 All bets are fully refunded, with <strong>no platform fees deducted</strong>.
                   </p>
                 </li>
                 <li className="mb-[0px]">
                   <p className="">
-                    🎁 <strong>Bonus Lootbox:</strong> If you lose the round but your bet was <strong>≥2.5 BERA</strong>, you’ll receive a surprise Lootbox — with a chance to win NFTs and Memetoken rewards!
+                    🎁 <strong>Bonus Lootbox:</strong> If you lose the round and your bet was <strong>≥2.5 BERA</strong>, you’ll receive a surprise Lootbox — with a chance to win NFTs and Memetoken rewards!
                   </p>
                 </li>
               </ul>

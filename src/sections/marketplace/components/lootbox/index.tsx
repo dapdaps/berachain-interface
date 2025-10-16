@@ -2,6 +2,7 @@ import Loading from "@/components/loading";
 import { numberFormatter } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { motion } from "framer-motion";
 import { useMemo } from "react";
 
 dayjs.extend(utc);
@@ -25,10 +26,23 @@ const Lootbox = (props: any) => {
   }, [reward_balance]);
 
   return (
-    <div className="flex items-center justify-center">
-      <div
+    <motion.div
+      className="flex items-center justify-center"
+      whileHover="rotate"
+    >
+      <motion.div
         className="w-[206px] h-[164px] md:w-[100px] md:h-[80px] bg-no-repeat bg-center bg-contain shrink-0 translate-x-[10px] relative z-[2]"
-        style={{ backgroundImage: `url("${imgBox}")` }}
+        style={{ backgroundImage: `url("${imgBox}")`, x: 10, }}
+        variants={{
+          rotate: {
+            rotate: [1, 0, -1],
+          },
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 10,
+        }}
       >
         {
           isSoldOut && (
@@ -39,7 +53,7 @@ const Lootbox = (props: any) => {
             </div>
           )
         }
-      </div>
+      </motion.div>
       <div className="w-[248px] p-[10px_10px_22px_15px] md:w-[200px] md:p-[5px_5px_11px_8px] md:rounded-[10px] rounded-[18px] border border-black bg-[#FFE5B8] shadow-shadow1 shrink-0 relative z-[1]">
         <div className="text-black font-[600] text-[20px] md:text-[14px] font-CherryBomb text-center mb-[7px] leading-[100%] whitespace-nowrap">
           {name}’s Lootbox
@@ -71,7 +85,7 @@ const Lootbox = (props: any) => {
           )
         }
       </div>
-    </div>
+    </motion.div>
   );
 };
 
