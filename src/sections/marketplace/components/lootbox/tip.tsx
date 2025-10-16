@@ -6,7 +6,7 @@ const LootboxTip = (props: any) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="w-[450px] md:hidden absolute left-1/2 -translate-x-1/2 top-[60px] border border-black rounded-[10px] bg-[#FFF5A9] p-[10px_15px] font-Montserrat text-[14px] text-black font-[500] shadow-shadow1"
+        className="w-[450px] md:hidden absolute left-1/2 -translate-x-1/2 top-[10px] border border-black rounded-[10px] bg-[#FFF5A9] p-[10px_15px] font-Montserrat text-[14px] text-black font-[500] shadow-shadow1"
         style={{
           x: "-50%",
         }}

@@ -53,6 +53,7 @@ const Join = (props: any) => {
           type="button"
           className="absolute top-[180px] right-[100px] w-[55px] h-[30px] border border-black rounded-[12px] bg-[linear-gradient(180deg,_#FFCE78_0%,_#9E762F_100%)] rotate-[-8.017deg] font-CherryBomb text-[16px] font-[400] leading-[90%]"
           onClick={() => {
+            magician.playAudio({ type: "click", action: "play" });
             magician.setRulesOpen(true);
           }}
         >

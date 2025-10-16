@@ -14,7 +14,7 @@ const Lootbox = (props: any) => {
 
   const isRewardLootbox = useMemo(() => {
     if (!join.result
-      // || join.result.view === true
+      || join.result.view === true
       || !magician.account
       || join.result.address.toLowerCase() === magician.account.toLowerCase()
       || !magician.room?.room_id

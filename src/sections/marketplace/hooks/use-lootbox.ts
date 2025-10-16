@@ -40,6 +40,7 @@ export const useLootbox = (props?: any) => {
       _list.forEach((item: any) => {
         const _curr = GameLootbox[item.category];
         if (_curr) {
+          item.icon = _curr.icon;
           item.img = _curr.img;
           item.imgBox = _curr.imgBox;
           item.imgBoxOpen = _curr.imgBoxOpen;
