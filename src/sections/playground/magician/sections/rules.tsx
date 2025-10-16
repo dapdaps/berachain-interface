@@ -9,7 +9,7 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
     >
       <div className="w-[540px] md:h-[80dvh] md:overflow-y-auto md:w-full relative bg-[#FFF1C7] rounded-[16px] md:rounded-b-[0] border-[2px] border-[#E5C375] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] p-[20px_20px] md:p-[10px_5px]">
         <div className="text-[#FDD54C] text-center [text-shadow:0_4px_0_#000] font-CherryBomb text-[30px] font-[400] leading-normal capitalize [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#000]">
-          ✨ GuessWho — Game Rules
+          GuessWho — Game Rules
         </div>
         <div className="mt-[20px]">
           <ul className="list-none">
@@ -26,7 +26,7 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
                 </li>
                 <li className="mb-[0px]">
                   <p className="">
-                    🎩 Choose <strong>one or more magic hats</strong> — Rabbit, Bear, or Panda.
+                    🎩 Choose one or more magic hats — <strong>Steady Teddy, Bullas, Mibera</strong>
                   </p>
                 </li>
                 <li className="mb-[0px]">
@@ -41,7 +41,7 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
                 </li>
                 <li className="mb-[0px]">
                   <p className="">
-                    🏆 Only players who picked the revealed animal <strong>win the entire pot</strong>. No splits, no ties — one clear winner!
+                    🏆 Only players who picked the revealed hat <strong>win the entire pot</strong>. No splits, no ties — one clear winner!
                   </p>
                 </li>
                 <li className="mb-[0px]">
@@ -65,6 +65,11 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
                 <li className="mb-[0px]">
                   <p className="">
                     💸 All bets are fully refunded, with <strong>no platformfees deducted</strong>.
+                  </p>
+                </li>
+                <li className="mb-[0px]">
+                  <p className="">
+                    🎁 <strong>Bonus Lootbox:</strong> If you lose the round but your bet was <strong>≥2.5 BERA</strong>, you’ll receive a surprise Lootbox — with a chance to win NFTs and Memetoken rewards!
                   </p>
                 </li>
               </ul>
