@@ -5,11 +5,12 @@ import { numberFormatter } from "@/utils/number-formatter";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { useTimeLeft } from "./useTimeLeft";
+import { useTimeLeft } from "./hooks/useTimeLeft";
 import Popover, { PopoverPlacement, PopoverTrigger } from "../popover";
 import FirstRoundCountdown from "./first-round-countdown";
 import { useAirdrop } from "./hooks/useAirdrop";
 import Airdrop from "./airdrop";
+import Vaults from "../vaults";
 
 const PointsEntry = (props: any) => {
   const { className, isGuide = false } = props;
@@ -105,6 +106,11 @@ const PointsEntry = (props: any) => {
         claim={claim}
         claiming={claiming}
       />
+      {
+        (isStarted && !isEnded) && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
+          setAirdropOpen(true)
+        }} />
+      }
     </>
   );
 };

@@ -230,7 +230,7 @@ const Home = () => {
                 minHeight: "100dvh"
               }}
             >
-              <Vaults className="!absolute z-[2] !left-[unset] !top-[50px] right-[-30px] scale-[0.78] origin-right" />
+              {/* <Vaults className="!absolute z-[2] !left-[unset] !top-[50px] right-[-30px] scale-[0.78] origin-right" /> */}
 
               {/*#region Hall*/}
               <motion.div

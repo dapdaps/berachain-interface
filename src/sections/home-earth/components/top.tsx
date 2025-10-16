@@ -97,11 +97,11 @@ const HomeEarthTop = (props: any) => {
           )}
         </AnimatePresence>
       </div>
-      {
+      {/* {
         isAirdrop && (
           <Vaults className="!left-[unset] right-[100px] !top-[150px]" />
         )
-      }
+      } */}
     </div>
   );
 };
