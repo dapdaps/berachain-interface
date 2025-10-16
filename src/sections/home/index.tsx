@@ -68,7 +68,7 @@ const Navigation = function () {
           }`}
         >
           <div className={`text-[20px] font-CherryBomb leading-[90%]`}>
-            Token Marketplace
+            Marketplace
           </div>
           <ArrowTopSvg />
         </div>

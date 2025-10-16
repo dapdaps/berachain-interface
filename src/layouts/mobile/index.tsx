@@ -34,7 +34,7 @@ const menuItems = [
   },
   {
     id: 3,
-    title: "Token Marketplace",
+    title: "Marketplace",
     href: "/marketplace",
     dataBp: "1015-002-003"
   },
