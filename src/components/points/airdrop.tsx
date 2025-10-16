@@ -4,6 +4,7 @@ import useAccount from "@/hooks/use-account";
 import { useRouter } from "next/navigation";
 import Big from "big.js";
 import CircleLoading from "../circle-loading";
+import { motion } from "framer-motion";
 
 interface AirdropProps {
     open: boolean;
@@ -72,7 +73,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     </div>
                 </div>
 
-                <div className="bg-[#f0eedd] rounded-[15px] p-4 mx-6 mb-6 ">
+                <div className="bg-[#f0eedd] rounded-[15px] p-4 mx-6 mb-6 relative z-10">
                     <div className="relative">
                         <input
                             type="text"
@@ -95,8 +96,17 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                         {
                             claimableTokens && Number(claimableTokens) > 0 ? (
                                 <>
-                                    <div className="text-center mb-6">
-                                        <img src="/images/airdrop/bera-icon.png" alt="token" className="w-[70px] object-cover mx-auto mb-2" />
+                                    <div className="text-center mb-6 mt-[50px]">
+                                        <div className="w-[70px] relative mx-auto">
+                                            <motion.img
+                                                src="/images/airdrop/bg.png"
+                                                alt="token"
+                                                className="block absolute max-w-[340px] max-h-[340px] top-1/2 ml-[-170px] mt-[-170px] left-1/2 w-[340px] h-[340px]"
+                                                animate={{ rotate: 360 }}
+                                                transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+                                            />
+                                            <img src="/images/airdrop/bera-icon.png" alt="token" className="relative z-10 w-[70px] object-cover mx-auto mb-2" />
+                                        </div>
 
                                         
                                         <div className="relative flex items-center justify-center gap-2">
