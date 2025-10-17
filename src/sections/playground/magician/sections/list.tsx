@@ -512,6 +512,7 @@ const List = (props: any) => {
                       dataIndex: "create_time",
                       title: "Time",
                       width: 120,
+                      sort: true,
                       render: (record: any) => {
                         return (
                           <TimeAgo record={record} />
@@ -522,6 +523,7 @@ const List = (props: any) => {
                       dataIndex: "bet_amount",
                       title: "Bet Price",
                       width: 130,
+                      sort: true,
                       render: (record: any) => {
                         return (
                           <div className="flex items-center gap-[6px]">
