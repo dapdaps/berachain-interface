@@ -11,6 +11,7 @@ import FirstRoundCountdown from "./first-round-countdown";
 import { useAirdrop } from "./hooks/useAirdrop";
 import Airdrop from "./airdrop";
 import Vaults from "../vaults";
+import { usePathname } from "next/navigation";
 
 const PointsEntry = (props: any) => {
   const { className, isGuide = false } = props;
@@ -21,6 +22,8 @@ const PointsEntry = (props: any) => {
   const timeLeft = useTimeLeft();
   const [airdropOpen, setAirdropOpen] = useState(false);
   const { timeLeft: airdropTimeLeft, formattedTimeLeft, claimableTokens, totalClaimable, claim, claiming, isStarted, isEnded } = useAirdrop();
+
+  const pathname = usePathname();
 
   return (
     <>
@@ -107,7 +110,7 @@ const PointsEntry = (props: any) => {
         claiming={claiming}
       />
       {
-        (isStarted && !isEnded) && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
+        (isStarted && !isEnded && pathname === '/') && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
           setAirdropOpen(true)
         }} />
       }
