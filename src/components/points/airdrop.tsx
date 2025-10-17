@@ -165,7 +165,8 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                     <div className="text-center px-6 pb-8">
                                         <img src="/images/airdrop/no-bera-icon.png" alt="token" className="w-[70px] object-cover mx-auto" />
                                         <div className="font-bold text-[22px] leading-tight mb-1 mt-2">We are sorry</div>
-                                        <div className="text-[16px] mt-0 mb-2">You didn’t make it this time, but don’t worry keep stacking! A new round has already begun. but your luck might turn in Guess Who?</div>
+                                        <div className="text-[16px] mt-0 mb-2">You didn’t make it this time, but don’t worry keep stacking! A new round has already begun.
+                                        Your luck might turn in Guess Who?</div>
                                         <div className="flex items-center justify-center gap-1 mb-3">
                                             <span className="text-yellow-500 text-xl">👇</span>
                                             <span className="text-yellow-500 text-xl">👇</span>
