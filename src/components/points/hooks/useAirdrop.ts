@@ -317,6 +317,7 @@ export const useAirdrop = () => {
     const [isEnded, setIsEnded] = useState(false);
     const { success, fail } = useToast();
     const [claiming, setClaiming] = useState(false);
+    const [isClaimed, setIsClaimed] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -419,6 +420,7 @@ export const useAirdrop = () => {
                     title: 'Claim successful!',
                     tx: transactionHash
                 });
+                setIsClaimed(true);
             } else {
                 fail({
                     title: 'Claim failed!',
@@ -444,6 +446,7 @@ export const useAirdrop = () => {
         claiming,
         isStarted,
         isEnded,
+        isClaimed,
     }
 
 }

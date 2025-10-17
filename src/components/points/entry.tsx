@@ -21,7 +21,7 @@ const PointsEntry = (props: any) => {
   const [isHovered, setIsHovered] = useState(isGuide);
   const timeLeft = useTimeLeft();
   const [airdropOpen, setAirdropOpen] = useState(false);
-  const { timeLeft: airdropTimeLeft, formattedTimeLeft, claimableTokens, totalClaimable, claim, claiming, isStarted, isEnded } = useAirdrop();
+  const { timeLeft: airdropTimeLeft, formattedTimeLeft, claimableTokens, totalClaimable, claim, claiming, isStarted, isEnded, isClaimed } = useAirdrop();
 
   const pathname = usePathname();
 
@@ -108,6 +108,7 @@ const PointsEntry = (props: any) => {
         totalClaimable={totalClaimable}
         claim={claim}
         claiming={claiming}
+        isClaimed={isClaimed}
       />
       {
         (isStarted && !isEnded && pathname === '/') && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {

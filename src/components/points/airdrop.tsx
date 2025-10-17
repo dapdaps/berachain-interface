@@ -21,15 +21,16 @@ interface AirdropProps {
     };
     claim: () => void;
     claiming: boolean;
+    isClaimed: boolean;
 }
 
-export default function Airdrop({ open, onClose, timeLeft, claimableTokens, totalClaimable, formattedTimeLeft, claim, claiming }: AirdropProps) {
+export default function Airdrop({ open, onClose, timeLeft, claimableTokens, totalClaimable, formattedTimeLeft, claim, claiming, isClaimed }: AirdropProps) {
     const { account } = useAccount();
     const [isChecked, setIsChecked] = useState(false)
     const router = useRouter();
 
     const canClaim = useMemo(() => {
-        return Number(claimableTokens) > 0 && Number(totalClaimable) > 0;
+        return Number(claimableTokens) > 0 && Number(totalClaimable) > 0 && !isClaimed;
     }, [claimableTokens, totalClaimable]);
 
     const handleCheckEligibility = () => {
@@ -37,6 +38,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
     };
 
     const handlePlayNow = () => {
+        onClose();
         router.push('/carnival/guess-who');
     };
 
@@ -145,7 +147,9 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                                     <CircleLoading size={14} className="mr-3" />
                                                 )
                                             }
-                                            Claim
+                                            {
+                                                isClaimed ? 'Already Claimed' : 'Claim'
+                                            }
                                         </button>
                                     </div>
 
