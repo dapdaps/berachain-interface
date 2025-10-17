@@ -30,12 +30,12 @@ const MENU_LIST = [
     href: "/stake",
     sort: 4
   },
-  {
-    label: "Lend",
-    bg: "#98F6CD",
-    href: "/lend",
-    sort: 5
-  },
+  // {
+  //   label: "Lend",
+  //   bg: "#98F6CD",
+  //   href: "/lend",
+  //   sort: 5
+  // },
   {
     label: "Vaults",
     bg: "#F3BBAB",
@@ -76,6 +76,7 @@ const NavigationMenu = (props: any) => {
   const pathname = usePathname();
   const isSmall = ["/bintent"].includes(pathname);
   const isHide = ["/belong", "/"].includes(pathname);
+  const is2Top = ["/carnival/guess-who"].includes(pathname);
 
   if (isHide) {
     return null;
@@ -86,7 +87,7 @@ const NavigationMenu = (props: any) => {
       className={clsx(
         "fixed z-[51] flex flex-col gap-[10px] items-end",
         isSmall ? "right-[-20px]" : "right-0",
-        "top-[120px]",
+        is2Top ? "top-[64px]" : "top-[120px]",
         className
       )}
     >
