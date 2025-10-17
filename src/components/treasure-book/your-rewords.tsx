@@ -23,12 +23,7 @@ export default function YourRewords({ list, type = "beratown" }: { list: any; ty
           History
         </button>
       </div>
-      <div
-        className="flex justify-between items-center mt-[20px] font-CherryBomb font-[16px] text-white"
-        style={{
-          WebkitTextStroke: "2px #000000",
-        }}
-      >
+      <div className="flex justify-between items-center mt-[20px] font-CherryBomb font-[16px] text-white">
         {
           list?.map((item: any, index: number) => (
             <div key={index} className="w-[86px] h-[86px] relative flex-col flex justify-center items-center bg-[#FFFFFF33] border-dashed rounded-[20px] border-[3px] border-[#8B6A45]">
@@ -41,7 +36,7 @@ export default function YourRewords({ list, type = "beratown" }: { list: any; ty
                   height: item.iconSize[1],
                 }}
               />
-              <div className={clsx("w-[calc(100%_+_10px)] overflow-hidden [text-shadow:0_2px_0_#000] font-[600] text-ellipsis text-center whitespace-nowrap opacity-10 mt-[-10px] text-[15px]", item.amount > 0 ? "opacity-100" : "opacity-10")}>
+              <div className={clsx("w-[calc(100%_+_10px)] overflow-hidden font-[600] text-ellipsis text-center whitespace-nowrap opacity-10 mt-[-10px] text-[15px]", item.amount > 0 ? "opacity-100" : "opacity-10")}>
                 {item.name}
               </div>
               {
