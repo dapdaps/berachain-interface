@@ -18,10 +18,10 @@ const BeratownRewards = new Map([
 const PartnersRewards = new Map([
     ["Points", { key: "gem_amount" }],
     ["Cosmetics", { key: "cosmetic", isSplit: true }],
-    ["Steady Teddy", { key: "SteadyTeddy" }],
-    ["Bullas", { key: "Bullas" }],
-    ["Mibera", { key: "Mibera" }],
-    ["$HENLO", { key: "Henlo" }],
+    ["Steady Teddy", { category: "SteadyTeddy", key: "reward_amount" }],
+    ["Bullas", { category: "Bullas", key: "reward_amount" }],
+    ["Mibera", { category: "Mibera", key: "reward_amount" }],
+    ["$HENLO", { category: "Henlo", key: "reward_amount" }],
 ]);
 
 export default function History({ onClose, type = "beratown" }: { onClose: () => void; type?: "beratown" | "partners"; }) {
@@ -38,8 +38,8 @@ export default function History({ onClose, type = "beratown" }: { onClose: () =>
             render: (text: any, record: any) => {
                 const list: any = [];
 
-                const RewardMap = type === "beratown" ? BeratownRewards : PartnersRewards;
-                RewardMap.forEach((value, label) => {
+                const RewardMap: any = type === "beratown" ? BeratownRewards : PartnersRewards;
+                RewardMap.forEach((value: any, label: any) => {
                     if (value.isSplit) {
                         if (record[value.key]) {
                             list.push(label);
@@ -48,7 +48,13 @@ export default function History({ onClose, type = "beratown" }: { onClose: () =>
                     }
 
                     if (record[value.key] > 0) {
-                        list.push(label);
+                        if (value.category) {
+                            if (record.category === value.category) {
+                                list.push(label);
+                            }
+                        } else {
+                            list.push(label);
+                        }
                     }
                 });
 
@@ -68,8 +74,8 @@ export default function History({ onClose, type = "beratown" }: { onClose: () =>
             render: (text: any, record: any) => {
                 const list: any = [];
 
-                const RewardMap = type === "beratown" ? BeratownRewards : PartnersRewards;
-                RewardMap.forEach((value, label) => {
+                const RewardMap: any = type === "beratown" ? BeratownRewards : PartnersRewards;
+                RewardMap.forEach((value: any, label: any) => {
                     if (value.isSplit) {
                         if (record[value.key]) {
                             list.push(`X ${record[value.key].split(',').filter((it: any) => !!it).length}`);
@@ -78,7 +84,13 @@ export default function History({ onClose, type = "beratown" }: { onClose: () =>
                     }
 
                     if (record[value.key] > 0) {
-                        list.push(`X ${numberFormatter(record[value.key], 2, true, { isShort: true, isShortUppercase: true })}`);
+                        if (value.category) {
+                            if (record.category === value.category) {
+                                list.push(`X ${numberFormatter(record[value.key], 2, true, { isShort: true, isShortUppercase: true })}`);
+                            }
+                        } else {
+                            list.push(`X ${numberFormatter(record[value.key], 2, true, { isShort: true, isShortUppercase: true })}`);
+                        }
                     }
                 });
 
