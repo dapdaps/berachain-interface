@@ -71,7 +71,7 @@ export default function TreasureBook(props: any) {
         tab: treasureBookTab,
     });
 
-    const is2Left = ["/carnival/guess-who"].includes(pathname);
+    const is2Top = ["/carnival/guess-who"].includes(pathname);
 
     useMemo(() => {
         const _defaultOpen = treasureBookSearchParams === '1';
@@ -126,8 +126,8 @@ export default function TreasureBook(props: any) {
                 placement={PopoverPlacement.Bottom}
                 trigger={PopoverTrigger.Hover}
                 triggerContainerClassName={clsx(
-                    "fixed z-[51] top-[560px] cursor-pointer group",
-                    is2Left ? "left-[10px]" : "right-[10px]",
+                    "fixed z-[51] right-[10px] cursor-pointer group",
+                    is2Top ? "top-[460px]" : "top-[520px]",
                     className,
                 )}
                 onMouseEnter={() => {
