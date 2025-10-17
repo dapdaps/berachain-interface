@@ -51,12 +51,12 @@ export function usePartner(props?: any) {
         iconSize: [50, 64],
         amount: 0,
       },
-      {
-        name: "$HENLO",
-        icon: "/assets/tokens/henlo.png",
-        iconSize: [50, 64],
-        amount: 0,
-      },
+      // {
+      //   name: "$HENLO",
+      //   icon: "/assets/tokens/henlo.png",
+      //   iconSize: [50, 64],
+      //   amount: 0,
+      // },
     ];
 
     if (userBoxes?.size) {
@@ -81,9 +81,9 @@ export function usePartner(props?: any) {
           _yourRewardsList[4].amount = _yourRewardsList[4].amount + (item.reward_amount || 0);
         }
         // 5 = $Henlo = item.category === "Henlo" && item.reward_amount: number
-        if (item.category === GameLootbox["Henlo"].category) {
-          _yourRewardsList[5].amount = _yourRewardsList[5].amount + (item.reward_amount || 0);
-        }
+        // if (item.category === GameLootbox["Henlo"].category) {
+        //   _yourRewardsList[5].amount = _yourRewardsList[5].amount + (item.reward_amount || 0);
+        // }
       });
     }
 

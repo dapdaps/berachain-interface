@@ -24,7 +24,7 @@ export const Games: Record<GameName, Game> = {
   },
 };
 
-export const GameLootbox: Record<string, { category: string; name: string; icon: string; imgBox: string; imgBoxOpen: string; img: string; }> = {
+export const GameLootbox: Record<string, { category: string; name: string; icon: string; imgBox: string; imgBoxOpen: string; img: string; disabled?: boolean; }> = {
   "SteadyTeddy": {
     category: "SteadyTeddy",
     name: "Steady Teddy",
@@ -56,5 +56,6 @@ export const GameLootbox: Record<string, { category: string; name: string; icon:
     img: "/images/playground/magician/nft-henlo.png",
     imgBox: "/images/playground/magician/lootbox/box-henlo.png",
     imgBoxOpen: "/images/playground/magician/lootbox/box-henlo-open.png",
+    disabled: true,
   },
 };
