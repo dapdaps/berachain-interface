@@ -22,7 +22,7 @@ const PartnersBoxes = (props: any) => {
       </div>
       <div className="grid grid-cols-2 gap-x-[45px] gap-y-[35px] mt-[25px] pl-[50px]">
         {
-          Object.values(GameLootbox).map((box, index) => {
+          Object.values(GameLootbox).filter((box) => !box.disabled).map((box, index) => {
             const isBalanceBox = !!userBoxes?.get(box.category)?.balance_box;
             return (
               <div key={index} className="group w-[212px] h-[212px] relative flex justify-center items-center">
