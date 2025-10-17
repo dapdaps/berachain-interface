@@ -89,6 +89,10 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     >
                         Check Eligibility
                     </button>
+
+                    <div className="text-center text-sm text-black mt-4">
+                        Did you collect more than 500 gems during the snapshot on 13-10-25?
+                    </div>
                 </div>
 
                 {
@@ -108,7 +112,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                             <img src="/images/airdrop/bera-icon.png" alt="token" className="relative z-10 w-[70px] object-cover mx-auto mb-2" />
                                         </div>
 
-                                        
+
                                         <div className="relative flex items-center justify-center gap-2">
                                             <div
                                                 className="text-[32px] font-[800] text-[#FFDC50] mb-1 font-CherryBomb"
@@ -161,7 +165,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                     <div className="text-center px-6 pb-8">
                                         <img src="/images/airdrop/no-bera-icon.png" alt="token" className="w-[70px] object-cover mx-auto" />
                                         <div className="font-bold text-[22px] leading-tight mb-1 mt-2">We are sorry</div>
-                                        <div className="text-[16px] mt-0 mb-2">No BERA this time... but your luck might turn in Guess Who?</div>
+                                        <div className="text-[16px] mt-0 mb-2">You didn’t make it this time, but don’t worry keep stacking! A new round has already begun. but your luck might turn in Guess Who?</div>
                                         <div className="flex items-center justify-center gap-1 mb-3">
                                             <span className="text-yellow-500 text-xl">👇</span>
                                             <span className="text-yellow-500 text-xl">👇</span>
