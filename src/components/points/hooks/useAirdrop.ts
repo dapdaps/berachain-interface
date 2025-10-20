@@ -3,7 +3,7 @@ import useToast from "@/hooks/use-toast";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 
-const contractAddress = '0x1f0FB412e665066C48C01b7BB2549a6E3D527B9d';
+const contractAddress = process.env.NEXT_PUBLIC_AIRDROP_CONTRACT_ADDRESS ||  '0x1f0FB412e665066C48C01b7BB2549a6E3D527B9d';
 // const contractAddress = '0x62f1A62C7Ac3429c375B58E4cA466D81Af0f6EaA';
 
 const ABI = [

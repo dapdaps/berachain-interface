@@ -14,7 +14,11 @@ const FirstRoundCountdown = (props: any) => {
         <div className="w-full flex flex-col items-center text-[16px]">
           <div className="w-full bg-[#FDD54C] rounded-full h-[40px] flex items-center justify-center mb-[8px]">
             {
-              timeLeft.total <= 0 ? <div onClick={onClaimClick} className={clsx("font-CherryBomb transition-all duration-300", disabled ? "cursor-default opacity-50" : "cursor-pointer hover:scale-105")}>Claim your rewards</div> : (
+              timeLeft.total <= 0 ? <div onClick={() => {
+                if (!disabled) {
+                  onClaimClick?.()
+                }
+              }} className={clsx("font-CherryBomb transition-all duration-300", disabled ? "cursor-default opacity-50" : "cursor-pointer hover:scale-105")}>Claim your rewards</div> : (
                 timeLeft.days < 10 ? `0${timeLeft.days}` : timeLeft.days) + ' days ' + (timeLeft.hours < 10 ? `0${timeLeft.hours}` : timeLeft.hours) + ' : ' + (timeLeft.minutes < 10 ? `0${timeLeft.minutes}` : timeLeft.minutes) + ' : ' + (timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds)
             }
           </div>
