@@ -59,7 +59,7 @@ export async function getQuote(
         tokenInChainId: numFromChainId,
         tokenOutAddress: quoteRequest.toToken.address,
         tokenOutChainId: numToChainId,
-        amount: quoteRequest.amount.toString(),
+        amount: quoteRequest.amount.toFixed(0),
         type: 'exactIn',
         recipient: quoteRequest.destAddress,
         slippageTolerance: 1
@@ -91,7 +91,7 @@ export async function getQuote(
     const result = await response.json()
 
     await createRoute(result, routes, quoteRequest, wrapType, signer)
-    if (result.otherQuote) {
+    if (result.otherQuote && (result.provider !== result.otherQuote.provider)) {
         await createRoute(result.otherQuote, routes, quoteRequest, wrapType, signer)
     }
 
@@ -192,10 +192,10 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             signer,
             wethAddress: weth[quoteRequest.fromChainId as any],
             type: wrapType,
-            amount: quoteRequest.amount.toString()
-          });
+            amount: quoteRequest.amount.toFixed(0)
+        });
 
-          const uuid = setQuote({
+        const uuid = setQuote({
             route: {
                 ...txn,
                 gasLimit: gasLimit ? gasLimit.toString() : undefined
@@ -207,6 +207,7 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             bridgeType: 'Kodiak',
             isWrap: true,
         })
+        
 
         const route: any = {
             uuid,
@@ -222,6 +223,7 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             identification: quoteRequest.identification,
             toexchangeRate: '1'
         }
+
 
         routes.push(route)
     }
