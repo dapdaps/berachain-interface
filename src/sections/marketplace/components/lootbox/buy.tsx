@@ -37,7 +37,7 @@ const Content = (props: any) => {
   return (
     <div className="text-[16px] leading-[100%] font-[600]">
       <div className="font-CherryBomb text-[20px]">
-        {box?.name}’s Lootbox
+        {box?.title}
       </div>
       <div className="mt-[30px]">
         <div className="flex justify-between items-center mt-[20px]">

@@ -2,6 +2,7 @@ import Card from "@/components/card";
 import Loading from "@/components/loading";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import { numberFormatter } from "@/utils/number-formatter";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { motion } from "framer-motion";
@@ -14,6 +15,7 @@ const Lootbox = (props: any) => {
     product_id,
     category,
     name,
+    title,
     price,
     reward_balance,
     end_time,
@@ -76,8 +78,11 @@ const Lootbox = (props: any) => {
           }
         </motion.div>
         <div className="w-[248px] p-[10px_10px_22px_15px] md:w-[200px] md:p-[5px_5px_11px_8px] md:rounded-[10px] rounded-[18px] border border-black bg-[#FFE5B8] shadow-shadow1 shrink-0 relative z-[1]">
-          <div className="text-black font-[600] text-[20px] md:text-[14px] font-CherryBomb text-center mb-[7px] leading-[100%] whitespace-nowrap">
-            {name}’s Lootbox
+          <div className={clsx(
+            "text-black font-[600] md:text-[14px] font-CherryBomb text-center mb-[7px] leading-[100%] whitespace-nowrap",
+            title?.length > 22 ? "text-[15px]" : "text-[20px]",
+          )}>
+            {title}
           </div>
           <LabelValue label="Price">
             {numberFormatter(price, 6, true)} Bera
