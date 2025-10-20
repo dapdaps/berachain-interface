@@ -56,7 +56,7 @@ export function useMagician() {
   const setPlayersAvatar = (players: any) => {
     const palyerAvatars: Record<string, string> = {};
     players?.forEach((player: any, idx: number) => {
-      let defaultAvatar = PlayerAvatars[idx];
+      let defaultAvatar = PlayerAvatars[player.address.slice(-1)?.toLowerCase()];
       if (palyerAvatars[player.address]) {
         player.avatar = palyerAvatars[player.address];
         return;
@@ -66,8 +66,7 @@ export function useMagician() {
       }
       let playerAvatar = defaultAvatar;
       try {
-        const playerNumber = BigInt(player.address).toString();
-        playerAvatar = PlayerAvatars[playerNumber.slice(-1)];
+        playerAvatar = PlayerAvatars[player.address.slice(-1)?.toLowerCase()];
       } catch (err: any) { }
       player.avatar = playerAvatar || defaultAvatar;
       palyerAvatars[player.address] = player.avatar;
