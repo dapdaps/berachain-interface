@@ -12,7 +12,7 @@ import { LOOTBOX_CONTRACT_ABI } from "../components/lootbox/abi";
 import useToast from "@/hooks/use-toast";
 import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
-import { GameLootbox } from "@/configs/playground";
+import { GameLootbox, RaffleBox } from "@/configs/playground";
 import useTokenBalance from "@/hooks/use-token-balance";
 
 export const useLootbox = (props?: any) => {
@@ -45,6 +45,9 @@ export const useLootbox = (props?: any) => {
           item.imgBox = _curr.imgBox;
           item.imgBoxOpen = _curr.imgBoxOpen;
           item.name = _curr.name;
+        }
+        if (RaffleBox.includes(item.category)) {
+          item.isRaffle = true;
         }
       });
       return _list;
