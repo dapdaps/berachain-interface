@@ -125,10 +125,10 @@ export class Bex {
           amount: i === 0 ? tokenInAmount : 0
         };
       });
-      const assets = tokenAddresses.map((address: any) =>
-        address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
-          ? "0x0000000000000000000000000000000000000000"
-          : address
+      const assets = tokenAddresses.map((address: any) => address
+        // address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
+        //   ? "0x0000000000000000000000000000000000000000"
+        //   : address
       );
       params = [0, swaps, assets, funds, limits, deadline.toFixed(0)];
     } else {
