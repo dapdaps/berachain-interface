@@ -7,6 +7,7 @@ import ResultHat from "../components/result-hat";
 import Exploding from "../components/exploding";
 import { useEffect } from "react";
 import Lootbox from "./lootbox";
+import { Status } from "../config";
 
 const Join = (props: any) => {
   const {
@@ -87,7 +88,7 @@ const Join = (props: any) => {
               <WaitingHat />
               <div className="absolute translate-y-[10px]">
                 <div className="text-center text-white font-[600]">
-                  Waiting...
+                  {magician.room?.status === Status.Canceled ? "Closed join" : "Waiting..."}
                 </div>
                 {
                   !join.resultPending && !join.result && (
@@ -102,6 +103,7 @@ const Join = (props: any) => {
                         //   moves: 0,
                         // });
                       }}
+                      disabled={magician.room?.status === Status.Canceled}
                     >
                       Join
                     </LightingButton>
