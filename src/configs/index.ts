@@ -3,6 +3,8 @@ import { bera } from "./tokens/bera";
 export const DEFAULT_CHAIN_ID =
   Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 80094;
 
+export const IS_PRODUCTION = process.env.NEXT_PUBLIC_API === "https://api.beratown.app";
+
 export const IS_MAINNET = DEFAULT_CHAIN_ID === 80094;
 
 export const DEFAULT_SWAP_DAPP = "bex";
