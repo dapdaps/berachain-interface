@@ -13,6 +13,7 @@ const GridTable = (props: Props, ref: any) => {
     rowClassName,
     headerRowClassName,
     bodyRowClassName,
+    bodyRowStyle,
     colClassName,
     headerColClassName,
     bodyColClassName,
@@ -22,6 +23,8 @@ const GridTable = (props: Props, ref: any) => {
     sortDirection,
     onSort,
     loading,
+    sortIconColor = ["#FBCA04", "white"],
+    onRow,
   } = props;
 
   const headerRef = useRef<any>(null);
@@ -147,12 +150,12 @@ const GridTable = (props: Props, ref: any) => {
                       <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M3.5 0L6.53109 3H0.468911L3.5 0Z"
-                          fill={(sortDirection === GridTableSortDirection.Asc && sortDataIndex === col.dataIndex) ? "#FBCA04" : "white"}
+                          fill={(sortDirection === GridTableSortDirection.Asc && sortDataIndex === col.dataIndex) ? sortIconColor[0] : sortIconColor[1]}
                           fillOpacity={(sortDirection === GridTableSortDirection.Asc && sortDataIndex === col.dataIndex) ? 1 : 0.4}
                         />
                         <path
                           d="M3.5 10L6.53109 7H0.468911L3.5 10Z"
-                          fill={(sortDirection === GridTableSortDirection.Desc && sortDataIndex === col.dataIndex) ? "#FBCA04" : "white"}
+                          fill={(sortDirection === GridTableSortDirection.Desc && sortDataIndex === col.dataIndex) ? sortIconColor[0] : sortIconColor[1]}
                           fillOpacity={(sortDirection === GridTableSortDirection.Desc && sortDataIndex === col.dataIndex) ? 1 : 0.4}
                         />
                       </svg>
@@ -183,6 +186,10 @@ const GridTable = (props: Props, ref: any) => {
                 style={{
                   gridTemplateColumns,
                   minWidth: 'max-content',
+                  ...(typeof bodyRowStyle === "function" ? bodyRowStyle(item, index) : bodyRowStyle)
+                }}
+                onClick={() => {
+                  onRow?.(item, index);
                 }}
               >
                 {
@@ -256,6 +263,7 @@ export interface Props {
   rowClassName?: string;
   headerRowClassName?: string;
   bodyRowClassName?: string;
+  bodyRowStyle?: React.CSSProperties | ((item: any, index: number) => React.CSSProperties);
   colClassName?: string;
   headerColClassName?: string;
   bodyColClassName?: string;
@@ -263,7 +271,9 @@ export interface Props {
   fixedClassName?: string;
   sortDataIndex?: string;
   sortDirection?: GridTableSortDirection;
+  sortIconColor?: string[];
   onSort?: (dataIndex: string, direction: GridTableSortDirection) => void;
+  onRow?: (item: any, index: number) => void;
 }
 
 export enum GridTableAlign {

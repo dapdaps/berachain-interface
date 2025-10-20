@@ -1,7 +1,7 @@
 import { ChangeEvent, DetailedHTMLProps, InputHTMLAttributes } from 'react';
 
 const InputNumber = (props: Props) => {
-  const { onChange, onNumberChange, integerOnly = false } = props;
+  const { onChange, onNumberChange, integerOnly = false, decimals } = props;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let temp = e.target.value;
@@ -24,6 +24,14 @@ const InputNumber = (props: Props) => {
       }
 
       if (temp === '.') temp = '';
+
+      if (decimals !== undefined && temp.includes('.')) {
+        const parts = temp.split('.');
+        if (parts[1] && parts[1].length > decimals) {
+          parts[1] = parts[1].substring(0, decimals);
+          temp = parts.join('.');
+        }
+      }
     }
     e.target.value = temp;
     onChange?.(e);
@@ -45,4 +53,5 @@ export default InputNumber;
 interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   onNumberChange?(value: string): void;
   integerOnly?: boolean;
+  decimals?: number;
 }

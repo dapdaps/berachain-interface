@@ -30,12 +30,12 @@ const MENU_LIST = [
     href: "/stake",
     sort: 4
   },
-  {
-    label: "Lend",
-    bg: "#98F6CD",
-    href: "/lend",
-    sort: 5
-  },
+  // {
+  //   label: "Lend",
+  //   bg: "#98F6CD",
+  //   href: "/lend",
+  //   sort: 5
+  // },
   {
     label: "Vaults",
     bg: "#F3BBAB",
@@ -45,7 +45,7 @@ const MENU_LIST = [
   {
     label: "Carnival",
     bg: "#FF8284",
-    href: "/carnival/lucky-bera",
+    href: "/carnival",
     sort: 7,
     isBlink: true,
     bp: "1010-025",
@@ -61,6 +61,12 @@ const MENU_LIST = [
     bg: "#DAA56B",
     href: "/validators",
     sort: 9
+  },
+  {
+    label: "Marketplace",
+    bg: "#B2E946",
+    href: "/marketplace",
+    sort: 6.5
   }
 ];
 
@@ -70,6 +76,7 @@ const NavigationMenu = (props: any) => {
   const pathname = usePathname();
   const isSmall = ["/bintent"].includes(pathname);
   const isHide = ["/belong", "/"].includes(pathname);
+  const is2Top = ["/carnival/guess-who"].includes(pathname);
 
   if (isHide) {
     return null;
@@ -78,8 +85,9 @@ const NavigationMenu = (props: any) => {
   return (
     <div
       className={clsx(
-        "fixed z-[51] top-[150px] flex flex-col gap-[10px] items-end",
+        "fixed z-[51] flex flex-col gap-[10px] items-end",
         isSmall ? "right-[-20px]" : "right-0",
+        is2Top ? "top-[64px]" : "top-[120px]",
         className
       )}
     >
@@ -87,14 +95,14 @@ const NavigationMenu = (props: any) => {
         MENU_LIST.sort((a, b) => a.sort - b.sort).map((menu, index) => (
           <motion.div
             initial={{ x: 20 }}
-            whileHover={{ x: 5 }}
+            whileHover={{ x: 2 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
             <Link
               key={index}
               href={menu.href}
               prefetch={true}
-              className="relative rounded-[12px] rounded-r-[0] border border-black w-[110px] shrink-0 flex items-center shadow-[2px_2px_0px_0px_#000] text-black text-center font-CherryBomb text-base font-normal leading-none py-2 px-4"
+              className="relative rounded-[12px] rounded-r-[0] border border-black border-r-[0px] w-[110px] shrink-0 flex items-center shadow-[2px_2px_0px_0px_#000] text-black text-center font-CherryBomb text-base font-normal leading-none py-2 px-4"
               style={{
                 background: menu.bg,
               }}

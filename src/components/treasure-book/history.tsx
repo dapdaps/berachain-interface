@@ -5,11 +5,26 @@ import Pagination from "@/components/pager/pagination";
 import { get } from '@/utils/http';
 import { formatEnglishDate, formatSimpleDate } from '@/utils/date';
 import clsx from 'clsx';
+import { numberFormatter } from '@/utils/number-formatter';
 
 
 const PAGE_SIZE = 10;
 
-export default function History({ onClose }: { onClose: () => void }) {
+const BeratownRewards = new Map([
+    ["Points", { key: "reward_gem_amount" }],
+    ["Spins", { key: "reward_spin_amount" }],
+    ["Cosmetics", { key: "reward_cosmetic", isSplit: true }],
+]);
+const PartnersRewards = new Map([
+    ["Points", { key: "gem_amount" }],
+    ["Cosmetics", { key: "cosmetic", isSplit: true }],
+    ["Steady Teddy", { category: "SteadyTeddy", key: "reward_amount" }],
+    ["Bullas", { category: "Bullas", key: "reward_amount" }],
+    ["Mibera", { category: "Mibera", key: "reward_amount" }],
+    ["$HENLO", { category: "Henlo", key: "reward_amount" }],
+]);
+
+export default function History({ onClose, type = "beratown" }: { onClose: () => void; type?: "beratown" | "partners"; }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [history, setHistory] = useState<any[]>([]);
     const [maxPage, setMaxPage] = useState(1);
@@ -21,22 +36,32 @@ export default function History({ onClose }: { onClose: () => void }) {
             dataIndex: 'box',
             width: '35%',
             render: (text: any, record: any) => {
-                const list = [];
-                if (record.reward_gem_amount > 0) {
-                    list.push('Points');
-                }
-                if (record.reward_spin_amount > 0) {
-                    list.push('Spins');
-                }
+                const list: any = [];
 
-                if (record.reward_cosmetic) {
-                    list.push('Cosmetics');
-                }
+                const RewardMap: any = type === "beratown" ? BeratownRewards : PartnersRewards;
+                RewardMap.forEach((value: any, label: any) => {
+                    if (value.isSplit) {
+                        if (record[value.key]) {
+                            list.push(label);
+                        }
+                        return;
+                    }
+
+                    if (record[value.key] > 0) {
+                        if (value.category) {
+                            if (record.category === value.category) {
+                                list.push(label);
+                            }
+                        } else {
+                            list.push(label);
+                        }
+                    }
+                });
 
                 return <div className="">
                     {
-                        list.map((item, index) => (
-                            <div key={index}>{item}<br/></div>
+                        list.map((item: any, index: number) => (
+                            <div key={index}>{item}<br /></div>
                         ))
                     }
                 </div>
@@ -47,20 +72,32 @@ export default function History({ onClose }: { onClose: () => void }) {
             dataIndex: 'amount',
             width: '20%',
             render: (text: any, record: any) => {
-                const list = [];
-                if (record.reward_gem_amount > 0) {
-                    list.push(`X ${record.reward_gem_amount}`);
-                }
-                if (record.reward_spin_amount > 0) {
-                    list.push(`X ${record.reward_spin_amount}`);
-                }
-                if (record.reward_cosmetic) {
-                    list.push(`X ${record.reward_cosmetic.split(',').length}`);
-                }
+                const list: any = [];
+
+                const RewardMap: any = type === "beratown" ? BeratownRewards : PartnersRewards;
+                RewardMap.forEach((value: any, label: any) => {
+                    if (value.isSplit) {
+                        if (record[value.key]) {
+                            list.push(`X ${record[value.key].split(',').filter((it: any) => !!it).length}`);
+                        }
+                        return;
+                    }
+
+                    if (record[value.key] > 0) {
+                        if (value.category) {
+                            if (record.category === value.category) {
+                                list.push(`X ${numberFormatter(record[value.key], 2, true, { isShort: true, isShortUppercase: true })}`);
+                            }
+                        } else {
+                            list.push(`X ${numberFormatter(record[value.key], 2, true, { isShort: true, isShortUppercase: true })}`);
+                        }
+                    }
+                });
+
                 return <div className="">
                     {
-                        list.map((item, index) => (
-                            <div key={index}>{item}<br/></div>
+                        list.map((item: any, index: number) => (
+                            <div key={index}>{item}<br /></div>
                         ))
                     }
                 </div>
@@ -79,7 +116,7 @@ export default function History({ onClose }: { onClose: () => void }) {
     ];
 
     const renderTitle = (col: any, colIdx: number) => {
-        return <div className={clsx("flex flex-1 items-center gap-1 whitespace-nowrap", col.title === 'Date' ? 'justify-end': '')}>
+        return <div className={clsx("flex flex-1 items-center gap-1 whitespace-nowrap", col.title === 'Date' ? 'justify-end' : '')}>
             {col.title}
         </div>
     }
@@ -91,7 +128,11 @@ export default function History({ onClose }: { onClose: () => void }) {
     const getList = () => {
         setLoading(true);
         setHistory([]);
-        get('/api/go/treasure/draw/list', {
+        let url = "/api/go/treasure/draw/list";
+        if (type === "partners") {
+            url = "/api/go/box/draw/records";
+        }
+        get(url, {
             page: currentPage,
             page_size: PAGE_SIZE,
         }).then((res) => {
@@ -105,7 +146,7 @@ export default function History({ onClose }: { onClose: () => void }) {
     }
 
     return (
-        <div className="absolute z-10 w-[540px] h-[656px] top-[130px] right-[120px]">
+        <div className="absolute z-10 w-[540px] h-[656px] top-[0px] right-[120px]">
             <div className="w-full h-full bg-[#FFF9CD] absolute top-0 left-0 border border-black rotate-[-1.06deg]"></div>
             <img src="/images/treasure-book/history-title.png" className="absolute top-[-14px] left-[120px] w-[260px]" />
             <div onClick={onClose} className="absolute top-[20px] right-[20px] cursor-pointer z-10">
@@ -142,7 +183,7 @@ export default function History({ onClose }: { onClose: () => void }) {
                         showHeader={true}
                         pagination={<div className="flex justify-end mt-[30px]">
                             {
-                                maxPage >1 && <Pagination
+                                maxPage > 1 && <Pagination
                                     totalPage={maxPage}
                                     page={currentPage}
                                     onPageChange={(page: number) => {

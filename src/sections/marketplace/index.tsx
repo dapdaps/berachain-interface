@@ -14,6 +14,10 @@ import useTokenVolume from "./hooks/use-token-volume";
 import { usePrice7d } from '@/sections/marketplace/hooks/use-price-7d';
 import { useDebounce } from "ahooks";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLootbox } from "./hooks/use-lootbox";
+import Lootbox from "./components/lootbox";
+import BuyModal from "./components/lootbox/buy";
+import LootboxTip from "./components/lootbox/tip";
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -69,6 +73,25 @@ const MarketplaceView = () => {
   );
   const isMobile = useIsMobile();
   const { voulmes } = useTokenVolume();
+  const {
+    flatBoxList,
+    boxListLoading,
+    onBuyOpen,
+    buyOpening,
+    buyModalOpen,
+    setBuyModalOpen,
+    buyBox,
+    buyBoxAmount,
+    setBuyBoxAmount,
+    onBuy,
+    buying,
+    buttonStatus,
+    onBuyClose,
+    costToken,
+    costTokenBalance,
+    costTokenBalanceLoading,
+  } = useLootbox();
+
   const [searchVal, setSearchVal] = useState("");
   const [showHenloBubble, setShowHenloBubble] = useState(false);
   const TOKENS_PER_PAGE = 9;
@@ -136,12 +159,12 @@ const MarketplaceView = () => {
     }
     return _tokens
   }
-  const visibleTokens = useMemo(() => {
-    const groupsToShow = Math.ceil(displayCount / 3);
-    return allTokens.slice(0, groupsToShow);
-  }, [allTokens, displayCount]);
+  // const visibleTokens = useMemo(() => {
+  //   const groupsToShow = Math.ceil(displayCount / 3);
+  //   return allTokens.slice(0, groupsToShow);
+  // }, [allTokens, displayCount]);
 
-  const { data: price7dData, fullData: price7dFullData } = usePrice7d({ visibleTokens });
+  // const { data: price7dData, fullData: price7dFullData } = usePrice7d({ visibleTokens });
 
   const onMore = () => {
     setDisplayCount((prev) => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
@@ -149,22 +172,22 @@ const MarketplaceView = () => {
 
   const showMoreButton = displayCount < totalTokens;
 
-  const getAnimationName = (idx: number) => {
-    if (hoveredIndex === null) {
-      return "default";
-    }
-    if (hoveredIndex === idx) {
-      return "hover";
-    }
-    if (hoveredIndex > 0 && hoveredIndex - 1 === idx) {
-      return "prev";
-    }
-    if (hoveredIndex < 11 && hoveredIndex + 1 === idx) {
-      return "next";
-    }
+  // const getAnimationName = (idx: number) => {
+  //   if (hoveredIndex === null) {
+  //     return "default";
+  //   }
+  //   if (hoveredIndex === idx) {
+  //     return "hover";
+  //   }
+  //   if (hoveredIndex > 0 && hoveredIndex - 1 === idx) {
+  //     return "prev";
+  //   }
+  //   if (hoveredIndex < 11 && hoveredIndex + 1 === idx) {
+  //     return "next";
+  //   }
 
-    return "default";
-  };
+  //   return "default";
+  // };
 
   const onSwap = (item: any) => {
     let _defaultInput = bera.bera;
@@ -183,22 +206,24 @@ const MarketplaceView = () => {
   }, [openFrom]);
 
   return (
-    <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]" onClick={() => setShowHenloBubble(false)}>
-      {!isMobile && (
-        <>
-          <PageBack className="absolute left-[40px] top-[31px]" />
-          <PageTitle className="pt-[30px] mb-[75px] hidden lg:block">
-            Token Marketplace
-          </PageTitle>
-        </>
-      )}
-      <img
-        src="/images/mobile/market-header.png"
-        className="w-full h-[30.769vw] absolute top-[0px] z-[11] hidden md:block"
-        alt=""
-      />
+    <>
+      <LootboxTip />
+      <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]" onClick={() => setShowHenloBubble(false)}>
+        {!isMobile && (
+          <>
+            <PageBack className="absolute left-[40px] top-[31px]" />
+            <PageTitle className="pt-[30px] mb-[75px] hidden lg:block">
+              Marketplace
+            </PageTitle>
+          </>
+        )}
+        <img
+          src="/images/mobile/market-header.png"
+          className="w-full h-[30.769vw] absolute top-[0px] z-[11] hidden md:block"
+          alt=""
+        />
 
-      {
+        {/* {
         !isMobile && <div className="flex justify-end lg:w-[1200px] md:w-full mx-auto">
           <div className="flex items-center rounded-[10px] border overflow-hidden border-black/50 bg-white px-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -208,72 +233,78 @@ const MarketplaceView = () => {
             <input className="w-[200px] h-[40px] px-2 text-black text-[14px]" placeholder="Search token" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
           </div>
         </div>
-      }
+      } */}
 
-      <div className="relative z-[10] mt-[20px] md:mt-[26vw] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
-        <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
-          Hot Tokens
-        </div>
-        <div
-          style={{ boxShadow: "inset 10px 10px rgba(0,0,0,0.25)" }}
-          className="rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]"
-        >
-          {visibleTokens.map((item, index) => (
-            <div
-              key={"pots" + index}
-              className="overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
-            >
-              <div className="pt-[36px] px-[22px] md:pl-0 flex flex-nowrap">
-                {item.length > 0 &&
-                  item.map((it: any, idx) => (
-                    <div className="basis-1/3" key={"pot" + idx}>
-                      <HoneypotCard
-                        name={it.symbol}
-                        color={it.color}
-                        icon={it.icon}
-                        {...it}
-                        onSwap={() => onSwap(it)}
-                        voulmes={voulmes}
-                        priceData={price7dData[it.symbol]}
-                        priceFullData={price7dFullData[it.symbol]}
-                      />
-                    </div>
-                  ))}
-              </div>
-              {(isMobile ||
-                (index !== visibleTokens.length - 1 && !isMobile)) && (
-                  <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
-                )}
+        <div className="relative z-[10] mt-[20px] md:mt-[26vw] lg:w-[1200px] lg:h-[576px] md:w-full mx-auto rounded-[16px] lg:mb-[100px] md:mb-[50px] p-[76px_12px_12px] md:pt-[56px] bg-[url('/images/market-place/bg-wood.png')] bg-no-repeat bg-top bg-contain md:bg-cover">
+          <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#B2E946] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
+            Bera Lootbox
+          </div>
+          <div className="absolute right-[25px] md:right-[10px] top-[29px] z-[1] text-white font-Montserrat font-[700] text-[14px] md:text-[10px] leading-[100%] flex items-center gap-[6px]">
+            <img
+              src="/images/market-place/icon-info.png"
+              alt=""
+              className="w-[16px] h-[16px] md:w-[12px] md:h-[12px] shrink-0 object-center object-contain"
+            />
+            <div className="">
+              0.5% NFT winning probability
             </div>
-          ))}
-        </div>
-        {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
-        {showMoreButton && (
+          </div>
+          <div className="rounded-[20px] border-[2px] border-[#6A4C17] bg-[#695d5d] overflow-visible md:pb-[40px] shadow-[inset_10px_2px_rgba(0,0,0,0.5)]">
+            {flatBoxList.map((item: any, index: number) => (
+              <div
+                key={"pots" + index}
+                className="pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
+              >
+                <div className="pt-[64px] md:pt-[30px] px-[22px] md:pl-0 flex flex-nowrap">
+                  {item.length > 0 &&
+                    item.map((it: any, idx: number) => (
+                      <div className="basis-1/2 md:basis-full" key={"pot" + idx}>
+                        <Lootbox
+                          {...it}
+                          onBuy={() => onBuyOpen(it)}
+                          buyBox={buyBox}
+                          loading={buyOpening}
+                        />
+                      </div>
+                    ))}
+                </div>
+                {
+                  index + 1 < flatBoxList?.length && (
+                    <div className="w-[calc(100%_+_4px)] h-[15px] relative top-[-2px] left-[-2px] rounded-[10px] border-black border-[1px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
+                  )
+                }
+              </div>
+            ))}
+          </div>
+          {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
+          {/* {showMoreButton && (
           <MoreButton
             classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
             onClick={onMore}
           />
-        )}
-      </div>
-      <div className="relative md:px-4 w-full bg-[#7990F4] pb-[40px]">
-        <div className="lg:mx-auto lg:w-[1200px] md:w-full relative md:top-3 pb-[40px]">
-          <div className="absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61] hidden lg:block" />
-          <div className="relative z-10 lg:w-[1196px]">
-            <MemeTokensGrid
-              MemeTokens={MemeTokens}
-              voulmes={voulmes}
-              onSwap={onSwap}
-              onFooterMore={onFooterMore}
-            />
+        )} */}
+        </div>
+        <div className="relative md:px-4 w-full bg-[#7990F4] pb-[40px]">
+          <div className="lg:mx-auto lg:w-[1200px] md:w-full relative md:top-3 pb-[40px]">
+            <div className="absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61] hidden lg:block" />
+            <div className="relative z-10 lg:w-[1196px]">
+              <MemeTokensGrid
+                MemeTokens={MemeTokens}
+                voulmes={voulmes}
+                onSwap={onSwap}
+                onFooterMore={onFooterMore}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="fixed bottom-[10px] left-1/2 transform -translate-x-1/2 lg:w-[1200px] md:w-full z-30 h-[240px] md:hidden">
-        <div className="w-[150px] h-[240px] absolute bottom-[0] right-[-100px]" onClick={(e) => {
-          e.stopPropagation();
-          setShowHenloBubble(true);
-        }}>
+        <div
+          className="w-[150px] h-[240px] fixed bottom-[10px] right-[40px] z-[11] md:hidden"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowHenloBubble(true);
+          }}
+        >
           <AnimatePresence>
             {showHenloBubble && (
               <motion.div
@@ -320,22 +351,36 @@ const MarketplaceView = () => {
           />
           <img src="/images/market-place/henlo-cloth.png" alt="cloud" className="w-[101px] h-[62px] absolute top-[140px] left-[23px]" />
         </div>
-      </div>
 
-      {selectedRecord && (
-        <SwapModal
-          defaultOutputCurrency={selectedRecord}
-          defaultInputCurrency={defaultInputCurrency}
-          outputCurrencyReadonly={true}
-          show={!!selectedRecord}
-          protocols={protocols}
-          onClose={() => {
-            setSelectedRecord(null);
-          }}
-          from="marketplace"
+        {selectedRecord && (
+          <SwapModal
+            defaultOutputCurrency={selectedRecord}
+            defaultInputCurrency={defaultInputCurrency}
+            outputCurrencyReadonly={true}
+            show={!!selectedRecord}
+            protocols={protocols}
+            onClose={() => {
+              setSelectedRecord(null);
+            }}
+            from="marketplace"
+          />
+        )}
+
+        <BuyModal
+          open={buyModalOpen}
+          onClose={onBuyClose}
+          box={buyBox}
+          amount={buyBoxAmount}
+          onAmountChange={setBuyBoxAmount}
+          onBuy={onBuy}
+          buying={buying}
+          buttonStatus={buttonStatus}
+          costToken={costToken}
+          costTokenBalance={costTokenBalance}
+          costTokenBalanceLoading={costTokenBalanceLoading}
         />
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -3,9 +3,9 @@ import { useRouter } from "next/navigation";
 
 const Vaults = (props: any) => {
   const router = useRouter();
-  const { className, disabled } = props;
+  const { className, disabled, onClick } = props;
 
-  return null;
+  // return null;
 
   return (
     <button
@@ -17,13 +17,15 @@ const Vaults = (props: any) => {
       )}
       // data-bp="1022-001-001"
       onClick={() => {
+        onClick?.()
         // router.push("/vaults");
-        router.push("/belong");
+        // router.push("/belong");
       }}
     >
       <img
+        src="/images/airdrop/airdrop-title.png"
         // src="/images/home-earth/vaults/entry.2x.png"
-        src="/images/belong/v2/banner-entry.png"
+        // src="/images/belong/v2/banner-entry.png"
         alt=""
         className="animate-shake3 w-[232px] pointer-events-none"
         style={{

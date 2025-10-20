@@ -43,7 +43,7 @@ export function readClipboard() {
 }
 
 
-export function getProtocolIcon(protocal) {
+export function getProtocolIcon(protocal: any) {
   const ImageMapping = {
     infrared: "/images/dapps/infrared/infrared.svg",
     bex: "/images/dapps/bex.svg",
@@ -52,6 +52,7 @@ export function getProtocolIcon(protocal) {
     aquabera: "/images/dapps/infrared/aquabera.png",
     hub: "/images/dapps/bex.svg"
   }
+  // @ts-ignore
   return ImageMapping?.[protocal?.toLocaleLowerCase()] ?? "/images/dapps/dolomite.svg"
 }
 
@@ -89,4 +90,11 @@ export function clampStyle(styles: React.CSSProperties, baseWidth: number = 1544
     }
   });
   return _styles;
+}
+
+export function camelToKebab(str: string) {
+  return str
+    .replace(/([A-Z])/g, "-$1")
+    .toLowerCase()
+    .replace(/^-/, "");
 }

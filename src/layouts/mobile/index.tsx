@@ -23,7 +23,7 @@ const menuItems = [
   {
     id: 2.1,
     title: "Carnival",
-    href: "/carnival/lucky-bera",
+    href: "/carnival",
     // dataBp: ""
   },
   {
@@ -34,7 +34,7 @@ const menuItems = [
   },
   {
     id: 3,
-    title: "Token Marketplace",
+    title: "Marketplace",
     href: "/marketplace",
     dataBp: "1015-002-003"
   },

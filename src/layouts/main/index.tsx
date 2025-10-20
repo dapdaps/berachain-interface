@@ -22,6 +22,7 @@ import TreasureBook from "@/components/treasure-book";
 import NFTHolderPerksModal from "@/components/nft-holder";
 import { useNftReward } from "@/stores/use-nft-reward";
 import dynamic from "next/dynamic";
+import { useAudioStore } from "@/stores/use-audio";
 
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
@@ -40,6 +41,7 @@ const MainLayout = (props: Props) => {
   const { isRainyDay, rainyDay } = useRainyDay({ isLoadPrice: true });
   const { isDefaultTheme, themeConfig } = useActivityStore();
   const nftRewardStore: any = useNftReward();
+  const audioStore: any = useAudioStore();
 
   useEffect(() => {
     handleReportNoCode();
@@ -338,6 +340,34 @@ const MainLayout = (props: Props) => {
             </AnimatePresence>
             <TreasureBook />
           </>
+        )
+      }
+      {
+        [/^\/carnival/].some((reg) => reg.test(pathname)) && (
+          <div className="fixed bottom-[8px] right-[100px] z-[15] flex items-center gap-[6px]">
+            <motion.button
+              type="button"
+              className="w-[20px] h-[20px] bg-no-repeat bg-center bg-contain shrink-0"
+              style={{
+                backgroundImage: `url("${audioStore.open ? '/images/icon-audio.png' : '/images/icon-audio-disabled.png'}")`,
+              }}
+              onClick={() => {
+                audioStore.setOpen(!audioStore.open);
+              }}
+              animate={audioStore.open ? {
+                transform: ["rotate(0deg)", "rotate(360deg)"],
+              } : {
+                transform: "rotate(0deg)",
+              }}
+              transition={audioStore.open ? {
+                repeat: Infinity,
+                duration: 3,
+                ease: "linear",
+              } : {
+                duration: 0,
+              }}
+            />
+          </div>
         )
       }
     </div>

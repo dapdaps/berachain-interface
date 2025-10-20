@@ -20,7 +20,7 @@ const TokenRow = ({
   const prices = usePriceStore((store: any) => store.price);
   return (
     <div className="lg:h-[86px] md:h-[50px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px] md:mt-[-16px]">
-      <div className="w-full lg:h-[91px] md:h-[40px] relative top-[-50%] overflow-hidden">
+      <div className="w-full lg:h-[91px] md:h-[40px] relative top-[-50%] overflow-hidden md:overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="w-full absolute bottom-0 lg:h-[62px] md:h-[30px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap lg:px-[32px] md:px-[16px] lg:gap-x-[32px] md:gap-x-[16px]">
           {tokens.map((item: any, index: any) => {
             let _price: any = prices[item.priceKey || item.symbol];

@@ -1,7 +1,7 @@
 import { motion, useAnimate, useMotionValue } from 'framer-motion';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { SPIN_CATEGORIES, SPIN_XP_REWARD_CATEGORIES, SpinCategory, SpinResultData, SpinXpRewardCategory } from '../config';
-import LightingButton from './lighting-button';
+import LightingButton from '@/components/button/lighting-button';
 import { numberFormatter } from '@/utils/number-formatter';
 import useToast from '@/hooks/use-toast';
 import Big from 'big.js';
