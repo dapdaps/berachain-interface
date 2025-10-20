@@ -136,16 +136,16 @@ export class Bex {
         return {
           poolId: hop.poolId,
           kind: 0,
-          assetIn:
-            hop.tokenIn.toLowerCase() ===
-            weth[inputCurrency.chainId].toLowerCase()
-              ? "0x0000000000000000000000000000000000000000"
-              : hop.tokenIn,
-          assetOut:
-            hop.tokenOut.toLowerCase() ===
-            weth[inputCurrency.chainId].toLowerCase()
-              ? "0x0000000000000000000000000000000000000000"
-              : hop.tokenOut,
+          assetIn: hop.tokenIn,
+            // hop.tokenIn.toLowerCase() ===
+            // weth[inputCurrency.chainId].toLowerCase()
+            //   ? "0x0000000000000000000000000000000000000000"
+            //   : hop.tokenIn,
+          assetOut: hop.tokenOut,
+            // hop.tokenOut.toLowerCase() ===
+            // weth[inputCurrency.chainId].toLowerCase()
+            //   ? "0x0000000000000000000000000000000000000000"
+            //   : hop.tokenOut,
           amount: tokenInAmount,
           userData: "0x"
         };

@@ -59,3 +59,5 @@ export const GameLootbox: Record<string, { category: string; name: string; icon:
     disabled: true,
   },
 };
+
+export const RaffleBox: string[] = ["Mibera"];
