@@ -73,7 +73,12 @@ export function useMagician() {
     });
   };
 
-  const { loading: gameConfigLoading, data: gameConfig } = useRequest(async () => {
+  const [gameConfig, setGameConfig] = useState({
+    minBetAmount: "0.1",
+    // hours
+    timeoutDuration: "86400",
+  });
+  const { loading: gameConfigLoading } = useRequest(async () => {
     if (!provider) {
       return;
     }
@@ -113,16 +118,13 @@ export function useMagician() {
       console.log("get game config failed: %o", error);
     }
 
+    setGameConfig(_result);
     return _result;
   }, {
     refreshDeps: [provider],
   });
 
   const { runAsync: getList, loading } = useRequest(async (params?: any) => {
-    if (!gameConfig) {
-      return;
-    }
-
     const _page = params?.page || list.page;
     const _sort = params?.sort || list.sort;
     const _order = params?.order || list.order;
@@ -156,7 +158,7 @@ export function useMagician() {
       console.log("get rps list failed: %o", error);
     }
   }, {
-    refreshDeps: [gameConfig],
+    refreshDeps: [],
   });
 
   const { runAsync: getUserList, loading: userListLoading } = useRequest(async (params?: any) => {
