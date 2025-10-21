@@ -7,7 +7,7 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
       onClose={onClose}
       closeIconClassName="!right-[10px] !top-[10px] md:hidden"
     >
-      <div className="w-[540px] md:h-[80dvh] md:overflow-y-auto md:w-full relative bg-[#FFF1C7] rounded-[16px] md:rounded-b-[0] border-[2px] border-[#E5C375] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] p-[20px_20px] md:p-[10px_5px]">
+      <div className="w-[540px] max-h-[90dvh] md:h-[80dvh] overflow-y-auto md:w-full relative bg-[#FFF1C7] rounded-[16px] md:rounded-b-[0] border-[2px] border-[#E5C375] shadow-[6px_6px_0_0_rgba(0,0,0,0.25)] p-[20px_20px] md:p-[10px_5px]">
         <div className="text-[#FDD54C] text-center [text-shadow:0_4px_0_#000] font-CherryBomb text-[30px] font-[400] leading-normal capitalize [-webkit-text-stroke-width:2px] [-webkit-text-stroke-color:#000]">
           GuessWho — Game Rules
         </div>
@@ -70,6 +70,11 @@ const MagicianRulesModal = ({ open, onClose }: { open: boolean, onClose: () => v
                 <li className="mb-[0px]">
                   <p className="">
                     🎁 <strong>Bonus Lootbox:</strong> If you lose the round and your bet was <strong>≥2.5 BERA</strong>, you’ll receive a surprise Lootbox — with a chance to win NFTs and Memetoken rewards!
+                  </p>
+                </li>
+                <li className="mb-[0px]">
+                  <p className="">
+                    🐻 In the Mibera lootbox, users can earn a custom Mibera vending machine NFT, which acts as a raffle ticket to win a custom Mibera trait, hand-designed by Gumi. Winner will be announced once all tickets are won.
                   </p>
                 </li>
               </ul>

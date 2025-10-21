@@ -58,11 +58,18 @@ const List = (props: any) => {
       }}
     >
       <div className="w-[837px] relative flex justify-between gap-[30px] p-[50px_14px_14px_20px] bg-[#BC9549] border border-[#000] shadow-[4px_4px_0_0_#4B371F] rounded-[10px]">
-        <img
-          src="/images/playground/magician/header.png"
-          alt=""
-          className="min-w-[872px] w-[872px] min-h-[189px] h-[189px] object-center object-contain shrink-0 absolute  left-1/2 -translate-x-1/2 -translate-y-[70%] top-0"
-        />
+        <div className="min-w-[872px] w-[872px] min-h-[189px] h-[189px] bg-[url('/images/playground/magician/header.png')] bg-no-repeat bg-center bg-contain object-center object-contain shrink-0 absolute left-1/2 -translate-x-1/2 -translate-y-[70%] top-0">
+          <button
+            type="button"
+            className="absolute top-[80px] right-[240px] w-[55px] h-[30px] border border-black rounded-[12px] bg-[linear-gradient(180deg,_#FFCE78_0%,_#9E762F_100%)] rotate-[-8.017deg] font-CherryBomb text-[16px] font-[400] leading-[90%]"
+            onClick={() => {
+              magician.playAudio({ type: "click", action: "play" });
+              magician.setRulesOpen(true);
+            }}
+          >
+            Rules
+          </button>
+        </div>
         <div className="w-full">
           <div className="text-[20px] font-[600] text-white">
             Create Game
