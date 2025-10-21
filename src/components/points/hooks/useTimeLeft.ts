@@ -10,7 +10,7 @@ export const useTimeLeft = () => {
   });
 
   useEffect(() => {
-    const targetDate = new Date('2025-10-13T21:00:00Z');
+    const targetDate = new Date('2025-11-19T21:00:00Z');
     const updateCountdown = () => {
       const now = new Date();
       const timeDiff = targetDate.getTime() - now.getTime();
