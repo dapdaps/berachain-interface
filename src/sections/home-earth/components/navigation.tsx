@@ -203,13 +203,14 @@ const Navigation = (props: any) => {
                 data-bp={item.bp}
               />
               <AnimatePresence mode="wait">
-                {hoverIndex?.name === item.name && (
+                {/* {hoverIndex?.name === item.name && ( */}
                   <motion.img
                     src={item.signpost || ""}
                     alt=""
                     className="absolute z-[2] pointer-events-none left-1/2 -top-[140px]"
                     style={{
-                      x: "-50%"
+                      x: "-50%",
+                      y: item.signpostY || 0,
                     }}
                     variants={{
                       visible: {
@@ -230,7 +231,7 @@ const Navigation = (props: any) => {
                       damping: 15
                     }}
                   />
-                )}
+                {/* )} */}
               </AnimatePresence>
             </div>
           ))
@@ -258,6 +259,7 @@ export const ENTRIES: any = [
     disabled: false,
     icon: "/images/home-earth/entry-dapp.svg",
     signpost: "/images/home-earth/signpost-dapp.svg",
+    signpostY: -20,
     path: "/dapps",
     y: -68
   },
