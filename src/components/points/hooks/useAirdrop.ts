@@ -402,6 +402,11 @@ export const useAirdrop = () => {
 
     const claim = async () => {
         if (!account || !provider) return;
+
+        if (isClaimed || claiming) {
+            return;
+        }
+
         if (Number(claimableTokens) <= 0 || Number(totalClaimable) <= 0) {
             fail({
                 title: 'No claimable tokens!',

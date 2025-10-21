@@ -43,7 +43,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
     };
 
     const handleClaim = () => {
-        if (canClaim) {
+        if (canClaim && !isClaimed) {
             claim();
         }
     };
@@ -138,7 +138,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                             Play now
                                         </button>
                                         <button
-                                            disabled={!canClaim}
+                                            disabled={!canClaim || isClaimed || claiming}
                                             onClick={handleClaim}
                                             className="flex-1 flex items-center justify-center gap-1 bg-[#FFDC50] hover:bg-[#FFDC50]/80 border border-black rounded-[15px] py-3 font-bold text-black transition-colors shadow-[6px_6px_0_0_#00000040]"
                                         >
