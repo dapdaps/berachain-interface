@@ -422,13 +422,13 @@ export const useAirdrop = () => {
 
             if (status === 1) {
                 success({
-                    title: 'Claim successful!',
+                    title: 'Claim successfully',
                     tx: transactionHash
                 });
                 setIsClaimed(true);
             } else {
                 fail({
-                    title: 'Claim failed!',
+                    title: 'Claim failed',
                 });
 
             }
