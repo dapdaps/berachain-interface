@@ -15,7 +15,7 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
             return `${balanceFormated(prices[fromChain.nativeCurrency.symbol.toUpperCase()] * (fee as any), 4)}`
         }
 
-        return `${balanceFormated(fee, 4)}`
+        return (!fee || Number(fee) === 0) ? '0.00' : `${balanceFormated(fee, 4)}`
     }, [fee, fromChain, prices])
 
     return (

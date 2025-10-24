@@ -260,6 +260,26 @@ const Home = () => {
               </motion.div>
               {/*#endregion*/}
 
+              {/*#region swap*/}
+              <motion.div
+                className="w-[52.308vw] h-[38.205vw] translate-y-[25vw] translate-x-[3vw] absolute top-[10vh] right-[3vw]"
+                // data-bp="1015-011"
+                onClick={() => {
+                  tapSound.play?.();
+                  router.push("/super-swap");
+                }}
+              >
+                <motion.img
+                  src="/images/mobile/home/bg-swap.png"
+                  alt=""
+                  className="w-full h-full"
+                  variants={EntryAnimationBg}
+                  transition={EntryAnimation}
+                />
+               
+              </motion.div>
+              {/*#endregion*/}
+
               {/*#region Bridge*/}
               <motion.div
                 className="w-[48.53vw] h-[25.128vw] mt-[10vw] translate-y-[28vw] translate-x-[10.256vw]"

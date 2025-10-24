@@ -18,20 +18,27 @@ import useTokenPrice from "@/hooks/use-token-price";
 import Downtime from "@/components/downtime";
 
 const menuItems = [
-  { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
-  { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
-  {
-    id: 2.1,
-    title: "Carnival",
-    href: "/carnival",
-    // dataBp: ""
-  },
   {
     id: 2.2,
     title: "Super Swap",
     href: "/super-swap",
     // dataBp: ""
   },
+  { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
+  { id: 7, title: "Stake Bera", href: "/dex/bex/stake" },
+  {
+    id: 4,
+    title: "Vaults",
+    href: "/vaults",
+    dataBp: "1022-002-003"
+  },
+  {
+    id: 2.1,
+    title: "Carnival",
+    href: "/carnival",
+    // dataBp: ""
+  },
+  { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
   {
     id: 3,
     title: "Marketplace",
@@ -39,20 +46,13 @@ const menuItems = [
     dataBp: "1015-002-003"
   },
   {
-    id: 4,
-    title: "Vaults",
-    href: "/vaults",
-    dataBp: "1022-002-003"
-  },
-  { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
-  { id: 7, title: "Stake Bera", href: "/dex/bex/stake" },
-  {
     id: 6,
     title: "Portfolio",
     href: "/portfolio",
     dataBp: "1015-002-006",
     disabled: false
   },
+  { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
   { id: 7, title: "Map", href: "/", dataBp: "1015-002-007" }
 ];
 
