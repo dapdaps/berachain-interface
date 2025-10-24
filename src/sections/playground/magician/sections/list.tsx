@@ -13,9 +13,10 @@ import dayjs from "dayjs";
 import Button from "../components/button";
 import Pagination from "@/components/pager/pagination";
 import SwitchTabs from "@/components/switch-tabs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import TimeAgo from "../components/time-ago";
 import InputNumber from "@/components/input-number";
+import Leaderboard from "./leaderboard";
 
 const List = (props: any) => {
   const {
@@ -35,6 +36,8 @@ const List = (props: any) => {
       numberRemoveEndZero(Big(magician.gameConfig.minBetAmount).mul(10).toFixed(magician.betToken.decimals)),
     ]
   }, [magician.gameConfig, magician.betToken]);
+
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   return (
     <motion.div
@@ -203,6 +206,17 @@ const List = (props: any) => {
       </div>
       <div className="w-[837px] relative mt-[10px] p-[13px_20px] bg-[#BC9549] border border-[#000] shadow-[4px_4px_0_0_#4B371F] rounded-[10px]">
         <div className="flex justify-center items-center relative">
+          <Button
+            onClick={() => {
+              magician.playAudio({ type: "click", action: "play" });
+              setShowLeaderboard(true);
+            }}
+            className="absolute left-0"
+          >
+            <div className="">
+            Leaderboard
+            </div>
+          </Button>
           {/* <Button
             onClick={() => {
               magician.playAudio({ type: "click", action: "play" });
@@ -621,6 +635,12 @@ const List = (props: any) => {
                   />
                 </div>
               </motion.div>
+            )
+          }
+
+          {
+            showLeaderboard && (
+              <Leaderboard onClose={() => setShowLeaderboard(false)} />
             )
           }
         </AnimatePresence>

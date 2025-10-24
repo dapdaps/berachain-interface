@@ -12,10 +12,11 @@ import { useAirdrop } from "./hooks/useAirdrop";
 import Airdrop from "./airdrop";
 import Vaults from "../vaults";
 import { usePathname } from "next/navigation";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const PointsEntry = (props: any) => {
   const { className, isGuide = false } = props;
-
+  const isMobile = useIsMobile();
   const userInfo = useUserStore((store: any) => store.user);
 
   const [isHovered, setIsHovered] = useState(isGuide);
@@ -111,7 +112,7 @@ const PointsEntry = (props: any) => {
         isClaimed={isClaimed}
       />
       {
-        (isStarted && !isEnded && pathname === '/') && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
+        (isStarted && !isEnded && pathname === '/' && !isMobile) && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
           setAirdropOpen(true)
         }} />
       }
