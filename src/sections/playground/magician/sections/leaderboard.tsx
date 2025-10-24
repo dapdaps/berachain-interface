@@ -10,11 +10,11 @@ import useRanks from "../hooks/use-ranks"
 import useWeekRound from "../hooks/use-week-round"
 import Modal from "@/components/modal"
 
-export default memo(function Leaderboard({ onClose }: { onClose: () => void }) {
+export default memo(function Leaderboard({ onClose, round, startDate, endDate }: { onClose: () => void, round: number, startDate: string, endDate: string }) {
   const { handleReport } = useClickTracking();
   const { account } = useCustomAccount()
   const { ranks, loading: loadingRanks } = useRanks()
-  const { round, startDate, endDate } = useWeekRound()
+  
 
   const COLUMNS = [{
     title: 'player',
@@ -57,9 +57,9 @@ export default memo(function Leaderboard({ onClose }: { onClose: () => void }) {
               <div
                 className="flex items-center bg-[#FFE15A] border-[1px] border-black rounded-[8px] px-2  text-black text-[12px] font-Montserrat font-medium"
               >
-                <span className="mr-2 text-[18px] font-bold ">◀</span>
+                <span className="mr-2 text-[18px] font-bold cursor-pointer" onClick={() => {}}>◀</span>
                 <span className="mx-1">Round{round}: {startDate} - {endDate}</span>
-                <span className="ml-2 text-[18px] font-bold ">▶</span>
+                <span className="ml-2 text-[18px] font-bold cursor-pointer" onClick={() => {}}>▶</span>
               </div>
             </div>
           }
@@ -149,6 +149,6 @@ const RankItem = (props: any) => {
   }
 
   return (
-    <div className="w-[26px] h-[26px] font-bold">{rank}</div>
+    <div className="w-[26px] h-[26px] font-bold flex items-center justify-center">{rank}</div>
   )
 }

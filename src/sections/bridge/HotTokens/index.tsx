@@ -32,13 +32,16 @@ interface HotTokenItemProps {
         icon: string;
     };
     realTimePrice: string | undefined;
+    onClick: (token: any) => void;
 }
 
-const HotTokenItem: React.FC<HotTokenItemProps> = ({ token, realTimePrice }) => {
+const HotTokenItem: React.FC<HotTokenItemProps> = ({ token, realTimePrice, onClick }) => {
     const displayPrice = realTimePrice
 
     return (
-        <div className="flex items-center justify-between h-[48px] gap-[10px] px-[10px] hover:bg-[rgba(151,154,190,0.05)] rounded-[8px] transition-colors duration-200">
+        <div onClick={() => {
+            onClick(token);
+        }} className="cursor-pointer flex items-center justify-between h-[48px] gap-[10px] px-[10px] hover:bg-[rgba(151,154,190,0.05)] rounded-[8px] transition-colors duration-200">
             <div className="flex items-center gap-[10px]">
                 <div className="relative w-[26px] h-[26px]">
                     <img
@@ -61,15 +64,12 @@ const HotTokenItem: React.FC<HotTokenItemProps> = ({ token, realTimePrice }) => 
     );
 };
 
-const HotTokens: React.FC = () => {
+const HotTokens= ({ onTokenClick }: { onTokenClick: (token: any) => void }) => {
     const prices = usePriceStore((store) => store.price);
-
-    console.log('prices', prices)
 
 
     return (
-        <div className="absolute  left-[50%] translate-x-[250px] top-[177px] bg-[#FFFDEB] rounded-r-[10px] border border-black p-[16px] max-w-[200px] shadow-shadow1">
-            {/* Header */}
+        <div className="absolute left-[50%] translate-x-[250px] top-[177px] bg-[#FFFDEB] rounded-r-[10px] border border-black p-[16px] max-w-[200px] shadow-shadow1">
             <div className="flex items-center justify-between mb-[16px]">
                 <div className="flex items-center gap-[8px] pl-[10px]">
                     <div className="w-[20px] h-[20px] flex items-center justify-center">
@@ -81,7 +81,6 @@ const HotTokens: React.FC = () => {
                 </div>
             </div>
 
-            {/* Token List */}
             <div className="space-y-[4px]">
                 {HOT_TOKENS.map((token: any) => {
                     const realTimePrice = prices[token.symbol] ? `$${balanceFormated(Number(prices[token.symbol]), 2)}` : undefined;
@@ -91,6 +90,7 @@ const HotTokens: React.FC = () => {
                             key={token.symbol}
                             token={token}
                             realTimePrice={realTimePrice}
+                            onClick={onTokenClick}
                         />
                     );
                 })}
