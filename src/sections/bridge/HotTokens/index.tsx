@@ -1,44 +1,28 @@
 import React from 'react';
 import { usePriceStore } from '@/stores/usePriceStore';
 import { balanceFormated } from '@/utils/balance';
+import { bera } from '@/configs/tokens/bera';
 
-// HOT TOKEN 数据
-const HOT_TOKENS = [
+const HOT_TOKENS: any = [
+    bera.ibgt,
+    bera.ibera,
     {
-        symbol: 'BERA',
-        name: 'BERA',
-        icon: '/images/tokens/bera.png',
-        priceKey: 'BERA',
-        price: '$1.92'
+        "chainId": 80094,
+        "address": "0xb2F776e9c1C926C4b2e54182Fac058dA9Af0B6A5",
+        "symbol": "HENLO",
+        "name": "henlo",
+        "decimals": 18,
+        "icon": "https://static.kodiak.finance/tokens/henlo.png",
     },
     {
-        symbol: 'WETH',
-        name: 'WETH',
-        icon: '/images/tokens/weth.png',
-        priceKey: 'WETH',
-        price: '$4357.89'
+        "chainId": 80094,
+        "address": "0x0F81001eF0A83ecCE5ccebf63EB302c70a39a654",
+        "symbol": "DOLO",
+        "name": "Dolomite",
+        "decimals": 18,
+        "icon": "https://static.kodiak.finance/tokens/dolo.png",
     },
-    {
-        symbol: 'USDT',
-        name: 'USDT',
-        icon: '/images/tokens/usdt.png',
-        priceKey: 'USDT',
-        price: '$0.98'
-    },
-    {
-        symbol: 'HONEY',
-        name: 'HONEY',
-        icon: '/images/tokens/honey.png',
-        priceKey: 'HONEY',
-        price: '$1.00'
-    },
-    {
-        symbol: 'BTC',
-        name: 'BTC',
-        icon: '/images/tokens/btc.png',
-        priceKey: 'BTC',
-        price: '$134,605.23'
-    }
+    bera.honey,
 ];
 
 interface HotTokenItemProps {
@@ -46,14 +30,12 @@ interface HotTokenItemProps {
         symbol: string;
         name: string;
         icon: string;
-        priceKey: string;
-        price: string;
     };
-    realTimePrice?: string;
+    realTimePrice: string | undefined;
 }
 
 const HotTokenItem: React.FC<HotTokenItemProps> = ({ token, realTimePrice }) => {
-    const displayPrice = realTimePrice || token.price;
+    const displayPrice = realTimePrice
 
     return (
         <div className="flex items-center justify-between h-[48px] gap-[10px] px-[10px] hover:bg-[rgba(151,154,190,0.05)] rounded-[8px] transition-colors duration-200">
@@ -82,6 +64,9 @@ const HotTokenItem: React.FC<HotTokenItemProps> = ({ token, realTimePrice }) => 
 const HotTokens: React.FC = () => {
     const prices = usePriceStore((store) => store.price);
 
+    console.log('prices', prices)
+
+
     return (
         <div className="absolute  left-[50%] translate-x-[250px] top-[177px] bg-[#FFFDEB] rounded-r-[10px] border border-black p-[16px] max-w-[200px] shadow-shadow1">
             {/* Header */}
@@ -98,8 +83,8 @@ const HotTokens: React.FC = () => {
 
             {/* Token List */}
             <div className="space-y-[4px]">
-                {HOT_TOKENS.map((token) => {
-                    const realTimePrice = prices[token.priceKey] ? `$${balanceFormated(Number(prices[token.priceKey]), 2)}` : undefined;
+                {HOT_TOKENS.map((token: any) => {
+                    const realTimePrice = prices[token.symbol] ? `$${balanceFormated(Number(prices[token.symbol]), 2)}` : undefined;
 
                     return (
                         <HotTokenItem
