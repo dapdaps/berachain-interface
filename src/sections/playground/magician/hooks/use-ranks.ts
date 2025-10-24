@@ -2,7 +2,7 @@ import { get } from '@/utils/http';
 import { useEffect, useState } from 'react';
 import { useAccount } from "wagmi";
 
-export default function useRanks() {
+export default function useRanks({ weekTime }: { weekTime: string }) {
   const [ranks, setRanks] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const { address } = useAccount();
@@ -12,7 +12,7 @@ export default function useRanks() {
 
     try {
       setLoading(true)
-      const response = await get("/api/go/game/rps/leaderboard/week?address=" + address)
+      const response = await get("/api/go/game/rps/leaderboard/week?address=" + address + '&week_time=' + weekTime)
       if (response.code === 200) {
         setRanks(response.data)
       }
@@ -24,7 +24,7 @@ export default function useRanks() {
 
   useEffect(() => {
     address && queryRanks();
-  }, [address]);
+  }, [address, weekTime]);
 
   return {
     loading,

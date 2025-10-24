@@ -39,7 +39,7 @@ const List = (props: any) => {
   }, [magician.gameConfig, magician.betToken]);
 
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const { round, startDate, endDate, countdown } = useWeekRound()
+  const { round, startDate, endDate, countdown, weekTime, handleNextRound, handlePreviousRound, prevDisabled, nextDisabled } = useWeekRound()
 
   return (
     <motion.div
@@ -670,7 +670,17 @@ const List = (props: any) => {
 
           {
             showLeaderboard && (
-              <Leaderboard onClose={() => setShowLeaderboard(false)} round={round} startDate={startDate} endDate={endDate} />
+              <Leaderboard 
+              onClose={() => setShowLeaderboard(false)} 
+              round={round} 
+              startDate={startDate} 
+              endDate={endDate} 
+              weekTime={weekTime} 
+              handleNextRound={handleNextRound}
+              handlePreviousRound={handlePreviousRound}
+              prevDisabled={prevDisabled}
+              nextDisabled={nextDisabled}
+            />
             )
           }
         </AnimatePresence>

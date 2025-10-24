@@ -9,11 +9,32 @@ import { memo, useState } from "react"
 import useRanks from "../hooks/use-ranks"
 import useWeekRound from "../hooks/use-week-round"
 import Modal from "@/components/modal"
+import clsx from "clsx"
 
-export default memo(function Leaderboard({ onClose, round, startDate, endDate }: { onClose: () => void, round: number, startDate: string, endDate: string }) {
+export default memo(function Leaderboard({ 
+  onClose, 
+  round, 
+  startDate, 
+  endDate, 
+  weekTime, 
+  handleNextRound, 
+  handlePreviousRound,
+  prevDisabled,
+  nextDisabled
+}: { 
+  onClose: () => void, 
+  round: number, 
+  startDate: string, 
+  endDate: string, 
+  weekTime: string, 
+  handleNextRound: () => void, 
+  handlePreviousRound: () => void 
+  prevDisabled: boolean,
+  nextDisabled: boolean
+}) {
   const { handleReport } = useClickTracking();
   const { account } = useCustomAccount()
-  const { ranks, loading: loadingRanks } = useRanks()
+  const { ranks, loading: loadingRanks } = useRanks({ weekTime })
   
 
   const COLUMNS = [{
@@ -57,9 +78,13 @@ export default memo(function Leaderboard({ onClose, round, startDate, endDate }:
               <div
                 className="flex items-center bg-[#FFE15A] border-[1px] border-black rounded-[8px] px-2  text-black text-[12px] font-Montserrat font-medium"
               >
-                <span className="mr-2 text-[18px] font-bold cursor-pointer" onClick={() => {}}>◀</span>
+                <span className={clsx("mr-2 text-[18px] font-bold cursor-pointer", prevDisabled ? "opacity-50 cursor-not-allowed" : "")} onClick={() => {
+                  handlePreviousRound()
+                }}>◀</span>
                 <span className="mx-1">Round{round}: {startDate} - {endDate}</span>
-                <span className="ml-2 text-[18px] font-bold cursor-pointer" onClick={() => {}}>▶</span>
+                <span className={clsx("ml-2 text-[18px] font-bold cursor-pointer", nextDisabled ? "opacity-50 cursor-not-allowed" : "")} onClick={() => {
+                  handleNextRound()
+                }}>▶</span>
               </div>
             </div>
           }
