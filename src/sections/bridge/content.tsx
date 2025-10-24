@@ -315,7 +315,7 @@ export default function BridgeContent({
               )
             );
           }} />
-          <PriceTend />
+          <PriceTend token1={fromToken as any} token2={toToken as any} />
           </>
         )
       }
