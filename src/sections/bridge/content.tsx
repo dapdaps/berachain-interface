@@ -306,7 +306,15 @@ export default function BridgeContent({
 
       {
         !isMobile && type === 'super-swap' && (<>
-          <HotTokens />
+          <HotTokens onTokenClick={(fromToken: any) => {
+            const fromTokens = allTokens[defaultFromChain];
+            setFromToken(
+              fromTokens.find(
+                (token: Token) =>
+                  token.symbol.toUpperCase() === fromToken.symbol.toUpperCase()
+              )
+            );
+          }} />
           <PriceTend />
           </>
         )
