@@ -13,7 +13,7 @@ export default function useRanks() {
     try {
       setLoading(true)
       const response = await get("/api/go/game/rps/leaderboard/week?address=" + address)
-      if (response.code === 0) {
+      if (response.code === 200) {
         setRanks(response.data)
       }
     } catch (error) {
