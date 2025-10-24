@@ -24,7 +24,7 @@ export default memo(function Leaderboard({ onClose }: { onClose: () => void }) {
     render: (text: any, record: any, index: number) => {
       return (
         <div className="flex items-center gap-[8px]">
-          <div className="w-[26px] h-[26px] font-bold">{ record.rank }</div>
+          <RankItem rank={record.rank} />
           <div className="text-black font-Montserrat font-medium text-[14px]">{formatLongText(record?.address, 5, 5)}</div>
         </div>
       )
@@ -90,8 +90,8 @@ export default memo(function Leaderboard({ onClose }: { onClose: () => void }) {
                 <path opacity="0.15" d="M7.82572 16.2784C7.82572 16.2784 7.54963 19.131 9.48293 17.9308C11.4162 16.7305 12.4665 15.4656 12.4665 14.6152C12.4665 14.6152 12.4515 19.0421 7.78296 19.2852C7.78304 19.2852 7.20199 16.9002 7.82572 16.2784Z" fill="#4B371F" />
               </svg>
 
-              <div className="text-[#FFCF23]">{ranks?.reward ?? '-'} </div>
-              <div className="">up for grabs this week!</div>
+              <div className="text-[#FFCF23] font-bold ml-[5px]">{ranks?.reward ?? '-'} </div>
+              <div className="ml-[5px] font-bold"> up for grabs this week!</div>
             </div>
           }
 
@@ -126,3 +126,29 @@ export default memo(function Leaderboard({ onClose }: { onClose: () => void }) {
     </Modal>
   )
 })
+
+const colors = ['#FFC25A', '#FFA100', '#D2D3FF', '#9598DD', '#D4BF98', '#B97D5D']
+const RankItem = (props: any) => {
+  const { rank } = props;
+
+  if (rank <= 3) {
+    return (
+      <div className="relative w-[26px] h-[26px] flex items-center justify-center"> 
+        <svg className="absolute top-0 left-0" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.0273 1.48633C12.588 1.00858 13.412 1.00858 13.9727 1.48633L16.1631 3.35254C16.5634 3.69363 17.0616 3.89957 17.5859 3.94141L20.4541 4.1709C21.188 4.22971 21.7703 4.81204 21.8291 5.5459L22.0586 8.41406C22.1004 8.93836 22.3064 9.43655 22.6475 9.83691L24.5137 12.0273C24.9914 12.588 24.9914 13.412 24.5137 13.9727L22.6475 16.1631C22.3064 16.5634 22.1004 17.0616 22.0586 17.5859L21.8291 20.4541C21.7703 21.188 21.188 21.7703 20.4541 21.8291L17.5859 22.0586C17.0616 22.1004 16.5634 22.3064 16.1631 22.6475L13.9727 24.5137C13.412 24.9914 12.588 24.9914 12.0273 24.5137L9.83691 22.6475C9.43655 22.3064 8.93836 22.1004 8.41406 22.0586L5.5459 21.8291C4.81204 21.7703 4.22971 21.188 4.1709 20.4541L3.94141 17.5859C3.89957 17.0616 3.69363 16.5634 3.35254 16.1631L1.48633 13.9727C1.00858 13.412 1.00858 12.588 1.48633 12.0273L3.35254 9.83691C3.69363 9.43655 3.89957 8.93836 3.94141 8.41406L4.1709 5.5459C4.22971 4.81204 4.81204 4.22971 5.5459 4.1709L8.41406 3.94141C8.93836 3.89957 9.43655 3.69363 9.83691 3.35254L12.0273 1.48633Z" fill={"url(#paint0_linear_2952_1144_" + rank + ")"} stroke="black" />
+          <defs>
+            <linearGradient id={"paint0_linear_2952_1144_" + rank} x1="13" y1="0" x2="13" y2="26" gradientUnits="userSpaceOnUse">
+              <stop stop-color={ colors[(Number(rank) - 1) * 2] } />
+              <stop offset="1" stop-color={ colors[(Number(rank) - 1) * 2 + 1] } />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div className="relative z-10 text-black font-bold text-[14px]">{ rank } </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-[26px] h-[26px] font-bold">{rank}</div>
+  )
+}
