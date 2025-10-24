@@ -222,7 +222,7 @@ const Home = () => {
             <div
               className="relative w-full overflow-hidden pb-[60px]"
               style={{
-                backgroundImage: "url('/images/mobile/beratown-home-normal.png')",
+                backgroundImage: "url('/images/mobile/beratown-home-normal.jpg')",
                 backgroundSize: "cover",
                 backgroundPosition: "top",
                 backgroundRepeat: "no-repeat",
@@ -262,7 +262,7 @@ const Home = () => {
 
               {/*#region swap*/}
               <motion.div
-                className="w-[52.308vw] h-[38.205vw] translate-y-[25vw] translate-x-[3vw] absolute top-[10vh] right-[3vw]"
+                className="w-[52.308vw] h-[38.205vw] translate-y-[25vw] translate-x-[45vw]"
                 // data-bp="1015-011"
                 onClick={() => {
                   tapSound.play?.();
