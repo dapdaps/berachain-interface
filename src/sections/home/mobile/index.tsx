@@ -226,7 +226,7 @@ const Home = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "top",
                 backgroundRepeat: "no-repeat",
-                height: "calc(320vw + 64px)",
+                height: "calc(360vw + 64px)",
                 minHeight: "100dvh"
               }}
             >
@@ -262,7 +262,7 @@ const Home = () => {
 
               {/*#region swap*/}
               <motion.div
-                className="w-[52.308vw] h-[38.205vw] translate-y-[25vw] translate-x-[45vw]"
+                className="w-[52.308vw] h-[38.205vw] translate-y-[25vw] translate-x-[45vw] mt-[10vw]"
                 // data-bp="1015-011"
                 onClick={() => {
                   tapSound.play?.();
@@ -282,7 +282,7 @@ const Home = () => {
 
               {/*#region Bridge*/}
               <motion.div
-                className="w-[48.53vw] h-[25.128vw] mt-[10vw] translate-y-[28vw] translate-x-[10.256vw]"
+                className="w-[48.53vw] h-[25.128vw] mt-[10vw] translate-y-[32vw] translate-x-[10.256vw]"
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {
@@ -457,7 +457,7 @@ const Home = () => {
 
               {/*#region Cave*/}
               <motion.div
-                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[25vw] translate-x-[34.8vw]"
+                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[35vw] translate-x-[22.8vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push('/cave');

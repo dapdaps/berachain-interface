@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Line, LineChart, Tooltip, YAxis } from 'recharts';
 import Big from 'big.js';
 import SwitchTabs from "@/components/switch-tabs";
@@ -26,10 +26,11 @@ interface PriceTendProps {
 }
 
 const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
-  const [currentToken, setCurrentToken] = useState("BERA");
+  const [currentToken, setCurrentToken] = useState(token1?.symbol);
   const { priceTend: priceTend1, isLoading: isLoading1 } = usePriceTend({ address: token1?.address })
   const { priceTend: priceTend2, isLoading: isLoading2 } = usePriceTend({ address: token2?.address })
   const prices = usePriceStore((store) => store.price);
+  const currentTokenRef = useRef(token1?.symbol);
 
   const tabs = [
     { value: token1?.symbol, label: token1?.symbol },
@@ -45,6 +46,8 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     }
     return [];
   }, [priceTend1]);
+
+  console.log('priceTendData1', priceTendData1)
 
   const priceTendData2 = useMemo(() => {
     if (priceTend2?.length) {
@@ -62,7 +65,7 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     } else {
       return prices[token2?.symbol] || 0;
     }
-  }, [currentToken, prices]);
+  }, [currentToken, prices, token1, token2]);
 
   const isLoading = useMemo(() => {
     if (currentToken === token1?.symbol) {
@@ -70,8 +73,20 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     } else {
       return isLoading2;
     }
-  }, [isLoading1, isLoading2, currentToken]);
+  }, [isLoading1, isLoading2, currentToken, token1, token2]);
 
+  const changeRate = useMemo(() => {
+    try {
+      if (currentToken === token1?.symbol) {
+        return Big(priceTend1[priceTend1.length - 1]?.price).div(priceTend1[priceTend1.length - 2]?.price).mul(100).minus(100).toNumber();
+      } else {
+        return Big(priceTend2[priceTend2.length - 1]?.price).div(priceTend2[priceTend1.length - 2]?.price).mul(100).minus(100).toNumber();
+      }
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
+  }, [currentToken, priceTend1, priceTend2, token1, token2]);
 
   const getCustomDomain = (data: any[], key: string) => {
     if (!data?.length) return [0, 0];
@@ -82,7 +97,25 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     return [min - padding, max + padding];
   };
 
-  const chartData = currentToken === token1?.symbol ? priceTendData1 : priceTendData2;
+  const chartData = useMemo(() => {
+    if (currentToken === token1?.symbol) {
+      return priceTendData1;
+    } else {
+      return priceTendData2;
+    }
+  }, [currentToken, priceTendData1, priceTendData2, token1, token2]);
+
+  useEffect(() => {
+    if (currentTokenRef.current !== token1?.symbol && currentTokenRef.current !== token2?.symbol) {
+      setCurrentToken(token1?.symbol);
+    }
+  }, [token1, token2]);
+
+  useEffect(() => {
+    currentTokenRef.current = currentToken;
+  }, [currentToken]);
+
+  console.log('chartData', chartData)
 
   return (
     <div className={`rounded-[18px] border border-black bg-[#FFFDEB] p-[16px] shadow-shadow1 mt-[20px] ${className}`}>
@@ -103,9 +136,22 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-[12px]">
-        <div className="text-[24px] font-bold font-Montserrat text-black">
+      <div className="flex items-center gap-[8px] mb-[12px]">
+        <div className="text-[16px] font-Montserrat text-black">
           ${numberFormatter(currentPrice, 10, true)}
+        </div>
+        <div className="text-[12px] text-[#3D405A] font-Montserrat font-[600] flex items-center gap-[4px]">
+          {
+            changeRate >= 0 ? (
+              <span className="text-[#76A813]">
+                <span className="text-[18px]">↑</span>{numberFormatter(changeRate, 2, true)}%
+              </span>
+            ) : (
+              <span className="text-[#FF0000]">
+                <span className="text-[18px]">↓</span>{numberFormatter(changeRate, 2, true)}%
+              </span>
+            )
+          }
         </div>
       </div>
 

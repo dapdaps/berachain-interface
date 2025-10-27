@@ -11,31 +11,31 @@ import useWeekRound from "../hooks/use-week-round"
 import Modal from "@/components/modal"
 import clsx from "clsx"
 
-export default memo(function Leaderboard({ 
-  onClose, 
-  round, 
-  startDate, 
-  endDate, 
-  weekTime, 
-  handleNextRound, 
+export default memo(function Leaderboard({
+  onClose,
+  round,
+  startDate,
+  endDate,
+  weekTime,
+  handleNextRound,
   handlePreviousRound,
   prevDisabled,
   nextDisabled
-}: { 
-  onClose: () => void, 
-  round: number, 
-  startDate: string, 
-  endDate: string, 
-  weekTime: string, 
-  handleNextRound: () => void, 
-  handlePreviousRound: () => void 
+}: {
+  onClose: () => void,
+  round: number,
+  startDate: string,
+  endDate: string,
+  weekTime: string,
+  handleNextRound: () => void,
+  handlePreviousRound: () => void
   prevDisabled: boolean,
   nextDisabled: boolean
 }) {
   const { handleReport } = useClickTracking();
   const { account } = useCustomAccount()
   const { ranks, loading: loadingRanks } = useRanks({ weekTime })
-  
+
 
   const COLUMNS = [{
     title: 'player',
@@ -56,8 +56,9 @@ export default memo(function Leaderboard({
     align: 'right',
     width: '25%',
     render: (text: any, record: any, index: number) => {
-      return <div className="text-[#7EA82B] font-Montserrat text-[16px]">
-        + {numberFormatter(record?.profit, 2, true, { isShort: true })}
+      return <div className={clsx("font-Montserrat text-[16px]", record?.profit >= 0 ? 'text-[#7EA82B]' : 'text-[#FF0000]')}>
+        {record?.profit >= 0 ? '+' : '-'}
+        {numberFormatter(record?.profit, 2, true, { isShort: true })}
       </div>
     }
   },]
@@ -124,7 +125,7 @@ export default memo(function Leaderboard({
             <FlexTable
               loading={loadingRanks}
               columns={COLUMNS as Column[]}
-              showHeader={false}
+              showHeader={true}
               list={ranks?.data ?? []}
               bodyClass={"rounded-[2px] py-0 h-[40px] flex flex-col justify-center"}
               renderEmpty={() => (
@@ -143,7 +144,14 @@ export default memo(function Leaderboard({
                   {ranks?.user?.address ? formatLongText(ranks?.user?.address, 5, 5) : formatLongText(account, 5, 5)}
                 </div>
               </div>
-              <div className=" text-[14px] flex-1 text-right">{numberFormatter(ranks?.user?.profit, 2, true, { isShort: true })}</div>
+              {
+                ranks?.user
+                  ? <div className={clsx(" text-[14px] flex-1 text-right", ranks?.user?.profit >= 0 ? 'text-[#7EA82B]' : 'text-[#FF0000]')}>
+                    {ranks?.user?.profit >= 0 ? '+' : '-'}
+                    {numberFormatter(ranks?.user?.profit, 2, true, { isShort: true })}
+                  </div>
+                  : <div>-</div>
+              }
             </div>
           </div>
         </div>
@@ -158,17 +166,17 @@ const RankItem = (props: any) => {
 
   if (rank <= 3) {
     return (
-      <div className="relative w-[26px] h-[26px] flex items-center justify-center"> 
+      <div className="relative w-[26px] h-[26px] flex items-center justify-center">
         <svg className="absolute top-0 left-0" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.0273 1.48633C12.588 1.00858 13.412 1.00858 13.9727 1.48633L16.1631 3.35254C16.5634 3.69363 17.0616 3.89957 17.5859 3.94141L20.4541 4.1709C21.188 4.22971 21.7703 4.81204 21.8291 5.5459L22.0586 8.41406C22.1004 8.93836 22.3064 9.43655 22.6475 9.83691L24.5137 12.0273C24.9914 12.588 24.9914 13.412 24.5137 13.9727L22.6475 16.1631C22.3064 16.5634 22.1004 17.0616 22.0586 17.5859L21.8291 20.4541C21.7703 21.188 21.188 21.7703 20.4541 21.8291L17.5859 22.0586C17.0616 22.1004 16.5634 22.3064 16.1631 22.6475L13.9727 24.5137C13.412 24.9914 12.588 24.9914 12.0273 24.5137L9.83691 22.6475C9.43655 22.3064 8.93836 22.1004 8.41406 22.0586L5.5459 21.8291C4.81204 21.7703 4.22971 21.188 4.1709 20.4541L3.94141 17.5859C3.89957 17.0616 3.69363 16.5634 3.35254 16.1631L1.48633 13.9727C1.00858 13.412 1.00858 12.588 1.48633 12.0273L3.35254 9.83691C3.69363 9.43655 3.89957 8.93836 3.94141 8.41406L4.1709 5.5459C4.22971 4.81204 4.81204 4.22971 5.5459 4.1709L8.41406 3.94141C8.93836 3.89957 9.43655 3.69363 9.83691 3.35254L12.0273 1.48633Z" fill={"url(#paint0_linear_2952_1144_" + rank + ")"} stroke="black" />
           <defs>
             <linearGradient id={"paint0_linear_2952_1144_" + rank} x1="13" y1="0" x2="13" y2="26" gradientUnits="userSpaceOnUse">
-              <stop stop-color={ colors[(Number(rank) - 1) * 2] } />
-              <stop offset="1" stop-color={ colors[(Number(rank) - 1) * 2 + 1] } />
+              <stop stop-color={colors[(Number(rank) - 1) * 2]} />
+              <stop offset="1" stop-color={colors[(Number(rank) - 1) * 2 + 1]} />
             </linearGradient>
           </defs>
         </svg>
-        <div className="relative z-10 text-black font-bold text-[14px]">{ rank } </div>
+        <div className="relative z-10 text-black font-bold text-[14px]">{rank} </div>
       </div>
     )
   }
