@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 
-const START_DATE = new Date(Date.UTC(2025, 9, 20)); 
+const START_DATE = new Date(Date.UTC(2025, 9, 27)); 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getWeekRoundInfo(now: Date) {
