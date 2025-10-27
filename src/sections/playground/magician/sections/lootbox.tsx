@@ -150,8 +150,8 @@ const Content = (props: any) => {
         });
       }
 
-      setTreasureBookOpen(true);
-      setTreasureBookTab("partners");
+      // setTreasureBookOpen(true);
+      // setTreasureBookTab("partners");
 
       return _rewardData;
     } catch (error) {
@@ -192,7 +192,10 @@ const Content = (props: any) => {
           transition={{
             delay: 0.6,
           }}
-          onClick={open}
+          onClick={() => {
+            setTreasureBookOpen(true);
+            setTreasureBookTab("partners");
+          }}
           disabled={opening}
         />
         <motion.img
