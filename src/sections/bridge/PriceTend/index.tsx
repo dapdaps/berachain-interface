@@ -47,8 +47,6 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     return [];
   }, [priceTend1]);
 
-  console.log('priceTendData1', priceTendData1)
-
   const priceTendData2 = useMemo(() => {
     if (priceTend2?.length) {
       return priceTend2.map(item => ({
@@ -61,11 +59,11 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
 
   const currentPrice = useMemo(() => {
     if (currentToken === token1?.symbol) {
-      return prices[token1?.symbol] || 0;
+      return priceTend1[priceTend1.length - 1]?.price || prices[token1?.symbol] || 0;
     } else {
-      return prices[token2?.symbol] || 0;
+      return priceTend2[priceTend2.length - 1]?.price || prices[token2?.symbol] || 0;
     }
-  }, [currentToken, prices, token1, token2]);
+  }, [currentToken, prices, token1, token2, priceTend1, priceTend2]);
 
   const isLoading = useMemo(() => {
     if (currentToken === token1?.symbol) {
@@ -87,8 +85,6 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
       return 0;
     }
   }, [currentToken, priceTend1, priceTend2, token1, token2]);
-
-  console.log('changeRate', changeRate)
 
   const getCustomDomain = (data: any[], key: string) => {
     if (!data?.length) return [0, 0];
@@ -143,11 +139,15 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
         </div>
         <div className="text-[12px] text-[#3D405A] font-Montserrat font-[600] flex items-center gap-[4px]">
           {
-            changeRate >= 0 ? (
+            (changeRate > 0 || (changeRate === 0 && chartData?.length > 0)) && (
               <span className="text-[#76A813]">
                 <span className="text-[18px]">↑</span>{numberFormatter(Math.abs(changeRate), 2, true)}%
               </span>
-            ) : (
+            )
+          }
+
+          {
+            changeRate < 0 && (
               <span className="text-[#FF0000]">
                 <span className="text-[18px]">↓</span>{numberFormatter(Math.abs(changeRate), 2, true)}%
               </span>
