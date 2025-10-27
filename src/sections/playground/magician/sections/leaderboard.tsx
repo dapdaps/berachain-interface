@@ -57,8 +57,7 @@ export default memo(function Leaderboard({
     width: '25%',
     render: (text: any, record: any, index: number) => {
       return <div className={clsx("font-Montserrat text-[16px]", record?.profit >= 0 ? 'text-[#7EA82B]' : 'text-[#FF0000]')}>
-        {record?.profit >= 0 ? '+' : '-'}
-        {numberFormatter(record?.profit, 2, true, { isShort: true })}
+        {record?.profit ?? '-'}
       </div>
     }
   },]
@@ -147,8 +146,7 @@ export default memo(function Leaderboard({
               {
                 ranks?.user
                   ? <div className={clsx(" text-[14px] flex-1 text-right", ranks?.user?.profit >= 0 ? 'text-[#7EA82B]' : 'text-[#FF0000]')}>
-                    {ranks?.user?.profit >= 0 ? '+' : '-'}
-                    {numberFormatter(ranks?.user?.profit, 2, true, { isShort: true })}
+                    {ranks?.user?.profit ?? '-'}
                   </div>
                   : <div>-</div>
               }
