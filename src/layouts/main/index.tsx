@@ -3,7 +3,7 @@
 import useTokenPrice from "@/hooks/use-token-price";
 import MainLayoutHeader from "@/layouts/main/header";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import MapModal from "@/sections/home/map-modal";
 import useUser from "@/hooks/use-user";
 import { useAccount } from "wagmi";
@@ -59,7 +59,7 @@ const MainLayout = (props: Props) => {
     () => pathname === "/vaults" || pathname.startsWith("/vaults/"),
     [pathname]
   );
-
+  const router = useRouter();
   const bg = useMemo(() => {
     if (isVaults && !isSystemMaintenanceDowntime) {
       return "bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover";
@@ -338,6 +338,30 @@ const MainLayout = (props: Props) => {
                   </motion.div>
                 )}
             </AnimatePresence>
+            {
+              pathname === '/' && (
+                <motion.div
+                  className="fixed top-[420px] right-[10px] z-[15] flex items-center gap-[6px] cursor-pointer"
+                  onClick={() => {
+                    router.push("/carnival/guess-who");
+                  }}
+                  animate={{
+                    x: [0, -6, 6, -6, 6, 0, 0],
+                    rotate: [0, -5, 5, -3, 3, 0, 0],
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    repeatDelay: 5,
+                    duration: 0.4,
+                    times: [0, 0.18, 0.36, 0.54, 0.72, 0.9, 1],
+                    ease: "easeInOut"
+                  }}
+                >
+                  <img src="/images/home/guess-who.png" alt="guess-who" className="w-[92px]" />
+                </motion.div>
+              )
+            }
+
             <TreasureBook />
           </>
         )

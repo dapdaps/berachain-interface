@@ -2,6 +2,7 @@ import { RewardType } from "@/components/check-in/config";
 import CheckInRewardModal from "@/components/check-in/reward";
 import { GameLootbox } from "@/configs/playground";
 import useToast from "@/hooks/use-toast";
+import { useLootboxSeasonStore } from "@/stores/use-lootbox-season";
 import { get, post } from "@/utils/http";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useRequest } from "ahooks";
@@ -90,6 +91,13 @@ export default Lootbox;
 const Content = (props: any) => {
   const { rewardLootboxData, onClose } = props;
 
+  const {
+    treasureBookOpen,
+    setTreasureBookOpen,
+    treasureBookTab,
+    setTreasureBookTab,
+} = useLootboxSeasonStore();
+
   const toast = useToast();
   const dropdownDustVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -141,6 +149,10 @@ const Content = (props: any) => {
           label: `${numberFormatter(res.data.reward_amount, 0, true)} ${rewardLootboxData.name}`,
         });
       }
+
+      // setTreasureBookOpen(true);
+      // setTreasureBookTab("partners");
+
       return _rewardData;
     } catch (error) {
       console.log("open lootbox failed: %o", error);
@@ -180,7 +192,10 @@ const Content = (props: any) => {
           transition={{
             delay: 0.6,
           }}
-          onClick={open}
+          onClick={() => {
+            setTreasureBookOpen(true);
+            setTreasureBookTab("partners");
+          }}
           disabled={opening}
         />
         <motion.img

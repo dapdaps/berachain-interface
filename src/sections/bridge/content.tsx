@@ -15,6 +15,9 @@ import type { Token, Chain } from "@/types";
 import useBridgeType from "./Hooks/useBridgeType";
 import useToast from "@/hooks/use-toast";
 import { balanceFormated } from "@/utils/balance";
+import HotTokens from "./HotTokens";
+import useIsMobile from "@/hooks/use-isMobile";
+import PriceTend from "./PriceTend";
 
 const ComingSoon = false;
 const chainList = Object.values(chains).filter((chain) =>
@@ -37,7 +40,7 @@ export default function BridgeContent({
   const [confirmShow, setConfirmShow] = useState(false);
   const { address } = useAccount();
   const [limitBera, setLimitBera] = useState(0);
-
+  const isMobile = useIsMobile();
   const { bridgeType } = useBridgeType();
   const allTokens = useAllToken();
   const { success } = useToast();
@@ -159,7 +162,7 @@ export default function BridgeContent({
 
   return (
     <>
-      <Card className="md:!rounded-[20px]">
+      <Card className="md:!rounded-[20px] relative z-10">
         <TokenAmout
           isDest={false}
           allTokens={allTokens}
@@ -300,6 +303,23 @@ export default function BridgeContent({
           comingSoon={ComingSoon}
         />
       </Card>
+
+      {
+        !isMobile && type === 'super-swap' && (<>
+          <HotTokens onTokenClick={(fromToken: any) => {
+            const fromTokens = allTokens[defaultFromChain];
+            setFromToken(
+              fromTokens.find(
+                (token: Token) =>
+                  token.symbol.toUpperCase() === fromToken.symbol.toUpperCase()
+              )
+            );
+          }} />
+          <PriceTend token1={fromToken as any} token2={toToken as any} />
+          </>
+        )
+      }
+
       {isShowConfirm && (
         <Confirm
           fromChain={fromChain}
