@@ -41,7 +41,7 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     if (priceTend1?.length) {
       return priceTend1.map(item => ({
         price: item.price,
-        date: new Date(item.timestamp * 1000).toLocaleString(),
+        date: new Date(item.timestamp * 1000).toUTCString(),
       }));
     }
     return [];
@@ -51,7 +51,7 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     if (priceTend2?.length) {
       return priceTend2.map(item => ({
         price: item.price,
-        date: new Date(item.timestamp * 1000).toLocaleString(),
+        date: new Date(item.timestamp * 1000).toUTCString(),
       }));
     }
     return [];
