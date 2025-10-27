@@ -78,15 +78,17 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
   const changeRate = useMemo(() => {
     try {
       if (currentToken === token1?.symbol) {
-        return Big(priceTend1[priceTend1.length - 1]?.price).div(priceTend1[priceTend1.length - 2]?.price).mul(100).minus(100).toNumber();
+        return Big(priceTend1[priceTend1.length - 1]?.price).div(priceTend1[priceTend1.length - 2]?.price).minus(1).mul(100).toNumber();
       } else {
-        return Big(priceTend2[priceTend2.length - 1]?.price).div(priceTend2[priceTend1.length - 2]?.price).mul(100).minus(100).toNumber();
+        return Big(priceTend2[priceTend2.length - 1]?.price).div(priceTend2[priceTend1.length - 2]?.price).minus(1).mul(100).toNumber();
       }
     } catch (error) {
       console.log(error);
       return 0;
     }
   }, [currentToken, priceTend1, priceTend2, token1, token2]);
+
+  console.log('changeRate', changeRate)
 
   const getCustomDomain = (data: any[], key: string) => {
     if (!data?.length) return [0, 0];
@@ -115,12 +117,11 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
     currentTokenRef.current = currentToken;
   }, [currentToken]);
 
-  console.log('chartData', chartData)
 
   return (
     <div className={`rounded-[18px] border border-black bg-[#FFFDEB] p-[16px] shadow-shadow1 mt-[20px] ${className}`}>
-      <div className="flex items-center justify-between mb-[12px]">
-        <div className="flex items-center gap-[8px]">
+      <div className="flex items-center justify-between mb-[12px] overflow-hidden">
+        <div className="flex items-center gap-[8px] ml-[-25px]">
           <SwitchTabs
             tabs={tabs}
             current={currentToken}
@@ -144,11 +145,11 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
           {
             changeRate >= 0 ? (
               <span className="text-[#76A813]">
-                <span className="text-[18px]">↑</span>{numberFormatter(changeRate, 2, true)}%
+                <span className="text-[18px]">↑</span>{numberFormatter(Math.abs(changeRate), 2, true)}%
               </span>
             ) : (
               <span className="text-[#FF0000]">
-                <span className="text-[18px]">↓</span>{numberFormatter(changeRate, 2, true)}%
+                <span className="text-[18px]">↓</span>{numberFormatter(Math.abs(changeRate), 2, true)}%
               </span>
             )
           }
