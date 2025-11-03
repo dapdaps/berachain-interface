@@ -62,7 +62,7 @@ export async function getQuote(
         amount: quoteRequest.amount.toFixed(0),
         type: 'exactIn',
         recipient: quoteRequest.destAddress,
-        slippageTolerance: 1
+        slippageTolerance: 3
     }
 
     const queryParams = new URLSearchParams({
@@ -76,8 +76,8 @@ export async function getQuote(
         recipient: routesRequest.recipient,
         slippageTolerance: routesRequest.slippageTolerance.toString(),
         // refCode: 'S5GSR6OV',
-        // refCode: 'BERATOWN',
-        // referrerFeeBps: '7'
+        refCode: '4',
+        referrerFeeBps: '7'
     })
 
     const response = await fetch(`https://backend.kodiak.finance/quote?${queryParams}`, {
@@ -144,12 +144,10 @@ export async function getStatus(params: StatusParams) {
     }
 }
 
-function computeFee(result: any, fromToken: Token) {
-    // if (result && result.methodParameters.decodedArgs) {
-    //     const decodedArgs = result.methodParameters.decodedArgs
-    //     const fee = decodedArgs[decodedArgs.length - 1]
-    //     return new Big(fee.feeQuote).add(fee.refCode).div(10 ** fromToken.decimals).toString()
-    // }
+function computeFee(result: any, fromToken: Token, toToken: Token) {
+    if (result.refFee) {
+        return new Big(result.refFee).div(10 ** toToken.decimals).toString()
+    }
     return '0'
 }
 
@@ -179,11 +177,11 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             icon,
             bridgeName: result.provider,
             bridgeType: 'Kodiak',
-            fee: computeFee(result, quoteRequest.fromToken),
+            fee: computeFee(result, quoteRequest.fromToken, quoteRequest.toToken),
             receiveAmount: result.quote,
             gas: result.gasUseEstimateUSD,
             duration: 1,
-            feeType: FeeType.usd,
+            feeType: FeeType.target,
             gasType: FeeType.origin,
             identification: quoteRequest.identification,
             toexchangeRate: new Big(result.quoteDecimals).div(quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals)).toString()
@@ -221,7 +219,7 @@ async function createRoute(result: any, routes: any, quoteRequest: QuoteRequest,
             receiveAmount: quoteRequest.amount,
             gas: '0',
             duration: 1,
-            feeType: FeeType.usd,
+            feeType: FeeType.target,
             gasType: FeeType.origin,
             identification: quoteRequest.identification,
             toexchangeRate: '1'
