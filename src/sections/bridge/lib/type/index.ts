@@ -65,6 +65,7 @@ export enum FeeType {
     usd,
     bnb,
     avax,
+    target,
     custom = -1,
 }
 

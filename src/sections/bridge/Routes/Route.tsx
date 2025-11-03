@@ -5,14 +5,19 @@ import Big from "big.js";
 import { useMemo } from "react";
 import useIsMobile from "@/hooks/use-isMobile";
 import { numberFormatter } from "@/utils/number-formatter";
+import { FeeType } from "../lib/type";
 
 export default function Route({ name, fee, receiveAmount, fromChain, toToken, checked, onChange, icon, duration, feeType }: any) {
     const prices: any = usePriceStore(store => store.price);
     const isMobile = useIsMobile();
 
     const feeText = useMemo(() => {
-        if (feeType === 1) {
-            return `${balanceFormated(prices[fromChain.nativeCurrency.symbol.toUpperCase()] * (fee as any), 4)}`
+        if (feeType === FeeType.origin) {
+            return `${balanceFormated(prices[fromChain.nativeCurrency.symbol.toLowerCase()] * (fee as any), 4)}`
+        }
+
+        if (feeType === FeeType.target) {
+            return `${balanceFormated((prices[(toToken as any).priceKey] || prices[toToken.symbol.toUpperCase()] || prices[toToken.address.toLowerCase()]) * (fee as any), 4)}`
         }
 
         return (!fee || Number(fee) === 0) ? '0.00' : `${balanceFormated(fee, 4)}`
