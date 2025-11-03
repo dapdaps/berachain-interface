@@ -18,6 +18,7 @@ import TimeAgo from "../components/time-ago";
 import InputNumber from "@/components/input-number";
 import Leaderboard from "./leaderboard";
 import useWeekRound from "../hooks/use-week-round";
+import useRanks from "../hooks/use-ranks";
 
 const List = (props: any) => {
   const {
@@ -39,7 +40,9 @@ const List = (props: any) => {
   }, [magician.gameConfig, magician.betToken]);
 
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const { round, startDate, endDate, countdown, weekTime, handleNextRound, handlePreviousRound, prevDisabled, nextDisabled } = useWeekRound()
+  const { round, startDate, endDate, countdown, weekTime, currentWeekTime, handleNextRound, handlePreviousRound, prevDisabled, nextDisabled } = useWeekRound()
+
+  const { ranks, loading: loadingRanks } = useRanks({ weekTime: currentWeekTime })
 
   return (
     <motion.div
@@ -243,7 +246,11 @@ const List = (props: any) => {
                     <path opacity="0.15" d="M11.1448 23.182C11.1448 23.182 10.7516 27.2446 13.5049 25.5353C16.2582 23.8259 17.7539 22.0246 17.7539 20.8135C17.7539 20.8135 17.7325 27.1179 11.0839 27.4641C11.0841 27.4641 10.2566 24.0676 11.1448 23.182Z" fill="#4B371F" />
                   </svg>
                 </div>
-                <div className="text-left">This round ends in <span className="underline">{ countdown.days }d { countdown.hours }:{ countdown.minutes }:{ countdown.seconds }</span>. The top 10 players will share a 50 $BERA reward.</div>
+                <div className="text-left">This round ends in <span className="underline">{ countdown.days }d { countdown.hours }:{ countdown.minutes }:{ countdown.seconds }</span>. 
+                {
+                  ranks?.reward && <span>The top 10 players will share a { ranks?.reward } reward.</span>
+                }
+                </div>
               </div>
             </div>
           </Button>
