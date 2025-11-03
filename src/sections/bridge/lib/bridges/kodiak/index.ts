@@ -74,7 +74,10 @@ export async function getQuote(
         amount: routesRequest.amount,
         type: routesRequest.type,
         recipient: routesRequest.recipient,
-        slippageTolerance: routesRequest.slippageTolerance.toString()
+        slippageTolerance: routesRequest.slippageTolerance.toString(),
+        // refCode: 'S5GSR6OV',
+        // refCode: 'BERATOWN',
+        // referrerFeeBps: '7'
     })
 
     const response = await fetch(`https://backend.kodiak.finance/quote?${queryParams}`, {
