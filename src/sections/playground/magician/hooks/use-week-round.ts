@@ -35,6 +35,10 @@ export default function useWeekRound() {
     return getWeekRoundInfo(currentDate);
   }, [currentDate]);
 
+  const currentWeekTime = useMemo(() => {
+    return getWeekRoundInfo(new Date()).weekTime;
+  }, []);
+
   const [nowDateOfRound, setNowDateOfRound] = useState(endDateOfRound);
 
   const [countdown, setCountdown] = useState<{ days: string, hours: string, minutes: string, seconds: string }>({
@@ -113,6 +117,7 @@ export default function useWeekRound() {
     endDate,
     countdown,
     weekTime,
+    currentWeekTime,
     handleNextRound,
     handlePreviousRound,
     prevDisabled,

@@ -195,6 +195,7 @@ const Content = (props: any) => {
           onClick={() => {
             setTreasureBookOpen(true);
             setTreasureBookTab("partners");
+            onClose();
           }}
           disabled={opening}
         />
