@@ -25,8 +25,10 @@ export const getDappLogo = (name: string) => {
 
 export const getTokenLogo = (name: string) => {
   name = name.toLowerCase();
-  if (name) {
-    return `https://assets.db3.app/token/${name}.png`;
+
+  const _name = name === 'wibgt' ? 'ibgt' : name;
+  if (_name) {
+    return `https://assets.db3.app/token/${_name}.png`;
   }
   return DefaultIcon;
 };
