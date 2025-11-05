@@ -108,7 +108,6 @@ const List = forwardRef<any, any>((props, ref) => {
       dataList?.reduce((prev, cur) => {
         return prev.plus(Big(cur?.tvl ?? 0));
       }, Big(0)),
-      ibgtData?.tvl,
       "$",
       2,
       true
