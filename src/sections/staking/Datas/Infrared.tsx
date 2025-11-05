@@ -264,7 +264,6 @@ export default function useInfraredData(props: any) {
     }
   }
   async function getDataList() {
-
     allData?.forEach((item) => {
       const [protocol, ...restSlug] = item?.slug?.split("-");
       const poolName = restSlug.join("-");

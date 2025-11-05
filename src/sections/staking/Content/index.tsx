@@ -146,6 +146,9 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     fetchAllData: infraredReload,
     maxApr: infraredMaxApr
   } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
+
+
+  
   const {
     dataList: aquaBeraData,
     loading: aquabearLoading,
