@@ -1652,26 +1652,26 @@ export default [
     },
     "slug": "infrared-ibgt",
     "rewardTokens": [
-      {
-        "address": "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce",
-        "chainId": 80094,
-        "decimals": 18,
-        "displayPrecision": 2,
-        "image": "/assets/tokens/honey.svg",
-        "isLpToken": false,
-        "name": "HONEY",
-        "symbol": "HONEY"
-      },
-      {
-        "address": "0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b",
-        "chainId": 80094,
-        "decimals": 18,
-        "displayPrecision": 3,
-        "image": "/assets/tokens/ibgt.svg",
-        "isLpToken": false,
-        "name": "iBGT",
-        "symbol": "iBGT"
-      },
+      // {
+      //   "address": "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce",
+      //   "chainId": 80094,
+      //   "decimals": 18,
+      //   "displayPrecision": 2,
+      //   "image": "/assets/tokens/honey.svg",
+      //   "isLpToken": false,
+      //   "name": "HONEY",
+      //   "symbol": "HONEY"
+      // },
+      // {
+      //   "address": "0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b",
+      //   "chainId": 80094,
+      //   "decimals": 18,
+      //   "displayPrecision": 3,
+      //   "image": "/assets/tokens/ibgt.svg",
+      //   "isLpToken": false,
+      //   "name": "iBGT",
+      //   "symbol": "iBGT"
+      // },
       {
         "address": "0x6969696969696969696969696969696969696969",
         "chainId": 80094,

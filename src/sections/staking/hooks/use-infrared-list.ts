@@ -101,7 +101,12 @@ export default function useInfraredList(updater?: number, name?: string) {
         newItem.initialData = {
           pointsMultiplier: item.pointsMultiplier,
           stakeTokenPrice: pricesRes[matchedVault.depositTokenAddress]?.price || 0,
-          underlyingTokens: tokens
+          underlyingTokens: tokens,
+          rewardTokens: matchedVault.rewardTokens.map((rewardToken: any) => ({
+            ...rewardToken,
+            image: 'https://infrared.finance' + rewardToken.image,
+            price: pricesRes[rewardToken.address]?.price || 0
+          }))
         }
 
         if (newItem.apy > maxApr) {

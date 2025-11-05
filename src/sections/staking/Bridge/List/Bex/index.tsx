@@ -64,9 +64,17 @@ const List = forwardRef<any, any>((props, ref) => {
     onSearch: onCustomSearch
   } = props;
 
+
+  const ibgtData = useMemo(
+    () => dataList?.find((d: any) => d.id === "iBGT"),
+    [dataList]
+  );
+
+
   const router = useRouter();
 
   const isBeraPaw = name === "BeraPaw";
+  const isInfrared = name === "Infrared";
 
   const bodyRef = useRef<any>();
 
@@ -78,7 +86,17 @@ const List = forwardRef<any, any>((props, ref) => {
     direction: 1
   });
 
+
   const tvl = useMemo(() => {
+    if (name === "Infrared") {
+      return formatValueDecimal(
+        ibgtData?.tvl,
+        "$",
+        2,
+        true
+      );
+    }
+
     if (totalTVL) {
       return numberFormatter(totalTVL, 2, true, {
         isShort: true,
@@ -94,7 +112,9 @@ const List = forwardRef<any, any>((props, ref) => {
       2,
       true
     );
-  }, [dataList, totalTVL]);
+  }, [dataList, totalTVL, ibgtData, name]);
+
+
   const maxApy = useMemo(() => {
     if (maxApr)
       return numberFormatter(maxApr, 2, true, {
@@ -132,10 +152,10 @@ const List = forwardRef<any, any>((props, ref) => {
     const cloneDataList = cloneDeep(dataList);
     const _sortList = state?.sortKey
       ? cloneDataList?.sort((prev, next) => {
-          return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
-            ? state.direction
-            : -state?.direction;
-        })
+        return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
+          ? state.direction
+          : -state?.direction;
+      })
       : cloneDataList;
     const [key, value] = state?.filterKey.split("|");
     const _filterList = key
@@ -264,8 +284,8 @@ const List = forwardRef<any, any>((props, ref) => {
                   ? Big(data?.minApr).eq(data?.maxApr)
                     ? `${Big(data?.maxApr ?? 0).toFixed(2)}%`
                     : `${Big(data?.minApr ?? 0).toFixed(2)}%-${Big(
-                        data?.maxApr ?? 0
-                      ).toFixed(2)}%`
+                      data?.maxApr ?? 0
+                    ).toFixed(2)}%`
                   : `${Big(data?.apy ?? 0).toFixed(2)}%`}
               </div>
             );
@@ -552,9 +572,8 @@ const List = forwardRef<any, any>((props, ref) => {
               trigger={PopoverTrigger.Hover}
               placement={PopoverPlacement.Top}
               content={
-                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
-                  data?.initialData?.pointsMultiplier + "x"
-                } points per iBGT claimed.`}</div>
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pointsMultiplier + "x"
+                  } points per iBGT claimed.`}</div>
               }
             >
               <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
@@ -722,7 +741,7 @@ const List = forwardRef<any, any>((props, ref) => {
 
         <div className="flex flex-col gap-[12px] w-[80%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
-            {isBeraPaw ? "APR" : "APY"} up to
+            {(isBeraPaw || isInfrared) ? "APR" : "APY"} up to
           </div>
           <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">
             {maxApy}%
