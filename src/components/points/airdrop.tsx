@@ -62,7 +62,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
 
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold text-black mb-4">
-                        Beratown Lootbox Airdrop!
+                        Beratown Airdrop!
                     </h2>
                 </div>
 
