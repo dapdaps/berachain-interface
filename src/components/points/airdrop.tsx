@@ -62,7 +62,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
 
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold text-black mb-4">
-                        Beratown Lootbox Airdrop!
+                        Beratown Airdrop!
                     </h2>
                 </div>
 
@@ -93,7 +93,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     </button>
 
                     <div className="text-center text-sm text-black mt-4">
-                        Did you collect more than 500 gems during the snapshot on 13-10-25?
+                        Did you collect more than 1500 gems during the snapshot?
                     </div>
                 </div>
 
@@ -170,7 +170,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                         <img src="/images/airdrop/no-bera-icon.png" alt="token" className="w-[70px] object-cover mx-auto" />
                                         <div className="font-bold text-[22px] leading-tight mb-1 mt-2">We are sorry</div>
                                         <div className="text-[16px] mt-0 mb-2">You didn’t make it this time, but don’t worry keep stacking! A new round has already begun.
-                                        Your luck might turn in Guess Who?</div>
+                                            Your luck might turn in Guess Who?</div>
                                         <div className="flex items-center justify-center gap-1 mb-3">
                                             <span className="text-yellow-500 text-xl">👇</span>
                                             <span className="text-yellow-500 text-xl">👇</span>
