@@ -34,6 +34,9 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
     }, [claimableTokens, totalClaimable]);
 
     const handleCheckEligibility = () => {
+        if (!account) {
+            return;
+        }
         setIsChecked(true);
     };
 
@@ -60,30 +63,22 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     <img src="/images/airdrop/airdrop-title.png" alt="bg" className="w-full h-full object-cover" />
                 </div>
 
-                <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-black mb-4">
+                <div className="text-center mb-2">
+                    <h2 className="text-2xl font-bold text-black mb-2">
                         Beratown Airdrop!
                     </h2>
                 </div>
 
-                <div className="bg-[#f0eedd] rounded-[15px] p-4 mx-6 mb-6 ">
+                <div className="bg-[#f0eedd] rounded-[15px] p-2 mx-6 mb-1 ">
                     <div className="text-center">
                         <div className="text-sm font-bold text-black mb-2">Claimable Duration</div>
                         <div className="text-[26px] font-bold text-black font-CherryBomb">
                             {formattedTimeLeft.days} d {formattedTimeLeft.hours.toString().padStart(2, '0')}:{formattedTimeLeft.minutes.toString().padStart(2, '0')}:{formattedTimeLeft.seconds.toString().padStart(2, '0')}
                         </div>
                     </div>
-                </div>
 
-                <div className="bg-[#f0eedd] rounded-[15px] p-4 mx-6 mb-6 relative z-10">
                     <div className="relative">
-                        <input
-                            type="text"
-                            value={account}
-                            readOnly
-                            className="w-full p-3 border border-black rounded-[10px] bg-white text-sm font-mono"
-                            placeholder="Enter your address"
-                        />
+                        { account }
                     </div>
                     <button
                         onClick={handleCheckEligibility}
@@ -97,12 +92,14 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     </div>
                 </div>
 
+                
+
                 {
-                    isChecked && <>
+                    isChecked && account && <>
                         {
                             claimableTokens && Number(claimableTokens) > 0 ? (
                                 <>
-                                    <div className="text-center mb-6 mt-[50px]">
+                                    <div className="text-center mb-2 mt-[50px]">
                                         <div className="w-[70px] relative mx-auto">
                                             <motion.img
                                                 src="/images/airdrop/bg.png"
@@ -130,7 +127,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-4 px-6 mb-6">
+                                    <div className="flex gap-4 px-6 mb-2">
                                         <button
                                             onClick={handlePlayNow}
                                             className="flex-1 bg-[#FFDC50] hover:bg-[#FFDC50]/80 border border-black rounded-[15px] py-3 font-bold text-black transition-colors shadow-[6px_6px_0_0_#00000040]"
