@@ -112,7 +112,7 @@ const PointsEntry = (props: any) => {
         isClaimed={isClaimed}
       />
       {
-        (isStarted && !isEnded && pathname === '/' && !isMobile) && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
+        (userInfo?.address && isStarted && !isEnded && pathname === '/' && !isMobile) && <Vaults className="!absolute z-[2] !left-[unset] !top-[150px] right-[30px] " onClick={() => {
           setAirdropOpen(true)
         }} />
       }

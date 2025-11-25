@@ -58,7 +58,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
             className="z-[60]"
             closeIconClassName="right-[-14px] top-[-8px]"
         >
-            <div className="bg-[#FFFDEB] border border-black w-[600px] rounded-[30px] relative">
+            <div className="bg-[#FFFDEB] border border-black w-[600px] rounded-[30px] relative pb-2">
                 <div className="w-[280px] mx-auto mt-[-90px]">
                     <img src="/images/airdrop/airdrop-title.png" alt="bg" className="w-full h-full object-cover" />
                 </div>
@@ -69,7 +69,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     </h2>
                 </div>
 
-                <div className="bg-[#f0eedd] rounded-[15px] p-2 mx-6 mb-1 ">
+                <div className="bg-[#f0eedd] rounded-[15px] p-2 mx-6 mb-2">
                     <div className="text-center">
                         <div className="text-sm font-bold text-black mb-2">Claimable Duration</div>
                         <div className="text-[26px] font-bold text-black font-CherryBomb">
