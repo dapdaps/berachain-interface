@@ -34,6 +34,9 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
     }, [claimableTokens, totalClaimable]);
 
     const handleCheckEligibility = () => {
+        if (!account) {
+            return;
+        }
         setIsChecked(true);
     };
 
@@ -55,35 +58,27 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
             className="z-[60]"
             closeIconClassName="right-[-14px] top-[-8px]"
         >
-            <div className="bg-[#FFFDEB] border border-black w-[600px] rounded-[30px] relative">
+            <div className="bg-[#FFFDEB] border border-black w-[600px] rounded-[30px] relative pb-2">
                 <div className="w-[280px] mx-auto mt-[-90px]">
                     <img src="/images/airdrop/airdrop-title.png" alt="bg" className="w-full h-full object-cover" />
                 </div>
 
-                <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-black mb-4">
-                        Beratown Lootbox Airdrop!
+                <div className="text-center mb-2">
+                    <h2 className="text-2xl font-bold text-black mb-2">
+                        Beratown Airdrop!
                     </h2>
                 </div>
 
-                <div className="bg-[#f0eedd] rounded-[15px] p-4 mx-6 mb-6 ">
+                <div className="bg-[#f0eedd] rounded-[15px] p-2 mx-6 mb-2">
                     <div className="text-center">
                         <div className="text-sm font-bold text-black mb-2">Claimable Duration</div>
                         <div className="text-[26px] font-bold text-black font-CherryBomb">
                             {formattedTimeLeft.days} d {formattedTimeLeft.hours.toString().padStart(2, '0')}:{formattedTimeLeft.minutes.toString().padStart(2, '0')}:{formattedTimeLeft.seconds.toString().padStart(2, '0')}
                         </div>
                     </div>
-                </div>
 
-                <div className="bg-[#f0eedd] rounded-[15px] p-4 mx-6 mb-6 relative z-10">
                     <div className="relative">
-                        <input
-                            type="text"
-                            value={account}
-                            readOnly
-                            className="w-full p-3 border border-black rounded-[10px] bg-white text-sm font-mono"
-                            placeholder="Enter your address"
-                        />
+                        { account }
                     </div>
                     <button
                         onClick={handleCheckEligibility}
@@ -93,16 +88,18 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                     </button>
 
                     <div className="text-center text-sm text-black mt-4">
-                        Did you collect more than 500 gems during the snapshot on 13-10-25?
+                        Did you collect more than 1500 gems during the snapshot?
                     </div>
                 </div>
 
+                
+
                 {
-                    isChecked && <>
+                    isChecked && account && <>
                         {
                             claimableTokens && Number(claimableTokens) > 0 ? (
                                 <>
-                                    <div className="text-center mb-6 mt-[50px]">
+                                    <div className="text-center mb-2 mt-[50px]">
                                         <div className="w-[70px] relative mx-auto">
                                             <motion.img
                                                 src="/images/airdrop/bg.png"
@@ -130,7 +127,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-4 px-6 mb-6">
+                                    <div className="flex gap-4 px-6 mb-2">
                                         <button
                                             onClick={handlePlayNow}
                                             className="flex-1 bg-[#FFDC50] hover:bg-[#FFDC50]/80 border border-black rounded-[15px] py-3 font-bold text-black transition-colors shadow-[6px_6px_0_0_#00000040]"
@@ -170,7 +167,7 @@ export default function Airdrop({ open, onClose, timeLeft, claimableTokens, tota
                                         <img src="/images/airdrop/no-bera-icon.png" alt="token" className="w-[70px] object-cover mx-auto" />
                                         <div className="font-bold text-[22px] leading-tight mb-1 mt-2">We are sorry</div>
                                         <div className="text-[16px] mt-0 mb-2">You didn’t make it this time, but don’t worry keep stacking! A new round has already begun.
-                                        Your luck might turn in Guess Who?</div>
+                                            Your luck might turn in Guess Who?</div>
                                         <div className="flex items-center justify-center gap-1 mb-3">
                                             <span className="text-yellow-500 text-xl">👇</span>
                                             <span className="text-yellow-500 text-xl">👇</span>
