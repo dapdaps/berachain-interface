@@ -3,6 +3,7 @@
 import LuckyBera from "@/sections/playground/lucky-bera";
 import BigWheel from "@/sections/playground/big-wheel";
 import Magician from "@/sections/playground/magician";
+import Gacha from "@/sections/playground/gacha";
 import { useParams } from "next/navigation";
 import { Games } from "@/configs/playground";
 import { camelToKebab } from "@/utils/utils";
@@ -25,6 +26,12 @@ const PlaygroundGame = () => {
   if (name === camelToKebab(Games.GuessWho.name)) {
     return (
       <Magician />
+    );
+  }
+
+  if (name === camelToKebab(Games.Gacha.name)) {
+    return (
+      <Gacha />
     );
   }
 

@@ -7,6 +7,7 @@ enum GameName {
   LuckyBera = "LuckyBera",
   BigWheel = "BigWheel",
   GuessWho = "GuessWho",
+  Gacha = "Gacha",
 }
 
 export const Games: Record<GameName, Game> = {
@@ -21,6 +22,10 @@ export const Games: Record<GameName, Game> = {
   [GameName.GuessWho]: {
     name: "GuessWho",
     path: "/carnival/guess-who",
+  },
+  [GameName.Gacha]: {
+    name: "Gacha",
+    path: "/carnival/gacha",
   },
 };
 

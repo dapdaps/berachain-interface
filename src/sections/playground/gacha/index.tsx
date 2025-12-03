@@ -1,0 +1,50 @@
+import Title from "./components/title";
+import NFTCard from "./components/nft-card";
+
+export default function Gacha() {
+  return (
+    <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px]">
+      <Title />
+      
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-between gap-[40px]">
+          <NFTCard
+            title="Bullas"
+            floorPrice="39.00"
+            remaining={{ current: 9, total: 20 }}
+            probabilities={[
+              { percentage: "0.1", value: 1 },
+              { percentage: "4", value: 20 },
+              { percentage: "48", value: 50 },
+            ]}
+            imageUrl="/images/treasure-book/reward/nft-bullas.png"
+          />
+          
+          <NFTCard
+            title="Mibera"
+            floorPrice="25.00"
+            remaining={{ current: 15, total: 20 }}
+            probabilities={[
+              { percentage: "0.5", value: 2 },
+              { percentage: "5", value: 25 },
+              { percentage: "50", value: 60 },
+            ]}
+            imageUrl="/images/treasure-book/reward/nft-mibera.png"
+          />
+          
+          <NFTCard
+            title="Steady Teddy"
+            floorPrice="18.50"
+            remaining={{ current: 12, total: 20 }}
+            probabilities={[
+              { percentage: "1", value: 5 },
+              { percentage: "8", value: 30 },
+              { percentage: "45", value: 55 },
+            ]}
+            imageUrl="/images/treasure-book/reward/nft-steady-teddy.png"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
