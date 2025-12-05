@@ -34,8 +34,9 @@ export default function NFTCard({
 
   useEffect(() => {
     const playInitialAnimation = async () => {
+      const randomAngle = (Math.random() - 0.5) * 10;
       await controls.start({
-        rotate: [0, -3, 3, -3, 3, -2, 2, 0],
+        rotate: [0, -3, 3, -3, 3, -2, 2, randomAngle],
         transition: {
           duration: 1.2,
           times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1],
@@ -49,8 +50,9 @@ export default function NFTCard({
   }, [controls]);
 
   const handleClick = async () => {
+    const randomAngle = (Math.random() - 0.5) * 10;
     await controls.start({
-      rotate: [0, -4, 4, -4, 4, -3, 3, 0],
+      rotate: [0, -4, 4, -4, 4, -3, 3, randomAngle],
       transition: {
         duration: 0.6,
         times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1],
@@ -122,19 +124,8 @@ export default function NFTCard({
                           {prob.percentage}%
                         </span>
                         <div className="flex items-center gap-1 bg-[#FFC35A] rounded-[10px] px-[5px]">
-                          <div className="w-5 h-5 relative">
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="#D4A574"
-                              className="w-full h-full"
-                            >
-                              <circle cx="12" cy="10" r="6" />
-                              <ellipse cx="12" cy="18" rx="4" ry="3" />
-                              <circle cx="10" cy="9" r="1" fill="#5D4037" />
-                              <circle cx="14" cy="9" r="1" fill="#5D4037" />
-                              <circle cx="8" cy="8" r="2" />
-                              <circle cx="16" cy="8" r="2" />
-                            </svg>
+                          <div className="w-[14px] h-[14px] relative">
+                            <img src="/assets/tokens/bera.svg" alt="star" className="w-full h-full" />
                           </div>
                           <span className=" text-black">
                             {prob.value}

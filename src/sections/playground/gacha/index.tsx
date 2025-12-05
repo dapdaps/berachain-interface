@@ -1,9 +1,35 @@
+'use client';
+
+import { useRef, useState } from "react";
 import Title from "./components/title";
 import NFTCard from "./components/nft-card";
+import BearBox, { BearBoxHandle } from "./components/bear-box";
+import ActionTabs from "./components/action-tabs";
+import { Cat1, Cat2 } from "./components/cat";
+import History from "./components/history";
+import SuccessOpen from "./components/success-open";
 
 export default function Gacha() {
+  const bearBoxRef = useRef<BearBoxHandle>(null);
+  const [showSuccessOpen, setShowSuccessOpen] = useState(false);
+
+  const handlePlay = () => {
+    bearBoxRef.current?.start();
+  };
+
+  const handleGachaComplete = () => {
+    // 延迟显示弹窗，等待动画完成
+    setTimeout(() => {
+      setShowSuccessOpen(true);
+    }, 1000);
+  };
+
+  const handleCloseSuccessOpen = () => {
+    setShowSuccessOpen(false);
+  };
+
   return (
-    <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px]">
+    <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <Title />
       
       <div className="container mx-auto px-4 py-12">
@@ -45,6 +71,24 @@ export default function Gacha() {
           />
         </div>
       </div>
+
+      <div className="pb-[80px] bg-[url('/images/gacha/floor.png')] bg-no-repeat bg-bottom bg-[length:100%_auto] relative">
+            <div className="container mx-auto">
+              <div className="flex justify-between gap-[40px] ">
+                <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
+                <ActionTabs onPlay={handlePlay} />
+              </div>
+            </div>
+            <Cat1 />
+            <Cat2 />
+      </div>
+
+      <div className="container mx-auto">
+          <History />
+      </div>
+
+     
+      <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} />
     </div>
   );
 }
