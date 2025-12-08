@@ -6,13 +6,13 @@ import Image from "next/image";
 import LightButton from "@/components/check-in/button";
 
 interface ActionTabsProps {
-  onPlay?: () => void;
+  onPlay?: (tier: number) => void;
 }
 
 export default function ActionTabs({ onPlay }: ActionTabsProps) {
   const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
 
-  const activeTab = GACHA_TABS.find(tab => tab.id === activeTabId);
+  const activeTab = GACHA_TABS.find((tab) => tab.id === activeTabId);
 
   return (
     <div className="w-[586px]">
@@ -43,13 +43,13 @@ export default function ActionTabs({ onPlay }: ActionTabsProps) {
           <div className="mb-2 flex items-center justify-center relative">
             <div className="font-[600] absolute top-0 left-0">Play by</div>
             <div className="flex items-center gap-3 5C3D2E] rounded-lg px-4 py-3 w-fit">
-                <Image
-                  src="/assets/tokens/bera.svg"
-                  alt="BERA"
-                  width={56}
-                  height={56}
-                  className="rounded-full"
-                />
+              <Image
+                src="/assets/tokens/bera.svg"
+                alt="BERA"
+                width={56}
+                height={56}
+                className="rounded-full"
+              />
               <span className="font-CherryBomb font-bold text-[30px]">
                 {activeTab.playByCost}
               </span>
@@ -76,7 +76,14 @@ export default function ActionTabs({ onPlay }: ActionTabsProps) {
         )}
 
         {/* Play Button */}
-        <LightButton className="w-full h-[60px]" onClick={onPlay}>PLAY</LightButton>
+        <LightButton
+          className="w-full h-[60px]"
+          onClick={() => {
+            onPlay?.(activeTab?.tier || 0);
+          }}
+        >
+          PLAY
+        </LightButton>
       </div>
     </div>
   );
