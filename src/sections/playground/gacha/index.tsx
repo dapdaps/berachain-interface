@@ -18,7 +18,6 @@ export default function Gacha() {
   };
 
   const handleGachaComplete = () => {
-    // 延迟显示弹窗，等待动画完成
     setTimeout(() => {
       setShowSuccessOpen(true);
     }, 1000);
