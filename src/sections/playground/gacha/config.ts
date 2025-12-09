@@ -25,7 +25,7 @@ export const NFTS = [
     total: 20
   },
   {
-    address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11c57957Ba6dA00bFcECB9AA0059bc0a7Df08fFb",
+    address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11312822E0E6C508541d153d540c62ffebB09e1F",
     name: "Mibera Maker",
     icon: "/images/gacha/mibera-maker.png",
     probabilities: [
@@ -36,7 +36,7 @@ export const NFTS = [
     total: 20
   },
   {
-    address: IS_PRODUCTION ? "0x333814f5e16eee61d0c0b03a5b6abbd424b381c2" : "0x11312822E0E6C508541d153d540c62ffebB09e1F",
+    address: IS_PRODUCTION ? "0x333814f5e16eee61d0c0b03a5b6abbd424b381c2" : "0x11c57957Ba6dA00bFcECB9AA0059bc0a7Df08fFb",
     name: "Bullas",
     icon: "/images/gacha/bullas.png",
     probabilities: [

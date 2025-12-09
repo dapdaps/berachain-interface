@@ -50,7 +50,7 @@ export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
                 alt="BERA"
                 width={56}
                 height={56}
-                className="rounded-full"
+                className="rounded-full border-2 border-white"
               />
               <span className="font-CherryBomb font-bold text-[30px]">
                 {activeTab.playByCost}

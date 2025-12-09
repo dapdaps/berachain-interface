@@ -121,13 +121,13 @@ export default function History({ refresh }: { refresh: number }) {
               title: "Action",
               width: 100,
               render: (record: any) => {
-                if (!record.reward_tx_hash) {
+                if (!record.end_tx_hash) {
                   return <div className="text-[16px] !text-white">-</div>
                 }
 
                 return (
                   <Link
-                    href={`${berachain.blockExplorers.default.url}/tx/${record.reward_tx_hash}`}
+                    href={`${berachain.blockExplorers.default.url}/tx/${record.end_tx_hash}`}
                     target="_blank"
                     rel="noreferrer nofollow noopener"
                     className="!text-white underline text-[16px]"
