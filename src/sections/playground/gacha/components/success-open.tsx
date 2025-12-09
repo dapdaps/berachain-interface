@@ -29,10 +29,9 @@ export default function SuccessOpen({ visible = false, onClose, data }: SuccessO
     return '0'
   }, [data]);
 
-  if (rewardAmount === '0') {
-    onClose?.();
-    return null;
-  }
+  // if (rewardAmount === '0') {
+  //   return null;
+  // }
 
   return (
     <div 
