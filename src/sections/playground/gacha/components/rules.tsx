@@ -3,6 +3,7 @@
 import Modal from "@/components/modal";
 import LightButton from "@/components/check-in/button";
 import Image from "next/image";
+import { playClickSound } from "../sound";
 
 interface RulesProps {
     visible?: boolean;
@@ -13,7 +14,10 @@ export default function Rules({ visible = false, onClose }: RulesProps) {
     return (
         <Modal
             open={visible}
-            onClose={onClose}
+            onClose={() => {
+                playClickSound();
+                onClose?.();
+            }}
             innerClassName="w-[680px] max-h-[90vh] overflow-y-auto"
             className="p-4"
         >
@@ -119,7 +123,10 @@ export default function Rules({ visible = false, onClose }: RulesProps) {
                 </p>
 
                 <button
-                    onClick={onClose}
+                    onClick={() => {
+                        playClickSound();
+                        onClose?.();
+                    }}
                     className="w-[60%] mx-auto block mt-8 bg-[#FFDC50] rounded-[10px] border border-black  font-bold px-8 py-3 text-[14px]  text-black hover:bg-[#ffe066] transition-colors"
                 >
                     Play now

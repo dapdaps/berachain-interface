@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { playGachaSound } from '../sound';
 
 interface Ball {
   x: number;
@@ -318,6 +319,7 @@ const BallCollision = forwardRef<BallCollisionHandle, BallCollisionProps>(
     const start = () => {
       if (isRunningRef.current) return;
 
+      playGachaSound();
       clear();
       
       initBalls();

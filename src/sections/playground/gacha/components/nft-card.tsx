@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
+import { playShakeSound } from "../sound";
 
 interface ProbabilityItem {
   percentage: string;
@@ -49,6 +50,7 @@ export default function NFTCard({
   }, [controls]);
 
   const handleClick = async () => {
+    playShakeSound();
     const randomAngle = (Math.random() - 0.5) * 10;
     await controls.start({
       rotate: [0, -4, 4, -4, 4, -3, 3, randomAngle],

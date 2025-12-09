@@ -7,6 +7,7 @@ import ActionBtn from "./action-btn";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
+import { playClickSound } from "../sound";
 
 interface ActionTabsProps {
   onPlay?: (tier: number) => void;
@@ -57,7 +58,10 @@ export default function ActionTabs({ onPlay, loading, config }: ActionTabsProps)
         {GACHA_TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTabId(tab.id)}
+            onClick={() => {
+              playClickSound();
+              setActiveTabId(tab.id);
+            }}
             className={`
               text-black flex-1 font-CherryBomb text-[20px] whitespace-nowrap transition-all px-[20px] h-[68px] 
               ${

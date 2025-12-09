@@ -6,6 +6,7 @@ import useAccount from "@/hooks/use-account";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import LightButton from "@/components/check-in/button";
 import Loading from "@/components/loading";
+import { playClickSound } from "../sound";
 
 interface ActionBtnProps {
   onPlay?: (tier: number) => void;
@@ -25,6 +26,7 @@ export default function ActionBtn({ onPlay, loading, tier = 0, disabled = false,
       <LightButton
         className="w-full h-[60px]"
         onClick={() => {
+          playClickSound();
           openConnectModal?.();
         }}
       >
@@ -38,6 +40,7 @@ export default function ActionBtn({ onPlay, loading, tier = 0, disabled = false,
       <LightButton
         className="w-full h-[60px]"
         onClick={() => {
+          playClickSound();
           switchChain({
             chainId: DEFAULT_CHAIN_ID
           });
@@ -64,6 +67,7 @@ export default function ActionBtn({ onPlay, loading, tier = 0, disabled = false,
     <LightButton
       className="w-full h-[60px]"
       onClick={() => {
+        playClickSound();
         onPlay?.(tier);
       }}
       disabled={loading}

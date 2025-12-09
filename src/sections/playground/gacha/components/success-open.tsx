@@ -1,8 +1,9 @@
 import { balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { TOKEN_MAP } from '../config';
+import { playRewardSound } from '../sound';
 
 interface SuccessOpenProps {
   visible?: boolean;
@@ -27,6 +28,12 @@ export default function SuccessOpen({ visible = false, onClose, data }: SuccessO
     }
 
     return '0'
+  }, [data]);
+
+  useEffect(() => {
+    if (data) {
+      playRewardSound();
+    }
   }, [data]);
 
   return (

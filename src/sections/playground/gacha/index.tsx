@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Title from "./components/title";
 import NFTCard from "./components/nft-card";
 import BearBox, { BearBoxHandle } from "./components/bear-box";
@@ -13,8 +13,11 @@ import usePlayGame from "./hooks/use-play-game";
 import useConfig from "./hooks/use-config";
 import { NFTS } from "./config";
 import PageBack from "@/components/back";
+import { stopSound, SOUND_PATHS } from "./sound";
 
 export default function Gacha() {
+  const hasPlayedRef = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const bearBoxRef = useRef<BearBoxHandle>(null);
   const [showSuccessOpen, setShowSuccessOpen] = useState(false);
   const { nftBalance, loading: nftBalanceLoading, nftPrice } = useNftBalance();
@@ -54,6 +57,56 @@ export default function Gacha() {
     setShowSuccessOpen(false);
   };
 
+  useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio(SOUND_PATHS.background);
+      audioRef.current.loop = false; 
+    }
+
+    const playBgMusic = async () => {
+      if (hasPlayedRef.current || !audioRef.current) return;
+      
+      try {
+        await audioRef.current.play();
+        hasPlayedRef.current = true;
+      } catch (error) {
+        console.log("Auto-play blocked, waiting for user interaction");
+      }
+    };
+
+    const unlockAudio = async () => {
+      if (hasPlayedRef.current || !audioRef.current) return;
+      
+      try {
+        await audioRef.current.play();
+        hasPlayedRef.current = true;
+      } catch (error) {
+        console.error("Failed to play background music:", error);
+      }
+      
+      document.removeEventListener("click", unlockAudio);
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("keydown", unlockAudio);
+    };
+
+    playBgMusic();
+    if (!hasPlayedRef.current) {
+      document.addEventListener("click", unlockAudio, { once: true });
+      document.addEventListener("touchstart", unlockAudio, { once: true });
+      document.addEventListener("keydown", unlockAudio, { once: true });
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      stopSound(SOUND_PATHS.background);
+      document.removeEventListener("click", unlockAudio);
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">

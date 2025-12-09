@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { playClickSound, playShakeSound } from "../sound";
 
 export function Cat1() {
     return (
@@ -14,6 +15,9 @@ export function Cat1() {
                     duration: 0.5,
                     ease: "easeInOut"
                 }
+            }}
+            onClick={() => {
+                playShakeSound();
             }}
         />
     );
@@ -31,6 +35,9 @@ export function Cat2() {
                     duration: 0.5,
                     ease: "easeInOut"
                 }
+            }}
+            onClick={() => {
+                playShakeSound();
             }}
         />
     );

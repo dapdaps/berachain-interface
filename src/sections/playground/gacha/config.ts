@@ -99,3 +99,11 @@ export const TOKEN_MAP: Record<string, string> = {
     return acc;
   }, {} as Record<string, string>),
 };
+
+export const TOKEN_NAME_MAP: Record<string, string> = {
+  '0x0000000000000000000000000000000000000000': "BERA",
+  ...NFTS.reduce((acc, nft) => {
+    acc[nft.address.toLowerCase()] = nft.name;
+    return acc;
+  }, {} as Record<string, string>),
+};
