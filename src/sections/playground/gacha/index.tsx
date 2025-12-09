@@ -54,6 +54,7 @@ export default function Gacha() {
     setShowSuccessOpen(false);
   };
 
+
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
@@ -74,11 +75,11 @@ export default function Gacha() {
         ))}
       </div>
 
-      <div className="pb-[160px] bg-[url('/images/gacha/floor.png')] bg-no-repeat bg-bottom bg-[length:100%_auto] relative">
+      <div className="pb-[120px] bg-[url('/images/gacha/floor.png')] bg-no-repeat bg-bottom bg-[length:100%_auto] relative">
         <div className="container min-w-[1200px] mx-auto">
-          <div className="flex justify-between gap-[40px] ">
+          <div className="flex justify-between gap-[40px] pr-[80px]">
             <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
-            <ActionTabs onPlay={handlePlay} loading={loadingPlay} />
+            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config}/>
           </div>
         </div>
         <Cat1 />

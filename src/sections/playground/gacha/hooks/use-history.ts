@@ -1,6 +1,7 @@
 import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
 import { useState } from "react";
+import useUser from "@/hooks/use-user";
 
 interface GachaRecord {
   address: string;
@@ -38,6 +39,7 @@ export default function useHistory(params?: UseHistoryParams) {
   const [pageSize] = useState(params?.pageSize || 10);
   const [totalPage, setTotalPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const { userInfo } = useUser();
 
   const { data, loading, runAsync: getHistory } = useRequest(
     async () => {
@@ -55,7 +57,7 @@ export default function useHistory(params?: UseHistoryParams) {
       return res.data.data || [];
     },
     {
-      refreshDeps: [page, pageSize],
+      refreshDeps: [page, pageSize, userInfo],
     }
   );
 
