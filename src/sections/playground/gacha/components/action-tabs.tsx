@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { GACHA_TABS } from "../config";
 import Image from "next/image";
-import LightButton from "@/components/check-in/button";
-import Loading from "@/components/loading";
+import ActionBtn from "./action-btn";
 
 interface ActionTabsProps {
   onPlay?: (tier: number) => void;
@@ -78,20 +77,11 @@ export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
         )}
 
         {/* Play Button */}
-        <LightButton
-          className="w-full h-[60px]"
-          onClick={() => {
-            onPlay?.(activeTab?.tier || 0);
-          }}
-        >
-          {
-            loading ? (
-              <Loading size={20} />
-            ) : (
-              "PLAY"
-            )
-          }
-        </LightButton>
+        <ActionBtn
+          onPlay={onPlay}
+          loading={loading}
+          tier={activeTab?.tier || 0}
+        />
       </div>
     </div>
   );

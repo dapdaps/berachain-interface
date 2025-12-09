@@ -21,12 +21,18 @@ export default function SuccessOpen({ visible = false, onClose, data }: SuccessO
     if (rewardType === 0) {
       return balanceFormated(new Big(data?.rewardAmount?.toString() || 0).div(10 ** 18).toFixed(18), 4);
     }
-    return 1;
+
+    if (rewardType === 1) {
+      return '1'
+    }
+
+    return '0'
   }, [data]);
 
-  const rewardNftId = useMemo(() => {
-    return data?.rewardNftId?.toString();
-  }, [data]);
+  if (rewardAmount === '0') {
+    onClose?.();
+    return null;
+  }
 
   return (
     <div 
