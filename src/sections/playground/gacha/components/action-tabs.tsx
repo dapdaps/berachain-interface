@@ -1,19 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { GACHA_TABS } from "../config";
 import Image from "next/image";
 import ActionBtn from "./action-btn";
+import useTokenBalance from "@/hooks/use-token-balance";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import Big from "big.js";
 
 interface ActionTabsProps {
   onPlay?: (tier: number) => void;
   loading?: boolean;
+  config?: any;
 }
 
-export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
+export default function ActionTabs({ onPlay, loading, config }: ActionTabsProps) {
   const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
+  const { tokenBalance } = useTokenBalance('native', 18, DEFAULT_CHAIN_ID);
 
   const activeTab = GACHA_TABS.find((tab) => tab.id === activeTabId);
+
+  const errorMessage = useMemo(() => {
+    if (!config?.[activeTab?.tier || 0]?.isActive) {
+      return "Rewards Empty – Coming Soon";
+    }
+
+    const tierConfig = config?.[activeTab?.tier || 0];
+    const valueInWei = new Big(tierConfig.entryFee.toString() || '0').div(10 ** 18);
+    
+    if (valueInWei.gt(new Big(tokenBalance || '0'))) {
+      return 'Insufficient Balance';
+    }
+
+    return '';
+  }, [config, activeTab, tokenBalance]);
+
+  const disabled = useMemo(() => {
+    if (!config?.[activeTab?.tier || 0]?.isActive) {
+      return true;
+    }
+
+    const tierConfig = config?.[activeTab?.tier || 0];
+    const valueInWei = new Big(tierConfig.entryFee.toString() || '0').div(10 ** 18);
+    
+    if (valueInWei.gt(new Big(tokenBalance || '0'))) {
+      return true;
+    }
+
+    return false;
+  }, [config, activeTab, tokenBalance]);
 
   return (
     <div className="w-[586px]">
@@ -80,6 +115,8 @@ export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
         <ActionBtn
           onPlay={onPlay}
           loading={loading}
+          disabled={disabled}
+          errorMessage={errorMessage}
           tier={activeTab?.tier || 0}
         />
       </div>

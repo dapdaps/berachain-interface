@@ -11,9 +11,11 @@ interface ActionBtnProps {
   onPlay?: (tier: number) => void;
   loading?: boolean;
   tier?: number;
+  disabled?: boolean;
+  errorMessage?: string;
 }
 
-export default function ActionBtn({ onPlay, loading, tier = 0 }: ActionBtnProps) {
+export default function ActionBtn({ onPlay, loading, tier = 0, disabled = false, errorMessage = "Disabled" }: ActionBtnProps) {
   const { isPending: switching, switchChain } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
   const { account, chainId } = useAccount();
@@ -43,6 +45,17 @@ export default function ActionBtn({ onPlay, loading, tier = 0 }: ActionBtnProps)
         disabled={switching}
       >
         {switching ? <Loading size={20} /> : "Switch Network"}
+      </LightButton>
+    );
+  }
+
+  if (disabled) {
+    return (
+      <LightButton
+        className="w-full h-[60px]"
+        disabled
+      >
+        {disabled ? errorMessage : "PLAY"}
       </LightButton>
     );
   }

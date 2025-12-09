@@ -32,7 +32,7 @@ const BearBox = forwardRef<BearBoxHandle, BearBoxProps>(({ onComplete }, ref) =>
 
   return (
     <div className="w-[50%] h-[574px]">
-      <div className="w-full h-full relative">
+      <div className="w-full h-full relative scale-[0.8]">
         <div className="absolute right-[142px] top-[40px] z-[5]">
           <BallCollision ref={collisionRef} onComplete={() => {
             setShowBall(true);
