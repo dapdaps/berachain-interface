@@ -18,7 +18,10 @@ export default function SuccessOpen({ visible = false, onClose, data }: SuccessO
   }, [data]);
 
   const rewardAmount = useMemo(() => {
-    return balanceFormated(new Big(data?.rewardAmount?.toString() || 0).div(10 ** 18).toFixed(18), 4);
+    if (rewardType === 0) {
+      return balanceFormated(new Big(data?.rewardAmount?.toString() || 0).div(10 ** 18).toFixed(18), 4);
+    }
+    return 1;
   }, [data]);
 
   const rewardNftId = useMemo(() => {
