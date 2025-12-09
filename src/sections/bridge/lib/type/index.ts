@@ -1,4 +1,4 @@
-export type engineType = 'axelar' | 'bunnyFi' | 'jumper' | 'lifi' | 'meson' | 'miniBridge' | 'orbiter' | 'owlto' | 'rubic' | 'swing' | 'wormhole' | 'bungee' | 'rango' | 'stargate' | 'xy' | 'official' | 'across' | 'router' | 'kodiak' | 'superSwap'
+export type engineType = 'axelar' | 'bunnyFi' | 'jumper' | 'lifi' | 'meson' | 'miniBridge' | 'orbiter' | 'owlto' | 'rubic' | 'swing' | 'wormhole' | 'bungee' | 'rango' | 'stargate' | 'xy' | 'official' | 'across' | 'router' | 'kodiak' | 'superSwap' | 'oneclick';
 export type bridgeEngineType = 'connext' | 'across' | 'celer'
 
 export interface QuoteRequest {
@@ -20,7 +20,9 @@ export interface QuoteRequest {
     amount: Big;
     engine?: engineType[] | bridgeEngineType[] | null;
     identification?: string | number;
-    exclude?: engineType[]
+    exclude?: engineType[];
+
+    wallet?: any;
 }
 
 export interface QuoteResponse {
