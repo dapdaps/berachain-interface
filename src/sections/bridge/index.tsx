@@ -9,7 +9,7 @@ import History from "./History";
 import { useMemo, useState } from "react";
 import BridgeContent from "./content";
 
-export default function Bridge({ type, defaultFromChain, defaultToChain, defaultFromToken, defaultToToken }: { type?: string, defaultFromChain?: number, defaultToChain?: number, defaultFromToken?: string, defaultToToken?: string }) {
+export default function Bridge({ type, defaultFromChain, defaultToChain, defaultFromToken, defaultToToken, showRoute }: { type?: string, defaultFromChain?: number, defaultToChain?: number, defaultFromToken?: string, defaultToToken?: string, showRoute?: boolean }) {
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
   const { isDefaultTheme } = useActivityStore();
@@ -39,6 +39,7 @@ export default function Bridge({ type, defaultFromChain, defaultToChain, default
             setHistoryShow(true);
             setActiveTab("pending");
           }}
+          showRoute={showRoute}
         />
       </div>
 
