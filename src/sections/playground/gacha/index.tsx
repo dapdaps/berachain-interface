@@ -12,6 +12,7 @@ import useNftBalance from "./hooks/use-nft-balance";
 import usePlayGame from "./hooks/use-play-game";
 import useConfig from "./hooks/use-config";
 import { NFTS } from "./config";
+import PageBack from "@/components/back";
 
 export default function Gacha() {
   const bearBoxRef = useRef<BearBoxHandle>(null);
@@ -50,6 +51,7 @@ export default function Gacha() {
 
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
+      <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
       <Title />
 
       <div className="container min-w-[1200px] mx-auto py-12 flex justify-center gap-[40px] w-[1450px]">

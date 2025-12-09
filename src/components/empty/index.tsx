@@ -2,9 +2,10 @@ type Props = {
   size?: number;
   desc?: string;
   mt?: number;
+  textClassName?: string;
 };
 
-export default function Empty({ size = 65, desc, mt }: Props) {
+export default function Empty({ size = 65, desc, mt, textClassName }: Props) {
   return (
     <div className='flex flex-col items-center' style={{ marginTop: mt }}>
       <svg
@@ -57,7 +58,7 @@ export default function Empty({ size = 65, desc, mt }: Props) {
           stroke='black'
         />
       </svg>
-      <div className='text-[#3D405A] text-[14px] mt-[8px]'>{desc}</div>
+      <div className={`text-[#3D405A] text-[14px] mt-[8px] ${textClassName}`}>{desc}</div>
     </div>
   );
 }

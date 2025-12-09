@@ -75,7 +75,7 @@ export default function NFTCard({
         onClick={handleClick}
       >
         <div className="bg-[#FFE5B8] rounded-[16px] overflow-hidden p-[5px] shadow-xl cursor-pointer hover:shadow-2xl transition-shadow duration-300">
-          <div className="flex gap-[10px] ">
+          <div className="flex gap-[10px] pr-[10px]">
             <div className="w-[145px] h-[145px] relative rounded-[16px] overflow-hidden">
               <Image src={imageUrl} alt={title} fill className="object-cover" />
             </div>

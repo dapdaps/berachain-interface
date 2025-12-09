@@ -25,7 +25,7 @@ export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
             key={tab.id}
             onClick={() => setActiveTabId(tab.id)}
             className={`
-              text-black flex-1 font-CherryBomb text-[20px] transition-all px-[20px] h-[68px] 
+              text-black flex-1 font-CherryBomb text-[20px] whitespace-nowrap transition-all px-[20px] h-[68px] 
               ${
                 activeTabId === tab.id
                   ? "bg-[url('/images/gacha/tab-active.png')] bg-no-repeat bg-center bg-[length:100%_100%] pb-[15px] relative top-[-10px]"

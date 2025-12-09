@@ -18,6 +18,7 @@ const GridTable = (props: Props, ref: any) => {
     headerColClassName,
     bodyColClassName,
     emptyClassName,
+    emptyTextClassName = '',
     fixedClassName,
     sortDataIndex,
     sortDirection,
@@ -233,7 +234,7 @@ const GridTable = (props: Props, ref: any) => {
               </div>
             )) : (
               <div className={clsx("flex justify-center items-center min-h-[200px]", emptyClassName)}>
-                <Empty desc="No data yet..." />
+                <Empty textClassName={emptyTextClassName} desc="No data yet..." />
               </div>
             )
           )
@@ -268,6 +269,7 @@ export interface Props {
   headerColClassName?: string;
   bodyColClassName?: string;
   emptyClassName?: string;
+  emptyTextClassName?: string;
   fixedClassName?: string;
   sortDataIndex?: string;
   sortDirection?: GridTableSortDirection;
