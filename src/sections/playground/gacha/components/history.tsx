@@ -68,6 +68,9 @@ export default function History({ refresh }: { refresh: number }) {
               title: "Rewards",
               width: 120,
               render: (record: any, index: number) => {
+                if (!record.token_address) {
+                  return <div className="text-[16px] !text-white">-</div>
+                }
                 return (
                   <div className="flex items-center justify-center pl-[10px]">
                     <Image
@@ -88,7 +91,7 @@ export default function History({ refresh }: { refresh: number }) {
               render: (record: any) => {
                 return (
                   <div className="text-[16px] !text-white">
-                    <span className="font-bold">{record.token_amount}</span> {record.reward_type === 0 ? "BERA" : "NFT"}
+                    <span className="font-bold">{record.token_amount || '-'}</span> {record.reward_type === 0 ? "BERA" : "NFT"}
                   </div>
                 );
               },

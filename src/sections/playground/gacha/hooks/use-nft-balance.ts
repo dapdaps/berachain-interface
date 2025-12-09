@@ -66,8 +66,6 @@ export default function useNftBalance() {
         });
       });
 
-      console.log("Nft balance: %o", _balance);
-
       setNftBalance(_balance);
     } catch (err: any) {
       console.log("Query inventory failed: %o", err);
@@ -84,7 +82,6 @@ export default function useNftBalance() {
         return null;
       }
 
-      console.log("Nft price: %o", res.data);
       setNftPrice(res.data);
     } catch (error) {
       console.log("Get nft price failed: %o", error);
