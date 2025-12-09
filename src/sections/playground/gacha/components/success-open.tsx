@@ -11,7 +11,7 @@ interface SuccessOpenProps {
 }
 
 export default function SuccessOpen({ visible = false, onClose, data }: SuccessOpenProps) {
-  if (!visible) return null;
+  if (!visible || !data) return null;
 
   const rewardType = useMemo(() => {
     return data?.rewardType;
@@ -28,10 +28,6 @@ export default function SuccessOpen({ visible = false, onClose, data }: SuccessO
 
     return '0'
   }, [data]);
-
-  // if (rewardAmount === '0') {
-  //   return null;
-  // }
 
   return (
     <div 
