@@ -16,7 +16,7 @@ export const NFTS = [
   {
     address: IS_PRODUCTION ?  "0x88888888a9361f15aadbaca355a6b2938c6a674e" : "0x42aa0a426BD85bF28c1BF619bf57B4eA3C0aeF43",
     name: "Steady Teddy",
-    icon: "/images/treasure-book/reward/nft-steady-teddy.png",
+    icon: "/images/gacha/steady-teddy.png",
     probabilities: [
       { percentage: "0.02", value: 1 },
       { percentage: "1", value: 20 },
@@ -27,7 +27,7 @@ export const NFTS = [
   {
     address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11c57957Ba6dA00bFcECB9AA0059bc0a7Df08fFb",
     name: "Mibera Maker",
-    icon: "/images/treasure-book/reward/nft-mibera.png",
+    icon: "/images/gacha/mibera-maker.png",
     probabilities: [
       { percentage: "0.1", value: 1 },
       { percentage: "4", value: 20 },
@@ -38,7 +38,7 @@ export const NFTS = [
   {
     address: IS_PRODUCTION ? "0x333814f5e16eee61d0c0b03a5b6abbd424b381c2" : "0x11312822E0E6C508541d153d540c62ffebB09e1F",
     name: "Bullas",
-    icon: "/images/treasure-book/reward/nft-bullas.png",
+    icon: "/images/gacha/bullas.png",
     probabilities: [
       { percentage: "4", value: 20 },
       { percentage: "47.92", value: 50 }

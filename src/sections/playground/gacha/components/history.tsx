@@ -52,6 +52,8 @@ export default function History() {
           colClassName=""
           rowClassName=""
           headerClassName="text-white text-[16px] mb-[10px]"
+          emptyClassName="opacity-70"
+          emptyTextClassName="!text-white"
           columns={[
             {
               dataIndex: "rewards",
