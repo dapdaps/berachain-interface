@@ -2,13 +2,9 @@
 
 import GridTable from "@/components/flex-table/grid-table";
 import Pagination from "@/components/pager/pagination";
-import useCustomAccount from "@/hooks/use-account";
-import { get } from "@/utils/http";
-import { useRequest } from "ahooks";
 import dayjs from "dayjs";
-import { cloneDeep } from "lodash";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { berachain } from "viem/chains";
 import Image from "next/image";
 import useHistory from "../hooks/use-history";
@@ -21,16 +17,27 @@ const COST_MAP: any = {
   2: 50,
 };
 
+export default function History({ refresh }: { refresh: number }) {
+  const { data: historyList, loading: historyListLoading, page, pageSize, totalPage, total, setPage, refresh: refreshHistory } = useHistory();
+  const pageRef = useRef(1);
 
+  useEffect(() => {
+    if (pageRef.current !== 1) {
+      setPage(1);
+    } else {
+      refreshHistory();
+    }
+  }, [refresh]);
 
-export default function History() {
-  const { data: historyList, loading: historyListLoading, page, pageSize, totalPage, total, setPage, refresh } = useHistory();
+  useEffect(() => {
+    pageRef.current = page;
+  }, [page]);
 
   return (
     <div className="w-full text-white mt-[30px]">
       {/* Header */}
       <div className="text-[24px] mb-[20px] font-CherryBomb">
-          Total Played {total}
+        Total Played {total}
       </div>
 
       {/* Table */}
@@ -54,6 +61,7 @@ export default function History() {
           headerClassName="text-white text-[16px] mb-[10px]"
           emptyClassName="opacity-70"
           emptyTextClassName="!text-white"
+          loadingClassName="!text-white"
           columns={[
             {
               dataIndex: "rewards",
@@ -62,13 +70,13 @@ export default function History() {
               render: (record: any, index: number) => {
                 return (
                   <div className="flex items-center justify-center pl-[10px]">
-                      <Image
-                        src={TOKEN_MAP[record.token_address?.toLowerCase()]}
-                        alt={record.reward_type}
-                        width={32}
-                        height={32}
-                        className={record.reward_type === 1 ? "" : "rounded-full"}
-                      />
+                    <Image
+                      src={TOKEN_MAP[record.token_address?.toLowerCase()]}
+                      alt={record.reward_type}
+                      width={32}
+                      height={32}
+                      className={record.reward_type === 1 ? "" : "rounded-full"}
+                    />
                   </div>
                 );
               },
@@ -113,9 +121,13 @@ export default function History() {
               title: "Action",
               width: 100,
               render: (record: any) => {
+                if (!record.reward_tx_hash) {
+                  return <div className="text-[16px] !text-white">-</div>
+                }
+
                 return (
                   <Link
-                    href={`${berachain.blockExplorers.default.url}/tx/${record.tx_hash}`}
+                    href={`${berachain.blockExplorers.default.url}/tx/${record.reward_tx_hash}`}
                     target="_blank"
                     rel="noreferrer nofollow noopener"
                     className="!text-white underline text-[16px]"

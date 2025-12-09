@@ -67,7 +67,7 @@ export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
               {activeTab.probabilities.map((item, index) => (
                 <div
                   key={index}
-                  className="bg-[#FFFFFF33] rounded-lg px-4 gap-[20px] py-3 flex items-center justify-between"
+                  className="bg-[#FFFFFF33] rounded-lg font-[600] px-4 gap-[20px] py-3 flex items-center justify-between"
                 >
                   <span className="">{item.name}</span>
                   <span className="">{item.probability}</span>
