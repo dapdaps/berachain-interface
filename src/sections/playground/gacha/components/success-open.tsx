@@ -32,7 +32,9 @@ export default function SuccessOpen({ visible = false, onClose, data }: SuccessO
 
   useEffect(() => {
     if (data) {
-      playRewardSound();
+      setTimeout(() => {
+        playRewardSound();
+      }, 5000);
     }
   }, [data]);
 
