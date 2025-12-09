@@ -21,6 +21,7 @@ export default function Gacha() {
   const { config } = useConfig();
   const { playGame, loading, gameRequest } = usePlayGame(config);
   const [loadingPlay, setLoadingPlay] = useState(false);
+  const [playCount, setPlayCount] = useState(0);
 
   const handlePlay = async (tier: number) => {
     if (loadingPlay) {
@@ -43,6 +44,10 @@ export default function Gacha() {
     setTimeout(() => {
       setShowSuccessOpen(true);
     }, 1000);
+
+    setTimeout(() => {
+      setPlayCount(playCount + 1);
+    }, 5000);
   };
 
   const handleCloseSuccessOpen = () => {
@@ -69,7 +74,7 @@ export default function Gacha() {
         ))}
       </div>
 
-      <div className="pb-[80px] bg-[url('/images/gacha/floor.png')] bg-no-repeat bg-bottom bg-[length:100%_auto] relative">
+      <div className="pb-[160px] bg-[url('/images/gacha/floor.png')] bg-no-repeat bg-bottom bg-[length:100%_auto] relative">
         <div className="container min-w-[1200px] mx-auto">
           <div className="flex justify-between gap-[40px] ">
             <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
@@ -81,7 +86,7 @@ export default function Gacha() {
       </div>
 
       <div className="container min-w-[1200px] mx-auto">
-        <History />
+        <History refresh={playCount}/>
       </div>
 
       <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} data={gameRequest} />

@@ -31,7 +31,7 @@ const BearBox = forwardRef<BearBoxHandle, BearBoxProps>(({ onComplete }, ref) =>
   }));
 
   return (
-    <div className="w-[50%] h-[677px]">
+    <div className="w-[50%] h-[574px]">
       <div className="w-full h-full relative">
         <div className="absolute right-[142px] top-[40px] z-[5]">
           <BallCollision ref={collisionRef} onComplete={() => {
@@ -47,7 +47,7 @@ const BearBox = forwardRef<BearBoxHandle, BearBoxProps>(({ onComplete }, ref) =>
           <motion.img 
             src="/images/gacha/ball.png" 
             alt="bear footer" 
-            className="w-[120px] right-[272px] bottom-[100px] absolute z-[11]"
+            className="w-[120px] right-[272px] bottom-[-2px] absolute z-[11]"
             animate={shouldAnimate ? {
               scale: [0.5, 1],
               y: [-50, 0],
@@ -75,7 +75,7 @@ const BearBox = forwardRef<BearBoxHandle, BearBoxProps>(({ onComplete }, ref) =>
         <motion.img 
           src="/images/gacha/switch.png" 
           alt="switch" 
-          className="w-[97px] right-[152px] bottom-[185px] absolute z-[11]"
+          className="w-[97px] right-[152px] bottom-[85px] absolute z-[11]"
           animate={{ rotate: switchRotation }}
           transition={{ 
             duration: 0.5,
