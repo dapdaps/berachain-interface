@@ -81,6 +81,10 @@ export default function TreasureBook(props: any) {
         return _defaultOpen;
     }, [treasureBookSearchParams]);
 
+    if (["/carnival/gacha"].includes(pathname)) {
+        return null;
+    }
+
     return (
         <>
             <Popover

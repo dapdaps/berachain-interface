@@ -75,7 +75,7 @@ const NavigationMenu = (props: any) => {
 
   const pathname = usePathname();
   const isSmall = ["/bintent"].includes(pathname);
-  const isHide = ["/belong", "/"].includes(pathname);
+  const isHide = ["/belong", "/", "/carnival/gacha"].includes(pathname);
   const is2Top = ["/carnival/guess-who"].includes(pathname);
 
   if (isHide) {

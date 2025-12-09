@@ -1,12 +1,29 @@
+import { balanceFormated } from '@/utils/balance';
+import Big from 'big.js';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
+import { TOKEN_MAP } from '../config';
 
 interface SuccessOpenProps {
   visible?: boolean;
   onClose?: () => void;
+  data?: any;
 }
 
-export default function SuccessOpen({ visible = false, onClose }: SuccessOpenProps) {
+export default function SuccessOpen({ visible = false, onClose, data }: SuccessOpenProps) {
   if (!visible) return null;
+
+  const rewardType = useMemo(() => {
+    return data?.rewardType;
+  }, [data]);
+
+  const rewardAmount = useMemo(() => {
+    return balanceFormated(new Big(data?.rewardAmount?.toString() || 0).div(10 ** 18).toFixed(18), 4);
+  }, [data]);
+
+  const rewardNftId = useMemo(() => {
+    return data?.rewardNftId?.toString();
+  }, [data]);
 
   return (
     <div 
@@ -67,9 +84,9 @@ export default function SuccessOpen({ visible = false, onClose }: SuccessOpenPro
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ delay: 5.5, duration: 0.5, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  0.256 BERA
+                  {rewardAmount} {rewardType === 0 ? "BERA" : "NFT"}
                 </motion.div>
-                <img src="/assets/tokens/bera.svg" className='w-[160px] h-[160px] border-[6px] border-[#FFC551] rounded-full object-center object-contain shrink-0 mx-auto' />
+                <img src={TOKEN_MAP[data?.rewardToken?.toLowerCase()]} className='w-[160px] h-[160px] border-[6px] border-[#FFC551] rounded-full object-center object-contain shrink-0 mx-auto' />
             </motion.div>
 
 

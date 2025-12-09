@@ -16,14 +16,26 @@ import { NFTS } from "./config";
 export default function Gacha() {
   const bearBoxRef = useRef<BearBoxHandle>(null);
   const [showSuccessOpen, setShowSuccessOpen] = useState(false);
-  const { nftBalance, loading: nftBalanceLoading } = useNftBalance();
+  const { nftBalance, loading: nftBalanceLoading, nftPrice } = useNftBalance();
   const { config } = useConfig();
   const { playGame, loading, gameRequest } = usePlayGame(config);
+  const [loadingPlay, setLoadingPlay] = useState(false);
 
-  const handlePlay = (tier: number) => {
+  const handlePlay = async (tier: number) => {
+    if (loadingPlay) {
+      return;
+    }
+
     console.log("tier", tier);
-    playGame(tier);
-    // bearBoxRef.current?.start();
+    setLoadingPlay(true);
+    try {
+      await playGame(tier);
+      bearBoxRef.current?.start();
+    } catch (error) {
+      console.error("Play game failed: %o", error);
+    } finally {
+      setLoadingPlay(false);
+    }
   };
 
   const handleGachaComplete = () => {
@@ -40,12 +52,12 @@ export default function Gacha() {
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <Title />
 
-      <div className="container mx-auto py-12 flex justify-center gap-[40px] w-[1450px]">
+      <div className="container min-w-[1200px] mx-auto py-12 flex justify-center gap-[40px] w-[1450px]">
         {NFTS.map((nft) => (
           <NFTCard
             key={nft.address}
             title={nft.name}
-            floorPrice="39.00"
+            floorPrice={nftPrice[nft.address.toLowerCase()] || "-"}
             balance={nftBalance?.[nft.address]}
             probabilities={nft.probabilities}
             imageUrl={nft.icon}
@@ -56,21 +68,21 @@ export default function Gacha() {
       </div>
 
       <div className="pb-[80px] bg-[url('/images/gacha/floor.png')] bg-no-repeat bg-bottom bg-[length:100%_auto] relative">
-        <div className="container mx-auto">
+        <div className="container min-w-[1200px] mx-auto">
           <div className="flex justify-between gap-[40px] ">
             <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
-            <ActionTabs onPlay={handlePlay} />
+            <ActionTabs onPlay={handlePlay} loading={loadingPlay} />
           </div>
         </div>
         <Cat1 />
         <Cat2 />
       </div>
 
-      <div className="container mx-auto">
+      <div className="container min-w-[1200px] mx-auto">
         <History />
       </div>
 
-      <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} />
+      <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} data={gameRequest} />
     </div>
   );
 }

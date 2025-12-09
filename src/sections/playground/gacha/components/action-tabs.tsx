@@ -4,12 +4,14 @@ import { useState } from "react";
 import { GACHA_TABS } from "../config";
 import Image from "next/image";
 import LightButton from "@/components/check-in/button";
+import Loading from "@/components/loading";
 
 interface ActionTabsProps {
   onPlay?: (tier: number) => void;
+  loading?: boolean;
 }
 
-export default function ActionTabs({ onPlay }: ActionTabsProps) {
+export default function ActionTabs({ onPlay, loading }: ActionTabsProps) {
   const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
 
   const activeTab = GACHA_TABS.find((tab) => tab.id === activeTabId);
@@ -82,7 +84,13 @@ export default function ActionTabs({ onPlay }: ActionTabsProps) {
             onPlay?.(activeTab?.tier || 0);
           }}
         >
-          PLAY
+          {
+            loading ? (
+              <Loading size={20} />
+            ) : (
+              "PLAY"
+            )
+          }
         </LightButton>
       </div>
     </div>

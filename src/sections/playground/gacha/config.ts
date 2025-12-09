@@ -1,3 +1,5 @@
+import { IS_PRODUCTION } from "@/configs";
+
 export interface GachaTabConfig {
   id: string;
   label: string;
@@ -12,35 +14,34 @@ export interface GachaTabConfig {
 
 export const NFTS = [
   {
-    address: "0x11312822E0E6C508541d153d540c62ffebB09e1F",
-    name: "Bullas",
-    icon: "/images/treasure-book/reward/nft-bullas.png",
-    probabilities: [
-      { percentage: "0.1", value: 1 },
-      { percentage: "4", value: 20 },
-      { percentage: "48", value: 50 }
-    ],
-    total: 20
-  },
-  {
-    address: "0x11c57957Ba6dA00bFcECB9AA0059bc0a7Df08fFb",
-    name: "Mibera",
-    icon: "/images/treasure-book/reward/nft-mibera.png",
-    probabilities: [
-      { percentage: "0.5", value: 2 },
-      { percentage: "5", value: 25 },
-      { percentage: "50", value: 60 }
-    ],
-    total: 20
-  },
-  {
-    address: "0x42aa0a426BD85bF28c1BF619bf57B4eA3C0aeF43",
+    address: IS_PRODUCTION ?  "0x88888888a9361f15aadbaca355a6b2938c6a674e" : "0x42aa0a426BD85bF28c1BF619bf57B4eA3C0aeF43",
     name: "Steady Teddy",
     icon: "/images/treasure-book/reward/nft-steady-teddy.png",
     probabilities: [
-      { percentage: "1", value: 5 },
-      { percentage: "8", value: 30 },
-      { percentage: "45", value: 55 }
+      { percentage: "0.02", value: 1 },
+      { percentage: "1", value: 20 },
+      { percentage: "4.16", value: 50 }
+    ],
+    total: 20
+  },
+  {
+    address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11c57957Ba6dA00bFcECB9AA0059bc0a7Df08fFb",
+    name: "Mibera Maker",
+    icon: "/images/treasure-book/reward/nft-mibera.png",
+    probabilities: [
+      { percentage: "0.1", value: 1 },
+      { percentage: "4", value: 20 },
+      { percentage: "47.92", value: 50 }
+    ],
+    total: 20
+  },
+  {
+    address: IS_PRODUCTION ? "0x333814f5e16eee61d0c0b03a5b6abbd424b381c2" : "0x11312822E0E6C508541d153d540c62ffebB09e1F",
+    name: "Bullas",
+    icon: "/images/treasure-book/reward/nft-bullas.png",
+    probabilities: [
+      { percentage: "4", value: 20 },
+      { percentage: "47.92", value: 50 }
     ],
     total: 20
   }
@@ -90,3 +91,11 @@ export const GACHA_TABS: GachaTabConfig[] = [
 
 export const GACHA_CONTRACT_ADDRESS =
   "0x2c9306C73dBe1b9e33fcC2C28A98c98B6713b786";
+
+export const TOKEN_MAP: Record<string, string> = {
+  '0x0000000000000000000000000000000000000000': "/assets/tokens/bera.svg",
+  ...NFTS.reduce((acc, nft) => {
+    acc[nft.address.toLowerCase()] = nft.icon;
+    return acc;
+  }, {} as Record<string, string>),
+};
