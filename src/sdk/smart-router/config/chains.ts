@@ -148,10 +148,7 @@ export default {
     chainName: "Berachain Mainnet",
     icon: "",
     nativeCurrency: { name: "BERA", symbol: "BERA", decimals: 18 },
-    rpcUrls: [
-      "https://berachain-mainnet.g.alchemy.com/v2/i-czB6mQvrz3RVMB6zItL",
-      "https://rpc.berachain.com"
-    ],
+    rpcUrls: ["https://rpc.berachain.com"],
     blockExplorers: "https://berascan.com/"
   }
 } as { [key: string]: any };
