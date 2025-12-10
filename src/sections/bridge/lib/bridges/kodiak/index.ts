@@ -124,11 +124,12 @@ export async function getQuote(
           },
           inputAmount: quoteRequest.amount
             .div(10 ** quoteRequest.fromToken.decimals)
-            .toFixed(0),
+            .toString(),
           slippage: 0.01,
           account: await signer.getAddress(),
           template: "Kodiak"
         };
+
         const contractData = await quoter(contractParams);
         result.otherQuote.methodParameters = {
           calldata: contractData.txn.data,
