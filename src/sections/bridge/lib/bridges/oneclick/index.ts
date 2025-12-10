@@ -88,20 +88,23 @@ export async function execute(request: ExecuteRequest, signer: Signer, options?:
   if (quote.sendParam) {
     // check allowance
     if (quote.needApprove && quote.approveSpender) {
-      // const allowance = await quoteRequest?.wallet.allowance({
-      //   contractAddress: quoteParams.fromToken.contractAddress,
-      //   spender: quote.approveSpender,
-      //   address: quoteParams.refundTo,
-      //   amountWei: quoteParams.amount,
-      // });
-      // // if allowance is not enough, reset allowance first
-      // if (Big(allowance.allowance || 0).gt(0) && allowance.needApprove) {
-      //   await quoteRequest?.wallet.approve({
-      //     contractAddress: quoteParams.fromToken.contractAddress,
-      //     spender: quote.approveSpender,
-      //     amountWei: "0",
-      //   });
-      // }
+      // check is from ethereum erc20
+      if (quoteParams.fromToken.chainName === "Ethereum") {
+        const allowance = await quoteRequest?.wallet.allowance({
+          contractAddress: quoteParams.fromToken.contractAddress,
+          spender: quote.approveSpender,
+          address: quoteParams.refundTo,
+          amountWei: quoteParams.amount,
+        });
+        // if allowance is not enough, reset allowance first
+        if (Big(allowance.allowance || 0).gt(0) && allowance.needApprove) {
+          await quoteRequest?.wallet.approve({
+            contractAddress: quoteParams.fromToken.contractAddress,
+            spender: quote.approveSpender,
+            amountWei: "0",
+          });
+        }
+      }
       const res = await quoteRequest?.wallet.approve({
         contractAddress: quoteParams.fromToken.contractAddress,
         spender: quote.approveSpender,
