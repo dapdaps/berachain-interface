@@ -86,6 +86,33 @@ export async function execute(request: ExecuteRequest, signer: Signer, options?:
 
   // proxy transfer
   if (quote.sendParam) {
+    // check allowance
+    if (quote.needApprove && quote.approveSpender) {
+      // const allowance = await quoteRequest?.wallet.allowance({
+      //   contractAddress: quoteParams.fromToken.contractAddress,
+      //   spender: quote.approveSpender,
+      //   address: quoteParams.refundTo,
+      //   amountWei: quoteParams.amount,
+      // });
+      // // if allowance is not enough, reset allowance first
+      // if (Big(allowance.allowance || 0).gt(0) && allowance.needApprove) {
+      //   await quoteRequest?.wallet.approve({
+      //     contractAddress: quoteParams.fromToken.contractAddress,
+      //     spender: quote.approveSpender,
+      //     amountWei: "0",
+      //   });
+      // }
+      const res = await quoteRequest?.wallet.approve({
+        contractAddress: quoteParams.fromToken.contractAddress,
+        spender: quote.approveSpender,
+        amountWei: quoteParams.amount,
+        isCheckAllowance: true,
+      });
+      if (!res) {
+        throw new Error("Insufficient allowance");
+      }
+    }
+
     const hash = await quoteRequest?.wallet.sendTransaction(quote.sendParam);
     return { hash, depositAddress: quote.sendParam.param[1] };
   }
