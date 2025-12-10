@@ -25,12 +25,12 @@ export default function SubmitBtn(props: any) {
       if (chainId !== fromChainId) {
         return "Switch Chain";
       }
-      return "Bridge";
+      return text;
     };
 
     return [
       _loading,
-      text === "SuperSwap" ? text : _text(),
+      _text(),
     ];
   }, [isLoading, comingSoon, chainId, fromChainId, text]);
 
