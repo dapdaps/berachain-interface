@@ -1,3 +1,5 @@
+import { useAudioStore } from "@/stores/use-audio";
+
 const SOUND_PATHS = {
   click: "/images/gacha/sound/1-click.ogg",
   error: "/images/gacha/sound/2-error.ogg",
@@ -26,6 +28,11 @@ function playSound(
   }
 ): HTMLAudioElement {
   const audio = getAudio(src);
+  
+  const open = (useAudioStore.getState() as any).open;
+  if (!open) {
+    return audio;
+  }
   
   audio.currentTime = 0;
   
