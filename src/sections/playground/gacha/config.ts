@@ -26,7 +26,7 @@ export const NFTS = [
   },
   {
     address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11312822E0E6C508541d153d540c62ffebB09e1F",
-    name: "Mibera Maker",
+    name: "Mibera Shadow Trait",
     icon: "/images/gacha/mibera-maker.png",
     probabilities: [
       { percentage: "0.1", value: 1 },
@@ -49,7 +49,7 @@ export const NFTS = [
 export const GACHA_TABS: GachaTabConfig[] = [
   {
     id: "bera-dream",
-    label: "1 Bera Dream",
+    label: "ONE Bera Dream",
     playByCost: "1 BERA",
     value: 1,
     tier: 0,
