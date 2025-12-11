@@ -53,11 +53,10 @@ function MarqueeCard({ data }: MarqueeCardProps) {
       }}
       >
       <div className="w-[66px] h-[66px] rounded-[8px] flex-shrink-0 overflow-hidden relative">
-        <Image
+        <img
           src={data.imageUrl}
           alt={data.prizeName}
-          fill
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
 

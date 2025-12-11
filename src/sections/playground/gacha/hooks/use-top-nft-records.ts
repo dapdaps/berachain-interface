@@ -43,7 +43,8 @@ export default function useTopNftRecords() {
         const tokenAddressLower = record.token_address.toLowerCase();
         const prizeName = TOKEN_NAME_MAP[tokenAddressLower] || "Unknown NFT";
         
-        const imageUrl = TOKEN_MAP[tokenAddressLower] || "/images/gacha/default-nft.png";
+        // const imageUrl = TOKEN_MAP[tokenAddressLower] || "/images/gacha/default-nft.png";
+        const imageUrl = `https://assets.dapdap.net/beratown/nft/${tokenAddressLower}_${record.token_id}.png`;
         
         const timeAgo = formatTimeAgo(record.tx_time * 1000);
         

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { playShakeSound } from "../sound";
+import NFTDetailModal, { NFTDetailData } from "./nft-detail-modal";
 
 interface ProbabilityItem {
   percentage: string;
@@ -15,6 +16,7 @@ interface NFTCardProps {
   address: string;
   floorPrice: string;
   balance?: string;
+  tokenIds: number[];
   probabilities: ProbabilityItem[];
   imageUrl: string;
   className?: string;
@@ -26,6 +28,7 @@ export default function NFTCard({
   address,
   floorPrice,
   balance,
+  tokenIds,
   probabilities,
   imageUrl,
   className = "",
@@ -33,6 +36,7 @@ export default function NFTCard({
 }: NFTCardProps) {
   const controls = useAnimation();
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
     const playInitialAnimation = async () => {
@@ -64,6 +68,23 @@ export default function NFTCard({
     });
   };
 
+  const handleRewardsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDetailModal(true);
+  };
+
+  const getNFTDetailData = (): NFTDetailData => {
+    const thumbnailUrls = tokenIds.map(tokenId => `https://assets.dapdap.net/beratown/nft/${address.toLowerCase()}_${tokenId}.png`);
+
+    return {
+      name: title,
+      tokenId: "1425",
+      address: address.toLowerCase(),
+      imageUrl: imageUrl,
+      thumbnailUrls: thumbnailUrls,
+    };
+  };
+
   return (
     <div className={`relative ${className}`}>
       <div className="absolute left-1/2 -translate-x-1/2 top-[-25px] z-20">
@@ -85,25 +106,34 @@ export default function NFTCard({
             </div>
 
             <div className="flex flex-col justify-between py-[10px] flex-1">
-              <h3 className="text-[24px] font-bold text-black font-CherryBomb">
-                {title}
-              </h3>
+              <div className="flex gap-[10px] items-center">
+                <h3 className="text-[24px] font-bold text-black font-CherryBomb whitespace-nowrap">
+                  {title}
+                </h3>
+                <a href={`https://magiceden.io/collections/berachain/${address}`} className="mt-[10px]" target="_blank" rel="noopener noreferrer">
+                  <svg width="28" height="11" viewBox="0 0 28 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.5">
+                      <path d="M0 9.65649V1.34355L0.000888622 1.2932C0.0183716 0.774301 0.305042 0.310903 0.739185 0.106813C1.18731 -0.103828 1.70575 0.00263781 2.05597 0.377089L5.46517 4.0222L7.8255 0.537483C8.05463 0.19918 8.41429 4.76554e-05 8.79617 4.76554e-05H14.7867C15.4567 4.76554e-05 15.9999 0.601556 15.9999 1.34355C15.9999 2.08555 15.4567 2.68706 14.7867 2.68706H11.3865L12.7613 4.51404C13.1219 4.99318 13.1373 5.68405 12.7985 6.18227L11.5518 8.01532L14.7736 7.97711C15.4437 7.96916 15.9927 8.56425 15.9999 9.30619C16.0071 10.0481 15.4697 10.6562 14.7997 10.6641L9.11252 10.7315C8.65022 10.737 8.22527 10.4511 8.0167 9.99417C7.80815 9.53728 7.85218 8.98877 8.1303 8.57982L10.2818 5.41622L8.84623 3.50871L6.58202 6.85189C6.37322 7.16018 6.05481 7.35438 5.70791 7.38506C5.36104 7.41573 5.01898 7.27994 4.76864 7.01229L2.42653 4.50814V9.65649C2.42653 10.3985 1.88333 11 1.21326 11C0.543197 11 0 10.3985 0 9.65649Z" fill="#3D405A" />
+                      <path d="M19 10L27 2M27 2L21.5 2M27 2V7.5" stroke="#3D405A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                  </svg>
+                </a>
+              </div>
+
 
               <div className="text-[14px]">
                 {
-                  title === 'Mibera Shadow Trait' 
-                  ?
-                  <div className="flex justify-between items-center gap-[10px]">
-                  <div className="text-[#3D405A] mb-1">Vending Machine</div>
-                  <div className="font-bold text-black">RAFFLE</div>
-                </div>
+                  title === 'Mibera Shadow Trait'
+                    ?
+                    <div className="flex justify-between items-center gap-[10px]">
+                      <div className="text-[#3D405A] mb-1">Vending Machine</div>
+                      <div className="font-bold text-black">RAFFLE</div>
+                    </div>
                     : <div className="flex justify-between items-center gap-[10px]">
                       <div className="text-[#3D405A] mb-1">Floor Price</div>
                       <div className="font-bold text-black">{floorPrice} BERA</div>
                     </div>
                 }
-
-
 
                 {/* NFT Remaining */}
                 <div className="flex justify-between items-center gap-[10px]">
@@ -141,7 +171,7 @@ export default function NFTCard({
 
               {/* Magic Eden Button */}
               <div className="mt-[2px]">
-                <a
+                {/* <a
                   href={`https://magiceden.io/collections/berachain/${address}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -157,7 +187,6 @@ export default function NFTCard({
                     </span>
                   </div>
 
-                  {/* External Link Icon */}
                   <svg
                     width="14"
                     height="14"
@@ -174,12 +203,25 @@ export default function NFTCard({
                       strokeLinejoin="round"
                     />
                   </svg>
-                </a>
+                </a> */}
+                <div 
+                  onClick={handleRewardsClick}
+                  className="bg-[#FFFFFF80] text-center cursor-pointer rounded-[8px] px-[12px] py-[5px] text-[12px] border border-[#E6CC9E] font-medium text-[#3D405A] whitespace-nowrap hover:bg-[#FFF9ED] transition-colors duration-200"
+                >
+                  Rewards Available
+                </div>
               </div>
             </div>
           </div>
         </div>
       </motion.div>
+
+      <NFTDetailModal
+        visible={showDetailModal}
+        address={address.toLowerCase()}
+        data={getNFTDetailData()}
+        onClose={() => setShowDetailModal(false)}
+      />
     </div>
   );
 }

@@ -22,7 +22,8 @@ export const NFTS = [
       { percentage: "1", value: 20 },
       { percentage: "4.16", value: 50 }
     ],
-    total: 20
+    total: 20,
+    tokenIds: IS_PRODUCTION ? [1797, 788, 2056, 1425, 1771, 952, 1182, 536, 2064] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
   },
   {
     address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11312822E0E6C508541d153d540c62ffebB09e1F",
@@ -33,7 +34,8 @@ export const NFTS = [
       { percentage: "4", value: 20 },
       { percentage: "47.92", value: 50 }
     ],
-    total: 20
+    total: 20,
+    tokenIds: IS_PRODUCTION ? [2454,2450,2448,2443,2444,2441,2453,2447,2449] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   },
   {
     address: IS_PRODUCTION ? "0x333814f5e16eee61d0c0b03a5b6abbd424b381c2" : "0x11c57957Ba6dA00bFcECB9AA0059bc0a7Df08fFb",
@@ -43,7 +45,8 @@ export const NFTS = [
       { percentage: "4", value: 20 },
       { percentage: "47.92", value: 50 }
     ],
-    total: 20
+    total: 20,
+    tokenIds: IS_PRODUCTION ? [1153, 1109, 1391, 1364, 1314, 1329, 1326, 1333] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
   }
 ];
 export const GACHA_TABS: GachaTabConfig[] = [
