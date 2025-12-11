@@ -6,16 +6,18 @@ import { TOKEN_MAP } from '../config';
 import { playRewardSound } from '../sound';
 import LightButton from '@/components/check-in/button';
 import BearAmountTabs from './bear-amount-tabs';
+import { on } from 'events';
 
 interface SuccessOpenProps {
   visible?: boolean;
+  onPlayAgain?: () => void;
   onClose?: () => void;
   data?: any;
   activeTabId?: any;
   setActiveTabId?: (tabId: any) => void;
 }
 
-export default function SuccessOpen({ visible = false, onClose, data, activeTabId, setActiveTabId }: SuccessOpenProps) {
+export default function SuccessOpen({ visible = false, onPlayAgain, onClose, data, activeTabId, setActiveTabId }: SuccessOpenProps) {
   if (!visible || !data) return null;
 
   const rewardType = useMemo(() => {
@@ -131,11 +133,16 @@ export default function SuccessOpen({ visible = false, onClose, data, activeTabI
           <BearAmountTabs activeTabId={activeTabId} setActiveTabId={(tabId) => {
             setActiveTabId?.(tabId)
             onClose?.()
+            onPlayAgain?.()
           }} />
         </div>
 
         <div className="absolute bottom-[-130px] left-1/2 -translate-x-1/2 w-[354px] z-[3]">
-          <LightButton className="w-full !h-[60px]">
+          <LightButton className="w-full !h-[60px]" onClick={() => {
+            onClose?.()
+            onPlayAgain?.()
+            
+          }}>
             <div 
               className="text-[24px] font-CherryBomb font-[400] text-[#F7F9EA]"
               style={{
@@ -145,7 +152,7 @@ export default function SuccessOpen({ visible = false, onClose, data, activeTabI
               Play Again
             </div>
           </LightButton>
-          <div className="text-[16px] font-medium text-white mt-[20px] w-[100px] mx-auto text-center cursor-pointer">Go Back</div>
+          <div onClick={onClose} className="text-[16px] font-medium text-white mt-[20px] w-[100px] mx-auto text-center cursor-pointer">Go Back</div>
         </div>
 
 

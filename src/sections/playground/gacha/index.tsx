@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Title from "./components/title";
 import NFTCard from "./components/nft-card";
 import BearBox, { BearBoxHandle } from "./components/bear-box";
@@ -13,7 +13,7 @@ import useNftBalance from "./hooks/use-nft-balance";
 import usePlayGame from "./hooks/use-play-game";
 import useConfig from "./hooks/use-config";
 import useTopNftRecords from "./hooks/use-top-nft-records";
-import { GACHA_TABS, NFTS } from "./config";
+import { GACHA_TABS, GachaTabConfig, NFTS } from "./config";
 import PageBack from "@/components/back";
 import { stopSound, SOUND_PATHS } from "./sound";
 import { useAudioStore } from "@/stores/use-audio";
@@ -30,6 +30,8 @@ export default function Gacha() {
   const [loadingPlay, setLoadingPlay] = useState(false);
   const [playCount, setPlayCount] = useState(0);
   const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
+  const activeTabRef = useRef<GachaTabConfig>(GACHA_TABS[0]);
+ 
   const open = useAudioStore((state: any) => state.open);
 
   const handlePlay = async (tier: number) => {
@@ -62,6 +64,10 @@ export default function Gacha() {
   const handleCloseSuccessOpen = () => {
     setShowSuccessOpen(false);
   };
+
+ useEffect(() => {
+  activeTabRef.current = GACHA_TABS.find((tab) => tab.id === activeTabId) || GACHA_TABS[0];
+ }, [activeTabId]);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -114,6 +120,9 @@ export default function Gacha() {
     };
   }, [open]);
 
+
+  console.log("activeTabRef", activeTabRef.current);
+
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
@@ -156,7 +165,11 @@ export default function Gacha() {
         <History refresh={playCount}/>
       </div>
 
-      <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} data={gameRequest} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
+      <SuccessOpen visible={showSuccessOpen} onPlayAgain={() => {
+        setTimeout(() => {
+          handlePlay(activeTabRef.current?.tier || 0);
+        }, 500);
+      }} onClose={handleCloseSuccessOpen} data={gameRequest} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
     </div>
   );
 }
