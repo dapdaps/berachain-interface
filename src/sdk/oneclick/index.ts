@@ -4,6 +4,7 @@ import { ONECLICK_PROXY, ONECLICK_PROXY_ABI } from "./contract";
 import { numberRemoveEndZero } from "@/utils/number-formatter";
 import { getPrice } from "@/utils/formatMoney";
 import { DEFAULT_GAS_LIMIT } from "@/sections/bridge/lib/bridges/oneclick/wallet";
+import { ZeroAddress } from "@/hooks/use-add-action";
 
 export const BridgeFee = [
   {
@@ -105,7 +106,8 @@ class OneClickService {
       }
 
       const proxyAddress = ONECLICK_PROXY[params.fromToken.chainName];
-      if (proxyAddress) {
+      const isNativeToken = params.fromToken.contractAddress === ZeroAddress;
+      if (proxyAddress && !isNativeToken) {
         const proxyResult = await params.wallet.quoteOneClickProxy({
           proxyAddress,
           abi: ONECLICK_PROXY_ABI,
