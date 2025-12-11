@@ -1,6 +1,6 @@
-import { useRequest } from "ahooks";
+import { useRequest, useThrottleFn } from "ahooks";
 import { get } from "@/utils/http";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUser from "@/hooks/use-user";
 
 interface GachaRecord {
@@ -41,23 +41,36 @@ export default function useHistory(params?: UseHistoryParams) {
   const [total, setTotal] = useState(0);
   const { userInfo } = useUser();
 
-  const { data, loading, runAsync: getHistory } = useRequest(
-    async () => {
-      const res = await get("/api/go/game/gacha/records", {
-        page: page,
-        page_size: pageSize,
-      }) as GachaRecordsResponse;
+  const fetchHistory = async () => {
+    if (!userInfo?.address) {
+      return [];
+    }
 
-      if (res.code !== 200) {
-        return [];
-      }
+    const res = await get("/api/go/game/gacha/records", {
+      page: page,
+      page_size: pageSize,
+    }) as GachaRecordsResponse;
 
-      setTotalPage(res.data.total_page || 0);
-      setTotal(res.data.total || 0);
-      return res.data.data || [];
-    },
+    if (res.code !== 200) {
+      return [];
+    }
+
+    setTotalPage(res.data.total_page || 0);
+    setTotal(res.data.total || 0);
+    return res.data.data || [];
+  };
+
+  const { run: throttledFetchHistory } = useThrottleFn(
+    fetchHistory,
     {
-      refreshDeps: [page, pageSize, userInfo],
+      wait: 500,
+    }
+  );
+
+  const { data, loading, runAsync: getHistory } = useRequest(
+    () => throttledFetchHistory(),
+    {
+      refreshDeps: [page, pageSize],
     }
   );
 

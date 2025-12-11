@@ -8,7 +8,7 @@ export function Cat1() {
         <motion.img
             src="/images/gacha/ball-1.png"
             alt="cat"
-            className="w-[107px] absolute right-[10%] bottom-[145px] cursor-pointer"
+            className="w-[107px] absolute right-[10%] bottom-[45px] cursor-pointer"
             whileTap={{
                 rotate: [0, -10, 10, -10, 10, 0],
                 transition: {

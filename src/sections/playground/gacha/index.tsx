@@ -8,12 +8,15 @@ import ActionTabs from "./components/action-tabs";
 import { Cat1, Cat2 } from "./components/cat";
 import History from "./components/history";
 import SuccessOpen from "./components/success-open";
+import Marquee from "./components/marquee";
 import useNftBalance from "./hooks/use-nft-balance";
 import usePlayGame from "./hooks/use-play-game";
 import useConfig from "./hooks/use-config";
-import { NFTS } from "./config";
+import useTopNftRecords from "./hooks/use-top-nft-records";
+import { GACHA_TABS, NFTS } from "./config";
 import PageBack from "@/components/back";
 import { stopSound, SOUND_PATHS } from "./sound";
+import { useAudioStore } from "@/stores/use-audio";
 
 export default function Gacha() {
   const hasPlayedRef = useRef(false);
@@ -23,8 +26,11 @@ export default function Gacha() {
   const { nftBalance, loading: nftBalanceLoading, nftPrice } = useNftBalance();
   const { config } = useConfig();
   const { playGame, loading, gameRequest } = usePlayGame(config);
+  const { data: topNftRecords, loading: topNftLoading } = useTopNftRecords();
   const [loadingPlay, setLoadingPlay] = useState(false);
   const [playCount, setPlayCount] = useState(0);
+  const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
+  const open = useAudioStore((state: any) => state.open);
 
   const handlePlay = async (tier: number) => {
     if (loadingPlay) {
@@ -64,7 +70,7 @@ export default function Gacha() {
     }
 
     const playBgMusic = async () => {
-      if (hasPlayedRef.current || !audioRef.current) return;
+      if (hasPlayedRef.current || !audioRef.current || !open) return;
       
       try {
         await audioRef.current.play();
@@ -75,7 +81,7 @@ export default function Gacha() {
     };
 
     const unlockAudio = async () => {
-      if (hasPlayedRef.current || !audioRef.current) return;
+      if (hasPlayedRef.current || !audioRef.current || !open) return;
       
       try {
         await audioRef.current.play();
@@ -106,7 +112,7 @@ export default function Gacha() {
       document.removeEventListener("touchstart", unlockAudio);
       document.removeEventListener("keydown", unlockAudio);
     };
-  }, []);
+  }, [open]);
 
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
@@ -118,6 +124,7 @@ export default function Gacha() {
           <NFTCard
             key={nft.address}
             title={nft.name}
+            address={nft.address}
             floorPrice={nftPrice[nft.address.toLowerCase()] || "-"}
             balance={nftBalance?.[nft.address]}
             probabilities={nft.probabilities}
@@ -132,18 +139,24 @@ export default function Gacha() {
         <div className="container min-w-[1200px] mx-auto">
           <div className="flex justify-between gap-[40px] pr-[80px]">
             <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
-            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config}/>
+            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
           </div>
         </div>
         <Cat1 />
         <Cat2 />
       </div>
 
+      {topNftRecords.length > 0 && (
+        <div className="w-full py-6 px-4">
+          <Marquee items={topNftRecords} speed={50} gap={16} className="w-full" />
+        </div>
+      )}
+
       <div className="container min-w-[1200px] mx-auto">
         <History refresh={playCount}/>
       </div>
 
-      <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} data={gameRequest} />
+      <SuccessOpen visible={showSuccessOpen} onClose={handleCloseSuccessOpen} data={gameRequest} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
     </div>
   );
 }
