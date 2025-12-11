@@ -44,6 +44,7 @@ export default LightingButton;
 export enum LightingButtonType {
   Primary,
   Green,
+  Yellow,
 }
 
 export const LightingButtonTypes: Record<LightingButtonType, { outerBg: string; innerBorderColor: string; innerBg: string; }> = {
@@ -56,6 +57,11 @@ export const LightingButtonTypes: Record<LightingButtonType, { outerBg: string; 
     outerBg: '#51DA54',
     innerBorderColor: '#71CC49',
     innerBg: '#95FF5C',
+  },
+  [LightingButtonType.Yellow]: {  
+    outerBg: '#FFB050',
+    innerBorderColor: '#AF7026',
+    innerBg: '#FFCF23',
   },
 };
 

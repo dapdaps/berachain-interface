@@ -35,7 +35,7 @@ const BallCollision = forwardRef<BallCollisionHandle, BallCollisionProps>(
     {
       width = 300,
       height = 280,
-      ballCount = 5,
+      ballCount = 8,
       ballSize = 100,
       gravity = 0.5,
       damping = 0.8,
