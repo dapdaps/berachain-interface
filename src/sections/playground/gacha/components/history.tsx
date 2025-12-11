@@ -38,7 +38,7 @@ export default function History({ refresh }: { refresh: number }) {
     <div className="w-full text-white mt-[30px]">
       {/* Header */}
       <div className="text-[24px] mb-[20px] font-CherryBomb">
-        Total Played {total}
+      GAMES PLAYED: {total}
       </div>
 
       {/* Table */}

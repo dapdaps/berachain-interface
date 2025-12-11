@@ -72,7 +72,7 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
         {/* Probabilities Section */}
         {activeTab?.probabilities && (
           <div className="mb-[20px] min-h-[215px] mt-[-5px]">
-            <div className="font-[700] text-[20px] mb-3">Odd &amp; Probabilities</div>
+            <div className="font-[700] text-[20px] mb-3">Win Rate</div>
             <div className="grid grid-cols-3 gap-[10px]">
               {activeTab.probabilities.map((item, index) => {
                 const color = PROBABILITY_CARD_COLORS[index % PROBABILITY_CARD_COLORS.length];
