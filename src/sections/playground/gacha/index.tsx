@@ -120,9 +120,6 @@ export default function Gacha() {
     };
   }, [open]);
 
-
-  console.log("activeTabRef", activeTabRef.current);
-
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
@@ -136,6 +133,7 @@ export default function Gacha() {
             address={nft.address}
             floorPrice={nftPrice[nft.address.toLowerCase()] || "-"}
             balance={nftBalance?.[nft.address]}
+            tokenIds={nft.tokenIds}
             probabilities={nft.probabilities}
             imageUrl={nft.icon}
             total={nft.total}
