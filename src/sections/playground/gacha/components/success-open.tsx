@@ -132,8 +132,8 @@ export default function SuccessOpen({ visible = false, onPlayAgain, onClose, dat
         <div className='absolute bottom-[-30px] left-1/2 -translate-x-1/2 w-[354px] z-[3]'>
           <BearAmountTabs activeTabId={activeTabId} setActiveTabId={(tabId) => {
             setActiveTabId?.(tabId)
-            onClose?.()
-            onPlayAgain?.()
+            // onClose?.()
+            // onPlayAgain?.()
           }} />
         </div>
 
