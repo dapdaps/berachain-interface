@@ -56,12 +56,13 @@ export default function useNftBalance() {
             return;
           }
           const remainingStock = reward.remainingStock.toString();
-          if (_balance[reward.tokenAddress]) {
-            _balance[reward.tokenAddress] = Big(_balance[reward.tokenAddress])
+          const tokenAddress = reward.tokenAddress.toLowerCase();
+          if (_balance[tokenAddress]) {
+            _balance[tokenAddress] = Big(_balance[tokenAddress])
               .add(remainingStock)
               .toString();
           } else {
-            _balance[reward.tokenAddress] = remainingStock;
+            _balance[tokenAddress] = remainingStock;
           }
         });
       });
@@ -75,18 +76,18 @@ export default function useNftBalance() {
     }
   }, [provider]);
 
-  const getNftPrice = useCallback(async () => {
-    try {
-      const res = await get('/api/go/nft/floorPrice')
-      if (res.code !== 200) {
-        return null;
-      }
+  // const getNftPrice = useCallback(async () => {
+  //   try {
+  //     const res = await get('/api/go/nft/floorPrice')
+  //     if (res.code !== 200) {
+  //       return null;
+  //     }
 
-      setNftPrice(res.data);
-    } catch (error) {
-      console.log("Get nft price failed: %o", error);
-    }
-  }, []);
+  //     setNftPrice(res.data);
+  //   } catch (error) {
+  //     console.log("Get nft price failed: %o", error);
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (provider) {
@@ -94,9 +95,9 @@ export default function useNftBalance() {
     }
   }, [provider]);
 
-  useEffect(() => {
-    getNftPrice();
-  }, []);
+  // useEffect(() => {
+  //   getNftPrice();
+  // }, []);
 
   return {
     nftBalance,

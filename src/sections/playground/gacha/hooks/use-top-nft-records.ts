@@ -1,8 +1,8 @@
 import { useRequest } from "ahooks";
 import { get } from "@/utils/http";
 import { formatTimeAgo } from "@/utils/date";
-import { TOKEN_NAME_MAP, TOKEN_MAP } from "../config";
 import { MarqueeCardData } from "../components/marquee";
+import { getNftImgUrl } from "../config";
 
 interface TopNftRecord {
   address: string;
@@ -41,10 +41,11 @@ export default function useTopNftRecords() {
 
       const marqueeData: MarqueeCardData[] = res.data.map((record) => {
         const tokenAddressLower = record.token_address.toLowerCase();
-        const prizeName = TOKEN_NAME_MAP[tokenAddressLower] || "Unknown NFT";
+        // const prizeName = TOKEN_NAME_MAP[tokenAddressLower] || "Unknown NFT";
         
         // const imageUrl = TOKEN_MAP[tokenAddressLower] || "/images/gacha/default-nft.png";
-        const imageUrl = `https://assets.dapdap.net/beratown/nft/${tokenAddressLower}_${record.token_id}.png`;
+        const imageUrl = getNftImgUrl(tokenAddressLower, record.token_id.toString());
+
         
         const timeAgo = formatTimeAgo(record.tx_time * 1000);
         
@@ -54,9 +55,9 @@ export default function useTopNftRecords() {
           id: `${record.sequence}-${record.tx_hash}`,
           imageUrl,
           address: record.address,
-          prizeName,
           timeAgo,
           multiplier,
+          tokenAddress: record.token_address,
         };
       });
 

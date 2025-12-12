@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 
 function getMultiplierColor(multiplier: number): { bg: string; border: string } {
   let borderColor = "";
@@ -28,16 +27,17 @@ export interface MarqueeCardData {
   id: string;
   imageUrl: string;
   address: string;
-  prizeName: string;
   timeAgo: string;
   multiplier: number;
+  tokenAddress: string;
 }
 
 interface MarqueeCardProps {
   data: MarqueeCardData;
+  tokenNameMap: Record<string, string>;
 }
 
-function MarqueeCard({ data }: MarqueeCardProps) {
+function MarqueeCard({ data, tokenNameMap }: MarqueeCardProps) {
   const color = getMultiplierColor(data.multiplier);
   
   const formatAddress = (address: string) => {
@@ -55,7 +55,7 @@ function MarqueeCard({ data }: MarqueeCardProps) {
       <div className="w-[66px] h-[66px] rounded-[8px] flex-shrink-0 overflow-hidden relative">
         <img
           src={data.imageUrl}
-          alt={data.prizeName}
+          alt={tokenNameMap[data.tokenAddress.toLowerCase()]}
           className="w-full h-full object-cover"
         />
       </div>
@@ -70,7 +70,7 @@ function MarqueeCard({ data }: MarqueeCardProps) {
         </div>
 
         <div className="text-white text-[16px] mt-[2px]">
-          win <span className="font-[600]">{data.prizeName}</span>
+          win <span className="font-[600]">{tokenNameMap[data.tokenAddress.toLowerCase()]}</span>
         </div>
 
         <div className="text-white text-[14px] opacity-60">
@@ -104,6 +104,7 @@ interface MarqueeProps {
   gap?: number;
   className?: string;
   pauseOnHover?: boolean;
+  tokenNameMap: Record<string, string>;
 }
 
 export default function Marquee({
@@ -112,6 +113,7 @@ export default function Marquee({
   gap = 16,
   className = "",
   pauseOnHover = true,
+  tokenNameMap,
 }: MarqueeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -196,6 +198,7 @@ export default function Marquee({
             <MarqueeCard
               key={`${item.id}-${index}`}
               data={item}
+              tokenNameMap={tokenNameMap}
             />
           ))}
         </div>

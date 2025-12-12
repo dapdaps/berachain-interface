@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { playShakeSound } from "../sound";
 import NFTDetailModal, { NFTDetailData } from "./nft-detail-modal";
+import { getNftImgUrl } from "../config";
 
 interface ProbabilityItem {
   percentage: string;
@@ -16,11 +17,12 @@ interface NFTCardProps {
   address: string;
   floorPrice: string;
   balance?: string;
-  tokenIds: number[];
+  tokenIds: string[];
   probabilities: ProbabilityItem[];
   imageUrl: string;
   className?: string;
   total: number;
+  rarityRank: Record<string, any>;
 }
 
 export default function NFTCard({
@@ -29,6 +31,7 @@ export default function NFTCard({
   floorPrice,
   balance,
   tokenIds,
+  rarityRank, 
   probabilities,
   imageUrl,
   className = "",
@@ -74,19 +77,23 @@ export default function NFTCard({
   };
 
   const getNFTDetailData = (): NFTDetailData => {
-    const thumbnailUrls = tokenIds.map(tokenId => `https://assets.dapdap.net/beratown/nft/${address.toLowerCase()}_${tokenId}.png`);
+    const tokenList = tokenIds.map(tokenId => {
+      return {
+        tokenId: tokenId.toString(),
+        imageUrl: getNftImgUrl(address.toLowerCase(), tokenId),
+      }
+    });
 
     return {
       name: title,
-      tokenId: "1425",
       address: address.toLowerCase(),
       imageUrl: imageUrl,
-      thumbnailUrls: thumbnailUrls,
+      tokenList,
     };
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative shrink-0 ${className}`}>
       <div className="absolute left-1/2 -translate-x-1/2 top-[-25px] z-20">
         <img src="/images/gacha/nail.png" alt="pin" className="w-[43px]" />
       </div>
@@ -101,13 +108,13 @@ export default function NFTCard({
       >
         <div className="bg-[#FFE5B8] rounded-[16px] overflow-hidden p-[5px] shadow-xl cursor-pointer hover:shadow-2xl transition-shadow duration-300">
           <div className="flex gap-[10px] pr-[10px]">
-            <div className="w-[145px] h-[145px] relative rounded-[16px] overflow-hidden">
-              <Image src={imageUrl} alt={title} fill className="object-cover" />
+            <div className="w-[145px] h-[145px] relative rounded-[16px] overflow-hidden flex-shrink-0">
+              <img src={imageUrl} alt={title} className="object-cover w-full h-full" />
             </div>
 
             <div className="flex flex-col justify-between py-[10px] flex-1">
               <div className="flex gap-[10px] items-center">
-                <h3 className="text-[24px] font-bold text-black font-CherryBomb whitespace-nowrap">
+                <h3 className="text-[24px] max-w-[155px] font-bold text-black font-CherryBomb whitespace-nowrap overflow-hidden text-ellipsis">
                   {title}
                 </h3>
                 <a href={`https://magiceden.io/collections/berachain/${address}`} className="mt-[10px]" target="_blank" rel="noopener noreferrer">
@@ -220,6 +227,7 @@ export default function NFTCard({
         visible={showDetailModal}
         address={address.toLowerCase()}
         data={getNFTDetailData()}
+        rarityRank={rarityRank}
         onClose={() => setShowDetailModal(false)}
       />
     </div>

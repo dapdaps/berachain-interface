@@ -13,25 +13,25 @@ export interface NFTTrait {
 
 export interface NFTDetailData {
   name: string;
-  tokenId: string;
   address: string;
   imageUrl: string;
-  thumbnailUrls: string[];
+  tokenList: any[];
 }
 
 interface NFTDetailModalProps {
   visible: boolean;
   address: string;
   data?: NFTDetailData;
+  rarityRank: Record<string, any>;
   onClose: () => void;
 }
 
-export default function NFTDetailModal({ visible, address, data, onClose }: NFTDetailModalProps) {
+export default function NFTDetailModal({ visible, address, data, rarityRank, onClose }: NFTDetailModalProps) {
   const [selectedThumbnailIndex, setSelectedThumbnailIndex] = useState(0);
 
-  if (!visible || !data) return null;
+  if (!visible || !data || !data.tokenList || data.tokenList.length === 0) return null;
 
-  const currentImage = data.thumbnailUrls[selectedThumbnailIndex] || data.imageUrl;
+  const currentImage = data.tokenList[selectedThumbnailIndex].imageUrl;
 
   return (
     <AnimatePresence>
@@ -85,7 +85,7 @@ export default function NFTDetailModal({ visible, address, data, onClose }: NFTD
               </div>
 
               <div className="flex gap-2 overflow-x-auto pb-2 px-2">
-                {data.thumbnailUrls.map((thumbnail, index) => (
+                {data.tokenList.map((token, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedThumbnailIndex(index)}
@@ -95,7 +95,7 @@ export default function NFTDetailModal({ visible, address, data, onClose }: NFTD
                       }`}
                   >
                     <img
-                      src={thumbnail}
+                      src={token.imageUrl}
                       alt={`Thumbnail ${index + 1}`}
                       className={`w-[56px] h-[56px] object-cover}`}
                     />
@@ -106,9 +106,13 @@ export default function NFTDetailModal({ visible, address, data, onClose }: NFTD
 
             <div className="bg-[#DDC682] py-3 px-6 rounded-b-[16px]">
               <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
-                <h2 className="text-[24px] font-bold text-black">
-                  {data.name} #{data.tokenId}
-                </h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[24px] font-bold text-black">
+                    {data.name} #{data.tokenList[selectedThumbnailIndex]?.tokenId}
+                  </h2>
+                  <div className="text-[14px] bg-[#FFFFFF80] rounded-[4px] px-[8px] py-[2px]">{rarityRank?.[data.tokenList[selectedThumbnailIndex]?.tokenId] || '-'}</div>
+                </div>
+
                 <a href={`https://magiceden.io/collections/berachain/${address}`} target="_blank" rel="noopener noreferrer">
                   <svg width="28" height="11" viewBox="0 0 28 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g opacity="0.5">

@@ -13,24 +13,26 @@ import useNftBalance from "./hooks/use-nft-balance";
 import usePlayGame from "./hooks/use-play-game";
 import useConfig from "./hooks/use-config";
 import useTopNftRecords from "./hooks/use-top-nft-records";
-import { GACHA_TABS, GachaTabConfig, NFTS } from "./config";
+import { GACHA_TABS, GachaTabConfig } from "./config";
 import PageBack from "@/components/back";
 import { stopSound, SOUND_PATHS } from "./sound";
 import { useAudioStore } from "@/stores/use-audio";
+import useNftConfig from "./hooks/use-nft-config";
 
 export default function Gacha() {
   const hasPlayedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bearBoxRef = useRef<BearBoxHandle>(null);
   const [showSuccessOpen, setShowSuccessOpen] = useState(false);
-  const { nftBalance, loading: nftBalanceLoading, nftPrice } = useNftBalance();
-  const { config } = useConfig();
+  const { nftBalance, loading: nftBalanceLoading } = useNftBalance();
+  const { config, tokenIdMap, rarityRankMap } = useConfig();
   const { playGame, loading, gameRequest } = usePlayGame(config);
   const { data: topNftRecords, loading: topNftLoading } = useTopNftRecords();
   const [loadingPlay, setLoadingPlay] = useState(false);
   const [playCount, setPlayCount] = useState(0);
   const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
   const activeTabRef = useRef<GachaTabConfig>(GACHA_TABS[0]);
+  const { nftConfig, loading: nftConfigLoading, tokenMap, tokenNameMap } = useNftConfig();
  
   const open = useAudioStore((state: any) => state.open);
 
@@ -120,24 +122,28 @@ export default function Gacha() {
     };
   }, [open]);
 
+
+  console.log('rarityRankMap:', rarityRankMap);
+
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
       <Title />
 
-      <div className="container min-w-[1200px] mx-auto py-12 flex justify-center gap-[40px] w-[1450px]">
-        {NFTS.map((nft) => (
+      <div className="container min-w-[1200px] mx-auto py-12 flex justify-center gap-[20px] w-[1450px]">
+        {nftConfig?.length > 0 && nftConfig?.map((nft) => (
           <NFTCard
             key={nft.address}
             title={nft.name}
             address={nft.address}
-            floorPrice={nftPrice[nft.address.toLowerCase()] || "-"}
-            balance={nftBalance?.[nft.address]}
-            tokenIds={nft.tokenIds}
-            probabilities={nft.probabilities}
+            floorPrice={nft.floor_price || "-"}
+            balance={nftBalance?.[nft.address.toLowerCase()]}
+            tokenIds={tokenIdMap[nft.address.toLowerCase()] || []}
+            rarityRank={rarityRankMap[nft.address.toLowerCase()]}
+            probabilities={[]}
             imageUrl={nft.icon}
             total={nft.total}
-            className="w-[425px]"
+            className="w-[364px]"
           />
         ))}
       </div>
@@ -146,7 +152,7 @@ export default function Gacha() {
         <div className="container min-w-[1200px] mx-auto">
           <div className="flex justify-between gap-[40px] pr-[80px]">
             <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
-            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
+            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config} activeTabId={activeTabId} setActiveTabId={setActiveTabId} tokenNameMap={tokenNameMap || {}} />
           </div>
         </div>
         <Cat1 />
@@ -155,12 +161,12 @@ export default function Gacha() {
 
       {topNftRecords.length > 0 && (
         <div className="w-full py-6 px-4">
-          <Marquee items={topNftRecords} speed={50} gap={16} className="w-full" />
+          <Marquee items={topNftRecords} speed={50} gap={16} className="w-full" tokenNameMap={tokenNameMap || {}} />
         </div>
       )}
 
       <div className="container min-w-[1200px] mx-auto">
-        <History refresh={playCount}/>
+        <History refresh={playCount} tokenMap={tokenMap} tokenNameMap={tokenNameMap} />
       </div>
 
       <SuccessOpen visible={showSuccessOpen} onPlayAgain={() => {
