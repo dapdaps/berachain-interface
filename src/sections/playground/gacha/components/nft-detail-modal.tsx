@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface NFTTrait {
@@ -28,10 +27,16 @@ interface NFTDetailModalProps {
 
 export default function NFTDetailModal({ visible, address, data, rarityRank, onClose }: NFTDetailModalProps) {
   const [selectedThumbnailIndex, setSelectedThumbnailIndex] = useState(0);
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   if (!visible || !data || !data.tokenList || data.tokenList.length === 0) return null;
 
   const currentImage = data.tokenList[selectedThumbnailIndex].imageUrl;
+  
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => ({ ...prev, [index]: true }));
+  };
+
 
   return (
     <AnimatePresence>
@@ -78,7 +83,7 @@ export default function NFTDetailModal({ visible, address, data, rarityRank, onC
             <div className="bg-[#FFF9E6] p-6 rounded-t-[16px]">
               <div className="w-full h-[450px] relative rounded-[20px] overflow-hidden mb-4  flex items-center justify-center">
                 <img
-                  src={currentImage}
+                  src={imageErrors[selectedThumbnailIndex] ? data.imageUrl : currentImage}
                   alt={data.name}
                   className="object-contain w-full h-full"
                 />
@@ -95,9 +100,10 @@ export default function NFTDetailModal({ visible, address, data, rarityRank, onC
                       }`}
                   >
                     <img
-                      src={token.imageUrl}
+                      src={imageErrors[index] ? data.imageUrl : token.imageUrl}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-[56px] h-[56px] object-cover}`}
+                      className="w-[56px] h-[56px] object-cover"
+                      onError={() => handleImageError(index)}
                     />
                   </button>
                 ))}
