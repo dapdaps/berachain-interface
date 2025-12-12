@@ -8,8 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { berachain } from "viem/chains";
 import Image from "next/image";
 import useHistory from "../hooks/use-history";
-import { TOKEN_MAP, TOKEN_NAME_MAP } from "../config";
 import { playClickSound } from "../sound";
+import { getNftImgUrl } from "../config";
 
 
 const COST_MAP: any = {
@@ -18,7 +18,7 @@ const COST_MAP: any = {
   2: 50,
 };
 
-export default function History({ refresh }: { refresh: number }) {
+export default function History({ refresh, tokenMap, tokenNameMap }: { refresh: number, tokenMap: Record<string, string>, tokenNameMap: Record<string, string> }) {
   const { data: historyList, loading: historyListLoading, page, pageSize, totalPage, total, setPage, refresh: refreshHistory } = useHistory();
   const pageRef = useRef(1);
 
@@ -74,12 +74,10 @@ export default function History({ refresh }: { refresh: number }) {
                 }
                 return (
                   <div className="flex items-center justify-center pl-[10px]">
-                    <Image
-                      src={TOKEN_MAP[record.token_address?.toLowerCase()]}
+                    <img
+                      src={record.token_id ? getNftImgUrl(record.token_address?.toLowerCase(), record.token_id) : tokenMap[record.token_address?.toLowerCase()]}
                       alt={record.reward_type}
-                      width={32}
-                      height={32}
-                      className={record.reward_type === 1 ? "" : "rounded-full"}
+                      className={'w-[32px] h-[32px] object-cover ' + (record.reward_type === 1 ? "" : "rounded-full")}
                     />
                   </div>
                 );
@@ -95,7 +93,7 @@ export default function History({ refresh }: { refresh: number }) {
                 }
                 return (
                   <div className="text-[16px] !text-white">
-                    <span className="font-bold">{record.token_amount || '-'}</span> {TOKEN_NAME_MAP[record.token_address?.toLowerCase()]}
+                    <span className="font-bold">{record.token_amount || '-'}</span> {tokenNameMap[record.token_address?.toLowerCase()]}
                   </div>
                 );
               },

@@ -7,6 +7,7 @@ import useTokenBalance from "@/hooks/use-token-balance";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
 import BearAmountTabs from "./bear-amount-tabs";
+import { numberFormatter } from "@/utils/number-formatter";
 
 const PROBABILITY_CARD_COLORS = [
   "#D9D9D9", 
@@ -23,9 +24,10 @@ interface ActionTabsProps {
   config?: any;
   activeTabId?: any;
   setActiveTabId?: (tabId: any) => void;
+  tokenNameMap?: Record<string, string>;
 }
 
-export default function ActionTabs({ onPlay, loading, config, activeTabId, setActiveTabId }: ActionTabsProps) {
+export default function ActionTabs({ onPlay, loading, config, activeTabId, setActiveTabId, tokenNameMap }: ActionTabsProps) {
   const { tokenBalance } = useTokenBalance('native', 18, DEFAULT_CHAIN_ID);
 
   const activeTab = GACHA_TABS.find((tab) => tab.id === activeTabId);
@@ -60,6 +62,33 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
     return false;
   }, [config, activeTab, tokenBalance]);
 
+  const probabilities = useMemo(() => {
+    const tierConfig = config?.[activeTab?.tier || 0];
+
+    if (tierConfig && tokenNameMap && Object.keys(tokenNameMap).length > 0) {
+      const newProbabilities: any[] = tierConfig.rewards.map((reward: any, index: number) => {
+        return {
+          ...reward,
+          tokenAddress: reward.tokenAddress.toLowerCase(),
+          name: (reward.rewardType === 1 ? 'NFT-' : Big(reward.amount).div(10 ** 18).toString() + ' ') 
+          + tokenNameMap?.[reward.tokenAddress.toLowerCase()] || '',
+          probability: numberFormatter( 
+            index === 0 
+            ? Big(reward.probability).div(10000) 
+            : Big(reward.probability).minus(Big(tierConfig.rewards[index - 1].probability)).div(10000), 2, true
+          ) + '%',
+        };
+      });
+      return newProbabilities;
+    } 
+
+    // return activeTab?.probabilities?.map((item) => {
+    //   return {
+    //     ...item,
+    //     probability: item.probability + '%',
+    //   };
+    // });
+  }, [activeTab, config, tokenNameMap]);
 
   return (
     <div className="w-[586px] pt-[40px]">
@@ -70,11 +99,11 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
         </div>
 
         {/* Probabilities Section */}
-        {activeTab?.probabilities && (
+        {(Array.isArray(probabilities) && probabilities.length > 0) && (
           <div className="mb-[20px] min-h-[215px] mt-[-5px]">
             <div className="font-[700] text-[20px] mb-3">Win Rate</div>
             <div className="grid grid-cols-3 gap-[10px]">
-              {activeTab.probabilities.map((item, index) => {
+              {probabilities.map((item, index) => {
                 const color = PROBABILITY_CARD_COLORS[index % PROBABILITY_CARD_COLORS.length];
                 return (
                   <div
@@ -84,7 +113,7 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
                       borderTop: `4px solid ${color}`,
                     }}
                   >
-                    <span className="text-white text-[14px] font-[600]">{item.name}</span>
+                    <div className="text-white text-[14px] font-[600] whitespace-nowrap text-ellipsis overflow-hidden">{item.name || ''}</div>
                     <span className="text-[20px] font-[700] mt-[10px]" style={{ color }}>
                       {item.probability}
                     </span>
