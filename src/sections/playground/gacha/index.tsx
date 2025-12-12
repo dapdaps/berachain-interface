@@ -122,9 +122,6 @@ export default function Gacha() {
     };
   }, [open]);
 
-
-  console.log('rarityRankMap:', rarityRankMap);
-
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />

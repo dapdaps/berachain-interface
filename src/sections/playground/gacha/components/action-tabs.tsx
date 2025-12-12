@@ -71,7 +71,7 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
           ...reward,
           tokenAddress: reward.tokenAddress.toLowerCase(),
           name: (reward.rewardType === 1 ? 'NFT-' : Big(reward.amount).div(10 ** 18).toString() + ' ') 
-          + tokenNameMap?.[reward.tokenAddress.toLowerCase()] || '',
+          + (tokenNameMap?.[reward.tokenAddress.toLowerCase()] || ''),
           probability: numberFormatter( 
             index === 0 
             ? Big(reward.probability).div(10000) 

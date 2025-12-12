@@ -153,7 +153,7 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ["s3.amazonaws.com", "assets.db3.app"]
+    domains: ["s3.amazonaws.com", "assets.db3.app", "assets.dapdap.net"]
   },
   redirects: async () => [
     {
