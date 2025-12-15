@@ -6,6 +6,7 @@ import { motion, useAnimation } from "framer-motion";
 import { playShakeSound } from "../sound";
 import NFTDetailModal, { NFTDetailData } from "./nft-detail-modal";
 import { getNftImgUrl } from "../config";
+import { balanceFormated } from "@/utils/balance";
 
 interface ProbabilityItem {
   percentage: string;
@@ -138,7 +139,7 @@ export default function NFTCard({
                     </div>
                     : <div className="flex justify-between items-center gap-[10px]">
                       <div className="text-[#3D405A] mb-1">Floor Price</div>
-                      <div className="font-bold text-black">{floorPrice} BERA</div>
+                      <div className="font-bold text-black">{balanceFormated(floorPrice, 4)} BERA</div>
                     </div>
                 }
 
