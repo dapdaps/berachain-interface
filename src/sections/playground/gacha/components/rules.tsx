@@ -108,7 +108,10 @@ export default function Rules({ visible = false, onClose }: RulesProps) {
                                 <span className="text-black px-[10px]">•</span> Bullas
                             </p>
                             <p className="pl-[30px]">
-                                <span className="text-black px-[10px]">•</span> Steadyteady
+                                <span className="text-black px-[10px]">•</span> Steady Teddy
+                            </p>
+                            <p className="pl-[30px]">
+                                <span className="text-black px-[10px]">•</span> Booga Bullas
                             </p>
                         </div>
                     </div>
