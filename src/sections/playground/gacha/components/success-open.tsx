@@ -2,7 +2,6 @@ import { balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
-import { TOKEN_MAP } from '../config';
 import { playRewardSound } from '../sound';
 import LightButton from '@/components/check-in/button';
 import BearAmountTabs from './bear-amount-tabs';
@@ -15,9 +14,10 @@ interface SuccessOpenProps {
   data?: any;
   activeTabId?: any;
   setActiveTabId?: (tabId: any) => void;
+  tokenMap?: Record<string, string>;
 }
 
-export default function SuccessOpen({ visible = false, onPlayAgain, onClose, data, activeTabId, setActiveTabId }: SuccessOpenProps) {
+export default function SuccessOpen({ visible = false, onPlayAgain, onClose, data, activeTabId, setActiveTabId, tokenMap }: SuccessOpenProps) {
   if (!visible || !data) return null;
 
   const rewardType = useMemo(() => {
@@ -34,6 +34,10 @@ export default function SuccessOpen({ visible = false, onPlayAgain, onClose, dat
     }
 
     return '0'
+  }, [data]);
+
+  const nftTokenId = useMemo(() => {
+    return data?.rewardNftId?.toString();
   }, [data]);
 
   useEffect(() => {
@@ -124,9 +128,9 @@ export default function SuccessOpen({ visible = false, onPlayAgain, onClose, dat
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ delay: 5.5, duration: 0.5, repeat: Infinity, ease: "easeInOut" }}
           >
-            {rewardAmount} {rewardType === 0 ? "BERA" : "NFT"}
+            {rewardAmount} {rewardType === 0 ? "BERA" : "NFT #" + nftTokenId}
           </motion.div>
-          <img src={TOKEN_MAP[data?.rewardToken?.toLowerCase()]} className='w-[160px] h-[160px] border-[6px] border-[#FFC551] rounded-full object-center object-contain shrink-0 mx-auto' />
+          <img src={tokenMap?.[data?.rewardToken?.toLowerCase()] || '/assets/tokens/bera.svg'} className='w-[160px] h-[160px] border-[6px] border-[#FFC551] rounded-full object-center object-contain shrink-0 mx-auto' />
         </motion.div>
 
         <div className='absolute bottom-[-30px] left-1/2 -translate-x-1/2 w-[354px] z-[3]'>
