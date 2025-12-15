@@ -85,7 +85,7 @@ export default function NFTDetailModal({ visible, address, data, rarityRank, onC
                 <img
                   src={imageErrors[selectedThumbnailIndex] ? data.imageUrl : currentImage}
                   alt={data.name}
-                  className="object-contain w-full h-full"
+                  className="h-full rounded-[20px]"
                 />
               </div>
 

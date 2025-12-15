@@ -170,7 +170,7 @@ export default function Gacha() {
         setTimeout(() => {
           handlePlay(activeTabRef.current?.tier || 0);
         }, 500);
-      }} onClose={handleCloseSuccessOpen} data={gameRequest} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
+      }} onClose={handleCloseSuccessOpen} data={gameRequest} activeTabId={activeTabId} setActiveTabId={setActiveTabId} tokenMap={tokenMap} />
     </div>
   );
 }

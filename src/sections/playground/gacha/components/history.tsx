@@ -77,7 +77,7 @@ export default function History({ refresh, tokenMap, tokenNameMap }: { refresh: 
                     <img
                       src={record.token_id ? getNftImgUrl(record.token_address?.toLowerCase(), record.token_id) : tokenMap[record.token_address?.toLowerCase()]}
                       alt={record.reward_type}
-                      className={'w-[32px] h-[32px] object-cover ' + (record.reward_type === 1 ? "" : "rounded-full")}
+                      className={'w-[32px] h-[32px] object-cover ' + (record.reward_type === 1 ? "rounded-[8px] border-2 border-[#FFCF23]" : "rounded-full")}
                     />
                   </div>
                 );
@@ -86,14 +86,14 @@ export default function History({ refresh, tokenMap, tokenNameMap }: { refresh: 
             {
               dataIndex: "amount",
               title: "Amount",
-              width: 200,
+              width: 300,
               render: (record: any) => {
                 if (!record.token_address) {
                   return <div className="text-[16px] !text-white">-</div>
                 }
                 return (
                   <div className="text-[16px] !text-white">
-                    <span className="font-bold">{record.token_amount || '-'}</span> {tokenNameMap[record.token_address?.toLowerCase()]}
+                    <span className="font-bold">{record.token_amount || '-'}</span> {tokenNameMap[record.token_address?.toLowerCase()]} {record.reward_type === 1 ? `#${record.token_id}` : ''}
                   </div>
                 );
               },
