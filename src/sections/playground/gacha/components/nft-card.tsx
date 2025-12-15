@@ -7,6 +7,8 @@ import { playShakeSound } from "../sound";
 import NFTDetailModal, { NFTDetailData } from "./nft-detail-modal";
 import { getNftImgUrl } from "../config";
 import { balanceFormated } from "@/utils/balance";
+import Big from "big.js";
+import clsx from "clsx";
 
 interface ProbabilityItem {
   percentage: string;
@@ -212,9 +214,14 @@ export default function NFTCard({
                     />
                   </svg>
                 </a> */}
-                <div 
-                  onClick={handleRewardsClick}
-                  className="bg-[#FFFFFF80] text-center cursor-pointer rounded-[8px] px-[12px] py-[5px] text-[12px] border border-[#E6CC9E] font-medium text-[#3D405A] whitespace-nowrap hover:bg-[#FFF9ED] transition-colors duration-200"
+                <div
+                  onClick={(e) => {
+                    if (!balance || new Big(balance).eq(0)) {
+                      return;
+                    }
+                    handleRewardsClick(e);
+                  }}
+                  className={clsx("bg-[#FFFFFF80] text-center cursor-pointer rounded-[8px] px-[12px] py-[5px] text-[12px] border border-[#E6CC9E] font-medium text-[#3D405A] whitespace-nowrap hover:bg-[#FFF9ED] transition-colors duration-200", !balance || new Big(balance).eq(0) ? "opacity-50 cursor-not-allowed" : "")}
                 >
                   Rewards Available
                 </div>
