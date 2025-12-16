@@ -64,6 +64,9 @@ const MainLayout = (props: Props) => {
     if (isVaults && !isSystemMaintenanceDowntime) {
       return "bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover";
     }
+    if (["/"].includes(pathname)) {
+      return "bg-[#0B1537]";
+    }
     return "bg-[var(--background)]";
   }, [isVaults, pathname, isSystemMaintenanceDowntime]);
 
