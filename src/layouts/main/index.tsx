@@ -341,7 +341,7 @@ const MainLayout = (props: Props) => {
                   </motion.div>
                 )}
             </AnimatePresence>
-            {
+            {/* {
               pathname === '/' && (
                 <motion.div
                   className="fixed top-[420px] right-[10px] z-[15] flex items-center gap-[6px] cursor-pointer"
@@ -363,7 +363,7 @@ const MainLayout = (props: Props) => {
                   <img src="/images/home/guess-who.png" alt="guess-who" className="w-[92px]" />
                 </motion.div>
               )
-            }
+            } */}
 
             <TreasureBook />
           </>
