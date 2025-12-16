@@ -47,7 +47,6 @@ export default function BridgeContent({
   const [banlanceIndex, setBanlanceIndex] = useState(0);
   const [isReverse, setIsReverse] = useState(false);
 
-
   const {
     fromChain,
     setFromChain,
@@ -301,6 +300,9 @@ export default function BridgeContent({
             }
           }}
           comingSoon={ComingSoon}
+          fromToken={fromToken}
+          amount={sendAmount}
+          selectedRoute={selectedRoute}
         />
       </Card>
 

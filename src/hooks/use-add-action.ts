@@ -7,6 +7,8 @@ import { getReportTokenSymbol } from "@/utils/token/symbol";
 import { post } from "@/utils/http";
 import Big from "big.js";
 
+export const ZeroAddress = "0x0000000000000000000000000000000000000000";
+
 //
 export default function useAddAction(source: string, isNear = false) {
   const { account, chainId } = useAccount();

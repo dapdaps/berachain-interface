@@ -6,7 +6,7 @@ import BridgeView from '@/sections/bridge';
 export default function Bridge() {
   return (
     <BearBackground type='bridge'>
-      <BridgeView />
+      <BridgeView showRoute={true} />
     </BearBackground>
   );
 }
