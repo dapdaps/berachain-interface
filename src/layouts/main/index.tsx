@@ -27,7 +27,7 @@ import { useAudioStore } from "@/stores/use-audio";
 // process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
 const isSystemMaintenanceDowntime = false;
 
-const NavigationMenu = dynamic(() => import("@/sections/home-earth/components/menu"), { ssr: false });
+const MenuV3 = dynamic(() => import("@/sections/home-earth/components/menu/v3"), { ssr: false });
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -139,7 +139,7 @@ const MainLayout = (props: Props) => {
 
   const [showGuide, setShowGuide] = useState(true);
 
-  const routes = ["/", "/earn", "/activity/christmas", "/home", "/belong", "/carnival/lucky-bera", "/carnival/big-wheel"];
+  const routes = ["/explore", "/game", "/", "/earn", "/activity/christmas", "/home", "/belong", "/carnival/lucky-bera", "/carnival/big-wheel"];
 
   return (
     <div
@@ -309,7 +309,7 @@ const MainLayout = (props: Props) => {
         </Link>
       </div>
       <MapModal />
-      <NavigationMenu />
+      <MenuV3 />
       <GuidingTutorial />
       <NFTHolderPerksModal open={nftRewardStore.showNftReward} onClose={() => { nftRewardStore.set({ showNftReward: false }) }} />
       {

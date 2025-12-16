@@ -48,16 +48,16 @@ const HomeEarth = (props: any) => {
   const { scrollY } = useScroll();
 
   const [earthY, setEarthY] = useState(0);
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    // @ts-ignore
-    const diff = latest - scrollY?.getPrevious();
-    // down
-    if (diff > 0) {
-      setEarthY(-Math.min(Math.max(latest, 0), 230));
-      return;
-    }
-    setEarthY(0);
-  });
+  // useMotionValueEvent(scrollY, "change", (latest) => {
+  //   // @ts-ignore
+  //   const diff = latest - scrollY?.getPrevious();
+  //   // down
+  //   if (diff > 0) {
+  //     setEarthY(-Math.min(Math.max(latest, 0), 230));
+  //     return;
+  //   }
+  //   setEarthY(0);
+  // });
 
   const bearRef = useRef<any>();
 
@@ -202,8 +202,8 @@ const HomeEarth = (props: any) => {
             className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-x-hidden overflow-y-auto"
           >
             {/*<BerachainFixes />*/}
-            <HomeEarthTop />
-            <div className="w-full min-h-[153px]">
+            <HomeEarthTop isLogo={false} />
+            <div className="w-full min-h-[153px] pt-[70px]">
               <MenuV2 />
             </div>
             {/* <Airship /> */}
