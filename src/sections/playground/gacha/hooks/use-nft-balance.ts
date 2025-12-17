@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-import useCustomAccount from "@/hooks/use-account";
+import { useCallback, useEffect, useState, useMemo } from "react";
+import { providers } from "ethers";
 import { GACHA_CONTRACT_ADDRESS, GACHA_TABS } from "../config";
 import gachaAbi from "../abi";
 import { multicall, multicallAddresses } from "@/utils/multicall";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { RPC_LIST } from "@/configs/rpc";
 import Big from "big.js";
 import { get } from "@/utils/http";
 
@@ -12,14 +13,15 @@ export default function useNftBalance() {
     null
   );
   const [loading, setLoading] = useState(false);
-  const { provider } = useCustomAccount();
+  const provider = useMemo(() => {
+    return new providers.JsonRpcProvider(RPC_LIST.default.url, {
+      chainId: DEFAULT_CHAIN_ID,
+      name: "Berachain Mainnet",
+    });
+  }, []);
   const [nftPrice, setNftPrice] = useState<any>({});
 
   const queryInventory = useCallback(async () => {
-    if (!provider) {
-      return;
-    }
-
     try {
       setLoading(true);
       const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
@@ -90,10 +92,8 @@ export default function useNftBalance() {
   // }, []);
 
   useEffect(() => {
-    if (provider) {
-      queryInventory();
-    }
-  }, [provider]);
+    queryInventory();
+  }, [queryInventory]);
 
   // useEffect(() => {
   //   getNftPrice();
