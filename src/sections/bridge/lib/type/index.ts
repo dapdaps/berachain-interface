@@ -5,6 +5,7 @@ export interface QuoteRequest {
     UNIZEN_AUTH_KEY?: string;
     fromChainId: string;
     toChainId: string;
+    slippage?: number;
     fromToken: {
         address: string;
         symbol: string;

@@ -67,9 +67,8 @@ const HotTokenItem: React.FC<HotTokenItemProps> = ({ token, realTimePrice, onCli
 const HotTokens= ({ onTokenClick }: { onTokenClick: (token: any) => void }) => {
     const prices = usePriceStore((store) => store.price);
 
-
     return (
-        <div className="absolute left-[50%] translate-x-[250px] top-[37px] bg-[#FFFDEB] rounded-r-[10px] border border-black p-[16px] max-w-[200px] shadow-shadow1">
+        <div className="absolute left-[50%] translate-x-[250px] top-[17px] bg-[#FFFDEB] rounded-r-[10px] border border-black p-[16px] max-w-[200px] shadow-shadow1">
             <div className="flex items-center justify-between mb-[16px]">
                 <div className="flex items-center gap-[8px] pl-[10px]">
                     <div className="w-[20px] h-[20px] flex items-center justify-center">
