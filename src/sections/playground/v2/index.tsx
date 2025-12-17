@@ -13,7 +13,7 @@ const ENTRIES = [
   },
   {
     name: "NFT GACHA",
-    link: "/carnival/nft-gacha",
+    link: "/carnival/gacha",
     image: "/images/playground/v2/entry-nft-gacha.png",
     size: [278, 397],
     sort: 2,
