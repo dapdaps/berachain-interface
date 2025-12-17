@@ -22,10 +22,12 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import CheckInEntry from "@/components/check-in/entry";
 import PointsEntry from "@/components/points/entry";
+import { usePathname } from "next/navigation";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
 
+  const pathname = usePathname();
   const store: any = useMapModalStore();
 
   const hallStore: any = useHall()
@@ -51,13 +53,17 @@ const MainLayoutHeader = (props: Props) => {
           >
             <IconMap />
           </div> */}
-          <button
-            onClick={goHome}
-            className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:bottom-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[25px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
-            data-bp="1010-002"
-          >
-            <span className="relative z-10">Home</span>
-          </button>
+          {
+            pathname !== "/" && (
+              <button
+                onClick={goHome}
+                className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:bottom-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[25px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
+                data-bp="1010-002"
+              >
+                <span className="relative z-10">Home</span>
+              </button>
+            )
+          }
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
 
