@@ -194,7 +194,7 @@ export default {
     // },
     80094: {
       chainId: 80094,
-      chainName: 'Berachain Mainnet',
+      chainName: 'Berachain',
       icon: '/images/berachain.png',
       nativeCurrency: { name: 'BERA Token', symbol: 'BERA', decimals: 18 },
       rpcUrls: ['https://rpc.berachain.com'],

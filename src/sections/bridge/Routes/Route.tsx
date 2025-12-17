@@ -13,7 +13,7 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
 
     const feeText = useMemo(() => {
         if (feeType === FeeType.origin) {
-            return `${balanceFormated(prices[fromChain.nativeCurrency.symbol.toLowerCase()] * (fee as any), 4)}`
+            return `${balanceFormated(prices[fromChain.nativeCurrency.symbol.toUpperCase()] * (fee as any), 4)}`
         }
 
         if (feeType === FeeType.target) {

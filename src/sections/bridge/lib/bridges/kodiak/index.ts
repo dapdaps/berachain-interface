@@ -73,7 +73,7 @@ export async function getQuote(
     amount: quoteRequest.amount.toFixed(0),
     type: "exactIn",
     recipient: quoteRequest.destAddress,
-    slippageTolerance: 3
+    slippageTolerance: quoteRequest.slippage || 3
   };
 
   const queryParams = new URLSearchParams({
@@ -85,7 +85,7 @@ export async function getQuote(
     amount: routesRequest.amount,
     type: routesRequest.type,
     recipient: routesRequest.recipient,
-    slippageTolerance: routesRequest.slippageTolerance.toString(),
+    slippageTolerance: routesRequest.slippageTolerance.toString() || "0.5",
     // refCode: 'S5GSR6OV',
     refCode: "4",
     referrerFeeBps: "7"
@@ -125,7 +125,7 @@ export async function getQuote(
           inputAmount: quoteRequest.amount
             .div(10 ** quoteRequest.fromToken.decimals)
             .toString(),
-          slippage: 0.01,
+          slippage: Number(routesRequest.slippageTolerance || 0.5),
           account: await signer.getAddress(),
           template: "Kodiak"
         };

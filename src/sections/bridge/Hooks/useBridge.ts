@@ -29,6 +29,7 @@ import { getChainScan } from "../lib/util";
 import useRouteSorted from "./useRouteSorted";
 import { useOneClickTokenStore } from "../lib/bridges/oneclick/store";
 import { useOneclickWallet } from "../lib/bridges/oneclick/wallet";
+import { useSettingsStore } from "@/stores/settings";
 
 interface BridgeProps {
   originFromChain: Chain;
@@ -48,6 +49,7 @@ export default function useBridge({
 }: BridgeProps) {
   const [fromChain, setFromChain] = useState(originFromChain);
   const [toChain, setToChain] = useState(originToChain);
+  const setting: any = useSettingsStore();
 
   const { account, chainId, provider } = useAccount();
   const [fromToken, setFromToken] = useState<Token>();
@@ -119,6 +121,7 @@ export default function useBridge({
       wallet: oneclickWallet,
       fromChainId: fromChain?.chainId.toString(),
       toChainId: toChain?.chainId.toString(),
+      slippage: setting.getSlippage(),
       fromToken: {
         address: fromToken?.address as string,
         symbol: fromToken?.symbol as string,
