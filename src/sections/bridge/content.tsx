@@ -41,7 +41,7 @@ export default function BridgeContent({
   const { address } = useAccount();
   const [limitBera, setLimitBera] = useState(0);
   const isMobile = useIsMobile();
-  const { bridgeType } = useBridgeType();
+  const { bridgeType } = useBridgeType({ type });
   const allTokens = useAllToken();
   const { success } = useToast();
   const [banlanceIndex, setBanlanceIndex] = useState(0);
@@ -161,7 +161,7 @@ export default function BridgeContent({
 
   return (
     <>
-      <Card className="md:!rounded-[20px] relative z-10">
+      <div className="md:!rounded-[20px] relative z-10 py-4 px-4 bg-[#FFFDEB] rounded-b-[16px] rounded-r-[16px] border border-black" style={{ boxShadow: '10px 10px 0px 0px #00000040' }}>
         <TokenAmout
           isDest={false}
           allTokens={allTokens}
@@ -181,6 +181,7 @@ export default function BridgeContent({
           }}
           comingSoon={ComingSoon}
           updateRef={banlanceIndex}
+          type={type}
         />
         <div
           className="h-[8px] md:h-4 flex justify-center items-center"
@@ -237,6 +238,7 @@ export default function BridgeContent({
           }}
           comingSoon={ComingSoon}
           updateRef={banlanceIndex}
+          type={type}
         />
 
         {
@@ -304,7 +306,7 @@ export default function BridgeContent({
           amount={sendAmount}
           selectedRoute={selectedRoute}
         />
-      </Card>
+      </div>
 
       {
         !isMobile && type === 'super-swap' && (<>

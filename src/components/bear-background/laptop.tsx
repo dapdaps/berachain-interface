@@ -31,17 +31,17 @@ import { useRouter } from 'next/navigation';
 import { useEventEnded } from '../bintent-countDown';
 import HomeEarthBear from '@/sections/home-earth/components/bear';
 
-const LeftTree = function () {
+const LeftTree = function ({ className }: { className?: string }) {
   return (
-    <div className='absolute left-0 bottom-0'>
+    <div className={clsx('absolute left-0 bottom-0', className)}>
       <LeftTreeSvg />
     </div>
   );
 };
 
-const RightTree = function () {
+const RightTree = function ({ className }: { className?: string }) {
   return (
-    <div className='absolute right-0 bottom-0'>
+    <div className={clsx('absolute right-0 bottom-0', className)}>
       <svg
         width='260'
         height='891'
@@ -992,7 +992,7 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign' | 'belong';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign' | 'belong' | 'trade';
   children: React.ReactNode;
   style?: React.CSSProperties;
 };
@@ -1086,6 +1086,12 @@ export default memo(function BearBackground({ type, children, style }: PropsType
           <DappClouds isRainyDay={isRainyDay} />
           <LeftTree />
           <RightTree />
+        </>
+      ): type === 'trade' ? (
+        <>
+          <Clouds isRainyDay={isRainyDay} />
+          <LeftTree className='!left-auto !right-0 scale-x-[-1]' />
+          <RightTree className='!right-auto !left-0 scale-x-[-1]' />
         </>
       ) : type === 'hall' ? (
         <>

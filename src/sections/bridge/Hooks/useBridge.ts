@@ -86,6 +86,11 @@ export default function useBridge({
   });
 
   useEffect(() => {
+    setFromChain(originFromChain);
+    setToChain(originToChain);
+  }, [originFromChain, originToChain]);
+
+  useEffect(() => {
     if (
       !fromChain ||
       !toChain ||
