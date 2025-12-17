@@ -18,6 +18,7 @@ import { balanceFormated } from "@/utils/balance";
 import HotTokens from "./HotTokens";
 import useIsMobile from "@/hooks/use-isMobile";
 import PriceTend from "./PriceTend";
+import SlippageSetting from "../swap/SlippageSetting";
 
 const ComingSoon = false;
 const chainList = Object.values(chains).filter((chain) =>
@@ -307,6 +308,8 @@ export default function BridgeContent({
           selectedRoute={selectedRoute}
         />
       </div>
+
+      
 
       {
         !isMobile && type === 'super-swap' && (<>
