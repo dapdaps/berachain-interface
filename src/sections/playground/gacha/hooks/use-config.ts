@@ -1,11 +1,12 @@
-import useCustomAccount from "@/hooks/use-account";
 import { GACHA_CONTRACT_ADDRESS } from "../config";
 import gachaAbi from "../abi";
 import { multicall, multicallAddresses } from "@/utils/multicall";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { RPC_LIST } from "@/configs/rpc";
 import Big from "big.js";
 import { useRequest } from "ahooks";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { providers } from "ethers";
 import { get } from "@/utils/http";
 
 async function getNftRarityRank(address: string, tokenIds: string[]): Promise<Record<string, number>> {
@@ -38,16 +39,17 @@ async function getNftRarityRank(address: string, tokenIds: string[]): Promise<Re
 }
 
 export default function useConfig() {
-  const { provider } = useCustomAccount();
+  const provider = useMemo(() => {
+    return new providers.JsonRpcProvider(RPC_LIST.default.url, {
+      chainId: DEFAULT_CHAIN_ID,
+      name: "Berachain Mainnet",
+    });
+  }, []);
   const [tokenIdMap, setTokenIdMap] = useState<Record<string, string[]>>({});
   const [rarityRankMap, setRarityRankMap] = useState<Record<string, any>>({});
 
   const { runAsync: getConfig, data: config } = useRequest(
     async () => {
-      if (!provider) {
-        return;
-      }
-
       try {
         const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 
@@ -79,8 +81,7 @@ export default function useConfig() {
       } catch (err: any) {}
     },
     {
-      manual: false,
-      refreshDeps: [provider]
+      manual: false
     }
   );
   

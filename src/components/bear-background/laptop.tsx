@@ -31,17 +31,17 @@ import { useRouter } from 'next/navigation';
 import { useEventEnded } from '../bintent-countDown';
 import HomeEarthBear from '@/sections/home-earth/components/bear';
 
-const LeftTree = function () {
+const LeftTree = function ({ className }: { className?: string }) {
   return (
-    <div className='absolute left-0 bottom-0'>
+    <div className={clsx('absolute left-0 bottom-0', className)}>
       <LeftTreeSvg />
     </div>
   );
 };
 
-const RightTree = function () {
+const RightTree = function ({ className }: { className?: string }) {
   return (
-    <div className='absolute right-0 bottom-0'>
+    <div className={clsx('absolute right-0 bottom-0', className)}>
       <svg
         width='260'
         height='891'
@@ -948,11 +948,7 @@ const DashboardGround = function (props: any) {
   );
 };
 
-const nameMap: any = {
-  'jumper': 'Jumper',
-  'stargate': 'Stargate',
 
-}
 const BridgeGround = function (props: any) {
   const { className, isRainyDay } = props;
   return (
@@ -989,12 +985,14 @@ const BridgeGround = function (props: any) {
           isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
         )}
       />
+
+
     </div>
   );
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'bgt-lst' | 'campaign' | 'belong';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign' | 'belong' | 'trade';
   children: React.ReactNode;
   style?: React.CSSProperties;
 };
@@ -1089,6 +1087,12 @@ export default memo(function BearBackground({ type, children, style }: PropsType
           <LeftTree />
           <RightTree />
         </>
+      ): type === 'trade' ? (
+        <>
+          <Clouds isRainyDay={isRainyDay} />
+          <LeftTree className='!left-auto !right-0 scale-x-[-1]' />
+          <RightTree className='!right-auto !left-0 scale-x-[-1]' />
+        </>
       ) : type === 'hall' ? (
         <>
           <DashboardFlowers />
@@ -1102,16 +1106,6 @@ export default memo(function BearBackground({ type, children, style }: PropsType
         </>
       ) : type === 'campaign' ? (
         <BeraBgcampaign />
-      ) : type === 'bgt-lst' ? (
-        <>
-          <Clouds isRainyDay={isRainyDay} />
-          <div className='absolute w-[435px] bottom-0 right-0 z-10'>
-            <img src="/images/background/lst-tree.png" alt="lst-tree" />
-          </div>
-          <div className='absolute bottom-0 left-0 right-0'>
-            <img className='w-full' src="/images/background/lst-ground.svg" alt="lst-ground" />
-          </div>
-        </>
       ) : type === 'belong' ? (
         <>
           <DappClouds

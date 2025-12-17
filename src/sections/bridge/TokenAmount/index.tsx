@@ -37,6 +37,7 @@ interface Props {
   isDest: boolean;
   allTokens: any;
   updateRef: number;
+  type?: string;
 }
 
 export default function TokenAmout({
@@ -52,12 +53,14 @@ export default function TokenAmout({
   limitBera,
   isDest,
   allTokens,
-  updateRef
+  updateRef,
+  type,
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
   const { address: account } = useAccount();
   const { importTokens, addImportToken }: any = useImportTokensStore();
 
+  const { bridgeType } = useBridgeType({ type });
   const { tokenBalance, isError, isLoading, update } = useTokenBalance(
     token ? (token.isNative ? 'native' : token.address) : '', token?.decimals ?? 0, token?.chainId ?? 0
   )
@@ -67,7 +70,6 @@ export default function TokenAmout({
     update();
   }, [updateRef]);
 
-  const { bridgeType } = useBridgeType()
   const [percent, setPercent] = useState<any>(0);
   const handleRangeChange = (e: any, isAmountChange = true) => {
     const formatedBalance = balanceFormated(tokenBalance);

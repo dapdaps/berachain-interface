@@ -52,6 +52,8 @@ export default function useHistory(params?: UseHistoryParams) {
     }) as GachaRecordsResponse;
 
     if (res.code !== 200) {
+      setTotalPage(0);
+      setTotal(0);
       return [];
     }
 
@@ -70,7 +72,7 @@ export default function useHistory(params?: UseHistoryParams) {
   const { data, loading, runAsync: getHistory } = useRequest(
     () => throttledFetchHistory(),
     {
-      refreshDeps: [page, pageSize],
+      refreshDeps: [page, pageSize, userInfo?.address],
     }
   );
 

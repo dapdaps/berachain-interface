@@ -24,7 +24,7 @@ const defaultDapp = {
 }
 
 export default function useAllToken() {
-  const { bridgeType } = useBridgeType()
+  const { bridgeType } = useBridgeType({ type: 'bridge' })
   const kodiakTokens = useDexTokens(bridgeType === 'superSwap' ? KodiakDapp : defaultDapp)
 
   const allTokens = useMemo(() => {

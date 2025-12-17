@@ -43,6 +43,9 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
   const quoteP = []
   const { engine } = quoteRequest
 
+
+  console.log('quoteRequest: ', quoteRequest)
+
   function emitRes(val: QuoteResponse | QuoteResponse[] | null) {
     if (val) {
       if (Array.isArray(val)) {

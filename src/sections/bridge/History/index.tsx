@@ -28,7 +28,7 @@ export default function History({
 
   const cls = isMobile
     ? "m-auto mt-[10px] md:w-[92.307vw] border border-[#000] rounded-2xl bg-[#FFFDEB]"
-    : "fixed bottom-[60px] w-[350px] left-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040] xl:left-auto xl:right-[110px]";
+    : "absolute left-0 right-0 top-[104%] z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]";
 
   return (
     <div className={cls}>

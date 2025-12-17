@@ -1,8 +1,7 @@
-'use client';
-import Home from "@/sections/home-earth";
+import GameIndex from "@/sections/playground/v2";
 
 export default function Index() {
   return (
-    <Home />
+    <GameIndex />
   );
 }
