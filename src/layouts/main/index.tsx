@@ -313,7 +313,7 @@ const MainLayout = (props: Props) => {
       </div>
       <MapModal />
       <MenuV3 />
-      <GuidingTutorial />
+      {/* <GuidingTutorial /> */}
       <NFTHolderPerksModal open={nftRewardStore.showNftReward} onClose={() => { nftRewardStore.set({ showNftReward: false }) }} />
       {
         !isSystemMaintenanceDowntime && (
