@@ -436,7 +436,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 </div>
               </div>
             )}
-            <GuidingTutorial />
+            {/* <GuidingTutorial /> */}
           </>
         )
       }

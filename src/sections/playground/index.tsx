@@ -128,7 +128,7 @@ const PlaygroundView = () => {
             className="w-full h-full absolute object-center object-contain opacity-100 z-[2] group-hover:opacity-0 group-hover:z-[1] transition-all duration-300"
           />
           <img
-            src="/images/playground/v2/entry-nft-gacha.png"
+            src="/images/playground/v2/entry-nft-gacha-white.png"
             alt=""
             className="w-full h-full absolute object-center object-contain opacity-0 z-[1] origin-bottom group-hover:scale-[1.32] group-hover:opacity-100 group-hover:z-[2] transition-all duration-300"
           />
