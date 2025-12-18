@@ -10,6 +10,7 @@ const ENTRIES = [
     image: "/images/playground/entry-lucky-bera.png",
     size: [270, 347],
     sort: 1,
+    width: 430,
   },
   {
     name: "NFT GACHA",
@@ -17,6 +18,7 @@ const ENTRIES = [
     image: "/images/playground/v2/entry-nft-gacha.png",
     size: [278, 397],
     sort: 2,
+    width: 430,
   },
   {
     name: "Guess Who",
@@ -24,6 +26,7 @@ const ENTRIES = [
     image: "/images/playground/entry-magician.png",
     size: [487, 351],
     sort: 3,
+    width: 536,
   },
 ];
 
@@ -99,7 +102,10 @@ const GameIndex = () => {
             ENTRIES.sort((a, b) => a.sort - b.sort).map((entry, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center relative w-[536px]"
+                className="flex flex-col items-center relative"
+                style={{
+                  width: entry.width + "px",
+                }}
               >
                 <Link
                   href={entry.link}
