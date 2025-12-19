@@ -266,7 +266,7 @@ const Home = () => {
                 // data-bp="1015-011"
                 onClick={() => {
                   tapSound.play?.();
-                  router.push("/super-swap");
+                  router.push("/trade?type=super-swap");
                 }}
               >
                 <motion.img
@@ -286,7 +286,7 @@ const Home = () => {
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {
-                  router.push("/bridge");
+                  router.push("/trade?type=bridge");
                   tapSound.play?.();
                 }}
               >
@@ -333,7 +333,7 @@ const Home = () => {
               {/*#endregion*/}
 
               {/*#region Marketplace*/}
-              <motion.div
+              {/* <motion.div
                 className="w-[65.64vw] h-[47.43vw] translate-y-[15vw] -translate-x-[5.256vw]"
                 whileTap="tap"
                 onClick={() => {
@@ -357,18 +357,12 @@ const Home = () => {
                   Token
                   <br /> Marketplace
                 </EntryCard>
-                {/*<motion.img
-                 src='/images/mobile/home/text-market.png'
-                 className='absolute right-[9.856vw] bottom-[8.697vw] w-[37.435vw] h-[11.282vw]'
-                 variants={EntryAnimationSignpost}
-                 transition={EntryAnimation}
-                 />*/}
-              </motion.div>
+              </motion.div> */}
               {/*#endregion*/}
 
               {/*#region dApps*/}
               <motion.div
-                className="w-[55vw] h-[48.96vw] translate-y-[6vw] translate-x-[50.256vw]"
+                className="w-[55vw] h-[48.96vw] translate-y-[0vw] mt-[30vw] translate-x-[-2vw]"
                 whileTap="tap"
                 data-bp="1015-005"
                 onClick={() => {
@@ -397,7 +391,7 @@ const Home = () => {
 
               {/*#region Portfolio*/}
               <motion.div
-                className="w-[65vw] h-[45.902vw] -translate-y-[16vw] -translate-x-[4.8vw]"
+                className="w-[65vw] h-[45.902vw] -translate-y-[0vw] -translate-x-[50.8vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/portfolio");
@@ -427,7 +421,7 @@ const Home = () => {
 
               {/*#region Vaults*/}
               <motion.div
-                className="w-[73.846vw] h-[47.692vw] -translate-y-[25vw] translate-x-[30vw]"
+                className="w-[73.846vw] h-[47.692vw] -translate-y-[45vw] translate-x-[30vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/vaults");

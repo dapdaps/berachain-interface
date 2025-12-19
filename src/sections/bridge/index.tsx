@@ -9,7 +9,7 @@ import { useMemo, useState, useEffect } from "react";
 import BridgeContent from "./content";
 import Setting from "../swap/Header/Setting";
 
-export default function Bridge({ type, defaultFromChain, defaultToChain, defaultFromToken, defaultToToken, showRoute }: { type?: string, defaultFromChain?: number, defaultToChain?: number, defaultFromToken?: string, defaultToToken?: string, showRoute?: boolean }) {
+export default function Bridge({ type = 'bridge', defaultFromChain, defaultToChain, defaultFromToken, defaultToToken, showRoute }: { type?: string, defaultFromChain?: number, defaultToChain?: number, defaultFromToken?: string, defaultToToken?: string, showRoute?: boolean }) {
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
   const { isDefaultTheme } = useActivityStore();
@@ -28,11 +28,14 @@ export default function Bridge({ type, defaultFromChain, defaultToChain, default
 
   return (
     <div className="h-full overflow-auto md:pb-[100px]">
-      {isMobile ? null : (
+      {/* {isMobile ? null : (
         <div className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
-      )}
-      <div className="lg:w-[520px] md:w-[92.307vw] m-auto relative z-10">
+      )} */}
+      {
+        isMobile && <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
+      }
 
+      <div className={clsx("lg:w-[520px] md:w-[92.307vw] m-auto relative z-10", isMobile ? 'mt-[60px]' : '')}>
         <div className="relative mb-0">
           <div className="flex items-end relative z-[2] h-[62px]">
             <button

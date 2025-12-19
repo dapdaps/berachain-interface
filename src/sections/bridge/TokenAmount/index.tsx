@@ -22,6 +22,7 @@ import chains from '@/configs/chains';
 import { useAccount } from 'wagmi';
 import { useImportTokensStore } from '@/stores/import-tokens';
 import { uniqBy } from 'lodash';
+import useIsMobile from '@/hooks/use-isMobile';
 
 interface Props {
   chain: Chain;
@@ -71,6 +72,7 @@ export default function TokenAmout({
   }, [updateRef]);
 
   const [percent, setPercent] = useState<any>(0);
+  const isMobile = useIsMobile();
   const handleRangeChange = (e: any, isAmountChange = true) => {
     const formatedBalance = balanceFormated(tokenBalance);
     if (["-", "Loading", "0"].includes(formatedBalance)) return;
@@ -100,7 +102,7 @@ export default function TokenAmout({
 
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap">
         <div className={clsx('flex items-center gap-[10px] text-[14px]', bridgeType === 'superSwap' ? '' : 'cursor-pointer')} onClick={() => {
           if (bridgeType !== 'superSwap') {
             setTokenSelectorShow(true);
@@ -119,7 +121,7 @@ export default function TokenAmout({
           </div>
         </div>
 
-        <div className="flex items-center gap-[10px] justify-end text-[12px]">
+        <div className={clsx("flex items-center gap-[10px] text-[12px]", isMobile && !isDest ? 'flex-1 justify-between mt-[10px]' : 'justify-end')}>
           {
             !isDest && <div className="flex justify-between  items-center gap-[22px]">
               <div className="flex items-center gap-[8px]">
@@ -139,7 +141,7 @@ export default function TokenAmout({
               </div>
             </div>
           }
-          <div className={"flex items-center cursor-pointer"} onClick={() => {
+          <div className={"flex items-center cursor-pointer justify-end"} onClick={() => {
             onAmountChange?.(tokenBalance)
           }}>bal: {isLoading ? <Loading size={12} /> : <span className={(disabledInput ? '' : ' underline')}>{balanceFormated(tokenBalance, 4)}</span>}</div>
         </div>
