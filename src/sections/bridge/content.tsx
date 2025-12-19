@@ -162,7 +162,7 @@ export default function BridgeContent({
 
   return (
     <>
-      <div className="md:!rounded-[20px] relative z-10 py-4 px-4 bg-[#FFFDEB] rounded-b-[16px] rounded-r-[16px] border border-black" style={{ boxShadow: '10px 10px 0px 0px #00000040' }}>
+      <div className="relative z-10 py-4 px-4 bg-[#FFFDEB] rounded-b-[16px] rounded-r-[16px] border border-black" style={{ boxShadow: '10px 10px 0px 0px #00000040' }}>
         <TokenAmout
           isDest={false}
           allTokens={allTokens}

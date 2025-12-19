@@ -20,11 +20,11 @@ import Downtime from "@/components/downtime";
 const menuItems = [
   {
     id: 2.2,
-    title: "Super Swap",
-    href: "/super-swap",
+    title: "Trade",
+    href: "/trade",
     // dataBp: ""
   },
-  { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
+  // { id: 2, title: "Bridge", href: "/trade", dataBp: "1015-002-002" },
   { id: 7, title: "Stake Bera", href: "/dex/bex/stake" },
   {
     id: 4,
@@ -39,12 +39,12 @@ const menuItems = [
     // dataBp: ""
   },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
-  {
-    id: 3,
-    title: "Marketplace",
-    href: "/marketplace",
-    dataBp: "1015-002-003"
-  },
+  // {
+  //   id: 3,
+  //   title: "Marketplace",
+  //   href: "/marketplace",
+  //   dataBp: "1015-002-003"
+  // },
   {
     id: 6,
     title: "Portfolio",
