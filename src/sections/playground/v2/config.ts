@@ -1,0 +1,31 @@
+export const ENTRIES = [
+  {
+    name: "LuckyBera",
+    link: "/carnival/lucky-bera",
+    image: "/images/playground/entry-lucky-bera.png",
+    size: [270, 347],
+    sort: 1,
+    width: 430,
+    description: "Spin hard, win big, Degen style",
+  },
+  {
+    name: "NFT GACHA",
+    link: "/carnival/gacha",
+    image: "/images/playground/v2/entry-nft-gacha.png",
+    size: [278, 397],
+    sort: 2,
+    width: 430,
+    description: "Spin the lucky wheel and let your BERA soar!",
+    isLaptopOnly: true,
+  },
+  {
+    name: "Guess Who",
+    link: "/carnival/guess-who",
+    image: "/images/playground/entry-magician.png",
+    size: [487, 351],
+    sort: 3,
+    width: 536,
+    description: "Easy to join, fair to play, and packed with suspense — will your hat reveal the winner?",
+    isLaptopOnly: true,
+  },
+];
