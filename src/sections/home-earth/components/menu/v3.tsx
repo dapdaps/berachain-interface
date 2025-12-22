@@ -27,7 +27,7 @@ const MENU_LIST = [
 ];
 
 const MenuV3 = (props: any) => {
-  const { className } = props;
+  const { className, isCursor = true } = props;
 
   const pathname = usePathname();
 
@@ -54,12 +54,16 @@ const MenuV3 = (props: any) => {
               alt=""
               className="w-full h-full object-center object-contain group-hover:scale-110 transition-all duration-150"
             />
-            <div
-              className={clsx(
-                "opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 w-[30px] h-[30px] z-[1] absolute left-[-25px] bg-no-repeat bg-center bg-contain bg-[url('/images/home-earth/v3/icon-entry-arrow.png')]",
-                menu.linkReg.test(pathname) ? "!opacity-100 !translate-x-0" : "opacity-0 translate-x-[-10px]",
-              )}
-            />
+            {
+              isCursor && (
+                <div
+                  className={clsx(
+                    "opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 w-[30px] h-[30px] z-[1] absolute left-[-25px] bg-no-repeat bg-center bg-contain bg-[url('/images/home-earth/v3/icon-entry-arrow.png')]",
+                    menu.linkReg.test(pathname) ? "!opacity-100 !translate-x-0" : "opacity-0 translate-x-[-10px]",
+                  )}
+                />
+              )
+            }
           </Link>
         ))
       }
