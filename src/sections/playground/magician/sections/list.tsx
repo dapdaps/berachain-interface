@@ -104,7 +104,7 @@ const List = (props: any) => {
                 {
                   ["1", "2.5", "10"].map((_amount, _index) => (
                     <Popover
-                      content={_index > 0 ? (
+                      content={_index < 0 ? (
                         <Card className="!rounded-[12px] w-[356px] !p-[14px_13px] bg-[#FFFDEB] text-[14px] leading-[110%] font-[600] flex justify-center items-center gap-[12px]">
                           <img
                             src="/images/playground/magician/icon-lootbox.png"
@@ -127,7 +127,7 @@ const List = (props: any) => {
                         className={clsx(
                           "w-[38px] h-[38px] hover:bg-[#FFDC50] border border-[#471C1C] rounded-[8px] font-[600] text-black text-[16px] flex justify-center items-center transition-all duration-300",
                           create.betAmount === _amount ? "bg-[#FFDC50]" : "bg-white",
-                          _index > 0 && "bg-[url('/images/playground/magician/icon-lootbox-opacity.png')] bg-no-repeat bg-center bg-[length:23px_20px]",
+                          // _index > 0 && "bg-[url('/images/playground/magician/icon-lootbox-opacity.png')] bg-no-repeat bg-center bg-[length:23px_20px]",
                         )}
                         onClick={() => {
                           create.setBetAmount(_amount);
