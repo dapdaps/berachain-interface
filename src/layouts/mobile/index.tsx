@@ -219,7 +219,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     initializePrice();
   }, []);
 
-  const routes: any = [];
+  const routes: any = ["/"];
 
   const handleHome = () => {
     router.push("/");
@@ -306,8 +306,8 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               <div
                 className={clsx(
                   "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
-                  pathname === "/" &&
-                  "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
+                  // pathname === "/" &&
+                  // "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
                 )}
               >
                 <div className="flex items-center gap-3">
