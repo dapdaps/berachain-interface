@@ -18,7 +18,7 @@ export default function () {
       });
 
       const secondResponse = await post(
-        "https://api.berachain.0xgraph.xyz/api/public/13732ec1-5d76-4134-9f2a-33cf3958a874/subgraphs/pol-subgraph/v1.1.0/gn",
+        "https://api.goldsky.com/api/public/project_clq1h5ct0g4a201x18tfte5iv/subgraphs/pol-subgraph/mainnet-1.7.0/gn",
         {
           operationName: "GetValidatorBlockStats",
           variables: {
