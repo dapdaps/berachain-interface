@@ -5,6 +5,7 @@ import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover'
 const IBGTPoints = (props: any) => {
   const { className, cardClassName, contentClassName, placement, isPopover = true } = props;
 
+  return null
   return (
     <Popover
       content={isPopover ? (

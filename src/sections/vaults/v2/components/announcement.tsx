@@ -58,7 +58,7 @@ const Announcement = (props: any) => {
 
   return (
     <div className={clsx("w-[560px] md:w-full absolute z-[51] left-1/2 -translate-x-1/2 top-[17px] md:top-0 flex justify-center items-center gap-[10px]", containerClassName)}>
-      <motion.div
+      {/* <motion.div
         ref={noticeRef}
         className={clsx("md:px-[10px] cursor-pointer p-[0] whitespace-nowrap justify-center w-[396px] md:w-full h-9 shrink-0 rounded-[10px] md:rounded-[0] border md:border-l-0 md:border-r-0 border-black bg-[#FFF5A9] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] text-black font-montserrat text-sm font-medium leading-none flex items-center gap-[11px]", className)}
         initial={{
@@ -81,7 +81,7 @@ const Announcement = (props: any) => {
           <img src="/images/dapps/infrared/infrared.svg" alt="" className="shrink-0 w-[18px] h-[18px] border border-white rounded-full object-center object-contain" />
           <div className="">&nbsp;by using Infrared vaults!</div>
         </div>
-      </motion.div>
+      </motion.div> */}
       <AnimatePresence mode="wait">
         {
           (!isMobile && Big((userPoints as any)?.points || 0).gt(0)) && (

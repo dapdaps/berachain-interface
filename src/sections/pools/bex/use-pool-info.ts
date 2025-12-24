@@ -8,7 +8,7 @@ export default function usePoolInfo(id: any) {
   const queryPoolInfo = async () => {
     try {
       const res = await axios.post(
-        "https://api.berachain.0xgraph.xyz/api/public/13732ec1-5d76-4134-9f2a-33cf3958a874/subgraphs/bex-subgraph/v1.0.2/gn",
+        "https://api.goldsky.com/api/public/project_clq1h5ct0g4a201x18tfte5iv/subgraphs/bex-subgraph/mainnet-v1.0.1/gn",
         {
           operationName: "GetSubgraphPool",
           variables: {

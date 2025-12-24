@@ -91,32 +91,32 @@ export default function Vaults() {
         );
       }
     },
+    // {
+    //   width: "15%",
+    //   key: "points",
+    //   label: "Points",
+    //   type: "slot",
+    //   sort: true,
+    //   render: (data: any) => {
+    //     return (
+    //       <Popover
+    //         trigger={PopoverTrigger.Hover}
+    //         placement={PopoverPlacement.Top}
+    //         content={
+    //           <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
+    //             data?.initialData?.pointsMultiplier + "x"
+    //           } points per iBGT claimed.`}</div>
+    //         }
+    //       >
+    //         <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+    //           {data?.initialData?.pointsMultiplier}x
+    //         </div>
+    //       </Popover>
+    //     );
+    //   }
+    // },
     {
-      width: "15%",
-      key: "points",
-      label: "Points",
-      type: "slot",
-      sort: true,
-      render: (data: any) => {
-        return (
-          <Popover
-            trigger={PopoverTrigger.Hover}
-            placement={PopoverPlacement.Top}
-            content={
-              <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
-                data?.initialData?.pointsMultiplier + "x"
-              } points per iBGT claimed.`}</div>
-            }
-          >
-            <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {data?.initialData?.pointsMultiplier}x
-            </div>
-          </Popover>
-        );
-      }
-    },
-    {
-      width: "15%",
+      width: "30%",
       key: "tvl",
       label: "TVL",
       type: "slot",
