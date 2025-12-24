@@ -44,7 +44,7 @@ const DashboardPortfolio = (props: Props) => {
                 Total assetsss value
               </div>
             </div>
-            <div className='flex flex-col items-center md:my-2' onClick={() => setOpenUserPoints(true)}>
+            {/* <div className='flex flex-col items-center md:my-2' onClick={() => setOpenUserPoints(true)}>
               <div className='flex items-center gap-2'>
                 <img src="/db3/dapp/infrared.png" className="w-6 h-6 rounded-full mt-1" alt="" />
                 <h5 className='font-CherryBomb underline text-black text-center text-[32px] font-[400] leading-[95%] cursor-pointer'>
@@ -56,7 +56,7 @@ const DashboardPortfolio = (props: Props) => {
               <div className='text-[#3D405A] text-[14px] font-[500] text-center mt-[8px]'>
                 Infrared Points
               </div>
-            </div>
+            </div> */}
           </div>
 
         <div className='hidden md:block'>
