@@ -350,15 +350,15 @@ export const BADDIES_ENTRIES: any = [
     y: -30,
     bp: "1010-025",
   },
-  {
-    sort: 3,
-    name: "Marketplace",
-    disabled: false,
-    icon: "/images/home-earth/baddies/baddies-marketplace.svg",
-    signpost: "/images/home-earth/signpost-marketplace.svg",
-    path: "/marketplace",
-    y: -30
-  },
+  // {
+  //   sort: 3,
+  //   name: "Marketplace",
+  //   disabled: false,
+  //   icon: "/images/home-earth/baddies/baddies-marketplace.svg",
+  //   signpost: "/images/home-earth/signpost-marketplace.svg",
+  //   path: "/marketplace",
+  //   y: -30
+  // },
 
   {
     sort: 4,
