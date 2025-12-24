@@ -39,12 +39,12 @@ const menuItems = [
     // dataBp: ""
   },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
-  {
-    id: 3,
-    title: "Marketplace",
-    href: "/marketplace",
-    dataBp: "1015-002-003"
-  },
+  // {
+  //   id: 3,
+  //   title: "Marketplace",
+  //   href: "/marketplace",
+  //   dataBp: "1015-002-003"
+  // },
   {
     id: 6,
     title: "Portfolio",
