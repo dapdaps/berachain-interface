@@ -62,12 +62,12 @@ const MENU_LIST = [
     href: "/validators",
     sort: 9
   },
-  {
-    label: "Marketplace",
-    bg: "#B2E946",
-    href: "/marketplace",
-    sort: 6.5
-  }
+  // {
+  //   label: "Marketplace",
+  //   bg: "#B2E946",
+  //   href: "/marketplace",
+  //   sort: 6.5
+  // }
 ];
 
 const NavigationMenu = (props: any) => {
