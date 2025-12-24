@@ -34,7 +34,7 @@ export default memo(function InfraredTop({
           </div>
         )
       }
-      <div className={clsx("flex md:justify-between gap-[60px] text-black font-Montserrat md:text-[14px] text-[16px] font-medium leading-[100%] md:w-full md:text-white md:p-[11px_20px_13px] md:rounded-[10px] md:bg-black/50", pointsClass)}>
+      {/* <div className={clsx("flex md:justify-between gap-[60px] text-black font-Montserrat md:text-[14px] text-[16px] font-medium leading-[100%] md:w-full md:text-white md:p-[11px_20px_13px] md:rounded-[10px] md:bg-black/50", pointsClass)}>
         <div className="flex flex-col gap-[8px]">
           <span className="font-normal">Points</span>
           <span className="leading-[40px] md:leading-[100%]">{Big(userPoints?.points ?? 0).toFixed(0)}</span>
@@ -50,7 +50,7 @@ export default memo(function InfraredTop({
           <span className="font-normal">Rank</span>
           <span className="leading-[40px] md:leading-[100%]">{userPoints?.rank}</span>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 })

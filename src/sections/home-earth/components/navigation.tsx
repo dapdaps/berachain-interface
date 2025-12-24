@@ -273,14 +273,14 @@ export const ENTRIES: any = [
     y: -40,
     bp: "1010-025",
   },
-  {
-    sort: 3,
-    name: "Marketplace",
-    disabled: false,
-    icon: "/images/home-earth/entry-marketplace.svg",
-    signpost: "/images/home-earth/signpost-marketplace.svg",
-    path: "/marketplace"
-  },
+  // {
+  //   sort: 3,
+  //   name: "Marketplace",
+  //   disabled: false,
+  //   icon: "/images/home-earth/entry-marketplace.svg",
+  //   signpost: "/images/home-earth/signpost-marketplace.svg",
+  //   path: "/marketplace"
+  // },
   {
     sort: 4,
     name: "Bgt",
