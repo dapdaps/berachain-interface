@@ -71,7 +71,7 @@ const ActionSummary = (props: any) => {
             </button>
           </Popover>
         </ActionSummaryItem>
-        {currentProtocol?.extra_data?.pp_multiplier && (
+        {/* {currentProtocol?.extra_data?.pp_multiplier && (
           <ActionSummaryItem label="Points">
             <Popover
               trigger={PopoverTrigger.Hover}
@@ -93,7 +93,7 @@ const ActionSummary = (props: any) => {
               </button>
             </Popover>
           </ActionSummaryItem>
-        )}
+        )} */}
         <ActionSummaryItem
           label="Protocol"
           valueClassName="flex items-center gap-[4px]"

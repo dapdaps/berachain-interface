@@ -37,6 +37,8 @@ export default IBGTPoints;
 export const IBGTPointsMultiplier = (props: any) => {
   const { className, contentClassName, placement, isPopover = true, cardClassName, triggerContainerClassName, record } = props;
 
+  return null
+
   return (
     <Popover
       content={isPopover ? (
