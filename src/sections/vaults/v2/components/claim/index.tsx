@@ -7,6 +7,9 @@ import { numberFormatter } from "@/utils/number-formatter";
 import { useMemo } from "react";
 import { usePriceStore } from '@/stores/usePriceStore';
 import Big from 'big.js';
+import { useSwitchChain } from "wagmi";
+import useAccount from "@/hooks/use-account";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 const Claim = (props: any) => {
   const { className } = props;
@@ -14,11 +17,25 @@ const Claim = (props: any) => {
   const { loading, onClaim } = useClaim();
   const { currentReward, currentProtocol } = useVaultsV2Context();
   const prices = usePriceStore(store => store.beraTownPrice);
+  const { isPending: switching, switchChain } = useSwitchChain();
+  const { account, chainId } = useAccount();
 
   const rewards = useMemo(
     () => (currentReward.splice ? currentReward : [currentReward]),
     [currentReward]
   );
+
+  const [buttonText, buttonLoading] = useMemo(() => {
+    let _text = "Claim";
+    let _loading = loading;
+
+    if (DEFAULT_CHAIN_ID !== chainId) {
+      _text = "Switch Network";
+      _loading = switching;
+    }
+
+    return [_text, _loading];
+  }, [account, chainId, loading, switching]);
 
   if (currentProtocol.protocol === "D2 Finance") return;
 
@@ -72,10 +89,18 @@ const Claim = (props: any) => {
         type="button"
         disabled={loading}
         className="w-full mt-[20px] flex justify-center items-center gap-[10px] disabled:opacity-30 disabled:!cursor-not-allowed h-[50px] rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[16px] font-semibold leading-normal"
-        onClick={onClaim}
+        onClick={() => {
+          if (DEFAULT_CHAIN_ID !== chainId) {
+            switchChain({
+              chainId: DEFAULT_CHAIN_ID
+            });
+            return;
+          }
+          onClaim();
+        }}
       >
-        {loading && <Loading size={16} />}
-        <div className="">Claim</div>
+        {buttonLoading && <Loading size={16} />}
+        <div className="">{buttonText}</div>
       </button>
     </div>
   );

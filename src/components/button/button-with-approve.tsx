@@ -31,7 +31,7 @@ export default function ButtonWithApprove({
 
   useEffect(() => {
     checkApproved();
-  }, [updater]);
+  }, [updater, chainId, account]);
 
   if (!account || !chainId) {
     return (
