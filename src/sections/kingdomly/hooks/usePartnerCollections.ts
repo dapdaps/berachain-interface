@@ -91,12 +91,20 @@ export const usePartnerCollections = () => {
           collections.map((collection) => fetchContractData(collection))
         );
 
+
         collections = collections.map((collection) => {
           const validMintGroups = collection.mint_group_data.filter(
             (group) => group.allocation > 0
           );
           const displayPrice =
             validMintGroups.length > 0 ? validMintGroups[0].price : 0;
+
+          collection.mint_group_data.forEach((group) => {
+            if (group.mint_group_description) {
+              group.mint_group_description = group.mint_group_description.replace(/<[^>]*>?/g, '').trim();
+            }
+          });
+
           return {
             ...collection,
             displayPrice
