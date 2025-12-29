@@ -51,10 +51,7 @@ const NextStep: React.FC<NextStepProps> = ({ item, onBack }) => {
           </div>
           <div className="w-full flex md:flex-col lg:flex-row lg:justify-between md:gap-[15px]">
             <div className="lg:w-[534px] md:w-full font-Montserrat text-[14px] text-left mb-[20px]">
-              <span>
-              {item.description}
-              </span>
-              {/* <span className="font-bold">Show More</span> */}
+              <span dangerouslySetInnerHTML={{ __html: item.description }} />
             </div>
             <div className="md:self-start lg:self-end mb-[20px]">
               <div>Chain</div>
