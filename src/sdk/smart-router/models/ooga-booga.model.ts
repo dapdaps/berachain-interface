@@ -21,7 +21,7 @@ export class OogaBooga {
       .multipliedBy(10 ** inputCurrency.decimals)
       .toFixed(0);
     const result = await axios.get(
-      `https://mainnet.internal.oogabooga.io/route/swap/v1/?tokenIn=${this.getTokenAddress(
+      `https://mainnet.internal.oogabooga.io/swap/v1/swap?tokenIn=${this.getTokenAddress(
         inputCurrency
       )}&tokenOut=${this.getTokenAddress(
         outputCurrency
@@ -47,8 +47,8 @@ export class OogaBooga {
       .replace(/\.?0+$/, "");
 
     const txn = {
-      value: data.routerArgs.value,
-      data: data.routerArgs.txdata,
+      value: data.tx.value,
+      data: data.tx.txdata,
       to: data.routerAddr
     };
     let estimateGas = new BigNumber(5000000);
