@@ -149,7 +149,7 @@ export default function Gacha() {
         <div className="container min-w-[1200px] mx-auto">
           <div className="flex justify-between gap-[40px] pr-[80px]">
             <BearBox ref={bearBoxRef} onComplete={handleGachaComplete} />
-            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config} activeTabId={activeTabId} setActiveTabId={setActiveTabId} tokenNameMap={tokenNameMap || {}} />
+            <ActionTabs onPlay={handlePlay} loading={loadingPlay} config={config} activeTabId={activeTabId} setActiveTabId={setActiveTabId} tokenMap={tokenMap} tokenNameMap={tokenNameMap || {}} />
           </div>
         </div>
         <Cat1 />

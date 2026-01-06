@@ -25,9 +25,10 @@ interface ActionTabsProps {
   activeTabId?: any;
   setActiveTabId?: (tabId: any) => void;
   tokenNameMap?: Record<string, string>;
+  tokenMap?: Record<string, string>;
 }
 
-export default function ActionTabs({ onPlay, loading, config, activeTabId, setActiveTabId, tokenNameMap }: ActionTabsProps) {
+export default function ActionTabs({ onPlay, loading, config, activeTabId, setActiveTabId, tokenMap, tokenNameMap }: ActionTabsProps) {
   const { tokenBalance } = useTokenBalance('native', 18, DEFAULT_CHAIN_ID);
 
   const activeTab = GACHA_TABS.find((tab) => tab.id === activeTabId);
@@ -70,8 +71,8 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
         return {
           ...reward,
           tokenAddress: reward.tokenAddress.toLowerCase(),
-          name: (reward.rewardType === 1 ? 'NFT-' : Big(reward.amount).div(10 ** 18).toString() + ' ') 
-          + (tokenNameMap?.[reward.tokenAddress.toLowerCase()] || ''),
+          url: tokenMap?.[reward.tokenAddress.toLowerCase()],
+          name: Big(reward.amount).div(10 ** 18).toString() + ' ' + (tokenNameMap?.[reward.tokenAddress.toLowerCase()] || ''),
           probability: numberFormatter( 
             index === 0 
             ? Big(reward.probability).div(10000) 
@@ -113,7 +114,12 @@ export default function ActionTabs({ onPlay, loading, config, activeTabId, setAc
                       borderTop: `4px solid ${color}`,
                     }}
                   >
-                    <div className="text-white text-[14px] font-[600] whitespace-nowrap text-ellipsis overflow-hidden">{item.name || ''}</div>
+                    {
+                      item.rewardType !== 1 
+                      ? <div className="text-white text-[14px] font-[600] whitespace-nowrap text-ellipsis overflow-hidden">{item.name || ''}</div>
+                      : <div className="flex items-center gap-[5px] text-white text-[14px] font-[600]">NFT-<img src={item.url} className="w-[16px] h-[16px] object-cover rounded-[4px]"/></div>
+                    }
+                    
                     <span className="text-[20px] font-[700] mt-[10px]" style={{ color }}>
                       {item.probability}
                     </span>
