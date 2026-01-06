@@ -17,7 +17,7 @@ const BeraPrice = (props: any) => {
 
   return (
     <div
-      onClick={() => router.push('/marketplace?from=bera-price')}
+      // onClick={() => router.push('/marketplace?from=bera-price')}
       className={clsx('absolute pt-[15px] flex flex-col items-center right-[10px] bottom-0 z-[5] w-[140px] h-[126px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain cursor-pointer', className)}
     >
       <div className="w-full flex items-center gap-[0px] justify-center pr-[10px]">
