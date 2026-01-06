@@ -25,7 +25,7 @@ const Pagination = (props: any) => {
         disabled={!firstValid}
       >
         <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path opacity={firstValid ? "1" : "0.3"} d="M9 1L4.2 6L9 11M1 1V11" stroke="#532" />
+          <path opacity={firstValid ? "1" : "0.3"} d="M9 1L4.2 6L9 11M1 1V11" stroke="currentColor" />
         </svg>
       </PageButton>
       <PageButton
@@ -35,7 +35,7 @@ const Pagination = (props: any) => {
         disabled={!prevValid}
       >
         <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path opacity={prevValid ? "1" : "0.3"} d="M6 1L1 6L6 11" stroke="#532" />
+          <path opacity={prevValid ? "1" : "0.3"} d="M6 1L1 6L6 11" stroke="currentColor" />
         </svg>
       </PageButton>
       <div className="flex items-center">
@@ -48,7 +48,7 @@ const Pagination = (props: any) => {
         disabled={!nextValid}
       >
         <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path opacity={nextValid ? "1" : "0.3"} d="M1 1L6 6L1 11" stroke="#532" />
+          <path opacity={nextValid ? "1" : "0.3"} d="M1 1L6 6L1 11" stroke="currentColor" />
         </svg>
       </PageButton>
       <PageButton
@@ -58,7 +58,7 @@ const Pagination = (props: any) => {
         disabled={!lastValid}
       >
         <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path opacity={lastValid ? "1" : "0.3"} d="M1 1L5.8 6L1 11M9 1V11" stroke="#532" />
+          <path opacity={lastValid ? "1" : "0.3"} d="M1 1L5.8 6L1 11M9 1V11" stroke="currentColor" />
         </svg>
       </PageButton>
     </div>

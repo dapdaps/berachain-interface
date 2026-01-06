@@ -115,6 +115,32 @@ const PlaygroundView = () => {
           play
         </LightingButton>
       </Link>
+
+      <Link
+        href="/carnival/gacha"
+        prefetch={true}
+        className="group black flex flex-col items-center gap-[20px]"
+      >
+        <div className="w-[270px] h-[347px] relative flex justify-center items-center">
+          <img
+            src="/images/playground/v2/entry-nft-gacha.png"
+            alt=""
+            className="w-full h-full absolute object-center object-contain opacity-100 z-[2] group-hover:opacity-0 group-hover:z-[1] transition-all duration-300"
+          />
+          <img
+            src="/images/playground/v2/entry-nft-gacha-white.png"
+            alt=""
+            className="w-full h-full absolute object-center object-contain opacity-0 z-[1] origin-bottom group-hover:scale-[1.32] group-hover:opacity-100 group-hover:z-[2] transition-all duration-300"
+          />
+        </div>
+        <LightingButton
+          outerClassName="!h-[52px] uppercase !text-[20px] w-[120px]"
+          disabled={false}
+        >
+          play
+        </LightingButton>
+      </Link>
+
       <Link
         href="/carnival/lucky-bera"
         prefetch={true}
@@ -139,6 +165,8 @@ const PlaygroundView = () => {
           play
         </LightingButton>
       </Link>
+
+      
     </div>
   );
 };

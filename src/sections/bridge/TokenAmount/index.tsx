@@ -22,6 +22,7 @@ import chains from '@/configs/chains';
 import { useAccount } from 'wagmi';
 import { useImportTokensStore } from '@/stores/import-tokens';
 import { uniqBy } from 'lodash';
+import useIsMobile from '@/hooks/use-isMobile';
 
 interface Props {
   chain: Chain;
@@ -37,6 +38,7 @@ interface Props {
   isDest: boolean;
   allTokens: any;
   updateRef: number;
+  type?: string;
 }
 
 export default function TokenAmout({
@@ -52,12 +54,14 @@ export default function TokenAmout({
   limitBera,
   isDest,
   allTokens,
-  updateRef
+  updateRef,
+  type,
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
   const { address: account } = useAccount();
   const { importTokens, addImportToken }: any = useImportTokensStore();
 
+  const { bridgeType } = useBridgeType({ type });
   const { tokenBalance, isError, isLoading, update } = useTokenBalance(
     token ? (token.isNative ? 'native' : token.address) : '', token?.decimals ?? 0, token?.chainId ?? 0
   )
@@ -67,8 +71,8 @@ export default function TokenAmout({
     update();
   }, [updateRef]);
 
-  const { bridgeType } = useBridgeType()
   const [percent, setPercent] = useState<any>(0);
+  const isMobile = useIsMobile();
   const handleRangeChange = (e: any, isAmountChange = true) => {
     const formatedBalance = balanceFormated(tokenBalance);
     if (["-", "Loading", "0"].includes(formatedBalance)) return;
@@ -98,7 +102,52 @@ export default function TokenAmout({
 
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
-      <div className='flex items-center justify-between gap-[10px]'>
+      <div className="flex justify-between items-center flex-wrap">
+        <div className={clsx('flex items-center gap-[10px] text-[14px]', bridgeType === 'superSwap' ? '' : 'cursor-pointer')} onClick={() => {
+          if (bridgeType !== 'superSwap') {
+            setTokenSelectorShow(true);
+          }
+
+        }}>
+          <div>{isDest ? 'To' : 'From'}</div>
+          <div className="flex items-center gap-[5px]">
+            <img className='w-[20px] h-[20px]' src={chain?.icon} />
+            <div className="w-[80px] font-[400] whitespace-nowrap overflow-hidden text-ellipsis">{chain?.chainName}</div>
+            {
+              bridgeType !== 'superSwap' && <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.00006 1L6.00006 5L11.0001 1" stroke="black" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            }
+          </div>
+        </div>
+
+        <div className={clsx("flex items-center gap-[10px] text-[12px]", isMobile && !isDest ? 'flex-1 justify-between mt-[10px]' : 'justify-end')}>
+          {
+            !isDest && <div className="flex justify-between  items-center gap-[22px]">
+              <div className="flex items-center gap-[8px]">
+                {BalancePercentList.map((p) => (
+                  <motion.div
+                    key={p.value}
+                    className={clsx(
+                      "cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[12px] font-[400] px-[8px] flex justify-center items-center",
+                      '')
+                    }
+                    animate={percent == p.value ? { background: "#FFDC50" } : {}}
+                    onClick={() => handleRangeChange({ target: p })}
+                  >
+                    {p.label}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          }
+          <div className={"flex items-center cursor-pointer justify-end"} onClick={() => {
+            onAmountChange?.(tokenBalance)
+          }}>bal: {isLoading ? <Loading size={12} /> : <span className={(disabledInput ? '' : ' underline')}>{balanceFormated(tokenBalance, 4)}</span>}</div>
+        </div>
+      </div>
+
+      <div className='flex items-center justify-between gap-[10px] mt-[10px]'>
         <div
           onClick={() => {
             if (comingSoon) return;
@@ -120,22 +169,22 @@ export default function TokenAmout({
                   src={token?.icon}
                 /> : <div className='w-[26px] h-[26px] rounded-[50%] bg-[#000]' />
               }
-              {
+              {/* {
                 bridgeType !== 'superSwap' && (
                   <img
                     className='w-[10px] h-[10px] absolute right-0 bottom-0 md:rounded-sm'
                     src={chain?.icon}
                   />
                 )
-              }
+              } */}
             </div>
             <div>
               <div className='text-[16px] font-[600] whitespace-nowrap overflow-hidden text-ellipsis'>{token?.symbol}</div>
-              {
+              {/* {
                 bridgeType !== 'superSwap' && (
                   <div className='text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis'>{chain?.chainName}</div>
                 )
-              }
+              } */}
             </div>
           </div>
           {
@@ -161,18 +210,19 @@ export default function TokenAmout({
           <input type='number' className="w-[100%] h-[100%] text-[26px] text-right" value={amount} onChange={(e) => {
             onAmountChange?.(e.target.value)
           }} disabled={disabledInput} />
+          <div className='text-[12px] text-right mt-[5px]'>${(token && tokenBalance) ? balanceFormated((prices[(token as any).priceKey] || prices[token.symbol.toUpperCase()] || prices[token.address.toLowerCase()]) * (amount as any), 4) : '~'}</div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]">
+      {/* <div className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]">
         <div className={"flex items-center cursor-pointer"} onClick={() => {
           onAmountChange?.(tokenBalance)
         }}>balance: {isLoading ? <Loading size={12} /> : <span className={(disabledInput ? '' : ' underline')}>{balanceFormated(tokenBalance, 4)}</span>}</div>
         <div >${(token && tokenBalance) ? balanceFormated((prices[(token as any).priceKey] || prices[token.symbol.toUpperCase()] || prices[token.address.toLowerCase()]) * (amount as any), 4) : '~'}</div>
-      </div>
+      </div> */}
 
 
-      {
+      {/* {
         !isDest && <div className="flex justify-between md:flex-col md:items-stretch md:justify-start items-center gap-[22px] mt-[10px]">
           <div className="flex items-center gap-[8px]">
             {BalancePercentList.map((p) => (
@@ -195,7 +245,7 @@ export default function TokenAmout({
             onChange={handleRangeChange}
           />
         </div>
-      }
+      } */}
 
 
       {/* <TokenSelector

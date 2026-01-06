@@ -68,8 +68,9 @@ export async function getQuote(
         options: {
             allowSwitchChain: false,
             allowDestinationCall: true,
-            integrator: 'DapDap',
+            integrator: 'beartown',
             order: 'CHEAPEST',
+            slippage: Number(quoteRequest.slippage || 0.5),
         }
     }
 

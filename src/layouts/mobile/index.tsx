@@ -20,11 +20,11 @@ import Downtime from "@/components/downtime";
 const menuItems = [
   {
     id: 2.2,
-    title: "Super Swap",
-    href: "/super-swap",
+    title: "Trade",
+    href: "/trade",
     // dataBp: ""
   },
-  { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
+  // { id: 2, title: "Bridge", href: "/trade", dataBp: "1015-002-002" },
   { id: 7, title: "Stake Bera", href: "/dex/bex/stake" },
   {
     id: 4,
@@ -219,7 +219,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     initializePrice();
   }, []);
 
-  const routes: any = [];
+  const routes: any = ["/"];
 
   const handleHome = () => {
     router.push("/");
@@ -306,8 +306,8 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               <div
                 className={clsx(
                   "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
-                  pathname === "/" &&
-                  "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
+                  // pathname === "/" &&
+                  // "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -436,7 +436,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 </div>
               </div>
             )}
-            <GuidingTutorial />
+            {/* <GuidingTutorial /> */}
           </>
         )
       }

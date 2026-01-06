@@ -18,6 +18,8 @@ const GridTable = (props: Props, ref: any) => {
     headerColClassName,
     bodyColClassName,
     emptyClassName,
+    emptyTextClassName = '',
+    loadingClassName = '',
     fixedClassName,
     sortDataIndex,
     sortDirection,
@@ -170,7 +172,7 @@ const GridTable = (props: Props, ref: any) => {
       <div ref={bodyRef} className={clsx("max-md:min-w-fit text-[16px] font-[600] px-[20px] md:px-[10px]", bodyClassName)}>
         {
           loading ? (
-            <div className="flex justify-center items-center min-h-[150px]">
+            <div className={clsx("flex justify-center items-center min-h-[150px]", loadingClassName)}>
               <Loading />
             </div>
           ) : (
@@ -233,7 +235,7 @@ const GridTable = (props: Props, ref: any) => {
               </div>
             )) : (
               <div className={clsx("flex justify-center items-center min-h-[200px]", emptyClassName)}>
-                <Empty desc="No data yet..." />
+                <Empty textClassName={emptyTextClassName} desc="No data yet..." />
               </div>
             )
           )
@@ -257,6 +259,7 @@ export interface Props {
     width?: string | number;
   }[];
   loading?: boolean;
+  loadingClassName?: string;
   className?: string;
   headerClassName?: string;
   bodyClassName?: string;
@@ -268,6 +271,7 @@ export interface Props {
   headerColClassName?: string;
   bodyColClassName?: string;
   emptyClassName?: string;
+  emptyTextClassName?: string;
   fixedClassName?: string;
   sortDataIndex?: string;
   sortDirection?: GridTableSortDirection;

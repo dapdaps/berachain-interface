@@ -17,6 +17,8 @@ export default function useQuote(
   const [quoteLoading, setQuoteLoading] = useState(false);
   const newestIdentification = useRef(identification);
   const { provider, chainId } = useAccount();
+  // Request sequence number to ensure only the latest request's results are processed
+  const requestIdRef = useRef(0);
 
   // const inputValue = useDebounce(quoteLoading, { wait: 500 });
 
@@ -28,14 +30,20 @@ export default function useQuote(
       setLoading(false);
       return;
     }
+
+    // Generate a new request ID
+    const currentRequestId = ++requestIdRef.current;
+
     setLoading(true);
     setQuoteLoading(true);
     setRoutes(null);
     const routes: QuoteResponse[] = [];
     let stop = false;
+    let timeoutId: NodeJS.Timeout | null = null;
 
-    setTimeout(() => {
-      if (quoteRequest.identification === newestIdentification.current) {
+    timeoutId = setTimeout(() => {
+      // Only handle timeout for the current request ID (check if it's still the latest request)
+      if (currentRequestId === requestIdRef.current && quoteRequest.identification === newestIdentification.current) {
         if (!stop) {
           stop = true;
           setQuoteLoading(false);
@@ -47,7 +55,8 @@ export default function useQuote(
     const start = Date.now();
 
     const _routes = await getQuote(quoteRequest, provider?.getSigner(), function (val: QuoteResponse) {
-      if (stop) {
+      // Only process callback for the latest request (check if it's still the latest request)
+      if (currentRequestId !== requestIdRef.current || stop) {
         return;
       }
 
@@ -59,6 +68,16 @@ export default function useQuote(
         setRoutes([...routes]);
       }
     });
+
+    // Clear timeout timer
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // Only process results for the latest request (check if it's still the latest request)
+    if (currentRequestId !== requestIdRef.current) {
+      return;
+    }
 
     if (_routes && _routes.length && _routes[0].identification === newestIdentification.current) {
       setLoading(false);
@@ -75,7 +94,7 @@ export default function useQuote(
 
   useEffect(() => {
     getRoutes(quoteRequest);
-  }, [quoteRequest]);
+  }, [quoteRequest, provider]);
 
   useEffect(() => {
     if (identification) {
@@ -86,6 +105,7 @@ export default function useQuote(
   return {
     routes,
     loading,
-    quoteLoading
+    quoteLoading,
+    getRoutes,
   };
 }

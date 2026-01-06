@@ -77,6 +77,16 @@ export const bera: { [key: string]: Token } = {
     color: "#059393",
     priceKey: "USDT0"
   },
+  usdt: {
+    chainId: CHAIN_ID,
+    address: "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+    decimals: 6,
+    symbol: "USDT",
+    name: "USDT",
+    icon: "/assets/tokens/usdt.png",
+    color: "#059393",
+    priceKey: "USDT"
+  },
   ibgt: {
     chainId: CHAIN_ID,
     address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",

@@ -1,0 +1,129 @@
+import { IS_PRODUCTION } from "@/configs";
+
+export interface GachaTabConfig {
+  id: string;
+  label: string;
+  playByCost?: string;
+  probabilities?: {
+    name: string;
+    probability: string;
+  }[];
+  value: number;
+  tier: number;
+}
+
+// export const NFTS = [
+//   {
+//     address: IS_PRODUCTION ?  "0x88888888a9361f15aadbaca355a6b2938c6a674e" : "0x42aa0a426bd85bf28c1bf619bf57b4ea3c0aef43",
+//     name: "Steady Teddy",
+//     icon: "/images/gacha/steady-teddy.png",
+//     probabilities: [
+//       { percentage: "0.02", value: 1 },
+//       { percentage: "1", value: 20 },
+//       { percentage: "4.16", value: 50 }
+//     ],
+//     total: 10,
+//     tokenIds: IS_PRODUCTION ? [1797, 788, 2056, 1425, 1771, 952, 1182, 536, 2064] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+//   },
+//   {
+//     address: IS_PRODUCTION ? "0x6666397dfe9a8c469bf65dc744cb1c733416c420" : "0x11312822e0e6c508541d153d540c62ffebb09e1f",
+//     name: "Mibera Shadow Trait",
+//     icon: "/images/gacha/mibera-maker.png",
+//     probabilities: [
+//       { percentage: "0.1", value: 1 },
+//       { percentage: "4", value: 20 },
+//       { percentage: "47.92", value: 50 }
+//     ],
+//     total: 9,
+//     tokenIds: IS_PRODUCTION ? [2454,2450,2448,2443,2444,2441,2453,2447,2449] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+//   },
+//   {
+//     address: IS_PRODUCTION ? "0x333814f5e16eee61d0c0b03a5b6abbd424b381c2" : "0x11c57957ba6da00bfcecb9aa0059bc0a7df08ffb",
+//     name: "Bullas",
+//     icon: "/images/gacha/bullas.png",
+//     probabilities: [
+//       { percentage: "4", value: 20 },
+//       { percentage: "47.92", value: 50 }
+//     ],
+//     total: 8,
+//     tokenIds: IS_PRODUCTION ? [1153, 1109, 1391, 1364, 1314, 1329, 1326, 1333] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+//   },
+//   {
+//     address: IS_PRODUCTION ? "0x5a30C392714a9a9A8177C7998D9D59c3dd120917" : "0x05ebb95c667e610e494dc23b411e375b7cc3db6b",
+//     name: "Booga Bullas",
+//     icon: "/images/gacha/booga-bullas.png",
+//     probabilities: [
+//       { percentage: "4", value: 20 },
+//       { percentage: "47.92", value: 50 }
+//     ],
+//     total: 20,
+//     tokenIds: IS_PRODUCTION ? [1153, 1109, 1391, 1364, 1314, 1329, 1326, 1333] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+//   }
+// ];
+export const GACHA_TABS: GachaTabConfig[] = [
+  {
+    id: "bera-dream",
+    label: "ONE Bera Dream",
+    playByCost: "1 BERA",
+    value: 1,
+    tier: 0,
+    probabilities: [
+      { name: "Steady Teddy", probability: "0.02%" },
+      { name: "Mibera", probability: "0.1%" },
+      { name: "5 BERA", probability: "1%" },
+      { name: "0.5 BERA", probability: "40%" },
+      { name: "0.05 BERA", probability: "58.88%" }
+    ]
+  },
+  {
+    id: "standard-gacha",
+    label: "Standard Gacha",
+    playByCost: "20 BERA",
+    value: 20,
+    tier: 1,
+    probabilities: [
+      { name: "Steady Teddy", probability: "1%" },
+      { name: "Mibera", probability: "4%" },
+      { name: "Bullas", probability: "4%" },
+      { name: "16.9 BERA", probability: "60%" },
+      { name: "6.9 BERA", probability: "31%" }
+    ],
+  },
+  {
+    id: "guaranteed-nft",
+    label: "Guaranteed NFT",
+    playByCost: "50 BERA",
+    value: 50,
+    tier: 2,
+    probabilities: [
+      { name: "Steady Teddy", probability: "4.17%" },
+      { name: "Mibera", probability: "47.92%" },
+      { name: "Bullas", probability: "47.92%" }
+    ]
+  }
+];
+
+export const GACHA_CONTRACT_ADDRESS = IS_PRODUCTION ?
+  "0xd188835A0f389f5F6F18dA37022343e36E4C3f50":
+  "0x2c9306C73dBe1b9e33fcC2C28A98c98B6713b786";
+
+// export const TOKEN_MAP: Record<string, string> = {
+//   '0x0000000000000000000000000000000000000000': "/assets/tokens/bera.svg",
+//   ...NFTS.reduce((acc, nft) => {
+//     acc[nft.address.toLowerCase()] = nft.icon;
+//     return acc;
+//   }, {} as Record<string, string>),
+// };
+
+// export const TOKEN_NAME_MAP: Record<string, string> = {
+//   '0x0000000000000000000000000000000000000000': "BERA",
+//   ...NFTS.reduce((acc, nft) => {
+//     acc[nft.address.toLowerCase()] = nft.name;
+//     return acc;
+//   }, {} as Record<string, string>),
+// };
+
+
+export function getNftImgUrl(address: string, tokenId: string) {
+  return `https://assets.dapdap.net/beratown/nft/${address.toLowerCase()}_${tokenId}.png`;
+}

@@ -1,29 +1,54 @@
 import Loading from "@/components/loading";
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useAccount, useSwitchChain, useConnect } from "wagmi";
-
+import { useAccount, useSwitchChain } from "wagmi";
+import { useMemo } from "react";
 
 const cls = 'w-full h-[60px] flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] font-[600] mt-[16px] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed'
 
 export default function SubmitBtn(props: any) {
-  const { comingSoon, onClick, isLoading, disabled, fromChainId, text } = props;
+  const { comingSoon, onClick, isLoading, disabled, fromChainId, text, fromToken, amount } = props;
   const { switchChain } = useSwitchChain()
   const { address, chainId } = useAccount()
   const { openConnectModal } = useConnectModal();
 
+  const [loading, innerText] = useMemo(() => {
+    let _loading = isLoading;
+    let _text = () => {
+      if (comingSoon) {
+        return "Coming soon...";
+      }
+      if (_loading) {
+        return (
+          <Loading size={20} />
+        );
+      }
+      if (chainId !== fromChainId) {
+        return "Switch Chain";
+      }
+      return text;
+    };
+
+    return [
+      _loading,
+      _text(),
+    ];
+  }, [isLoading, comingSoon, chainId, fromChainId, text]);
+
+
   if (!address) {
-    return <button
-    type="button"
-    className={cls}
-    onClick={() => {
-      openConnectModal?.()
-    }}  
-    >
-      Connect Wallet
-    </button>
+    return (
+      <button
+        type="button"
+        className={cls}
+        onClick={() => {
+          openConnectModal?.()
+        }}
+      >
+        Connect Wallet
+      </button>
+    );
   }
 
-  
   return (
     <button
       type="button"
@@ -33,22 +58,20 @@ export default function SubmitBtn(props: any) {
         if (chainId !== fromChainId) {
           switchChain({ chainId: fromChainId })
           return
-        } 
+        }
 
         if (disabled) {
           return
         }
 
-        if (isLoading) {
+        if (loading) {
           return
         }
-
-        
 
         onClick()
       }}
     >
-        {comingSoon ? 'Coming soon...' : isLoading ? <Loading size={20}/> : chainId !== fromChainId ? 'Switch Chain' : text}
+      {innerText}
     </button>
   );
 }

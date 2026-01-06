@@ -7,6 +7,7 @@ import { getQuoteInfo, setQuote } from './util/routerController'
 import { getQuote as getStargateRoute, execute as executeStargate, getStatus as getStargateStatus } from './bridges/stargate'
 import { getQuote as getJumperRoute, execute as executeJumper, getStatus as getJumperStatus } from './bridges/jumper'
 import { getQuote as getKodiakRoute, execute as executeKodiak, getStatus as getKodiakStatus } from './bridges/kodiak'
+import { getQuote as getOneclickRoute, execute as executeOneclick, getStatus as getOneclickStatus } from './bridges/oneclick'
 
 import { ExecuteRequest, QuoteRequest, QuoteResponse, StatusParams, StatusRes } from './type'
 
@@ -14,16 +15,21 @@ const executeTypes: any = {
   executeStargate,
   executeJumper,
   executeKodiak,
+  executeOneclick,
 }
 
 
-export async function execute(executeRequest: ExecuteRequest, signer: Signer) {
+export async function execute(executeRequest: ExecuteRequest, signer: Signer, options?: { quoteRequest?: QuoteRequest | null; }) {
+  const { quoteRequest } = options ?? {};
   const quoteInfo = getQuoteInfo(executeRequest.uuid)
   const executeFn = executeTypes[`execute${quoteInfo.bridgeType}`]
 
   if (executeFn) {
     try {
-      return executeFn(executeRequest, signer)
+      return executeFn(executeRequest, signer, {
+        quoteRequest,
+        route: quoteInfo.route,
+      })
     } catch (e) {
       console.log(e)
       throw e
@@ -36,6 +42,9 @@ export async function execute(executeRequest: ExecuteRequest, signer: Signer) {
 export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callback?: (quoteResponse: QuoteResponse) => void) {
   const quoteP = []
   const { engine } = quoteRequest
+
+
+  console.log('quoteRequest: ', quoteRequest)
 
   function emitRes(val: QuoteResponse | QuoteResponse[] | null) {
     if (val) {
@@ -65,6 +74,9 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
         case 'kodiak':
           quoteP.push(getKodiakRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('kodiak:', e)))
           break;
+        case 'oneclick':
+          quoteP.push(getOneclickRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('oneclick:', e)))
+          break;
       }
     } 
 
@@ -75,6 +87,7 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
   } else {
     quoteP.push(getStargateRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('stargate:', e)))
     quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))
+    quoteP.push(getOneclickRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('oneclick:', e)))
   }
 
   const resList: (QuoteResponse | QuoteResponse[] | null | void)[] = await Promise.all(quoteP)
@@ -112,5 +125,9 @@ export async function getStatus(params: StatusParams, engine: string, signer: Si
 
   if (_engine === 'jumper') {
     return getJumperStatus(params)
+  }
+
+  if (_engine === 'oneclick') {
+    return getOneclickStatus(params)
   }
 }

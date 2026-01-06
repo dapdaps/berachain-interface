@@ -27,6 +27,9 @@ import useQuote from "./useQuote";
 import useAddAction from "@/hooks/use-add-action";
 import { getChainScan } from "../lib/util";
 import useRouteSorted from "./useRouteSorted";
+import { useOneClickTokenStore } from "../lib/bridges/oneclick/store";
+import { useOneclickWallet } from "../lib/bridges/oneclick/wallet";
+import { useSettingsStore } from "@/stores/settings";
 
 interface BridgeProps {
   originFromChain: Chain;
@@ -46,6 +49,7 @@ export default function useBridge({
 }: BridgeProps) {
   const [fromChain, setFromChain] = useState(originFromChain);
   const [toChain, setToChain] = useState(originToChain);
+  const setting: any = useSettingsStore();
 
   const { account, chainId, provider } = useAccount();
   const [fromToken, setFromToken] = useState<Token>();
@@ -75,11 +79,18 @@ export default function useBridge({
   const { fail, success } = useToast();
   const [quoteReques, setQuoteRequest] = useState<QuoteRequest | null>(null);
 
-  const { routes, loading } = useQuote(quoteReques, identification, false);
+  const { tokens: oneclickTokens, fetchTokens: fetchOneclickTokens } = useOneClickTokenStore();
+  const oneclickWallet = useOneclickWallet();
+  const { routes, loading, getRoutes } = useQuote(quoteReques, identification, false);
 
   useRouteSorted(routes, 1, (route: QuoteResponse | null) => {
     setSelectedRoute(route);
   });
+
+  useEffect(() => {
+    setFromChain(originFromChain);
+    setToChain(originToChain);
+  }, [originFromChain, originToChain]);
 
   useEffect(() => {
     if (
@@ -107,8 +118,10 @@ export default function useBridge({
     const identification = Date.now();
     setIdentification(identification);
     setQuoteRequest({
+      wallet: oneclickWallet,
       fromChainId: fromChain?.chainId.toString(),
       toChainId: toChain?.chainId.toString(),
+      slippage: setting.getSlippage(),
       fromToken: {
         address: fromToken?.address as string,
         symbol: fromToken?.symbol as string,
@@ -127,7 +140,7 @@ export default function useBridge({
       UNIZEN_AUTH_KEY: process.env.NEXT_PUBLIC_UNIZEN_AUTH_KEY,
       engine: tool ? [tool] : null
     });
-  }, [fromChain, toChain, fromToken, toToken, account, inputValue, tool]);
+  }, [provider, fromChain, toChain, fromToken, toToken, account, inputValue, tool]);
 
   useEffect(() => {
     if (
@@ -186,11 +199,23 @@ export default function useBridge({
     }
   }, [selectedRoute, toToken]);
 
+  useEffect(() => {
+    fetchOneclickTokens();
+  }, []);
+
   const executeRoute = async () => {
     if (selectedRoute && !isSending) {
       setIsSending(true);
       try {
-        const txHash = await execute(selectedRoute, provider?.getSigner());
+        let txHash = await execute(selectedRoute, provider?.getSigner(), {
+          quoteRequest: quoteReques,
+        });
+
+        let depositAddress = "";
+        if (typeof txHash !== "string") {
+          depositAddress = txHash.depositAddress;
+          txHash = txHash.hash;
+        }
 
         if (!txHash) {
           return { isSuccess: false };
@@ -234,7 +259,10 @@ export default function useBridge({
             bridgeType: selectedRoute.bridgeType,
             fromAddress: account,
             toAddress: account,
-            status: 3
+            status: 3,
+
+            // for oneclick
+            depositAddress,
           };
   
           // saveTransaction(actionParams);
@@ -260,6 +288,9 @@ export default function useBridge({
           chainId: fromChain.chainId,
           tx: txHash
         });
+
+        // reload the quote
+        getRoutes(quoteReques);
 
         setIsSending(false);
         return { isSuccess: true, txHash };
