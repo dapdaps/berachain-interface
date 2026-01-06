@@ -2,7 +2,7 @@ import { useRequest } from "ahooks";
 import { Contract, utils } from "ethers";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
-import { GACHA_CONTRACT_ADDRESS, GACHA_TABS } from "../config";
+import { GACHA_CONTRACT_ADDRESS } from "../config";
 import gachaAbi from "../abi";
 import { useState } from "react";
 
