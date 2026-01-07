@@ -104,7 +104,7 @@ export const GACHA_TABS: GachaTabConfig[] = [
 ];
 
 export const GACHA_CONTRACT_ADDRESS = IS_PRODUCTION ?
-  "0x61E531adB32AAB35036180DAb1CdbB89e5d25e5D":
+  "0xd188835A0f389f5F6F18dA37022343e36E4C3f50":
   "0x2c9306C73dBe1b9e33fcC2C28A98c98B6713b786";
 
 // export const TOKEN_MAP: Record<string, string> = {
