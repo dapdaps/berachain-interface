@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function getMultiplierColor(multiplier: number): { bg: string; border: string } {
   let borderColor = "";
@@ -117,48 +117,111 @@ export default function Marquee({
 }: MarqueeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const singleContentRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
   const positionRef = useRef(0);
   const isPausedRef = useRef(false);
+  const shouldAnimateRef = useRef(false);
+  const [shouldDuplicate, setShouldDuplicate] = useState(true);
 
   useEffect(() => {
-    if (!containerRef.current || !contentRef.current || items.length === 0) {
+    if (!singleContentRef.current || !wrapperRef.current || items.length === 0) {
+      return;
+    }
+
+    const checkIfShouldDuplicate = () => {
+      const singleContent = singleContentRef.current;
+      const wrapper = wrapperRef.current;
+      
+      if (!singleContent || !wrapper) return;
+      
+      const singleItemWidth = 310;
+      const singleContentWidth = singleItemWidth * items.length + gap * (items.length - 1);
+      const wrapperWidth = wrapper.offsetWidth;
+      
+      const needsDuplicate = singleContentWidth > wrapperWidth;
+      setShouldDuplicate(needsDuplicate);
+      shouldAnimateRef.current = needsDuplicate;
+    };
+
+    const timeoutId = setTimeout(checkIfShouldDuplicate, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [items, gap]);
+
+  useEffect(() => {
+    if (!containerRef.current || !contentRef.current || !wrapperRef.current || items.length === 0) {
+      return;
+    }
+
+    if (!shouldDuplicate) {
       return;
     }
 
     const container = containerRef.current;
     const content = contentRef.current;
+    const wrapper = wrapperRef.current;
     
-    const getContentWidth = () => {
-      return content.offsetWidth;
-    };
-
-    const contentWidth = getContentWidth();
-    const totalGap = gap * items.length;
-    const totalWidth = contentWidth + totalGap;
-
-    const animate = () => {
-      if (!isPausedRef.current) {
-        positionRef.current -= speed / 60;
-
-        if (Math.abs(positionRef.current) >= totalWidth / 2) {
-          positionRef.current = 0;
-        }
-
-        container.style.transform = `translateX(${positionRef.current}px)`;
-      }
+    const checkAndStartAnimation = () => {
+      const contentWidth = content.offsetWidth;
+      const wrapperWidth = wrapper.offsetWidth;
       
-      animationRef.current = requestAnimationFrame(animate);
+      shouldAnimateRef.current = contentWidth > wrapperWidth;
+      
+      if (!shouldAnimateRef.current) {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+          animationRef.current = undefined;
+        }
+        positionRef.current = 0;
+        container.style.transform = `translateX(0px)`;
+        setShouldDuplicate(false);
+        return;
+      }
+
+      if (!animationRef.current) {
+        const animate = () => {
+          if (shouldAnimateRef.current && !isPausedRef.current) {
+            const currentContentWidth = content.offsetWidth;
+            const singleContentWidth = currentContentWidth / 2;
+            
+            positionRef.current -= speed / 60;
+
+            if (Math.abs(positionRef.current) >= singleContentWidth) {
+              positionRef.current = 0;
+            }
+
+            container.style.transform = `translateX(${positionRef.current}px)`;
+          }
+          
+          if (shouldAnimateRef.current) {
+            animationRef.current = requestAnimationFrame(animate);
+          }
+        };
+
+        animationRef.current = requestAnimationFrame(animate);
+      }
     };
 
-    animationRef.current = requestAnimationFrame(animate);
+    checkAndStartAnimation();
+
+    const resizeObserver = new ResizeObserver(() => {
+      checkAndStartAnimation();
+    });
+
+    resizeObserver.observe(wrapper);
+    resizeObserver.observe(content);
 
     return () => {
+      resizeObserver.disconnect();
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [items, speed, gap]);
+  }, [items, speed, gap, shouldDuplicate]);
 
   const handleMouseEnter = () => {
     if (pauseOnHover) {
@@ -176,25 +239,40 @@ export default function Marquee({
     return null;
   }
 
-  const duplicatedItems = [...items, ...items];
+  const displayItems = shouldDuplicate ? [...items, ...items] : items;
 
   return (
     <div 
+      ref={wrapperRef}
       className={`overflow-hidden w-full ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div
+        ref={singleContentRef}
+        className="absolute opacity-0 pointer-events-none flex"
+        style={{ gap: `${gap}px` }}
+      >
+        {items.map((item, index) => (
+          <MarqueeCard
+            key={`single-${item.id}-${index}`}
+            data={item}
+            tokenNameMap={tokenNameMap}
+          />
+        ))}
+      </div>
+      
+      <div
         ref={containerRef}
         className="flex"
         style={{
           gap: `${gap}px`,
-          willChange: "transform",
+          willChange: shouldDuplicate ? "transform" : "auto",
           width: "fit-content",
         }}
       >
         <div ref={contentRef} className="flex" style={{ gap: `${gap}px` }}>
-          {duplicatedItems.map((item, index) => (
+          {displayItems.map((item, index) => (
             <MarqueeCard
               key={`${item.id}-${index}`}
               data={item}
