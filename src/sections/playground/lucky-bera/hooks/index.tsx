@@ -13,6 +13,7 @@ import { usePlaygroundContext } from '../../context';
 import { useUserStore } from '@/stores/user';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import { useSwitchChain } from 'wagmi';
+import { sleep } from '@/sections/bridge/lib/util';
 
 const costToken = bera["bera"];
 
@@ -180,10 +181,18 @@ export function useLuckyBera() {
       // close buy spins modal
       setBuySpinsModalOpen(false);
       // update user spin data
-      setSpinUserData({
-        spin_balance: Big(spinUserData?.spin_balance || 0).plus(amount).toNumber(),
-      });
-      // getSpinUserData();
+      // setSpinUserData({
+      //   spin_balance: Big(spinUserData?.spin_balance || 0).plus(amount).toNumber(),
+      // });
+      const beforeSpinBalance = spinUserData?.spin_balance;
+      while (true) {
+        const data = await getSpinUserData();
+        await sleep(3000)
+        if (data?.spin_balance != beforeSpinBalance) {
+          break;
+        }
+      }
+      
     } catch (error: any) {
       toast.dismiss(toastId);
       const isRejected = error?.message?.includes("user rejected transaction");
