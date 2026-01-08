@@ -36,7 +36,7 @@ const PartnersBoxes = (props: any) => {
                   isBalanceBox && (
                     <>
                       <div className="group-hover:opacity-100 group-hover:rotate-[5.177deg] transition-all duration-300 opacity-0 absolute z-[1] w-full h-full rounded-[20px] border-[3px] border-[#8B6A45] bg-[#FFFF9C] overflow-hidden bg-[url('/images/treasure-book/bg-lights.png')] bg-no-repeat bg-center bg-contain" />
-                      <div className="flex justify-center items-center gap-[5px] opacity-0 absolute bottom-[-20px] z-[4] group-hover:opacity-100 transition-all duration-300">
+                      {/* <div className="flex justify-center items-center gap-[5px] opacity-0 absolute bottom-[-20px] z-[4] group-hover:opacity-100 transition-all duration-300">
                         <LightButton
                           className="!text-[16px] !h-[40px]"
                           innerClassName="!px-[10px]"
@@ -62,7 +62,7 @@ const PartnersBoxes = (props: any) => {
                         >
                           Open
                         </LightButton>
-                      </div>
+                      </div> */}
                     </>
                   )
                 }
