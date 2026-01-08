@@ -142,7 +142,7 @@ export default function BookModal(props: BookModalProps) {
               Partners treasure
               {
                 treasureBookTab === "partners" && (
-                  <div className="absolute top-[2px] right-[2px] bg-[#ffffff60] text-[12px] text-white rounded-md leading-[16px] px-[10px] border border-white [-webkit-text-stroke-width:0]">Expired</div>
+                  <div className="absolute top-[2px] right-[2px] bg-[#EA6474] text-[12px] text-white rounded-md leading-[16px] px-[10px] border border-[#EA6474] [-webkit-text-stroke-width:0] font-bold">Expired</div>
                 )
               }
             </button>
