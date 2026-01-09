@@ -1,7 +1,7 @@
 import { balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import { motion } from 'framer-motion';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { playRewardSound } from '../sound';
 import LightButton from '@/components/check-in/button';
 import BearAmountTabs from './bear-amount-tabs';
@@ -40,6 +40,9 @@ export default function SuccessOpen({ visible = false, onPlayAgain, onClose, dat
     return data?.rewardNftId?.toString();
   }, [data]);
 
+  const [scale, setScale] = useState(1);
+  const [needsScale, setNeedsScale] = useState(false);
+
   useEffect(() => {
     if (data) {
       setTimeout(() => {
@@ -48,13 +51,53 @@ export default function SuccessOpen({ visible = false, onPlayAgain, onClose, dat
     }
   }, [data]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const viewportHeight = window.innerHeight;
+      const containerTotalHeight = 700 + 130 + 20 + 20; // 870px
+      const topMargin = 20; 
+      const bottomMargin = 20; 
+      const availableHeight = viewportHeight - topMargin - bottomMargin;
+      
+      if (availableHeight < containerTotalHeight) {
+        const newScale = availableHeight / containerTotalHeight;
+        setScale(Math.max(newScale, 0.5));
+        setNeedsScale(true);
+      } else {
+        setScale(1);
+        setNeedsScale(false);
+      }
+    };
+
+    if (visible) {
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [visible]);
+
+  
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full z-[100] bg-[#00000080] backdrop-blur-[20px]"
       // onClick={onClose}
     >
       <div
-        className="absolute w-[700px] h-[700px] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 mt-[-100px]"
+        className="absolute w-[700px] h-[700px] left-1/2"
+        style={{
+          ...(needsScale ? {
+            top: '20px',
+            transform: `translateX(-50%) scale(${scale})`,
+            transformOrigin: 'top center',
+          } : {
+            top: '50%',
+            transform: `translate(-50%, -50%) translateY(-100px)`,
+          }),
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="absolute top-0 right-0 cursor-pointer" onClick={onClose}>
