@@ -1,5 +1,6 @@
 "use client";
 
+import { numberFormatter } from "@/utils/number-formatter";
 import { useEffect, useRef, useState } from "react";
 
 function getMultiplierColor(multiplier: number): { bg: string; border: string } {
@@ -91,7 +92,7 @@ function MarqueeCard({ data, tokenNameMap }: MarqueeCardProps) {
             color: color.border,
           }}
         >
-          {data.multiplier}x
+          {numberFormatter(data.multiplier, 2, true, { isShort: true, isShortUppercase: true })}x
         </span>
       </div>
     </div>

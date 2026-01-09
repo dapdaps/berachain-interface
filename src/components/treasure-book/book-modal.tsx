@@ -131,7 +131,7 @@ export default function BookModal(props: BookModalProps) {
             <button
               type="button"
               className={clsx(
-                "w-[250px] h-[127px] hover:translate-y-[-50px] hover:bg-[#FDD54C] hover:text-[#FFF5A9] hover:text-[36px] hover:bg-[url('')] hover:border-[2px] transition-all duration-300 border border-black rounded-[6px] bg-[radial-gradient(35.37%_50%_at_50%_35.37%,_#C7B06C_0%,_#B1974C_100%)] bg-[#B1974C_100] flex items-start justify-center pt-[12px]",
+                "w-[250px] relative h-[127px] hover:translate-y-[-50px] hover:bg-[#FDD54C] hover:text-[#FFF5A9] hover:text-[36px] hover:bg-[url('')] hover:border-[2px] transition-all duration-300 border border-black rounded-[6px] bg-[radial-gradient(35.37%_50%_at_50%_35.37%,_#C7B06C_0%,_#B1974C_100%)] bg-[#B1974C_100] flex items-start justify-center pt-[12px]",
                 treasureBookTab === "partners" ? "!bg-[#FDD54C] !text-[#FFF5A9] !text-[36px] !bg-[url('')] !border-[2px] !translate-y-[-50px]" : "",
               )}
               onClick={(e) => {
@@ -140,6 +140,11 @@ export default function BookModal(props: BookModalProps) {
               }}
             >
               Partners treasure
+              {
+                treasureBookTab === "partners" && (
+                  <div className="absolute top-[2px] right-[2px] bg-[#EA6474] text-[12px] text-white rounded-md leading-[16px] px-[10px] border border-[#EA6474] [-webkit-text-stroke-width:0] font-bold">Expired</div>
+                )
+              }
             </button>
           </div>
           <div className="relative z-[2] w-full h-[656px] bg-[url('/images/treasure-book/paper.png')] bg-no-repeat bg-[position:200px_0px] bg-[length:1260px_656px]">
@@ -201,9 +206,26 @@ export default function BookModal(props: BookModalProps) {
                         opeing={openingPartnerBox}
                       />
                     </div>
-                    <div className="flex-1 h-full mr-[120px] mt-[40px]" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex-1 h-full mr-[120px] mt-[40px] relative" onClick={(e) => e.stopPropagation()}>
+                      <div className="absolute top-[2px] right-[30px] text-[12px] text-[#EA6474] rounded-md leading-[16px]">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 32 32"
+                          className="inline-block align-middle mr-[2px]"
+                          style={{ marginTop: "-1px", verticalAlign: "middle" }}
+                        >
+                          <g>
+                            <polygon points="16,4 30,28 2,28" fill="#EA6474"/>
+                            <rect x="14.2" y="13" width="3.6" height="7.3" rx="1.8" fill="#fff"/>
+                            <rect x="14.2" y="22" width="3.6" height="3.2" rx="1.6" fill="#fff"/>
+                          </g>
+                        </svg>
+                        Event ended
+                      </div>
                       <YourRewords type={treasureBookTab} list={userPartnerBoxesRewardsList} />
-                      <PartnersMore onClose={onClose} />
+                      {/* <PartnersMore onClose={onClose} /> */}
                     </div>
                   </motion.div>
                 )
