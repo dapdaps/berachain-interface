@@ -7,14 +7,20 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { RPC_LIST } from "@/configs/rpc";
 import Big from "big.js";
 import { get } from "@/utils/http";
+import { useRpcStore } from "@/stores/rpc";
 
 export default function useNftBalance() {
   const [nftBalance, setNftBalance] = useState<Record<string, string> | null>(
     null
   );
   const [loading, setLoading] = useState(false);
+  const rpcStore = useRpcStore();
+  const rpc = useMemo(() => RPC_LIST[rpcStore.selected]?.url, [rpcStore.selected]);
+
+  console.log(52, rpc);
+
   const provider = useMemo(() => {
-    return new providers.JsonRpcProvider(RPC_LIST.default.url, {
+    return new providers.JsonRpcProvider(rpc, {
       chainId: DEFAULT_CHAIN_ID,
       name: "Berachain Mainnet",
     });
