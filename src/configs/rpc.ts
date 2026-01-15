@@ -14,6 +14,14 @@ export const RPC_LIST: any = {
   publicnode: {
     url: "https://berachain-rpc.publicnode.com",
     simpleName: "PublicNode"
+  },
+  berachainApis: {
+    url: "https://rpc.berachain-apis.com",
+    simpleName: "Berachain-Apis"
+  },
+  tatum: {
+    url: "https://berachain-mainnet.gateway.tatum.io",
+    simpleName: "Tatum"
   }
 };
 

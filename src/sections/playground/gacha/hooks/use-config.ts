@@ -8,6 +8,7 @@ import { useRequest } from "ahooks";
 import { useEffect, useState, useMemo } from "react";
 import { providers } from "ethers";
 import { get } from "@/utils/http";
+import { useRpcStore } from "@/stores/rpc";
 
 async function getNftRarityRank(address: string, tokenIds: string[]): Promise<Record<string, number>> {
   try {
@@ -39,8 +40,10 @@ async function getNftRarityRank(address: string, tokenIds: string[]): Promise<Re
 }
 
 export default function useConfig() {
+  const rpcStore = useRpcStore();
+  const rpc = useMemo(() => RPC_LIST[rpcStore.selected]?.url, [rpcStore.selected]);
   const provider = useMemo(() => {
-    return new providers.JsonRpcProvider(RPC_LIST.default.url, {
+    return new providers.JsonRpcProvider(rpc, {
       chainId: DEFAULT_CHAIN_ID,
       name: "Berachain Mainnet",
     });
