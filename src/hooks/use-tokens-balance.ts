@@ -1,10 +1,13 @@
 import { providers, utils } from 'ethers';
 import { flatten } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import chains from '@/configs/chains';
 import multicallAddresses from '@/configs/contract/multicall';
 import useAccount from '@/hooks/use-account';
 import { multicall } from '@/utils/multicall';
+import { useRpcStore } from '@/stores/rpc';
+import { RPC_LIST } from '@/configs/rpc';
+import { DEFAULT_CHAIN_ID } from '@/configs';
 
 export const ERC20_ABI = [
   {
@@ -24,12 +27,13 @@ export default function useTokensBalance(tokens: any) {
   const [loading, setLoading] = useState(false);
   const [balances, setBalances] = useState<any>({});
   const { account } = useAccount();
-
+  const rpcStore = useRpcStore();
+  const rpc = useMemo(() => RPC_LIST[rpcStore.selected]?.url, [rpcStore.selected]);
   const queryBalance = useCallback(async () => {
     if (!account || !tokens.length) return;
     const chainId = tokens[0].chainId;
 
-    let rpcUrl = chains[chainId].rpcUrls.default.http[0]
+    let rpcUrl = chainId === DEFAULT_CHAIN_ID ? rpc : chains[chainId].rpcUrls.default.http[0];
 
     if (chainId === 56) {
       rpcUrl = 'https://binance.llamarpc.com'
