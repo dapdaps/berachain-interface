@@ -273,6 +273,7 @@ export default function BridgeContent({
             selectedRoute={selectedRoute}
             setSelectedRoute={setSelectedRoute}
             toToken={toToken as Token}
+            fromToken={fromToken}
             routes={routes}
           />
         )}

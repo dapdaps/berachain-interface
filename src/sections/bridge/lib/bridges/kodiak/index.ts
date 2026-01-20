@@ -17,7 +17,7 @@ import { approve } from "../../util/approve";
 import weth from "@/configs/contract/weth";
 import getWrapOrUnwrapTx from "@/sections/swap/getWrapOrUnwrapTx";
 import quoter from "@/sdk/smart-router";
-import { template } from "lodash";
+import { usePriceStore } from "@/stores/usePriceStore";
 
 const nativeAddress = "0x0000000000000000000000000000000000000000";
 export async function getQuote(
@@ -26,6 +26,7 @@ export async function getQuote(
 ): Promise<QuoteResponse[] | null> {
   const numFromChainId = Number(quoteRequest.fromChainId);
   const numToChainId = Number(quoteRequest.toChainId);
+  const prices = usePriceStore.getState().price;
 
   if (!chainConfig[numFromChainId] || !chainConfig[numToChainId]) {
     return null;
@@ -44,14 +45,14 @@ export async function getQuote(
   const wrapType =
     quoteRequest.fromToken.address.toLowerCase() ===
       "0x0000000000000000000000000000000000000000" &&
-    quoteRequest.toToken.address.toLowerCase() === wethAddress.toLowerCase()
+      quoteRequest.toToken.address.toLowerCase() === wethAddress.toLowerCase()
       ? 1
       : quoteRequest.fromToken.address.toLowerCase() ===
-          wethAddress.toLowerCase() &&
+        wethAddress.toLowerCase() &&
         quoteRequest.toToken.address.toLowerCase() ===
-          "0x0000000000000000000000000000000000000000"
-      ? 2
-      : 0;
+        "0x0000000000000000000000000000000000000000"
+        ? 2
+        : 0;
 
   const routes: any = [];
 
@@ -107,6 +108,30 @@ export async function getQuote(
 
   const result = await response.json();
 
+  if (result.priceImpact) {
+    if (Big(result.priceImpact || 0).gt(100)) result.priceImpact = 100;
+
+    if (
+      Big(result.priceImpact || 0)
+        .abs()
+        .gt(1)
+    ) {
+      result.priceImpactType = 1;
+    }
+    if (
+      Big(result.priceImpact || 0)
+        .abs()
+        .gt(2)
+    ) {
+      result.priceImpactType = 2;
+    }
+    result.priceImpact = new Big(result.priceImpact || 0).abs().toFixed(2);
+  } else {
+    result.priceImpact = null;
+    result.priceImpactType = 0;
+  }
+
+
   await createRoute(result, routes, quoteRequest, wrapType, signer);
   if (result.otherQuote && result.provider !== result.otherQuote.provider) {
     if (result.otherQuote.provider === "Kodiak") {
@@ -136,7 +161,51 @@ export async function getQuote(
           to: contractData.txn.to,
           value: contractData.txn.value
         };
-      } catch (error) {}
+        result.otherQuote.qoute = contractData.outputCurrencyAmount;
+
+        const inputCurrencyPrice =
+          prices[quoteRequest.fromToken.symbol] || 0;
+        const outputCurrencyPrice =
+          prices[quoteRequest.toToken.symbol] || 0;
+        let priceImpact = null;
+        let priceImpactType = 0;
+
+        if (inputCurrencyPrice && outputCurrencyPrice) {
+          const poolPrice = Big(inputCurrencyPrice).div(outputCurrencyPrice);
+          const amountoutPrice = Big(contractData.outputCurrencyAmount).div(
+            quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals).toFixed(0)
+          );
+          priceImpact = poolPrice
+            .minus(amountoutPrice)
+            .div(poolPrice)
+            .mul(100)
+            .abs()
+            .toFixed(2);
+
+          if (Big(priceImpact).gt(100)) priceImpact = 100;
+
+          if (
+            Big(priceImpact || 0)
+              .abs()
+              .gt(1)
+          ) {
+            priceImpactType = 1;
+          }
+          if (
+            Big(priceImpact || 0)
+              .abs()
+              .gt(2)
+          ) {
+            priceImpactType = 2;
+          }
+        }
+
+        result.otherQuote.priceImpact = priceImpact;
+        result.otherQuote.priceImpactType = priceImpactType;
+
+
+        result.priceImpact = new Big(result.priceImpact || 0);
+      } catch (error) { }
     }
 
     await createRoute(
@@ -244,6 +313,8 @@ async function createRoute(
       duration: 1,
       feeType: FeeType.target,
       gasType: FeeType.origin,
+      priceImpact: result.priceImpact,
+      priceImpactType: result.priceImpactType || 0,
       identification: quoteRequest.identification,
       toexchangeRate: new Big(result.quoteDecimals)
         .div(quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals))
@@ -283,6 +354,7 @@ async function createRoute(
       duration: 1,
       feeType: FeeType.target,
       gasType: FeeType.origin,
+      priceImpact: 0,
       identification: quoteRequest.identification,
       toexchangeRate: "1"
     };

@@ -9,6 +9,7 @@ import checkGas from "./checkGas";
 import formatTrade from "./formatTrade";
 import getWrapOrUnwrapTx from "./getWrapOrUnwrapTx";
 import quoter from "@/sdk/smart-router";
+import { usePriceStore } from "@/stores/usePriceStore";
 
 export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const slippage: any = useSettingsStore((store: any) => store.slippage);
@@ -19,7 +20,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const { addAction } = useAddAction(from || "dapp");
   const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
-  const prices = {};
+  const prices = usePriceStore((store: any) => store.price);
 
   const onQuoter = useCallback(
     async ({
