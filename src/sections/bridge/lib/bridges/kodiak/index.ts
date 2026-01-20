@@ -33,12 +33,12 @@ function processPriceImpact(priceImpact: string | number | null): { priceImpact:
   if (absPriceImpact.gt(1)) {
     priceImpactType = 1;
   }
-  if (absPriceImpact.gt(5)) {
+  if (absPriceImpact.gt(2)) {
     priceImpactType = 2;
   }
-  if (absPriceImpact.gt(15)) {
-    priceImpactType = 3;
-  }
+  // if (absPriceImpact.gt(15)) {
+  //   priceImpactType = 3;
+  // }
 
   let finalPriceImpact: string;
   if (absPriceImpact.gt(100)) {
