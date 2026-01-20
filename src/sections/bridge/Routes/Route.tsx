@@ -110,6 +110,12 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
                         </div>
                     </div>
                     <div className="flex items-center justify-between text-[14px]">
+                        <div className="text-[#3D405A]">Max slippage</div>
+                        <div className="font-[600] text-black">
+                            {slippage || 0.5}%
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[14px]">
                         <div className="text-[#3D405A]">Minimum received</div>
                         <div className="font-[600] text-black">
                             {numberFormatter(Big(minimumReceivedValue).div(10 ** toToken.decimals), isMobile ? 6 : toToken.decimals, true, { round: Big.roundDown })}
