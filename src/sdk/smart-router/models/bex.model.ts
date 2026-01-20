@@ -6,6 +6,8 @@ import routerAbi from "../config/abi/router-balancer";
 import formatRoutes from "../utils/format-routes";
 import BigNumber from "bignumber.js";
 import weth from "../config/weth";
+import { RPC_LIST } from "@/configs/rpc";
+import { useRpcStore } from "@/stores/rpc";
 
 type QuoterProps = {
   inputCurrency: any;
@@ -79,8 +81,12 @@ export class Bex {
 
     if (!account) return returnData;
 
+    const rpcStore = useRpcStore.getState();
+    const rpc = RPC_LIST[rpcStore.selected]?.url;
+    const rpcUrl = rpc ? rpc : chains[inputCurrency.chainId].rpcUrls[0];
+
     const provider = new providers.JsonRpcProvider(
-      chains[inputCurrency.chainId].rpcUrls[0]
+      rpcUrl
     );
     const RouterContract = new Contract(
       routerAddress,
