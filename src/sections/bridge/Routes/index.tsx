@@ -1,6 +1,6 @@
 import type { Chain, Token } from "@/types";
 import Route from "./Route";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export default function Routes({ routes, fromChain, toToken, selectedRoute, setSelectedRoute, fromToken }: { routes: any[], fromChain: Chain, toToken: Token, selectedRoute: any, setSelectedRoute: (route: any) => void, fromToken?: Token }) {
     const routesByType = useMemo(() => {
@@ -15,10 +15,13 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
         return grouped;
     }, [routes]);
 
+    const [expandedRouteIndex, setExpandedRouteIndex] = useState<number | null>(null);
+
     return <div className="border border-[#373A53] rounded-[12px] mt-[17px] px-[10px] route-wrapper">
         {
             routes.map((route: any, index) => {
                 const bridgeType = route.bridgeType || 'default';
+                const isExpanded = expandedRouteIndex === index;
                 
                 return (
                     <Route
@@ -37,6 +40,10 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
                         priceImpact={route.priceImpact}
                         priceImpactType={route.priceImpactType}
                         minimumReceived={route.minimumReceived}
+                        isExpanded={isExpanded}
+                        onExpandToggle={() => {
+                            setExpandedRouteIndex(isExpanded ? null : index);
+                        }}
                         onChange={() => {
                             setSelectedRoute(route)
                         }}

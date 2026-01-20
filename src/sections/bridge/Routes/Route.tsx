@@ -2,7 +2,7 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import CheckBox from "../CheckBox";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
-import { useMemo, useState, useRef, useCallback, useEffect } from "react";
+import { useMemo } from "react";
 import useIsMobile from "@/hooks/use-isMobile";
 import { numberFormatter } from "@/utils/number-formatter";
 import { FeeType } from "../lib/type";
@@ -14,11 +14,9 @@ const COLOR: Record<number, string> = {
     0: "text-[#33b65f]"
 };
 
-export default function Route({ name, fee, receiveAmount, fromChain, toToken, checked, onChange, icon, duration, feeType, route, priceImpact, priceImpactType, minimumReceived, fromToken }: any) {
+export default function Route({ name, fee, receiveAmount, fromChain, toToken, checked, onChange, icon, duration, feeType, route, priceImpact, priceImpactType, minimumReceived, fromToken, isExpanded, onExpandToggle }: any) {
     const prices: any = usePriceStore(store => store.price);
     const isMobile = useIsMobile();
-    const [expanded, setExpanded] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
     const slippage = useSettingsStore((store: any) => store.slippage);
 
     const feeText = useMemo(() => {
@@ -53,12 +51,12 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
     return (
         <div className="relative [&:not(:last-child)]:border-b [&:not(:last-child)]:border-[#373A53]">
             <div className="flex items-center justify-between py-[10px] gap-1">
-                <div className="flex items-center gap-[10px] shrink-0 relative" ref={dropdownRef}>
+                <div className="flex items-center gap-[10px] shrink-0 relative">
                     <img className="w-[30px] h-[30px] rounded-[10px]" src={icon} />
 
                     <div
                         className="flex items-center gap-[6px] cursor-pointer"
-                        onClick={() => setExpanded(!expanded)}
+                        onClick={onExpandToggle}
                     >
                         <div className="text-[16px] font-[600]">{name}</div>
                         {
@@ -68,7 +66,7 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
                                 viewBox="0 0 12 7"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
+                                className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                             >
                                 <path
                                     d="M1 1L6 6L11 1"
@@ -98,7 +96,7 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
                 </div>
             </div>
 
-            {expanded && priceImpact !== null && (
+            {isExpanded && priceImpact !== null && (
                 <div className="py-[10px] space-y-[8px]">
                     <div className="flex items-center justify-between text-[14px]">
                         <div className="text-[#3D405A]">Price impact</div>
