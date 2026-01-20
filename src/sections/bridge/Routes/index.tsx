@@ -1,6 +1,6 @@
 import type { Chain, Token } from "@/types";
 import Route from "./Route";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Routes({ routes, fromChain, toToken, selectedRoute, setSelectedRoute, fromToken }: { routes: any[], fromChain: Chain, toToken: Token, selectedRoute: any, setSelectedRoute: (route: any) => void, fromToken?: Token }) {
     const routesByType = useMemo(() => {
@@ -16,6 +16,15 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
     }, [routes]);
 
     const [expandedRouteIndex, setExpandedRouteIndex] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (selectedRoute && routes.length > 0) {
+            const selectedIndex = routes.findIndex((route: any) => route === selectedRoute);
+            if (selectedIndex !== -1) {
+                setExpandedRouteIndex(selectedIndex);
+            }
+        }
+    }, [routes, selectedRoute]);
 
     return <div className="border border-[#373A53] rounded-[12px] mt-[17px] px-[10px] route-wrapper">
         {
