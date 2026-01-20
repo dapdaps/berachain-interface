@@ -5,6 +5,8 @@ import { V2 } from "../libs/v2.lib";
 import chains from "../config/chains";
 import routerAbi from "../config/abi/router-v3-4";
 import routerV2Abi from "../config/abi/router-v2-1";
+import { RPC_LIST } from "@/configs/rpc";
+import { useRpcStore } from "@/stores/rpc";
 
 export class Kodiak {
   private v3: V3;
@@ -65,6 +67,7 @@ export class Kodiak {
     slippage,
     account
   }: any) {
+
     const _amount = BigNumber(inputAmount)
       .multipliedBy(10 ** inputCurrency.decimals)
       .toFixed(0);
@@ -131,8 +134,12 @@ export class Kodiak {
       template: "Kodiak"
     };
 
+    const rpcStore = useRpcStore.getState();
+    const rpc = RPC_LIST[rpcStore.selected]?.url;
+    const rpcUrl = rpc ? rpc : chains[inputCurrency.chainId].rpcUrls[0];
+
     const provider = new providers.JsonRpcProvider(
-      chains[inputCurrency.chainId].rpcUrls[0]
+      rpcUrl
     );
     const RouterContract = new Contract(
       routerAddress,
@@ -239,8 +246,12 @@ export class Kodiak {
       );
     }
 
+    const rpcStore = useRpcStore.getState();
+    const rpc = RPC_LIST[rpcStore.selected]?.url;
+    const rpcUrl = rpc ? rpc : chains[inputCurrency.chainId].rpcUrls[0];
+
     const provider = new providers.JsonRpcProvider(
-      chains[inputCurrency.chainId].rpcUrls[0]
+      rpcUrl
     );
     const multicallContract = new Contract(
       this.ROUTER_V3[inputCurrency.chainId],

@@ -17,8 +17,6 @@ export default function useNftBalance() {
   const rpcStore = useRpcStore();
   const rpc = useMemo(() => RPC_LIST[rpcStore.selected]?.url, [rpcStore.selected]);
 
-  console.log(52, rpc);
-
   const provider = useMemo(() => {
     return new providers.JsonRpcProvider(rpc, {
       chainId: DEFAULT_CHAIN_ID,
