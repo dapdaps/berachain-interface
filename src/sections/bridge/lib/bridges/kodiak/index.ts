@@ -125,7 +125,7 @@ export async function getQuote(
           inputAmount: quoteRequest.amount
             .div(10 ** quoteRequest.fromToken.decimals)
             .toString(),
-          slippage: Number(routesRequest.slippageTolerance || 0.5),
+          slippage: Number(routesRequest.slippageTolerance || 0.5) / 100,
           account: await signer.getAddress(),
           template: "Kodiak"
         };
