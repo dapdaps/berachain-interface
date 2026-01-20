@@ -7,6 +7,8 @@ import formatRoutes from "../utils/format-routes";
 import weth from "../config/weth";
 import { multicall } from "../utils/multicall";
 import { multicallAddresses } from "@/utils/multicall";
+import { RPC_LIST } from "@/configs/rpc";
+import { useRpcStore } from "@/stores/rpc";
 
 export class BalancerLib {
   private pools: any = [];
@@ -92,9 +94,13 @@ export class BalancerLib {
       };
     }
 
+    const rpcStore = useRpcStore.getState();
+    const rpc = RPC_LIST[rpcStore.selected]?.url;
+    const rpcUrl = rpc ? rpc : chains[inputCurrency.chainId].rpcUrls[0];
+
     // Use multicall to query each path using queryBatchSwap
     const provider = new providers.JsonRpcProvider(
-      chains[inputCurrency.chainId].rpcUrls[0]
+      rpcUrl
     );
     const routerContract = new Contract(
       this.routerAddress,
