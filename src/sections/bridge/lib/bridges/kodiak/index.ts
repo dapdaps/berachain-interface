@@ -20,6 +20,39 @@ import quoter from "@/sdk/smart-router";
 import { usePriceStore } from "@/stores/usePriceStore";
 
 const nativeAddress = "0x0000000000000000000000000000000000000000";
+
+function processPriceImpact(priceImpact: string | number | null): { priceImpact: string | null; priceImpactType: number } {
+  if (!priceImpact) {
+    return { priceImpact: null, priceImpactType: 0 };
+  }
+
+  const priceImpactValue = Big(priceImpact || 0);
+  const absPriceImpact = priceImpactValue.abs();
+  let priceImpactType = 0;
+
+  if (absPriceImpact.gt(1)) {
+    priceImpactType = 1;
+  }
+  if (absPriceImpact.gt(5)) {
+    priceImpactType = 2;
+  }
+  if (absPriceImpact.gt(15)) {
+    priceImpactType = 3;
+  }
+
+  let finalPriceImpact: string;
+  if (absPriceImpact.gt(100)) {
+    finalPriceImpact = priceImpactType > 0 ? "100" : "-100";
+  } else {
+    finalPriceImpact = priceImpactValue.toFixed(2);
+  }
+
+  return {
+    priceImpact: new Big(finalPriceImpact || 0).toFixed(2),
+    priceImpactType
+  };
+}
+
 export async function getQuote(
   quoteRequest: QuoteRequest,
   signer: Signer
@@ -108,28 +141,9 @@ export async function getQuote(
 
   const result = await response.json();
 
-  if (result.priceImpact) {
-    if (Big(result.priceImpact || 0).gt(100)) result.priceImpact = 100;
-
-    if (
-      Big(result.priceImpact || 0)
-        .abs()
-        .gt(1)
-    ) {
-      result.priceImpactType = 1;
-    }
-    if (
-      Big(result.priceImpact || 0)
-        .abs()
-        .gt(2)
-    ) {
-      result.priceImpactType = 2;
-    }
-    result.priceImpact = new Big(result.priceImpact || 0).abs().toFixed(2);
-  } else {
-    result.priceImpact = null;
-    result.priceImpactType = 0;
-  }
+  const processedPriceImpact = processPriceImpact(result.priceImpact);
+  result.priceImpact = processedPriceImpact.priceImpact;
+  result.priceImpactType = processedPriceImpact.priceImpactType;
 
 
   await createRoute(result, routes, quoteRequest, wrapType, signer);
@@ -171,33 +185,18 @@ export async function getQuote(
         let priceImpactType = 0;
 
         if (inputCurrencyPrice && outputCurrencyPrice) {
-          const poolPrice = Big(inputCurrencyPrice).div(outputCurrencyPrice);
-          const amountoutPrice = Big(contractData.outputCurrencyAmount).div(
-            quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals).toFixed(0)
-          );
-          priceImpact = poolPrice
-            .minus(amountoutPrice)
-            .div(poolPrice)
+
+          const usdBefore = quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals).mul(inputCurrencyPrice)
+
+          const calculatedPriceImpact = new Big(contractData.outputCurrencyAmount).mul(outputCurrencyPrice)
+            .minus(usdBefore)
+            .div(usdBefore)
             .mul(100)
-            .abs()
             .toFixed(2);
 
-          if (Big(priceImpact).gt(100)) priceImpact = 100;
-
-          if (
-            Big(priceImpact || 0)
-              .abs()
-              .gt(1)
-          ) {
-            priceImpactType = 1;
-          }
-          if (
-            Big(priceImpact || 0)
-              .abs()
-              .gt(2)
-          ) {
-            priceImpactType = 2;
-          }
+          const processedPriceImpact = processPriceImpact(calculatedPriceImpact);
+          priceImpact = processedPriceImpact.priceImpact;
+          priceImpactType = processedPriceImpact.priceImpactType;
         }
 
         result.otherQuote.priceImpact = priceImpact;
