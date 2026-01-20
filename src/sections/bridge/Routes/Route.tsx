@@ -9,15 +9,17 @@ import { FeeType } from "../lib/type";
 import { useSettingsStore } from "@/stores/settings";
 
 const COLOR: Record<number, string> = {
-    1: "text-[#ff9445]",
-    2: "text-[#ff547d]",
-    0: "text-[#33b65f]"
+    0: "text-[#33b65f]", // 0-1%
+    1: "text-[#FFD700]", // 1-5%
+    2: "text-[#ff9445]", // 5-15%
+    3: "text-[#ff547d]"  // >15%
 };
 
 export default function Route({ name, fee, receiveAmount, fromChain, toToken, checked, onChange, icon, duration, feeType, route, priceImpact, priceImpactType, minimumReceived, fromToken, isExpanded, onExpandToggle }: any) {
     const prices: any = usePriceStore(store => store.price);
     const isMobile = useIsMobile();
     const slippage = useSettingsStore((store: any) => store.slippage);
+
 
     const feeText = useMemo(() => {
         if (feeType === FeeType.origin) {
@@ -32,11 +34,14 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
     }, [fee, fromChain, prices])
 
     const minimumReceivedValue = useMemo(() => {
+        const _slippage = slippage || 0.5;
         if (minimumReceived !== undefined) {
             return minimumReceived;
         }
-        return Big(receiveAmount).mul(1 - slippage / 100).toString();
+
+        return Big(receiveAmount).mul(1 - _slippage / 100).toString();
     }, [minimumReceived, receiveAmount, slippage]);
+
 
     const routePath = useMemo(() => {
         if (route) {
