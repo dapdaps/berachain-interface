@@ -3,6 +3,8 @@ import BigNumber from "bignumber.js";
 import { providers } from "ethers";
 import chains from "../config/chains";
 import type { QuoterProps } from "../types";
+import { RPC_LIST } from "@/configs/rpc";
+import { useRpcStore } from "@/stores/rpc";
 
 export class OogaBooga {
   private getTokenAddress(token: any) {
@@ -53,8 +55,12 @@ export class OogaBooga {
     };
     let estimateGas = new BigNumber(5000000);
     try {
+      const rpcStore = useRpcStore.getState();
+      const rpc = RPC_LIST[rpcStore.selected]?.url;
+      const rpcUrl = rpc ? rpc : chains[inputCurrency.chainId].rpcUrls[0];
+
       const provider = new providers.JsonRpcProvider(
-        chains[inputCurrency.chainId].rpcUrls[0]
+        rpcUrl
       );
       const estimateRes = await provider.estimateGas(txn);
       estimateGas = new BigNumber(estimateRes.toString()).multipliedBy(1.5);
