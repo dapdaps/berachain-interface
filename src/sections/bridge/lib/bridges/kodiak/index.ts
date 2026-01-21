@@ -107,7 +107,7 @@ export async function getQuote(
     amount: quoteRequest.amount.toFixed(0),
     type: "exactIn",
     recipient: quoteRequest.destAddress,
-    slippageTolerance: quoteRequest.slippage || 3
+    slippageTolerance: Number(quoteRequest.slippage || 0.5).toFixed(2)
   };
 
   const queryParams = new URLSearchParams({
@@ -171,8 +171,6 @@ export async function getQuote(
         };
 
         const contractData = await quoter(contractParams);
-
-        console.log('contractData:', contractData)
 
         if (contractData && contractData.txn && contractData.txn.data) {
           result.otherQuote.methodParameters = {
