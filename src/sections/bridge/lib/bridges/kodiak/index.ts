@@ -44,11 +44,11 @@ function processPriceImpact(priceImpact: string | number | null): { priceImpact:
   if (absPriceImpact.gt(100)) {
     finalPriceImpact = priceImpactType > 0 ? "100" : "-100";
   } else {
-    finalPriceImpact = priceImpactValue.toFixed(2);
+    finalPriceImpact = priceImpactValue.toFixed(4);
   }
 
   return {
-    priceImpact: new Big(finalPriceImpact || 0).toFixed(2),
+    priceImpact: new Big(finalPriceImpact || 0).toFixed(4),
     priceImpactType
   };
 }
@@ -120,6 +120,7 @@ export async function getQuote(
     type: routesRequest.type,
     recipient: routesRequest.recipient,
     slippageTolerance: routesRequest.slippageTolerance.toString() || "0.5",
+    providers: 'Kodiak,OpenOcean,Magpie,Enso,Kyberswap',
     // refCode: 'S5GSR6OV',
     refCode: "4",
     referrerFeeBps: "7"
@@ -204,7 +205,7 @@ export async function getQuote(
             .minus(usdBefore)
             .div(usdBefore)
             .mul(100)
-            .toFixed(2);
+            .toFixed(4);
 
           const processedPriceImpact = processPriceImpact(calculatedPriceImpact);
           priceImpact = processedPriceImpact.priceImpact;
@@ -311,9 +312,6 @@ async function createRoute(
     } else {
       icon = "/images/dapps/kx.png";
     }
-
-
-    console.log('result:', result)
 
     const route: any = {
       uuid,
