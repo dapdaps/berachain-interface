@@ -174,7 +174,7 @@ export async function getQuote(
           to: contractData.txn.to,
           value: contractData.txn.value
         };
-        result.otherQuote.qoute = contractData.outputCurrencyAmount;
+        result.otherQuote.quote = Big(contractData.outputCurrencyAmount).mul(10 ** quoteRequest.toToken.decimals).toFixed(0);
 
         const { routes } = contractData
         const path: string[] = []
@@ -311,6 +311,9 @@ async function createRoute(
     } else {
       icon = "/images/dapps/kx.png";
     }
+
+
+    console.log('result:', result)
 
     const route: any = {
       uuid,
