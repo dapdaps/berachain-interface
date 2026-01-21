@@ -107,7 +107,7 @@ export async function getQuote(
     amount: quoteRequest.amount.toFixed(0),
     type: "exactIn",
     recipient: quoteRequest.destAddress,
-    slippageTolerance: quoteRequest.slippage || 3
+    slippageTolerance: Number(quoteRequest.slippage || 0.5).toFixed(2)
   };
 
   const queryParams = new URLSearchParams({
