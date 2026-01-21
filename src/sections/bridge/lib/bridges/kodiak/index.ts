@@ -170,64 +170,70 @@ export async function getQuote(
         };
 
         const contractData = await quoter(contractParams);
-        result.otherQuote.methodParameters = {
-          calldata: contractData.txn.data,
-          to: contractData.txn.to,
-          value: contractData.txn.value
-        };
-        result.otherQuote.quote = Big(contractData.outputCurrencyAmount).mul(10 ** quoteRequest.toToken.decimals).toFixed(0);
 
-        const { routes } = contractData
-        const path: string[] = []
-        if (routes?.length) {
-          const innerRouutes = routes[0].routes
-          if (innerRouutes?.length) {
-            path.push(innerRouutes[0].token0.symbol)
+        if (!contractData || !contractData.txn || !contractData.txn.data) {
+          result.otherQuote.methodParameters = {
+            calldata: contractData.txn.data,
+            to: contractData.txn.to,
+            value: contractData.txn.value
+          };
+          result.otherQuote.quote = Big(contractData.outputCurrencyAmount).mul(10 ** quoteRequest.toToken.decimals).toFixed(0);
+
+          const { routes } = contractData
+          const path: string[] = []
+          if (routes?.length) {
+            const innerRouutes = routes[0].routes
+            if (innerRouutes?.length) {
+              path.push(innerRouutes[0].token0.symbol)
+            }
+            for (const innerRoute of innerRouutes) {
+              const token1 = innerRoute.token1
+              path.push(token1.symbol)
+            }
           }
-          for (const innerRoute of innerRouutes) {
-            const token1 = innerRoute.token1
-            path.push(token1.symbol)
+
+          result.otherQuote.path = path;
+
+          const inputCurrencyPrice =
+            prices[quoteRequest.fromToken.symbol] || 0;
+          const outputCurrencyPrice =
+            prices[quoteRequest.toToken.symbol] || 0;
+          let priceImpact = null;
+          let priceImpactType = 0;
+
+          if (inputCurrencyPrice && outputCurrencyPrice) {
+            const usdBefore = quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals).mul(inputCurrencyPrice)
+            const calculatedPriceImpact = new Big(contractData.outputCurrencyAmount).mul(outputCurrencyPrice)
+              .minus(usdBefore)
+              .div(usdBefore)
+              .mul(100)
+              .toFixed(4);
+
+            const processedPriceImpact = processPriceImpact(calculatedPriceImpact);
+            priceImpact = processedPriceImpact.priceImpact;
+            priceImpactType = processedPriceImpact.priceImpactType;
           }
+
+          result.otherQuote.priceImpact = priceImpact;
+          result.otherQuote.priceImpactType = priceImpactType;
+
+          result.priceImpact = new Big(result.priceImpact || 0);
+
+
+          await createRoute(
+            result.otherQuote,
+            routes,
+            quoteRequest,
+            wrapType,
+            signer
+          );
         }
 
-        result.otherQuote.path = path;
-
-        const inputCurrencyPrice =
-          prices[quoteRequest.fromToken.symbol] || 0;
-        const outputCurrencyPrice =
-          prices[quoteRequest.toToken.symbol] || 0;
-        let priceImpact = null;
-        let priceImpactType = 0;
-
-        if (inputCurrencyPrice && outputCurrencyPrice) {
-          const usdBefore = quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals).mul(inputCurrencyPrice)
-          const calculatedPriceImpact = new Big(contractData.outputCurrencyAmount).mul(outputCurrencyPrice)
-            .minus(usdBefore)
-            .div(usdBefore)
-            .mul(100)
-            .toFixed(4);
-
-          const processedPriceImpact = processPriceImpact(calculatedPriceImpact);
-          priceImpact = processedPriceImpact.priceImpact;
-          priceImpactType = processedPriceImpact.priceImpactType;
-        }
-
-        result.otherQuote.priceImpact = priceImpact;
-        result.otherQuote.priceImpactType = priceImpactType;
-
-        result.priceImpact = new Big(result.priceImpact || 0);
       } catch (error) {
         console.log('error:', error)
-       }
+      }
     }
 
-    await createRoute(
-      result.otherQuote,
-      routes,
-      quoteRequest,
-      wrapType,
-      signer
-    );
   }
 
   return routes.length > 0 ? routes : null;
