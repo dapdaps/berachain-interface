@@ -5,9 +5,10 @@ import { useSettingsStore } from "@/stores/settings";
 import { dexs } from "@/configs/swap";
 import Image from "next/image";
 const COLOR: Record<number, string> = {
-  1: "text-[#ff9445]",
-  2: "text-[#ff547d]",
-  0: "text-[#33b65f]"
+  0: "text-[#33b65f]", // 0-1%
+  1: "text-[#FFD700]", // 1-5%
+  2: "text-[#ff9445]", // 5-15%
+  3: "text-[#ff547d]"  // >15%
 };
 
 export default function Routes({

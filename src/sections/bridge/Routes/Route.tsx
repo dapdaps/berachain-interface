@@ -15,7 +15,7 @@ const COLOR: Record<number, string> = {
     3: "text-[#ff547d]"  // >15%
 };
 
-export default function Route({ name, fee, receiveAmount, fromChain, toToken, checked, onChange, icon, duration, feeType, route, priceImpact, priceImpactType, minimumReceived, fromToken, isExpanded, onExpandToggle }: any) {
+export default function Route({ name, fee, receiveAmount, fromChain, toToken, checked, onChange, icon, duration, feeType, route, path, priceImpact, priceImpactType, minimumReceived, fromToken, isExpanded, onExpandToggle }: any) {
     const prices: any = usePriceStore(store => store.price);
     const isMobile = useIsMobile();
     const slippage = useSettingsStore((store: any) => store.slippage);
@@ -44,14 +44,14 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
 
 
     const routePath = useMemo(() => {
-        if (route) {
-            return route;
+        if (path && Array.isArray(path)) {
+            return path.join(' > ');
         }
         if (fromToken && toToken) {
             return `${fromToken.symbol} > ${toToken.symbol}`;
         }
         return '';
-    }, [route, fromToken, toToken]);
+    }, [path, fromToken, toToken]);
 
     return (
         <div className="relative [&:not(:last-child)]:border-b [&:not(:last-child)]:border-[#373A53]">

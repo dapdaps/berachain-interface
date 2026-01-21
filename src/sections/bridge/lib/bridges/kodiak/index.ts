@@ -145,7 +145,6 @@ export async function getQuote(
   result.priceImpact = processedPriceImpact.priceImpact;
   result.priceImpactType = processedPriceImpact.priceImpactType;
 
-
   await createRoute(result, routes, quoteRequest, wrapType, signer);
   if (result.otherQuote && result.provider !== result.otherQuote.provider) {
     if (result.otherQuote.provider === "Kodiak") {
@@ -177,6 +176,21 @@ export async function getQuote(
         };
         result.otherQuote.qoute = contractData.outputCurrencyAmount;
 
+        const { routes } = contractData
+        const path: string[] = []
+        if (routes?.length) {
+          const innerRouutes = routes[0].routes
+          if (innerRouutes?.length) {
+            path.push(innerRouutes[0].token0.symbol)
+          }
+          for (const innerRoute of innerRouutes) {
+            const token1 = innerRoute.token1
+            path.push(token1.symbol)
+          }
+        }
+
+        result.otherQuote.path = path;
+
         const inputCurrencyPrice =
           prices[quoteRequest.fromToken.symbol] || 0;
         const outputCurrencyPrice =
@@ -185,9 +199,7 @@ export async function getQuote(
         let priceImpactType = 0;
 
         if (inputCurrencyPrice && outputCurrencyPrice) {
-
           const usdBefore = quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals).mul(inputCurrencyPrice)
-
           const calculatedPriceImpact = new Big(contractData.outputCurrencyAmount).mul(outputCurrencyPrice)
             .minus(usdBefore)
             .div(usdBefore)
@@ -201,7 +213,6 @@ export async function getQuote(
 
         result.otherQuote.priceImpact = priceImpact;
         result.otherQuote.priceImpactType = priceImpactType;
-
 
         result.priceImpact = new Big(result.priceImpact || 0);
       } catch (error) { }
@@ -314,6 +325,7 @@ async function createRoute(
       gasType: FeeType.origin,
       priceImpact: result.priceImpact,
       priceImpactType: result.priceImpactType || 0,
+      path: result.path || null,
       identification: quoteRequest.identification,
       toexchangeRate: new Big(result.quoteDecimals)
         .div(quoteRequest.amount.div(10 ** quoteRequest.fromToken.decimals))
