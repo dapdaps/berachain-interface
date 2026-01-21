@@ -106,7 +106,7 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
                     <div className="flex items-center justify-between text-[14px]">
                         <div className="text-[#3D405A]">Price impact</div>
                         <div className={`font-[600] ${COLOR[priceImpactType || 0]}`}>
-                            {priceImpact}%
+                            {numberFormatter(Math.abs(priceImpact), 2, true, { round: Big.roundDown, prefix: Number(priceImpact) > 0 ? '' : '-' })}%
                         </div>
                     </div>
                     <div className="flex items-center justify-between text-[14px]">
