@@ -149,6 +149,7 @@ export async function getQuote(
   await createRoute(result, routes, quoteRequest, wrapType, signer);
   if (result.otherQuote && result.provider !== result.otherQuote.provider) {
     if (result.otherQuote.provider === "Kodiak") {
+      let isSuccess = false;
       try {
         const contractParams = {
           inputCurrency: {
@@ -171,7 +172,9 @@ export async function getQuote(
 
         const contractData = await quoter(contractParams);
 
-        if (!contractData || !contractData.txn || !contractData.txn.data) {
+        console.log('contractData:', contractData)
+
+        if (contractData && contractData.txn && contractData.txn.data) {
           result.otherQuote.methodParameters = {
             calldata: contractData.txn.data,
             to: contractData.txn.to,
@@ -218,19 +221,21 @@ export async function getQuote(
           result.otherQuote.priceImpactType = priceImpactType;
 
           result.priceImpact = new Big(result.priceImpact || 0);
-
-
-          await createRoute(
-            result.otherQuote,
-            routes,
-            quoteRequest,
-            wrapType,
-            signer
-          );
+          isSuccess = true;
         }
 
       } catch (error) {
         console.log('error:', error)
+      }
+
+      if (isSuccess) {
+        await createRoute(
+          result.otherQuote,
+          routes,
+          quoteRequest,
+          wrapType,
+          signer
+        );
       }
     }
 
