@@ -216,7 +216,9 @@ export async function getQuote(
         result.otherQuote.priceImpactType = priceImpactType;
 
         result.priceImpact = new Big(result.priceImpact || 0);
-      } catch (error) { }
+      } catch (error) {
+        console.log('error:', error)
+       }
     }
 
     await createRoute(
