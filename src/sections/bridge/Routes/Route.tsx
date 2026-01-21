@@ -101,7 +101,7 @@ export default function Route({ name, fee, receiveAmount, fromChain, toToken, ch
                 </div>
             </div>
 
-            {isExpanded && priceImpact !== null && (
+            {isExpanded && !!priceImpact && priceImpactType !== null && (
                 <div className="py-[10px] space-y-[8px]">
                     <div className="flex items-center justify-between text-[14px]">
                         <div className="text-[#3D405A]">Price impact</div>
