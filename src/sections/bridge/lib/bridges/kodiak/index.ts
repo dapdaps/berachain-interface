@@ -172,8 +172,6 @@ export async function getQuote(
 
         const contractData = await quoter(contractParams);
 
-        console.log('contractData:', contractData)
-
         if (contractData && contractData.txn && contractData.txn.data) {
           result.otherQuote.methodParameters = {
             calldata: contractData.txn.data,
