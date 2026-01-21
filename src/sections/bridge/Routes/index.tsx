@@ -46,6 +46,7 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
                         duration={route.duration}
                         feeType={route.feeType}
                         route={route.route}
+                        path={route.path}
                         priceImpact={route.priceImpact}
                         priceImpactType={route.priceImpactType}
                         minimumReceived={route.minimumReceived}
