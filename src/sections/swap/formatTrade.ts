@@ -33,33 +33,28 @@ const formatTrade = ({
   let priceImpactType = 0;
 
   if (inputCurrencyPrice && outputCurrencyPrice) {
-    const poolPrice = Big(inputCurrencyPrice).div(outputCurrencyPrice);
-    const amountoutPrice = Big(market.outputCurrencyAmount).div(
-      inputCurrencyAmount
-    );
-    priceImpact = poolPrice
-      .minus(amountoutPrice)
-      .div(poolPrice)
+
+    const usdBefore = Big(inputCurrencyAmount).mul(inputCurrencyPrice)
+    const calculatedPriceImpact = Big(market.outputCurrencyAmount).mul(outputCurrencyPrice)
+      .minus(usdBefore)
+      .div(usdBefore)
       .mul(100)
-      .abs()
       .toFixed(2);
 
-    if (Big(priceImpact).gt(100)) priceImpact = 100;
+    // const poolPrice = Big(inputCurrencyPrice).div(outputCurrencyPrice);
+    // const amountoutPrice = Big(market.outputCurrencyAmount).div(
+    //   inputCurrencyAmount
+    // );
+    // priceImpact = poolPrice
+    //   .minus(amountoutPrice)
+    //   .div(poolPrice)
+    //   .mul(100)
+    //   .abs()
+    //   .toFixed(2);
 
-    if (
-      Big(priceImpact || 0)
-        .abs()
-        .gt(1)
-    ) {
-      priceImpactType = 1;
-    }
-    if (
-      Big(priceImpact || 0)
-        .abs()
-        .gt(2)
-    ) {
-      priceImpactType = 2;
-    }
+    const processedPriceImpact = processPriceImpact(calculatedPriceImpact);
+    priceImpact = processedPriceImpact.priceImpact;
+    priceImpactType = processedPriceImpact.priceImpactType;
   }
 
   const nativeToken = chains[inputCurrency.chainId].nativeCurrency;
@@ -101,5 +96,37 @@ const formatTrade = ({
       : '-'
   };
 };
+
+function processPriceImpact(priceImpact: string | number | null): { priceImpact: string | null; priceImpactType: number } {
+  if (!priceImpact) {
+    return { priceImpact: null, priceImpactType: 0 };
+  }
+
+  const priceImpactValue = Big(priceImpact || 0);
+  const absPriceImpact = priceImpactValue.abs();
+  let priceImpactType = 0;
+
+  if (absPriceImpact.gt(1)) {
+    priceImpactType = 1;
+  }
+  if (absPriceImpact.gt(5)) {
+    priceImpactType = 2;
+  }
+  if (absPriceImpact.gt(15)) {
+    priceImpactType = 3;
+  }
+
+  let finalPriceImpact: string;
+  if (absPriceImpact.gt(100)) {
+    finalPriceImpact = priceImpactType > 0 ? "100" : "-100";
+  } else {
+    finalPriceImpact = priceImpactValue.toFixed(2);
+  }
+
+  return {
+    priceImpact: new Big(finalPriceImpact || 0).toFixed(2),
+    priceImpactType
+  };
+}
 
 export default formatTrade;

@@ -76,8 +76,14 @@ const PriceTend = ({ className = "", token1, token2 }: PriceTendProps) => {
   const changeRate = useMemo(() => {
     try {
       if (currentToken === token1?.symbol) {
-        return Big(priceTend1[priceTend1.length - 1]?.price).div(priceTend1[priceTend1.length - 2]?.price).minus(1).mul(100).toNumber();
+        if (priceTend1.length < 2) {
+          return 0;
+        }
+        return Big(priceTend1[priceTend1.length - 1]?.price).div(priceTend1[priceTend1.length - 2]?.price || 0).minus(1).mul(100).toNumber();
       } else {
+        if (priceTend2.length < 2) {
+          return 0;
+        }
         return Big(priceTend2[priceTend2.length - 1]?.price).div(priceTend2[priceTend1.length - 2]?.price).minus(1).mul(100).toNumber();
       }
     } catch (error) {

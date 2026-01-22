@@ -140,7 +140,7 @@ export default function useBridge({
       UNIZEN_AUTH_KEY: process.env.NEXT_PUBLIC_UNIZEN_AUTH_KEY,
       engine: tool ? [tool] : null
     });
-  }, [provider, fromChain, toChain, fromToken, toToken, account, inputValue, tool]);
+  }, [provider, fromChain, toChain, fromToken, toToken, account, inputValue, tool, setting.slippage]);
 
   useEffect(() => {
     if (
