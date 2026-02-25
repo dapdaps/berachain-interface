@@ -4,13 +4,15 @@ import Modal from "@/components/modal";
 import LightButton from "@/components/check-in/button";
 import Image from "next/image";
 import { playClickSound } from "../sound";
+import { NftRewardItem } from "../hooks/use-nft-config";
 
 interface RulesProps {
     visible?: boolean;
     onClose?: () => void;
+    nftConfig: NftRewardItem[];
 }
 
-export default function Rules({ visible = false, onClose }: RulesProps) {
+export default function Rules({ visible = false, onClose, nftConfig }: RulesProps) {
     return (
         <Modal
             open={visible}
@@ -101,8 +103,15 @@ export default function Rules({ visible = false, onClose }: RulesProps) {
                                 <span className="text-black px-[10px]">•</span>
                                 <span className="font-bold">NFTs  🎨 :</span>
                             </div>
-                            <p className="pl-[30px]">
-                                <span className="text-black px-[10px]">•</span> Mibera
+                            {
+                                nftConfig?.length > 0 && nftConfig?.map((nft) => (
+                                    <p className="pl-[30px]" key={nft.address}>
+                                        <span className="text-black px-[10px]">•</span> {nft.name}
+                                    </p>
+                                ))
+                            }
+                            {/* <p className="pl-[30px]">
+                                <span className="text-black px-[10px]">•</span> Mibera Shadow Trait
                             </p>
                             <p className="pl-[30px]">
                                 <span className="text-black px-[10px]">•</span> Bullas
@@ -112,7 +121,7 @@ export default function Rules({ visible = false, onClose }: RulesProps) {
                             </p>
                             <p className="pl-[30px]">
                                 <span className="text-black px-[10px]">•</span> Booga Bullas
-                            </p>
+                            </p> */}
                         </div>
                     </div>
                 </div>
