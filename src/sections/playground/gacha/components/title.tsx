@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Rules from "./rules";
 import { playClickSound } from "../sound";
+import { NftRewardItem } from "../hooks/use-nft-config";
 
-export default function Title() {
+export default function Title({ nftConfig }: { nftConfig: NftRewardItem[] }) {
   const [showRules, setShowRules] = useState(false);
 
   return (
@@ -24,7 +25,7 @@ export default function Title() {
         </div>
       </div>
       
-      <Rules visible={showRules} onClose={() => setShowRules(false)} />
+      <Rules visible={showRules} onClose={() => setShowRules(false)} nftConfig={nftConfig} />
     </>
   );
 }
