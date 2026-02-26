@@ -125,7 +125,7 @@ export default function Gacha() {
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
       <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
-      <Title />
+      <Title nftConfig={nftConfig}/>
 
       <div className="container min-w-[1200px] mx-auto py-12 flex justify-center gap-[20px] w-[1450px]">
         {nftConfig?.length > 0 && nftConfig?.map((nft) => (
