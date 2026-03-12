@@ -18,6 +18,7 @@ import PageBack from "@/components/back";
 import { stopSound, SOUND_PATHS } from "./sound";
 import { useAudioStore } from "@/stores/use-audio";
 import useNftConfig from "./hooks/use-nft-config";
+import clsx from "clsx";
 
 export default function Gacha() {
   const hasPlayedRef = useRef(false);
@@ -33,7 +34,7 @@ export default function Gacha() {
   const [activeTabId, setActiveTabId] = useState(GACHA_TABS[0].id);
   const activeTabRef = useRef<GachaTabConfig>(GACHA_TABS[0]);
   const { nftConfig, loading: nftConfigLoading, tokenMap, tokenNameMap } = useNftConfig();
- 
+
   const open = useAudioStore((state: any) => state.open);
 
   const handlePlay = async (tier: number) => {
@@ -67,19 +68,19 @@ export default function Gacha() {
     setShowSuccessOpen(false);
   };
 
- useEffect(() => {
-  activeTabRef.current = GACHA_TABS.find((tab) => tab.id === activeTabId) || GACHA_TABS[0];
- }, [activeTabId]);
+  useEffect(() => {
+    activeTabRef.current = GACHA_TABS.find((tab) => tab.id === activeTabId) || GACHA_TABS[0];
+  }, [activeTabId]);
 
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio(SOUND_PATHS.background);
-      audioRef.current.loop = false; 
+      audioRef.current.loop = false;
     }
 
     const playBgMusic = async () => {
       if (hasPlayedRef.current || !audioRef.current || !open) return;
-      
+
       try {
         await audioRef.current.play();
         hasPlayedRef.current = true;
@@ -90,14 +91,14 @@ export default function Gacha() {
 
     const unlockAudio = async () => {
       if (hasPlayedRef.current || !audioRef.current || !open) return;
-      
+
       try {
         await audioRef.current.play();
         hasPlayedRef.current = true;
       } catch (error) {
         console.error("Failed to play background music:", error);
       }
-      
+
       document.removeEventListener("click", unlockAudio);
       document.removeEventListener("touchstart", unlockAudio);
       document.removeEventListener("keydown", unlockAudio);
@@ -124,10 +125,15 @@ export default function Gacha() {
 
   return (
     <div className="min-h-screen bg-[#2F1D17] mt-[-68px] pt-[68px] pb-[80px]">
-      <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white"  isBlack={false} />
-      <Title nftConfig={nftConfig}/>
+      <PageBack className="ml-[30px] absolute top-[80px] left-[15px] z-10 text-white" isBlack={false} />
+      <Title nftConfig={nftConfig} />
 
-      <div className="container min-w-[1200px] mx-auto py-12 flex justify-center gap-[20px] w-[1450px]">
+      <div
+        className={clsx(
+          "container min-w-[1200px] mx-auto py-12 grid place-items-center gap-x-[20px] gap-y-[40px] w-[1450px]",
+          nftConfig?.length > 3 ? "grid-cols-2" : "grid-cols-3",
+        )}
+      >
         {nftConfig?.length > 0 && nftConfig?.map((nft) => (
           <NFTCard
             key={nft.address}

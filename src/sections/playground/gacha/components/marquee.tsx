@@ -245,7 +245,7 @@ export default function Marquee({
   return (
     <div 
       ref={wrapperRef}
-      className={`overflow-hidden w-full ${className}`}
+      className={`relative overflow-hidden w-full min-w-0 ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -265,11 +265,10 @@ export default function Marquee({
       
       <div
         ref={containerRef}
-        className="flex"
+        className="inline-flex"
         style={{
           gap: `${gap}px`,
           willChange: shouldDuplicate ? "transform" : "auto",
-          width: "fit-content",
         }}
       >
         <div ref={contentRef} className="flex" style={{ gap: `${gap}px` }}>
