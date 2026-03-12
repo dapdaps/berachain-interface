@@ -119,14 +119,14 @@ export default function NFTDetailModal({ visible, address, data, rarityRank, onC
                   <div className="text-[14px] bg-[#FFFFFF80] rounded-[4px] px-[8px] py-[2px]">{rarityRank?.[data.tokenList[selectedThumbnailIndex]?.tokenId] || '-'}</div>
                 </div>
 
-                <a href={`https://magiceden.io/collections/berachain/${address}`} target="_blank" rel="noopener noreferrer">
+                {/* <a href={`https://magiceden.io/collections/berachain/${address}`} target="_blank" rel="noopener noreferrer">
                   <svg width="28" height="11" viewBox="0 0 28 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g opacity="0.5">
                       <path d="M0 9.65649V1.34355L0.000888622 1.2932C0.0183716 0.774301 0.305042 0.310903 0.739185 0.106813C1.18731 -0.103828 1.70575 0.00263781 2.05597 0.377089L5.46517 4.0222L7.8255 0.537483C8.05463 0.19918 8.41429 4.76554e-05 8.79617 4.76554e-05H14.7867C15.4567 4.76554e-05 15.9999 0.601556 15.9999 1.34355C15.9999 2.08555 15.4567 2.68706 14.7867 2.68706H11.3865L12.7613 4.51404C13.1219 4.99318 13.1373 5.68405 12.7985 6.18227L11.5518 8.01532L14.7736 7.97711C15.4437 7.96916 15.9927 8.56425 15.9999 9.30619C16.0071 10.0481 15.4697 10.6562 14.7997 10.6641L9.11252 10.7315C8.65022 10.737 8.22527 10.4511 8.0167 9.99417C7.80815 9.53728 7.85218 8.98877 8.1303 8.57982L10.2818 5.41622L8.84623 3.50871L6.58202 6.85189C6.37322 7.16018 6.05481 7.35438 5.70791 7.38506C5.36104 7.41573 5.01898 7.27994 4.76864 7.01229L2.42653 4.50814V9.65649C2.42653 10.3985 1.88333 11 1.21326 11C0.543197 11 0 10.3985 0 9.65649Z" fill="#3D405A" />
                       <path d="M19 10L27 2M27 2L21.5 2M27 2V7.5" stroke="#3D405A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
                     </g>
                   </svg>
-                </a>
+                </a> */}
               </div>
             </div>
           </motion.div>
