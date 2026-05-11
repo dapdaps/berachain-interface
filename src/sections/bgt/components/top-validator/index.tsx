@@ -23,10 +23,10 @@ export default function TopValidator({
               target.setAttribute("src", errorImage);
             }}
             // @ts-ignore
-            errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+            errorImage="/assets/tokens/default_icon.png"
             src={
               validator?.metadata?.logoURI ??
-              "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+              "/assets/tokens/default_icon.png"
             }
             alt={validator?.metadata?.name}
           />

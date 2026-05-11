@@ -146,7 +146,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
       "Top Validator",
       <CustomImage
         src={BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.logoURI}
-        errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+        errorImage="/assets/tokens/default_icon.png"
         className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-full")}
       />,
       BGTLoading

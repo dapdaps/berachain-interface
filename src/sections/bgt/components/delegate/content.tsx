@@ -244,10 +244,10 @@ const DelegateContent = (props: any) => {
               alt={validator?.metadata?.name}
               src={
                 validator?.metadata?.logoURI ??
-                "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+                "/assets/tokens/default_icon.png"
               }
               className="min-w-[26px] w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
-              errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+              errorImage="/assets/tokens/default_icon.png"
             />
             <div className="ml-[8px] mr-[10px] w-[65px] text-ellipsis overflow-hidden text-black font-Montserrat text-[16px] whitespace-nowrap font-semibold leading-[90%]">
               {validator?.metadata?.name ??

@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                   <img
                     src={
                       data?.metadata?.logoURI ??
-                      "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+                      "/assets/tokens/default_icon.png"
                     }
                     className="min-w-[30px] w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
                     alt={data?.metadata?.name}
