@@ -68,9 +68,9 @@ const Market = (props: any) => {
                 <div className="flex items-center gap-[7px]">
                   <CustomImage
                     alt={validator?.metadata?.name}
-                    src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                    src={validator?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"}
                     className="w-[26px] h-[26px] rounded-full"
-                    errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+                    errorImage="/assets/tokens/default_icon.png"
                   />
                   <div className="text-[16px] text-black font-[600]">
                     {validator?.metadata?.name || formatLongText(validator?.pubkey, 4, 4)}

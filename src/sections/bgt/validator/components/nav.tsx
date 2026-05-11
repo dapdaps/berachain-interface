@@ -20,8 +20,8 @@ const Nav = (props: any) => {
                     const errorImage = target.getAttribute("errorImage")
                     target.setAttribute("src", errorImage)
                   }}
-                  errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
-                  src={pageData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={pageData?.metadata?.name}
+                  errorImage="/assets/tokens/default_icon.png"
+                  src={pageData?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"} alt={pageData?.metadata?.name}
                 />
               </div>
             ) : (

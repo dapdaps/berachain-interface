@@ -25,7 +25,7 @@ const AllVaults = (props: any) => {
               <div className='flex items-center gap-[16px]'>
                 <div className='relative'>
                   <div className='w-[30px] h-[30px] rounded-full overflow-hidden'>
-                    <img src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} />
+                    <img src={record?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"} />
                   </div>
                   <div className="absolute right-[-6px] bottom-[-2px] w-[16px]">
                     <img src={getProtocolIcon(record?.metadata?.protocolName)} />

@@ -5,7 +5,7 @@ export const VALIDATORS: ValidatorType[] = [
   {
     id: "0x869bd71d03de95862aca3507131ddfd6922643b314d2175c29dd502cf6714d96",
     name: "",
-    icon: "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png",
+    icon: "/assets/tokens/default_icon.png",
   },
 
   {
@@ -17,19 +17,19 @@ export const VALIDATORS: ValidatorType[] = [
   {
     id: "0xb8a85d555aa2914ce56cc2f404894401c9821ce31d956e951589b912b1db55af",
     name: "",
-    icon: "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png",
+    icon: "/assets/tokens/default_icon.png",
   },
 
 
   {
     id: "0x7627829f0b6b5368f296704e04119e4635f6fb6da1be61bf252bc5fba0e05695",
     name: "BicroStrategy",
-    icon: "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png",
+    icon: "/assets/tokens/default_icon.png",
   },
   {
     id: "0x6b445ae600aff5c50403318485012783d9d04cd8c1ec9591998868220520857b",
     name: "wallahi",
-    icon: "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png",
+    icon: "/assets/tokens/default_icon.png",
   },
 
 
@@ -43,12 +43,12 @@ export const VALIDATORS: ValidatorType[] = [
   {
     id: "0x1e31a4d3857962b302aa2e4e54740187c9870f8bebe8c10194e5a6bfcc965835",
     name: "",
-    icon: "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png",
+    icon: "/assets/tokens/default_icon.png",
   },
   {
     id: "0x09127f1a822bf04c496172c0d38e9afc8ccc1b4e9fc4a8f6e9d0f1ff4fe6bc58",
     name: "",
-    icon: "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png",
+    icon: "/assets/tokens/default_icon.png",
   },
 
 ];

@@ -47,7 +47,7 @@ export default function BgtGaugeMobile(props: any) {
         gaugeData && (
           <div className="mt-[13px] mb-[16px] h-[75px] rounded-[10px] bg-[#FFDC50] flex items-center justify-center gap-[14px]">
             <div className="w-[42px] h-[42px] rounded-full overflow-hidden">
-              <img src={gaugeData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={gaugeData?.metadata?.name} />
+              <img src={gaugeData?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"} alt={gaugeData?.metadata?.name} />
             </div>
             <div className="flex flex-col gap-[5px]">
               <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">

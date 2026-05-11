@@ -45,7 +45,7 @@ const VaultsList = ({
         <div className="flex items-center gap-2">
           <div className="relative">
             <img
-              src={item?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+              src={item?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"}
               className="w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
               alt={item?.metadata?.name}
             />
