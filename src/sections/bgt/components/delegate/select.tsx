@@ -54,9 +54,9 @@ export default memo(function Select(props: any) {
           <div className="flex items-center gap-[8px]">
             <CustomImage
               alt={record?.metadata?.name}
-              src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+              src={record?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"}
               className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
-              errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+              errorImage="/assets/tokens/default_icon.png"
             />
             <div className="flex-1 min-w-0">
               <div className="truncate text-black font-Montserrat text-[16px] font-medium leading-[90%]">

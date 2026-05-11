@@ -112,7 +112,7 @@ export default memo(function QueueList({
                     <div className="relative shrink-0 overflow-hidden aspect-square flex items-center justify-center rounded-full text-foreground bg-background border border-border text-[8px] h-8 w-8">
                       <img
                         className="aspect-square h-full w-full rounded-full"
-                        src={queue?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                        src={queue?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"}
                       />
                     </div>
                     <div>{queue?.metadata?.name || formatLongText(queue?.pubkey, 4, 4)}</div>

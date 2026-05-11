@@ -52,7 +52,7 @@ export default memo(function gauge(props: any) {
             </svg> */}
             <Back />
             <div className="ml-[32px] mr-[14px] w-[42px] h-[42px] rounded-full overflow-hidden">
-              <img src={gaugeData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={gaugeData?.metadata?.name} />
+              <img src={gaugeData?.metadata?.logoURI ?? "/assets/tokens/default_icon.png"} alt={gaugeData?.metadata?.name} />
             </div>
             <div className="flex flex-col gap-[5px]">
               <div className="text-black text-[20px] font-Montserrat font-semibold leading-[90%]">{gaugeData?.metadata?.name}</div>
