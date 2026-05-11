@@ -1,15 +1,13 @@
 "use client";
 
-import { config, projectId, metadata } from "@/configs/wagmi";
+import { projectId, metadata, networks, transports } from "@/configs/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { connectorsForWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { berasigWallet, metaMaskWallet, coinbaseWallet, okxWallet, bitgetWallet, binanceWallet } from '@rainbow-me/rainbowkit/wallets';
 import React, { type ReactNode } from "react";
-import { cookieToInitialState, WagmiProvider, createConfig, fallback, http } from "wagmi";
+import { cookieToInitialState, WagmiProvider, createConfig } from "wagmi";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import "@rainbow-me/rainbowkit/styles.css";
-import { createClient } from "viem";
-import { berachain } from "viem/chains";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +31,9 @@ const connectors: any = connectorsForWallets(
   ],
   {
     appName: metadata.name,
+    appDescription: metadata.description,
+    appUrl: metadata.url,
+    appIcon: metadata.icons[0],
     projectId,
   }
 );
@@ -90,20 +91,9 @@ const connectors: any = connectorsForWallets(
 // });
 
 const wagmiConfig = createConfig({
-  ...config,
   connectors,
-  client: ({ chain }) => {
-    if (chain.id === berachain.id) {
-      return createClient({
-        chain,
-        transport: fallback([http("https://rpc.berachain.com")]),
-      })
-    }
-    return createClient({
-      chain,
-      transport: http()
-    })
-  }
+  chains: networks,
+  transports: transports,
 });
 
 function ContextProvider({
@@ -113,7 +103,7 @@ function ContextProvider({
   children: ReactNode;
   cookies?: string | null;
 }) {
-  
+
   const initialState = cookieToInitialState(
     wagmiConfig,
     cookies

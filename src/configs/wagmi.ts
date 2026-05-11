@@ -1,8 +1,7 @@
 "use client";
 
-import { cookieStorage, createStorage, fallback, http } from "wagmi";
+import { fallback, http } from "wagmi";
 import chains, { turbo } from "./chains";
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { arbitrum, aurora, base, berachain, mainnet } from "wagmi/chains"
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -59,26 +58,14 @@ export const networks: any = Object.values(chains) //.filter((c) => c.isWalletSu
 //   // connectors.push(BeraSig);
 // }
 
-export const config = getDefaultConfig({
-  appName: metadata.name,
-  appDescription: metadata.description,
-  appUrl: metadata.url,
-  appIcon: metadata.icons[0],
-  storage: createStorage({
-    storage: cookieStorage
-  }),
-  ssr: true,
-  projectId: projectId,
-  chains: networks,
-  transports: {
-    [berachain.id]: fallback([http("https://rpc.berachain.com")]),
-    [mainnet.id]: http(),
-    [base.id]: http(),
-    [arbitrum.id]: http(),
-    [turbo.id]: http(),
-    [aurora.id]: http(),
-  },
-});
+export const transports = {
+  [berachain.id]: fallback([http("https://rpc.berachain.com")]),
+  [mainnet.id]: fallback([http("https://0xrpc.io/eth"), http()]),
+  [base.id]: http(),
+  [arbitrum.id]: http(),
+  [turbo.id]: http(),
+  [aurora.id]: http(),
+};
 
 // export const wagmiAdapter = new WagmiAdapter({
 //   // @ts-ignore
