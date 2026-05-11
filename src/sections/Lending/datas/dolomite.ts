@@ -490,8 +490,6 @@ const DolomiteData = (props: any) => {
     wrappedToken = {}
   } = props;
 
-  console.log(props);
-
   const multicallAddress = multicallAddresses[chainId];
 
   useEffect(() => {
