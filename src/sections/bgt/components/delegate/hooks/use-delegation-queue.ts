@@ -25,7 +25,7 @@ export default function useDelegationQueue() {
   async function getUserValidators() {
     try {
       // setLoading(true)
-      const firstResponse = await post("https://api.goldsky.com/api/public/project_clq1h5ct0g4a201x18tfte5iv/subgraphs/pol-subgraph/mainnet-v1.1.0/gn", {
+      const firstResponse = await post("https://api.goldsky.com/api/public/project_clq1h5ct0g4a201x18tfte5iv/subgraphs/pol-subgraph/mainnet-latest/gn", {
         "operationName": "GetUserValidatorInformation",
         "variables": { "address": account },
         "query": "query GetUserValidatorInformation($address: Bytes!, $block: Block_height) {\n  userValidatorInformations: userBoosts(\n    block: $block\n    where: {user: $address}\n    first: 1000\n  ) {\n    id\n    queuedBoostAmount\n    activeBoostAmount\n    queuedDropBoostAmount\n    queuedDropBoostStartBlock\n    queuedBoostStartBlock\n    user\n    validator {\n      ...ValidatorMinimal\n      __typename\n    }\n    __typename\n  }\n  _meta {\n    ...SubgraphStatusMeta\n    __typename\n  }\n}\n\nfragment ValidatorMinimal on Validator {\n  id\n  publicKey\n  activeBoostAmount: activeBoostAmount\n  __typename\n}\n\nfragment SubgraphStatusMeta on _Meta_ {\n  block {\n    timestamp\n    __typename\n  }\n  hasIndexingErrors\n  __typename\n}"
