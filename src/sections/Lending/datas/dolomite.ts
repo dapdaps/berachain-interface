@@ -1059,7 +1059,12 @@ const DolomiteData = (props: any) => {
           }
         })
         .catch((err: any) => {
-          console.log('error-getCTokenData', err);
+          console.log('error-getCTokenData: %o, oToken: %o', err, oToken);
+          oTokensLength--;
+          if (oTokensLength === 0) {
+            count++;
+            formatedData('oTokens data');
+          }
         });
     };
     const getCTokensData = async () => {
